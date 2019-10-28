@@ -1,10 +1,7 @@
-// DrivingVision.cpp : Hiermit werden die Funktionen für die statische Bibliothek definiert.
-//
+#include "DrivingVision.h"
 
-#include "pch.h"
-#include "framework.h"
-
-// TODO: Dies ist ein Beispiel für eine Bibliotheksfunktion.
-void fnDrivingVision()
-{
+namespace dv {
+	void DrivingVision::test() {
+		
+	}
 }
