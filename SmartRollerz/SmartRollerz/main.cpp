@@ -3,6 +3,8 @@
 
 int main() {
 	dv::DrivingVision drivingVision;
-	drivingVision.test();
+	for (;;) {
+		drivingVision.doLaneDetection();
+	}
 	return 0;
 }
