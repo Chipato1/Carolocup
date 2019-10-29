@@ -19,4 +19,9 @@ namespace dv {
 		cv::waitKey(10);
 		return this->detector->getResult();
 	}
+
+	bool DrivingVision::doQRCodeDetection() {
+		
+		return true;
+	}
 }

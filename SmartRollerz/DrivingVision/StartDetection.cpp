@@ -1,10 +1,12 @@
 #include "StartDetection.h"
 
+using namespace cv;
+
 StartDetection::StartDetection() {
     qrDecoder = QRCodeDetector();
 }
 
-bool StartDetection::getQRCode() {
+bool StartDetection::checkQRCode() {
     //TODO: Utile class mit getCurrentImage
     //inputImage = getCurrentImage();
     

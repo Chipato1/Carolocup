@@ -4,6 +4,8 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+
+
 class StartDetection
 {
 public:
@@ -11,9 +13,9 @@ public:
     StartDetection();
     
 private:
-    Mat inputImage;
-    QRCodeDetector qrDecoder;
-    Mat bbox, rectifiedImage;
+    cv::Mat inputImage;
+    cv::QRCodeDetector qrDecoder;
+    cv::Mat bbox, rectifiedImage;
     std::string extractedData;
     
     const std::string STOP_TEXT = "Stop";
