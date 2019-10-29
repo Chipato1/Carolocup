@@ -6,10 +6,7 @@ StartDetection::StartDetection() {
     qrDecoder = QRCodeDetector();
 }
 
-bool StartDetection::checkQRCode() {
-    //TODO: Utile class mit getCurrentImage
-    //inputImage = getCurrentImage();
-    
+bool StartDetection::checkQRCode(cv::Mat inputImage) {
     //Detect and Decode the QRCode in the image
     extractedData = qrDecoder.detectAndDecode(inputImage, bbox, rectifiedImage);
        
