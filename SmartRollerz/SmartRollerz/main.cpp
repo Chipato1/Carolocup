@@ -6,5 +6,6 @@ int main() {
 	for (;;) {
 		drivingVision.doLaneDetection();
 	}
+	getchar();
 	return 0;
 }
