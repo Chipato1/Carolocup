@@ -44,5 +44,7 @@ Q = [1,0,0,0,0;0,1,0,0,0;0,0,1,0,0;0,0,0,1,0;0,0,0,0,1];
 R = 2;
 
 system = ss(A, B, C, D);
+rank(ctrb(system))%überprüfung auf steuerbarkeit
+rank(obsv(system))%beobachtbarkeit
 K = lqr(system, Q, R);
 
