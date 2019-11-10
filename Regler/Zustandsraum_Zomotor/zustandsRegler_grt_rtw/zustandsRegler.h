@@ -7,9 +7,9 @@
  *
  * Code generation for model "zustandsRegler".
  *
- * Model version              : 1.13
+ * Model version              : 1.15
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C source code generated on : Fri Nov  8 21:05:15 2019
+ * C source code generated on : Sun Nov 10 15:13:12 2019
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -168,11 +168,11 @@
 
 /* Block signals (default storage) */
 typedef struct {
-  real_T Gain1;                        /* '<Root>/Gain1' */
-  real_T Saturation;                   /* '<Root>/Saturation' */
+  real_T c0;                           /* '<Root>/Gain1' */
   real_T x[2];                         /* '<Root>/Integrator' */
+  real_T psideltapsi;                  /* '<Root>/Add2' */
   real_T x_b[2];                       /* '<Root>/Add' */
-  real_T y;                            /* '<Root>/Product3' */
+  real_T psi;                          /* '<Root>/Multiply' */
 } B_zustandsRegler_T;
 
 /* Block states (default storage) for system '<Root>' */
@@ -184,19 +184,19 @@ typedef struct {
 
 /* Continuous states (default storage) */
 typedef struct {
-  real_T Integrator1_CSTATE;           /* '<Root>/Integrator1' */
+  real_T TransferFcn_CSTATE;           /* '<Root>/Transfer Fcn' */
   real_T Integrator_CSTATE[2];         /* '<Root>/Integrator' */
 } X_zustandsRegler_T;
 
 /* State derivatives (default storage) */
 typedef struct {
-  real_T Integrator1_CSTATE;           /* '<Root>/Integrator1' */
+  real_T TransferFcn_CSTATE;           /* '<Root>/Transfer Fcn' */
   real_T Integrator_CSTATE[2];         /* '<Root>/Integrator' */
 } XDot_zustandsRegler_T;
 
 /* State disabled  */
 typedef struct {
-  boolean_T Integrator1_CSTATE;        /* '<Root>/Integrator1' */
+  boolean_T TransferFcn_CSTATE;        /* '<Root>/Transfer Fcn' */
   boolean_T Integrator_CSTATE[2];      /* '<Root>/Integrator' */
 } XDis_zustandsRegler_T;
 
@@ -246,23 +246,20 @@ struct P_zustandsRegler_T_ {
   real_T Gain1_Gain;                   /* Expression: 1
                                         * Referenced by: '<Root>/Gain1'
                                         */
-  real_T Integrator1_IC;               /* Expression: 0
-                                        * Referenced by: '<Root>/Integrator1'
+  real_T TransferFcn_A;                /* Computed Parameter: TransferFcn_A
+                                        * Referenced by: '<Root>/Transfer Fcn'
                                         */
-  real_T Gain_Gain;                    /* Expression: 180/pi
-                                        * Referenced by: '<Root>/Gain'
-                                        */
-  real_T Saturation_UpperSat;          /* Expression: 20
-                                        * Referenced by: '<Root>/Saturation'
-                                        */
-  real_T Saturation_LowerSat;          /* Expression: -20
-                                        * Referenced by: '<Root>/Saturation'
+  real_T TransferFcn_C;                /* Computed Parameter: TransferFcn_C
+                                        * Referenced by: '<Root>/Transfer Fcn'
                                         */
   real_T Integrator_IC;                /* Expression: 0
                                         * Referenced by: '<Root>/Integrator'
                                         */
-  real_T Giergeschwindigkeit_Value[2]; /* Expression: [0;-2.63*0.9]
-                                        * Referenced by: '<Root>/Giergeschwindigkeit '
+  real_T _Value[2];                    /* Expression: [0;-2.63*0.9]
+                                        * Referenced by: '<Root>/ '
+                                        */
+  real_T Multiply_Gain;                /* Expression: 0.25
+                                        * Referenced by: '<Root>/Multiply'
                                         */
 };
 

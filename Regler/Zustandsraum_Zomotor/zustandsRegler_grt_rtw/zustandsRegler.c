@@ -7,9 +7,9 @@
  *
  * Code generation for model "zustandsRegler".
  *
- * Model version              : 1.13
+ * Model version              : 1.15
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C source code generated on : Fri Nov  8 21:05:15 2019
+ * C source code generated on : Sun Nov 10 15:13:12 2019
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -118,8 +118,8 @@ static void rt_ertODEUpdateContinuousStates(RTWSolverInfo *si )
 /* Model step function */
 void zustandsRegler_step(void)
 {
-  real_T rtb_u;
-  real_T rtb_c0;
+  real_T rtb_Add1;
+  real_T rtb_TransferFcn;
   if (rtmIsMajorTimeStep(zustandsRegler_M)) {
     /* set solver stop time */
     if (!(zustandsRegler_M->Timing.clockTick0+1)) {
@@ -143,58 +143,52 @@ void zustandsRegler_step(void)
   /* Step: '<Root>/Step' incorporates:
    *  Step: '<Root>/Step1'
    */
-  rtb_c0 = zustandsRegler_M->Timing.t[0];
-  if (rtb_c0 < zustandsRegler_P.Step_Time) {
-    rtb_u = zustandsRegler_P.Step_Y0;
+  rtb_Add1 = zustandsRegler_M->Timing.t[0];
+  if (rtb_Add1 < zustandsRegler_P.Step_Time) {
+    rtb_TransferFcn = zustandsRegler_P.Step_Y0;
   } else {
-    rtb_u = zustandsRegler_P.Step_YFinal;
+    rtb_TransferFcn = zustandsRegler_P.Step_YFinal;
   }
 
   /* End of Step: '<Root>/Step' */
 
   /* Step: '<Root>/Step1' */
-  if (rtb_c0 < zustandsRegler_P.Step1_Time) {
-    rtb_c0 = zustandsRegler_P.Step1_Y0;
+  if (rtb_Add1 < zustandsRegler_P.Step1_Time) {
+    rtb_Add1 = zustandsRegler_P.Step1_Y0;
   } else {
-    rtb_c0 = zustandsRegler_P.Step1_YFinal;
+    rtb_Add1 = zustandsRegler_P.Step1_YFinal;
   }
 
   /* Sum: '<Root>/Add1' */
-  rtb_c0 += rtb_u;
+  rtb_Add1 += rtb_TransferFcn;
 
   /* Gain: '<Root>/Gain1' */
-  zustandsRegler_B.Gain1 = zustandsRegler_P.Gain1_Gain * rtb_c0;
-
-  /* Gain: '<Root>/Gain' incorporates:
-   *  Integrator: '<Root>/Integrator1'
-   */
-  rtb_u = zustandsRegler_P.Gain_Gain * zustandsRegler_X.Integrator1_CSTATE;
-
-  /* Saturate: '<Root>/Saturation' */
-  if (rtb_u > zustandsRegler_P.Saturation_UpperSat) {
-    zustandsRegler_B.Saturation = zustandsRegler_P.Saturation_UpperSat;
-  } else if (rtb_u < zustandsRegler_P.Saturation_LowerSat) {
-    zustandsRegler_B.Saturation = zustandsRegler_P.Saturation_LowerSat;
-  } else {
-    zustandsRegler_B.Saturation = rtb_u;
-  }
-
-  /* End of Saturate: '<Root>/Saturation' */
+  zustandsRegler_B.c0 = zustandsRegler_P.Gain1_Gain * rtb_Add1;
 
   /* Integrator: '<Root>/Integrator' */
   zustandsRegler_B.x[0] = zustandsRegler_X.Integrator_CSTATE[0];
   zustandsRegler_B.x[1] = zustandsRegler_X.Integrator_CSTATE[1];
 
+  /* Sum: '<Root>/Add2' incorporates:
+   *  Constant: '<Root>/cT'
+   *  Product: '<Root>/Product3'
+   *  TransferFcn: '<Root>/Transfer Fcn'
+   */
+  zustandsRegler_B.psideltapsi = (zustandsRegler_P.ausgangsVektor_cT[0] *
+    zustandsRegler_B.x[0] + zustandsRegler_P.ausgangsVektor_cT[1] *
+    zustandsRegler_B.x[1]) + zustandsRegler_P.TransferFcn_C *
+    zustandsRegler_X.TransferFcn_CSTATE;
+
   /* Sum: '<Root>/Subtract' incorporates:
    *  Constant: '<Root>/kT'
    *  Product: '<Root>/Product'
    */
-  rtb_u = zustandsRegler_B.Gain1 - (zustandsRegler_P.K[0] * zustandsRegler_B.x[0]
-    + zustandsRegler_P.K[1] * zustandsRegler_B.x[1]);
+  rtb_TransferFcn = zustandsRegler_B.c0 - (zustandsRegler_P.K[0] *
+    zustandsRegler_B.x[0] + zustandsRegler_P.K[1] * zustandsRegler_B.x[1]);
 
   /* Sum: '<Root>/Add' incorporates:
+   *  Constant: '<Root>/ '
    *  Constant: '<Root>/A'
-   *  Constant: '<Root>/Giergeschwindigkeit '
    *  Constant: '<Root>/b'
    *  Product: '<Root>/Product1'
    *  Product: '<Root>/Product2'
@@ -202,21 +196,17 @@ void zustandsRegler_step(void)
    */
   zustandsRegler_B.x_b[0] = ((zustandsRegler_P.systemMatrix_A[0] *
     zustandsRegler_B.x[0] + zustandsRegler_P.systemMatrix_A[2] *
-    zustandsRegler_B.x[1]) + rtb_u * zustandsRegler_P.eingangsVektor_b[0]) +
-    rtb_c0 * zustandsRegler_P.Giergeschwindigkeit_Value[0];
+    zustandsRegler_B.x[1]) + rtb_TransferFcn *
+    zustandsRegler_P.eingangsVektor_b[0]) + rtb_Add1 * zustandsRegler_P._Value[0];
   zustandsRegler_B.x_b[1] = ((zustandsRegler_P.systemMatrix_A[1] *
     zustandsRegler_B.x[0] + zustandsRegler_P.systemMatrix_A[3] *
-    zustandsRegler_B.x[1]) + rtb_u * zustandsRegler_P.eingangsVektor_b[1]) +
-    rtb_c0 * zustandsRegler_P.Giergeschwindigkeit_Value[1];
+    zustandsRegler_B.x[1]) + rtb_TransferFcn *
+    zustandsRegler_P.eingangsVektor_b[1]) + rtb_Add1 * zustandsRegler_P._Value[1];
   if (rtmIsMajorTimeStep(zustandsRegler_M)) {
   }
 
-  /* Product: '<Root>/Product3' incorporates:
-   *  Constant: '<Root>/cT'
-   */
-  zustandsRegler_B.y = zustandsRegler_P.ausgangsVektor_cT[0] *
-    zustandsRegler_B.x[0] + zustandsRegler_P.ausgangsVektor_cT[1] *
-    zustandsRegler_B.x[1];
+  /* Gain: '<Root>/Multiply' */
+  zustandsRegler_B.psi = zustandsRegler_P.Multiply_Gain * zustandsRegler_B.c0;
   if (rtmIsMajorTimeStep(zustandsRegler_M)) {
     /* Matfile logging */
     rt_UpdateTXYLogVars(zustandsRegler_M->rtwLogInfo,
@@ -229,9 +219,9 @@ void zustandsRegler_step(void)
       if ((rtmGetTFinal(zustandsRegler_M)!=-1) &&
           !((rtmGetTFinal(zustandsRegler_M)-
              (((zustandsRegler_M->Timing.clockTick1+
-                zustandsRegler_M->Timing.clockTickH1* 4294967296.0)) * 0.14)) >
+                zustandsRegler_M->Timing.clockTickH1* 4294967296.0)) * 0.001)) >
             (((zustandsRegler_M->Timing.clockTick1+
-               zustandsRegler_M->Timing.clockTickH1* 4294967296.0)) * 0.14) *
+               zustandsRegler_M->Timing.clockTickH1* 4294967296.0)) * 0.001) *
             (DBL_EPSILON))) {
         rtmSetErrorStatus(zustandsRegler_M, "Simulation finished");
       }
@@ -256,9 +246,9 @@ void zustandsRegler_step(void)
       (&zustandsRegler_M->solverInfo);
 
     {
-      /* Update absolute timer for sample time: [0.14s, 0.0s] */
+      /* Update absolute timer for sample time: [0.001s, 0.0s] */
       /* The "clockTick1" counts the number of times the code of this task has
-       * been executed. The resolution of this integer timer is 0.14, which is the step size
+       * been executed. The resolution of this integer timer is 0.001, which is the step size
        * of the task. Size of "clockTick1" ensures timer will not overflow during the
        * application lifespan selected.
        * Timer of this task consists of two 32 bit unsigned integers.
@@ -279,8 +269,11 @@ void zustandsRegler_derivatives(void)
   XDot_zustandsRegler_T *_rtXdot;
   _rtXdot = ((XDot_zustandsRegler_T *) zustandsRegler_M->derivs);
 
-  /* Derivatives for Integrator: '<Root>/Integrator1' */
-  _rtXdot->Integrator1_CSTATE = zustandsRegler_B.y;
+  /* Derivatives for TransferFcn: '<Root>/Transfer Fcn' */
+  _rtXdot->TransferFcn_CSTATE = 0.0;
+  _rtXdot->TransferFcn_CSTATE += zustandsRegler_P.TransferFcn_A *
+    zustandsRegler_X.TransferFcn_CSTATE;
+  _rtXdot->TransferFcn_CSTATE += zustandsRegler_B.psi;
 
   /* Derivatives for Integrator: '<Root>/Integrator' */
   _rtXdot->Integrator_CSTATE[0] = zustandsRegler_B.x_b[0];
@@ -332,8 +325,8 @@ void zustandsRegler_initialize(void)
                     &zustandsRegler_M->intgData);
   rtsiSetSolverName(&zustandsRegler_M->solverInfo,"ode3");
   rtmSetTPtr(zustandsRegler_M, &zustandsRegler_M->Timing.tArray[0]);
-  rtmSetTFinal(zustandsRegler_M, 7.0000000000000009);
-  zustandsRegler_M->Timing.stepSize0 = 0.14;
+  rtmSetTFinal(zustandsRegler_M, 7.0);
+  zustandsRegler_M->Timing.stepSize0 = 0.001;
 
   /* Setup for data logging */
   {
@@ -377,8 +370,8 @@ void zustandsRegler_initialize(void)
     rtmGetTFinal(zustandsRegler_M), zustandsRegler_M->Timing.stepSize0,
     (&rtmGetErrorStatus(zustandsRegler_M)));
 
-  /* InitializeConditions for Integrator: '<Root>/Integrator1' */
-  zustandsRegler_X.Integrator1_CSTATE = zustandsRegler_P.Integrator1_IC;
+  /* InitializeConditions for TransferFcn: '<Root>/Transfer Fcn' */
+  zustandsRegler_X.TransferFcn_CSTATE = 0.0;
 
   /* InitializeConditions for Integrator: '<Root>/Integrator' */
   zustandsRegler_X.Integrator_CSTATE[0] = zustandsRegler_P.Integrator_IC;

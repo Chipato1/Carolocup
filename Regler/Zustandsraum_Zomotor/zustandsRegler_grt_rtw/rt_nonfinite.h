@@ -7,9 +7,9 @@
  *
  * Code generation for model "zustandsRegler".
  *
- * Model version              : 1.13
+ * Model version              : 1.15
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C source code generated on : Fri Nov  8 21:05:15 2019
+ * C source code generated on : Sun Nov 10 15:13:12 2019
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
