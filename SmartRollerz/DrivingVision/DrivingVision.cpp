@@ -10,7 +10,7 @@
 namespace dv {
 	DrivingVision::DrivingVision() {
 		this->detector = new PointLaneDetector();
-        this->startDetector = new StartDetection();
+        //this->startDetector = new StartDetection();
 	}
 
 	VisionResult DrivingVision::doLaneDetection() {
@@ -24,6 +24,7 @@ namespace dv {
 	bool DrivingVision::doQRCodeDetection() {
 		ImageSource* source = new StaticImageSource("C:\\Users\\Maximilian\\source\\repos\\Carolocup\\SmartRollerz\\x64\\Debug\\gerade_1.jpg");
         cv::Mat matrix = source->next();
-		return this->startDetector->checkQRCode(matrix);;
+		//return this->startDetector->checkQRCode(matrix);
+		return false;
 	}
 }
