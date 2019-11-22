@@ -9,7 +9,7 @@
 class StartDetection
 {
 public:
-    bool checkQRCode();
+    bool checkQRCode(cv::Mat inputImage);
     StartDetection();
     
 private:
