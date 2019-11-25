@@ -89,8 +89,13 @@ std::vector<cv::Point> laneMiddlePoints(Mat linePoints, int yPos) {
 	return laneMiddles;
 }
 
-float calcX(cv::Mat func, float y) {
-	return func.at<double>(0,0) * y * y + func.at<double>(1, 0) * y + func.at<double>(2, 0);
+double calcX(cv::Mat func, float y) {
+	double res = 0;
+	for (int i = 0; i < func.rows; i++) {
+		double num = func.at<double>(i, 0);
+		res = res + num*pow(y, func.rows - 1 - i); 
+	}
+	return res;
 }
 
 void calculateSolveMatrix(Point point, cv::Mat A, cv::Mat B, int i) {
@@ -117,8 +122,8 @@ void PointLaneDetector::calculateFrame(cv::Mat frame) {
 	
 	
 	const int edgeOffset = 1;
-	const int numberOfLines = 30;
-	const int stepSize = (lowerHalf.rows - edgeOffset)/numberOfLines;
+	const int numberOfLines = 60;
+	const int stepSize = (lowerHalf.rows - edgeOffset)/(numberOfLines -1);
 
 	cv::Mat A = cv::Mat::zeros(numberOfLines, 3, CV_64F);				//A
 	cv::Mat x = cv::Mat::zeros(3, 1, CV_64F);							//X

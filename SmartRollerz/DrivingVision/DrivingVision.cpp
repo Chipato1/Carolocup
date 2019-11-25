@@ -14,7 +14,7 @@ namespace dv {
 	}
 
 	VisionResult DrivingVision::doLaneDetection() {
-		ImageSource* source = new StaticImageSource("C:\\Users\\Maximilian\\source\\repos\\Carolocup\\SmartRollerz\\x64\\Debug\\ipm_demo_kurve.jpg");
+		ImageSource* source = new StaticImageSource("C:\\Users\\Maximilian\\source\\repos\\Carolocup\\SmartRollerz\\x64\\Debug\\ipm_demo_endkurve.jpg");
 		cv::Mat matrix = source->next();
 		cv::imshow("source", matrix);
 		this->detector->calculateFrame(source->next());
