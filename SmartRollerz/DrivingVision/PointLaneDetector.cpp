@@ -71,7 +71,7 @@ Point3f convertToRealWorldPoint() {
 }*/
 
 #define LANE_THRES_MIN 15
-#define LANE_THRES_MAX 40
+#define LANE_THRES_MAX 60
 
 std::vector<cv::Point> laneMiddlePoints(Mat linePoints, int yPos) {
 	std::vector<cv::Point> laneMiddles;
@@ -89,77 +89,43 @@ std::vector<cv::Point> laneMiddlePoints(Mat linePoints, int yPos) {
 	return laneMiddles;
 }
 
-float calcY(cv::Mat func, float x) {
-	return func.at<double>(0,0) * x * x + func.at<double>(1, 0) * x + func.at<double>(2, 0);
+float calcX(cv::Mat func, float y) {
+	return func.at<double>(0,0) * y * y + func.at<double>(1, 0) * y + func.at<double>(2, 0);
 }
 
 void calculateSolveMatrix(Point point, cv::Mat A, cv::Mat B, int i) {
 		double xValue = point.x;
 		double yValue = point.y;
-		A.at<double>(i, 0) = xValue * xValue;
-		A.at<double>(i, 1) = xValue;
+		A.at<double>(i, 0) = yValue * yValue;
+		A.at<double>(i, 1) = yValue;
 		A.at<double>(i, 2) = 1;
 		
-		B.at<double>(i, 0) = point.y;
+		B.at<double>(i, 0) = point.x;
 }
 
 
 
 
 void PointLaneDetector::calculateFrame(cv::Mat frame) {
-	Mat A = Mat::zeros(3, 3, CV_64F);	//Zeile, Spalte
-
-	//Zeile 1
-	A.at<double>(0, 0) = 1;
-	A.at<double>(0, 1) = -1;
-	A.at<double>(0, 2) = 1;
-
-	//Zeile 2
-	A.at<double>(1, 0) = 0;
-	A.at<double>(1, 1) = 0;
-	A.at<double>(1, 2) = 1;
-
-	//Zeile 3
-	A.at<double>(2, 0) = 1;
-	A.at<double>(2, 1) = 1;
-	A.at<double>(2, 2) = 1;
-
-	Mat B = Mat::zeros(3, 1, CV_64F);
-	B.at<double>(0, 0) = 1;
-	B.at<double>(1, 0) = 0;
-	B.at<double>(2, 0) = 1;
-
-	Mat x = Mat::zeros(3, 1, CV_64F);
-	x.at<double>(0, 0) = 0;
-	x.at<double>(1, 0) = 0;
-	x.at<double>(2, 0) = 0;
-
-	std::cout << x << std::endl;
-
-
-	int flags = DECOMP_QR;
-	cv::solve(A, B, x, flags);
-	std::cout << x << std::endl;
-
 	GpuMat upload(frame);
 	GpuMat edgeImageGPU = edgeDetection(upload);
 	Mat edgeImage(edgeImageGPU);
 
-	Mat* splitImage = halfImage(edgeImage);
+	//Mat* splitImage = halfImage(edgeImage);
 
 	Mat lowerHalf = edgeImage;
 	
 	
 	const int edgeOffset = 20;
 	const int numberOfLines = 30;
-	const int stepSize = (lowerHalf.rows - 2* edgeOffset)/numberOfLines;
+	const int stepSize = (lowerHalf.rows - edgeOffset)/numberOfLines;
 
-	A = cv::Mat::zeros(numberOfLines, 3, CV_64F);				//A
-	x = cv::Mat::zeros(3, 1, CV_64F);								//X
-	B = cv::Mat::zeros(numberOfLines, 1, CV_64F);				//B
+	cv::Mat A = cv::Mat::zeros(numberOfLines, 3, CV_64F);				//A
+	cv::Mat x = cv::Mat::zeros(3, 1, CV_64F);							//X
+	cv::Mat B = cv::Mat::zeros(numberOfLines, 1, CV_64F);				//B
 
-	int lineY = edgeOffset;
-	for (int i = 0; i < numberOfLines; i++) {
+	int lineY = lowerHalf.rows - 2;										//1: Offset wegen Canny (letzte Zeile schwarz)
+	for (int i = numberOfLines - 1; i > 0; i--) {
 		Mat row = lowerHalf.row(lineY);
 		Mat linePoints;
 		cv::findNonZero(row, linePoints);
@@ -167,7 +133,6 @@ void PointLaneDetector::calculateFrame(cv::Mat frame) {
 		
 		calculateSolveMatrix(laneMiddles.at(0),A, B, i);
 		
-
 		for (int i = 0; i < laneMiddles.size(); i++) {
 			Point pt;
 			pt.x = laneMiddles[i].x;
@@ -175,28 +140,35 @@ void PointLaneDetector::calculateFrame(cv::Mat frame) {
 			circle(lowerHalf, pt, 5, Scalar(255, 255, 255));
 		}
 
-		for (int i = 0; i < linePoints.total(); i++) {
+		/*for (int i = 0; i < linePoints.total(); i++) {
 			//std::cout << "Zero#" << i << ": " << linePoints.at<cv::Point>(i).x << ", " << linePoints.at<cv::Point>(i).y << std::endl;
 			Point pt = linePoints.at<cv::Point>(i);
 			pt.y = lineY;
 			//circle(lowerHalf, pt, 5, Scalar(255, 255, 255));
-		}
+		}*/
 		line(lowerHalf, Point(0, lineY), Point(lowerHalf.cols, lineY), Scalar(255, 255, 255));
-		lineY += stepSize;
+		lineY -= stepSize;
 	}
-	std::cout << "A:";
-	std::cout << A << std::endl;
-	std::cout << "B:";
-	std::cout << B << std::endl;
-	std::cout << "x:";
-	std::cout << x << std::endl;
-	bool solveResult = cv::solve(A, B, x, flags);
+
+	bool solveResult = cv::solve(A, B, x, DECOMP_QR);
 	if (solveResult == true) {
-		std::cout << "Result: " << x << std::endl;
+		//std::cout << "Result: " << x << std::endl;
 	}
 	else {
-		std::cout << "Failed" << std::endl;
+		//std::cout << "Failed" << std::endl;
 	}
+
+	for (int row = 0; row < lowerHalf.rows; row++) {
+		cv::Mat column = lowerHalf.row(row);
+		int type = column.type();
+
+		float val = calcX(x, row);
+		if (val <= lowerHalf.cols-1 && val >= 0) {
+			//std::cout << row << "::" << val << std::endl;
+			circle(lowerHalf, (cv::Point((int)val, row)), 1, Scalar(255, 255, 255));
+		}
+	}
+
 	imshow("TEST", lowerHalf);
 }
 VisionResult PointLaneDetector::getResult() {
