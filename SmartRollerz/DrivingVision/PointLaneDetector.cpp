@@ -116,7 +116,7 @@ void PointLaneDetector::calculateFrame(cv::Mat frame) {
 	Mat lowerHalf = edgeImage;
 	
 	
-	const int edgeOffset = 20;
+	const int edgeOffset = 1;
 	const int numberOfLines = 30;
 	const int stepSize = (lowerHalf.rows - edgeOffset)/numberOfLines;
 
