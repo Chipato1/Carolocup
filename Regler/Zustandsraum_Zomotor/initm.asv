@@ -7,7 +7,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%Zustandsraum
 systemMatrix_A = [0,2.63;0,0];%maximale Kurvengeschwindigkeit von 2.63m/s
-ausgangsVektor_cT = [1,1];%wegen vorder und hinterache gilt: Kurswinkel ist 0.5 des vorderachseinschlags (ungewichtetes mittel aus vorder und hinterachse)
+ausgangsVektor_cT = [0,1];%wegen vorder und hinterache gilt: Kurswinkel ist 0.5 des vorderachseinschlags (ungewichtetes mittel aus vorder und hinterachse)
 eingangsVektor_b = [0;2.63];%delta_psi' = -+psi' +- c0*v (letzteres ist der eingang, ersterees wird zusätlich in simulink addiert)
 
 %%%%%%%%%%%%%%%%%%%%%%%%Eigenschaften
@@ -22,6 +22,9 @@ system_r = ss(reglerMatrix_Ar, eingangsVektor_b, ausgangsVektor_cT, 0);
 pole(system_r)
 pole(tf(system_r)*tf('s'))
 %rlocus(system_r);%ergibt die Ortskurve hier noch Sinn?
+
+%%%%%%%%%%%%%%%%%%%%%%%Vorfilter
+V=-(ausgangsVektor_cT*
 
 %%%%%%%%%%%%%%%%%%%%%%%%Simulation
 sim('zustandsRegler.slx');
