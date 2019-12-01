@@ -10,20 +10,22 @@
 namespace dv {
 	DrivingVision::DrivingVision() {
 		this->detector = new PointLaneDetector();
-        this->startDetector = new StartDetection();
+        //this->startDetector = new StartDetection();
 	}
 
 	VisionResult DrivingVision::doLaneDetection() {
-		ImageSource* source = new StaticImageSource("C:\\Users\\Maximilian\\source\\repos\\Carolocup\\SmartRollerz\\x64\\Debug\\gerade_1.jpg");
+		ImageSource* source = new StaticImageSource("C:\\Users\\Maximilian\\source\\repos\\Carolocup\\SmartRollerz\\x64\\Debug\\ipm_demo_kurve.jpg");
 		cv::Mat matrix = source->next();
+		cv::imshow("source", matrix);
 		this->detector->calculateFrame(source->next());
-		cv::waitKey(10);
+		cv::waitKey(100);
 		return this->detector->getResult();
 	}
 
 	bool DrivingVision::doQRCodeDetection() {
 		ImageSource* source = new StaticImageSource("C:\\Users\\Maximilian\\source\\repos\\Carolocup\\SmartRollerz\\x64\\Debug\\gerade_1.jpg");
         cv::Mat matrix = source->next();
-		return this->startDetector->checkQRCode(matrix);;
+		//return this->startDetector->checkQRCode(matrix);
+		return false;
 	}
 }
