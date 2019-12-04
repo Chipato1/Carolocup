@@ -1,0 +1,10 @@
+data01 = timeseries(DATA000.AccX);
+data02 = timeseries(DATA001.AccX);
+data03 = timeseries(DATA002.AccX);
+data04 = timeseries(DATA004.AccX);
+data05 = timeseries(DATA007.AccX);
+data06 = timeseries(DATA008.AccX);
+data07 = timeseries(DATA011.AccX);
+data08 = timeseries(DATA012.AccX);
+data09 = timeseries(DATA013.AccX);
+data10 = timeseries(DATA014.AccX);
