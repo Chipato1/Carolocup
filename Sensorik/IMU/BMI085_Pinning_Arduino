@@ -1,0 +1,13 @@
+BMI085 Pinning
+
+
+
+GND-----------GND           GND--------GND
+Pin9----------CS1           CS5--------NC
+Pin10---------CS2           CS4--------NC
+NC------------SCX           CS3--------NC
+NC------------SDI           MISO-------Miso
+Pin1----------INT           MOSI-------MOSI
+3V3-----------VCC           SCX--------SCK
+
+Arduino        ||  BMI085    ||        Arduino
