@@ -8,7 +8,8 @@
 %regelungsnormalform vor:
 n=2;
 tau = 3.215/5;
-w=0.25*(2*pi/0.6);%annahme: es wird mit 1ms abgetastet
+tasten = 0.5
+w=0.25*(2*pi/tasten);%annahme: es wird mit 1ms abgetastet
 %Der Ausgang ist standartmäßig die Ableitung der Eingangsgöße, daraus
 %folgt:
 b = [0; 1];
