@@ -70,7 +70,7 @@ Point3f convertToRealWorldPoint() {
 	std::cout << "P = " << rotationMatrix.inv() * (s * cameraMatrix.inv() * uvPoint - tvec) << std::endl;
 }*/
 
-#define LANE_THRES_MIN 15
+#define LANE_THRES_MIN 5
 #define LANE_THRES_MAX 60
 
 std::vector<cv::Point> laneMiddlePoints(Mat linePoints, int yPos) {
@@ -125,8 +125,10 @@ void PointLaneDetector::calculateFrame(cv::Mat frame) {
 	const int numberOfLines = 60;
 	const int stepSize = (lowerHalf.rows - edgeOffset)/(numberOfLines -1);
 
-	cv::Mat A = cv::Mat::zeros(numberOfLines, 3, CV_64F);				//A
-	cv::Mat x = cv::Mat::zeros(3, 1, CV_64F);							//X
+	const int grade =3;
+
+	cv::Mat A = cv::Mat::zeros(numberOfLines, grade, CV_64F);				//A
+	cv::Mat x = cv::Mat::zeros(grade, 1, CV_64F);							//X
 	cv::Mat B = cv::Mat::zeros(numberOfLines, 1, CV_64F);				//B
 
 	int lineY = lowerHalf.rows - 2;										//1: Offset wegen Canny (letzte Zeile schwarz)
@@ -135,8 +137,10 @@ void PointLaneDetector::calculateFrame(cv::Mat frame) {
 		Mat linePoints;
 		cv::findNonZero(row, linePoints);
 		std::vector<cv::Point> laneMiddles = laneMiddlePoints(linePoints, lineY);
-		
-		calculateSolveMatrix(laneMiddles.at(0),A, B, i);
+		std::cout << laneMiddles << std::endl;
+		if (laneMiddles.size() > 0) {
+			calculateSolveMatrix(laneMiddles.at(0), A, B, i);
+		}
 		
 		for (int i = 0; i < laneMiddles.size(); i++) {
 			Point pt;
@@ -154,7 +158,9 @@ void PointLaneDetector::calculateFrame(cv::Mat frame) {
 		line(lowerHalf, Point(0, lineY), Point(lowerHalf.cols, lineY), Scalar(255, 255, 255));
 		lineY -= stepSize;
 	}
-
+	//std::cout << A << std::endl;
+	//std::cout << B << std::endl;
+	std::cout << "TTTTTTTTTTTTTT" << std::endl;
 	bool solveResult = cv::solve(A, B, x, DECOMP_QR);
 	if (solveResult == true) {
 		//std::cout << "Result: " << x << std::endl;
