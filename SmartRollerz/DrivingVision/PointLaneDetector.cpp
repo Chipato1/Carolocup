@@ -101,11 +101,6 @@ void drawResult(cv::Mat im, cv::Mat x, cv::Scalar color) {
 }
 
 
-void doCalculations(cv::Mat frame, int startLine) {
-
-}
-
-
 //Detectes the driving lanes for one frame
 void PointLaneDetector::calculateFrame(cv::Mat frame) {
 	//Upload frame to GPU RAM
@@ -139,6 +134,10 @@ void PointLaneDetector::calculateFrame(cv::Mat frame) {
 }
 VisionResult PointLaneDetector::getResult() {
 	return VisionResult();
+}
+
+void calculateDistance(cv::Point a, cv::Point reference) {
+
 }
 
 bool PointLaneDetector::internalCalc(cv::Mat frame, int startLine)
@@ -214,97 +213,68 @@ bool PointLaneDetector::internalCalc(cv::Mat frame, int startLine)
 		std::vector<cv::Point> laneMiddles = laneMiddlePoints(linePoints, lineY);
 		if (!laneMiddles.empty()) {
 			detectedPoints.push_back(laneMiddles);
+			std::vector<double> distancesLeft;
+			distancesLeft.reserve(laneMiddles.size());
 
-			int llindex = -1;
-			double llinitialDistance = 99999999;
-			int mlindex = -1;
-			double mlinitialDistance = 99999999;
-			int rlindex = -1;
-			double rlinitialDistance = 99999999;
-			for (int distanceIterator = 0; distanceIterator < laneMiddles.size(); distanceIterator++) {
-				double lldist = cv::norm(laneMiddles.at(distanceIterator) - leftLaneStartPoint);
-				double mldist = cv::norm(laneMiddles.at(distanceIterator) - middleLaneStartPoint);
-				double rldist = cv::norm(laneMiddles.at(distanceIterator) - rightLaneStartPoint);
-				if (foundLL && lldist < llinitialDistance) {
-					if (distanceIterator == mlindex) {
-						if (lldist < mlinitialDistance) {
-							mlinitialDistance = 999999999;
-							mlindex = -1;
-							llinitialDistance = lldist;
-							llindex = distanceIterator;
-						}
-					}
-					else if (distanceIterator == rlindex) {
-						if (lldist < rlinitialDistance) {
-							rlinitialDistance = 999999999;
-							rlindex = -1;
-							llinitialDistance = lldist;
-							llindex = distanceIterator;
-						}
-					}
-					else {
-						llinitialDistance = lldist;
-						llindex = distanceIterator;
-					}
+			std::vector<double> distancesMiddle;
+			distancesMiddle.reserve(laneMiddles.size());
 
+			std::vector<double> distancesRight;
+			distancesRight.reserve(laneMiddles.size());
+
+			std::for_each(laneMiddles.begin(), laneMiddles.end(),
+				[leftLaneStartPoint, middleLaneStartPoint, rightLaneStartPoint, &distancesLeft, &distancesMiddle, &distancesRight](cv::Point pt) -> void {
+					distancesLeft.push_back(cv::norm(pt - leftLaneStartPoint));
+					distancesMiddle.push_back(cv::norm(pt - middleLaneStartPoint));
+					distancesRight.push_back(cv::norm(pt - rightLaneStartPoint));
 				}
-				if (foundML && mldist < mlinitialDistance) {
-					if (distanceIterator == llindex) {
-						if (mldist < llinitialDistance) {
-							llinitialDistance = 999999999;
-							llindex = -1;
-							mlinitialDistance = mldist;
-							mlindex = distanceIterator;
-						}
-					}
-					else if (distanceIterator == rlindex) {
-						if (mldist < rlinitialDistance) {
-							rlinitialDistance = 999999999;
-							rlindex = -1;
-							mlinitialDistance = mldist;
-							mlindex = distanceIterator;
-						}
-					}
-					else {
-						mlinitialDistance = mldist;
-						mlindex = distanceIterator;
-					}
+				);
+
+			std::vector<double>::iterator iteratorLeft = std::min_element(distancesLeft.begin(), distancesLeft.end());
+			int leftIndex = iteratorLeft - distancesLeft.begin();
+			std::vector<double>::iterator iteratorMiddle = std::min_element(distancesMiddle.begin(), distancesMiddle.end());
+			int middleIndex = iteratorMiddle - distancesMiddle.begin();
+			std::vector<double>::iterator iteratorRight = std::min_element(distancesRight.begin(), distancesRight.end());
+			int rightIndex = iteratorRight - distancesRight.begin();
+
+			if (leftIndex == middleIndex) {
+				if (*iteratorLeft <= *iteratorMiddle) {
+					middleIndex = -1;
 				}
-				if (foundML && mldist < mlinitialDistance) {
-					if (distanceIterator == llindex) {
-						if (rldist < llinitialDistance) {
-							llinitialDistance = 999999999;
-							llindex = -1;
-							rlinitialDistance = rldist;
-							rlindex = distanceIterator;
-						}
-					}
-					else if (distanceIterator == mlindex) {
-						if (rldist < mlinitialDistance) {
-							mlinitialDistance = 999999999;
-							mlindex = -1;
-							rlinitialDistance = rldist;
-							rlindex = distanceIterator;
-						}
-					}
-					else {
-						rlinitialDistance = rldist;
-						rlindex = distanceIterator;
-					}
+				else {
+					leftIndex = -1;
+				}
+			}
+			if (leftIndex == rightIndex) {
+				if (*iteratorLeft <= *iteratorRight) {
+					rightIndex = -1;
+				}
+				else {
+					leftIndex = -1;
 				}
 			}
 
-			if (foundLL && llindex != -1) {
-				result.at(0).push_back(laneMiddles.at(llindex));
-				calculateSolveMatrix(laneMiddles.at(llindex), lA, lB);
+			if (middleIndex == rightIndex) {
+				if (*iteratorMiddle <= *iteratorRight) {
+					rightIndex = -1;
+				}
+				else {
+					middleIndex = -1;
+				}
 			}
-			if (foundML && mlindex != -1) {
-				result.at(1).push_back(laneMiddles.at(mlindex));
-				calculateSolveMatrix(laneMiddles.at(mlindex), mA, mB);
+
+
+			if (foundLL && leftIndex != -1) {
+				result.at(0).push_back(laneMiddles.at(leftIndex));
+				calculateSolveMatrix(laneMiddles.at(leftIndex), lA, lB);
 			}
-			if (foundRL && rlindex != -1) {
-				result.at(2).push_back(laneMiddles.at(rlindex));
-				calculateSolveMatrix(laneMiddles.at(rlindex), rA, rB);
+			if (foundML && middleIndex != -1) {
+				result.at(1).push_back(laneMiddles.at(middleIndex));
+				calculateSolveMatrix(laneMiddles.at(middleIndex), mA, mB);
+			}
+			if (foundRL && rightIndex != -1) {
+				result.at(2).push_back(laneMiddles.at(rightIndex));
+				calculateSolveMatrix(laneMiddles.at(rightIndex), rA, rB);
 			}
 		}
 		lineY -= stepSize;
