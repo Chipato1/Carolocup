@@ -7,5 +7,16 @@ public:
 	PointLaneDetector();
 	virtual void calculateFrame(cv::Mat) override;
 	virtual VisionResult getResult() override;
+
+private:
+	bool internalCalc(cv::Mat frame, int startLine);
+	std::vector<cv::Point> laneMiddlePoints(cv::Mat, int);
+
+	const int grade = 3;
+	cv::Mat leftLane;
+	cv::Mat middleLane;
+	cv::Mat rightLane;
+	std::array<std::vector<cv::Point>, 3> result;
+
 };
 
