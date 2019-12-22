@@ -1,7 +1,7 @@
 #include "StaticImageSource.h"
 #include <opencv2/highgui/highgui.hpp>
 StaticImageSource::StaticImageSource(std::string filename) {
-	this->image = cv::imread(filename);
+	this->image = cv::imread(filename, cv::IMREAD_GRAYSCALE);
 }
 
 cv::Mat StaticImageSource::next() {

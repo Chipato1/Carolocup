@@ -9,6 +9,7 @@
 #include <opencv2/calib3d.hpp>
 
 #include <iostream>
+#include <chrono>
 
 using namespace cv;
 using namespace cv::cuda;
@@ -20,11 +21,11 @@ PointLaneDetector::PointLaneDetector() {
 }
 
 GpuMat edgeDetection(GpuMat image) {
-	cuda::GpuMat greyScale;
-	cuda::cvtColor(image, greyScale, COLOR_BGR2GRAY);
+	//cuda::GpuMat greyScale;
+	//cuda::cvtColor(image, greyScale, COLOR_BGR2GRAY);
 	Ptr<cuda::CannyEdgeDetector> canny = cuda::createCannyEdgeDetector(700, 200, 3);
 	cuda::GpuMat result;
-	canny->detect(greyScale, result);
+	canny->detect(image, result);
 	return result;
 }
 
@@ -103,19 +104,20 @@ void drawResult(cv::Mat im, cv::Mat x, cv::Scalar color) {
 
 //Detectes the driving lanes for one frame
 void PointLaneDetector::calculateFrame(cv::Mat frame) {
+	system("cls");
+	auto start = std::chrono::high_resolution_clock::now();
 	//Upload frame to GPU RAM
 	GpuMat upload(frame);
 	//Do Canny edge detection
 	GpuMat edgeImageGPU = edgeDetection(upload);
 	//Download image to RAM
 	Mat edgeImage(edgeImageGPU);
-
+	auto cannyEnd = std::chrono::high_resolution_clock::now();
 	//Mat* splitImage = halfImage(edgeImage);
 
 	Mat lowerHalf = edgeImage;
-
 	internalCalc(lowerHalf, 0);
-
+	auto algorithmEnd = std::chrono::high_resolution_clock::now();
 
 	cv::cvtColor(lowerHalf, lowerHalf, COLOR_GRAY2BGR);
 	drawResult(lowerHalf, this->leftLane, Scalar(255, 0, 0));
@@ -129,8 +131,23 @@ void PointLaneDetector::calculateFrame(cv::Mat frame) {
 		}
 	}
 
-
 	imshow("TEST", lowerHalf);
+	auto totalEnd = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(algorithmEnd - start).count();
+	std::cout << "Laufzeit gesamt: " << duration << " ms" << std::endl;
+
+	duration = std::chrono::duration_cast<std::chrono::microseconds>(cannyEnd - start).count();
+	std::cout << "Laufzeit GPU (Canny): " << duration << " ms" << std::endl;
+
+	duration = std::chrono::duration_cast<std::chrono::microseconds>(algorithmEnd - cannyEnd).count();
+	std::cout << "Laufzeit Algorithmus (CPU): " << duration << " ms" << std::endl;
+
+	//duration = std::chrono::duration_cast<std::chrono::microseconds>(totalEnd - algorithmEnd).count();
+	//std::cout << "Laufzeit Darstellung: " << duration << " ms" << std::endl;
+
+
+
+
 }
 VisionResult PointLaneDetector::getResult() {
 	return VisionResult();
@@ -147,14 +164,14 @@ bool PointLaneDetector::internalCalc(cv::Mat frame, int startLine)
 	const int stepSize = (frame.rows - edgeOffset) / (numberOfLines - 1);
 
 
-	cv::Mat lA;				//A
-	cv::Mat lB;					//B
+	cv::Mat lA;				
+	cv::Mat lB;					
 
-	cv::Mat mA;				//A
-	cv::Mat mB;				//B
+	cv::Mat mA;				
+	cv::Mat mB;				
 
-	cv::Mat rA;				//A
-	cv::Mat rB;					//B
+	cv::Mat rA;				
+	cv::Mat rB;					
 
 	int lineY = frame.rows - 2 - stepSize * startLine;											//1: Offset wegen Canny (letzte Zeile schwarz)
 	std::vector<std::vector<cv::Point>> detectedPoints;
@@ -164,7 +181,6 @@ bool PointLaneDetector::internalCalc(cv::Mat frame, int startLine)
 	Mat linePoints;
 	cv::findNonZero(row, linePoints);
 	std::vector<cv::Point> laneMiddles = laneMiddlePoints(linePoints, lineY);
-	std::cout << laneMiddles;
 	detectedPoints.push_back(laneMiddles);
 	lineY -= stepSize;
 
@@ -279,13 +295,6 @@ bool PointLaneDetector::internalCalc(cv::Mat frame, int startLine)
 		}
 		lineY -= stepSize;
 	}
-
-	std::cout << lA << std::endl;
-
-	std::cout << lB << std::endl;
-	std::cout << mA << std::endl;
-	std::cout << mB << std::endl;
-
 
 	bool solveResultL = cv::solve(lA, lB, this->leftLane, DECOMP_QR);
 	bool solveResultM = cv::solve(mA, mB, this->middleLane, DECOMP_QR);
