@@ -72,11 +72,17 @@ Point3f convertToRealWorldPoint() {
 
 #define LANE_THRES_MIN 5
 #define LANE_THRES_MAX 60
+#define LL_MIN_X	250
+#define LL_MAX_X	270
+#define ML_MIN_X	100
+#define ML_MAX_X	120
+#define RL_MIN_X	540
+#define RL_MAX_X	560
 
 std::vector<cv::Point> laneMiddlePoints(Mat linePoints, int yPos) {
 	std::vector<cv::Point> laneMiddles;
 	for (int i = 1; i < linePoints.total(); i++) {
-		Point pt1 = linePoints.at<cv::Point>(i-1);
+		Point pt1 = linePoints.at<cv::Point>(i - 1);
 		Point pt2 = linePoints.at<cv::Point>(i);
 		int diff = pt2.x - pt1.x;
 		if (diff <= LANE_THRES_MAX && diff >= LANE_THRES_MIN) {
@@ -93,55 +99,176 @@ double calcX(cv::Mat func, float y) {
 	double res = 0;
 	for (int i = 0; i < func.rows; i++) {
 		double num = func.at<double>(i, 0);
-		res = res + num*pow(y, func.rows - 1 - i); 
+		res = res + num * pow(y, func.rows - 1 - i);
 	}
 	return res;
 }
 
 void calculateSolveMatrix(Point point, cv::Mat A, cv::Mat B, int i) {
-		double xValue = point.x;
-		double yValue = point.y;
-		A.at<double>(i, 0) = yValue * yValue;
-		A.at<double>(i, 1) = yValue;
-		A.at<double>(i, 2) = 1;
-		
-		B.at<double>(i, 0) = point.x;
+	double xValue = point.x;
+	double yValue = point.y;
+	A.at<double>(i, 0) = yValue * yValue;
+	A.at<double>(i, 1) = yValue;
+	A.at<double>(i, 2) = 1;
+
+	B.at<double>(i, 0) = point.x;
+}
+
+enum PointClassification {
+	LEFT = 0, MIDDLE, RIGHT, UNKNOWN
+};
+
+PointClassification classifyPoint(cv::Point point) {
+	if (point.x > LL_MIN_X && point.x < LL_MAX_X) {
+		return LEFT;
+	}
+	else if (point.x > ML_MIN_X && point.x < ML_MAX_X) {
+		return MIDDLE;
+	}
+	else if (point.x > RL_MIN_X&& point.x < RL_MAX_X) {
+		return RIGHT;
+	}
+	else {
+		return UNKNOWN;
+	}
 }
 
 
+//Returns the points of the left, the middle and the right lane
+std::array<std::vector<cv::Point>, 3> classifyPoints(std::vector<std::vector<cv::Point>> detectedPoints) {
+	std::vector<cv::Point> firstLine = detectedPoints.at(0);
+	int numberOfDetectionsFL = firstLine.size();
+
+	cv::Point leftLaneStartPoint, middleLaneStartPoint, rightLaneStartPoint;
+	bool foundLL = false;
+	bool foundML = false;
+	bool foundRL = false;
+	std::array<std::vector<cv::Point>, 3> result;
+	if (numberOfDetectionsFL < 2) {
+		//Again with next line
+		
+	}
+	else {
+		for (int pointI = 0; pointI < firstLine.size(); pointI++) {
+			cv::Point analysisPoint = firstLine.at(pointI);
+
+			if (analysisPoint.x > LL_MIN_X&& analysisPoint.x < LL_MAX_X) {
+				foundLL = true;
+				leftLaneStartPoint = analysisPoint;
+				result.at(0).push_back(analysisPoint);
+			}
+			else if (analysisPoint.x > ML_MIN_X&& analysisPoint.x < ML_MAX_X) {
+				foundML = true;
+				middleLaneStartPoint = analysisPoint;
+				result.at(1).push_back(analysisPoint);
+			}
+			else if (analysisPoint.x > RL_MIN_X&& analysisPoint.x < RL_MAX_X) {
+				foundRL = true;
+				rightLaneStartPoint = analysisPoint;
+				result.at(2).push_back(analysisPoint);
+			}
+		}
+	}
+		
+		
+	/*if (numberOfDetectionsFL == 2) {
+		for (int pointI = 0; pointI < firstLine.size(); pointI++) {
+			cv::Point analysisPoint = firstLine.at(pointI);
+			PointClassification classification = classifyPoint(analysisPoint);
+		}
+	}
+	else if (numberOfDetectionsFL == 3) {
+
+	}
+	else {
+		for (int pointI = 0; pointI < firstLine.size(); pointI++) {
+			cv::Point analysisPoint = firstLine.at(pointI);
+			PointClassification classification = classifyPoint(analysisPoint);
+		}
+	}*/
 
 
+	
+
+	for (int line = 1; line < detectedPoints.size(); line++) {
+		std::vector<cv::Point> linePoints = detectedPoints.at(line);
+		int llindex = -1;
+		double llinitialDistance = 99999999;
+		int mlindex = -1;
+		double mlinitialDistance = 99999999;
+		int rlindex = -1;
+		double rlinitialDistance = 99999999;
+		for (int i = 0; i < linePoints.size(); i++) {
+			double lldist = cv::norm(linePoints.at(i) - leftLaneStartPoint);
+			double mldist = cv::norm(linePoints.at(i) - middleLaneStartPoint);
+			double rldist = cv::norm(linePoints.at(i) - rightLaneStartPoint);
+			if (foundLL && lldist < llinitialDistance) {
+				llinitialDistance = lldist;
+				llindex = i;
+			}
+			if (foundML && mldist < mlinitialDistance) {
+				mlinitialDistance = mldist;
+				mlindex = i;
+			}
+			if (foundRL && rldist < rlinitialDistance) {
+				rlinitialDistance = rldist;
+				rlindex = i;
+			}
+		}
+		if (foundLL) {
+			result.at(0).push_back(linePoints.at(llindex));
+		}
+		if (foundML) {
+			result.at(1).push_back(linePoints.at(mlindex));
+		}
+		if (foundRL) {
+			result.at(2).push_back(linePoints.at(rlindex));
+		}
+	}
+	return result;
+}
+
+
+//Detectes the driving lanes for one frame
 void PointLaneDetector::calculateFrame(cv::Mat frame) {
+
+	std::vector<std::vector<cv::Point>> mock;
+
+
+	//Upload frame to GPU RAM
 	GpuMat upload(frame);
+	//Do Canny edge detection
 	GpuMat edgeImageGPU = edgeDetection(upload);
+	//Download image to RAM
 	Mat edgeImage(edgeImageGPU);
 
 	//Mat* splitImage = halfImage(edgeImage);
 
 	Mat lowerHalf = edgeImage;
-	
-	
+
+
 	const int edgeOffset = 1;
 	const int numberOfLines = 60;
-	const int stepSize = (lowerHalf.rows - edgeOffset)/(numberOfLines -1);
+	const int stepSize = (lowerHalf.rows - edgeOffset) / (numberOfLines - 1);
 
-	const int grade =3;
+	const int grade = 3;
 
 	cv::Mat A = cv::Mat::zeros(numberOfLines, grade, CV_64F);				//A
 	cv::Mat x = cv::Mat::zeros(grade, 1, CV_64F);							//X
-	cv::Mat B = cv::Mat::zeros(numberOfLines, 1, CV_64F);				//B
+	cv::Mat B = cv::Mat::zeros(numberOfLines, 1, CV_64F);					//B
 
-	int lineY = lowerHalf.rows - 2;										//1: Offset wegen Canny (letzte Zeile schwarz)
+	int lineY = lowerHalf.rows - 2;											//1: Offset wegen Canny (letzte Zeile schwarz)
+	std::vector<std::vector<cv::Point>> detectedPoints;
 	for (int i = numberOfLines - 1; i > 0; i--) {
 		Mat row = lowerHalf.row(lineY);
 		Mat linePoints;
 		cv::findNonZero(row, linePoints);
 		std::vector<cv::Point> laneMiddles = laneMiddlePoints(linePoints, lineY);
-		std::cout << laneMiddles << std::endl;
+		detectedPoints.push_back(laneMiddles);
 		if (laneMiddles.size() > 0) {
 			calculateSolveMatrix(laneMiddles.at(0), A, B, i);
 		}
-		
+
 		for (int i = 0; i < laneMiddles.size(); i++) {
 			Point pt;
 			pt.x = laneMiddles[i].x;
@@ -158,6 +285,9 @@ void PointLaneDetector::calculateFrame(cv::Mat frame) {
 		line(lowerHalf, Point(0, lineY), Point(lowerHalf.cols, lineY), Scalar(255, 255, 255));
 		lineY -= stepSize;
 	}
+
+	auto result = classifyPoints(detectedPoints);
+
 	//std::cout << A << std::endl;
 	//std::cout << B << std::endl;
 	std::cout << "TTTTTTTTTTTTTT" << std::endl;
@@ -174,7 +304,7 @@ void PointLaneDetector::calculateFrame(cv::Mat frame) {
 		int type = column.type();
 
 		float val = calcX(x, row);
-		if (val <= lowerHalf.cols-1 && val >= 0) {
+		if (val <= lowerHalf.cols - 1 && val >= 0) {
 			//std::cout << row << "::" << val << std::endl;
 			circle(lowerHalf, (cv::Point((int)val, row)), 1, Scalar(255, 255, 255));
 		}
