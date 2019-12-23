@@ -27,15 +27,15 @@ PointLaneDetector::PointLaneDetector() {
 
 	rA = cv::Mat::zeros(numberOfLines, grade, CV_64F);
 	rB = cv::Mat::zeros(numberOfLines, 1, CV_64F);
+
+	canny = cuda::createCannyEdgeDetector(700, 200, 3);
 }
 
-GpuMat edgeDetection(GpuMat image) {
+GpuMat PointLaneDetector::edgeDetection(GpuMat& image) {
 	//cuda::GpuMat greyScale;
 	//cuda::cvtColor(image, greyScale, COLOR_BGR2GRAY);
-	Ptr<cuda::CannyEdgeDetector> canny = cuda::createCannyEdgeDetector(700, 200, 3);
-	cuda::GpuMat result;
-	canny->detect(image, result);
-	return result;
+	
+	
 }
 
 Mat* halfImage(Mat image) {
@@ -119,10 +119,11 @@ void PointLaneDetector::calculateFrame(cv::Mat frame) {
 	GpuMat upload(frame);
 	auto uploadZeit = std::chrono::high_resolution_clock::now();
 	//Do Canny edge detection
-	GpuMat edgeImageGPU = edgeDetection(upload);
+	//GpuMat edgeImageGPU = edgeDetection(upload);
+	canny->detect(upload, upload);
 	auto downloadZeit = std::chrono::high_resolution_clock::now();
 	//Download image to RAM
-	Mat edgeImage(edgeImageGPU);
+	Mat edgeImage(upload);
 	auto cannyEnd = std::chrono::high_resolution_clock::now();
 	//Mat* splitImage = halfImage(edgeImage);
 

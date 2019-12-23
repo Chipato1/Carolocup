@@ -1,5 +1,8 @@
 #pragma once
 #include "LaneDetector.h"
+#include <opencv2/core/cuda.hpp>
+
+#include <opencv2/cudaimgproc.hpp>
 class PointLaneDetector :
 	public LaneDetector
 {
@@ -29,6 +32,10 @@ private:
 
 	const int edgeOffset = 1;
 	const int numberOfLines = 60;
+
+	cv::Ptr<cv::cuda::CannyEdgeDetector> canny;
+
+	cv::cuda::GpuMat edgeDetection(cv::cuda::GpuMat&);
 
 };
 
