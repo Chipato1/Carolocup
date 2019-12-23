@@ -31,12 +31,6 @@ PointLaneDetector::PointLaneDetector() {
 	canny = cuda::createCannyEdgeDetector(700, 200, 3);
 }
 
-GpuMat PointLaneDetector::edgeDetection(GpuMat& image) {
-	//cuda::GpuMat greyScale;
-	//cuda::cvtColor(image, greyScale, COLOR_BGR2GRAY);
-	
-	
-}
 
 Mat* halfImage(Mat image) {
 	Mat* result = new Mat[2];
@@ -58,9 +52,8 @@ Mat* halfImage(Mat image) {
 #define RL_MIN_X	880
 #define RL_MAX_X	900
 
-std::vector<cv::Point> PointLaneDetector::laneMiddlePoints(Mat linePoints, int yPos) {
-	std::vector<cv::Point> laneMiddles;
-	laneMiddles.reserve(linePoints.total());
+void PointLaneDetector::laneMiddlePoints(std::vector<cv::Point>& laneMiddles, Mat linePoints, int yPos) {
+	laneMiddles.clear();
 	for (int i = 1; i < linePoints.total(); i++) {
 		Point pt1 = linePoints.at<cv::Point>(i - 1);
 		Point pt2 = linePoints.at<cv::Point>(i);
@@ -72,7 +65,6 @@ std::vector<cv::Point> PointLaneDetector::laneMiddlePoints(Mat linePoints, int y
 			laneMiddles.push_back(middle);
 		}
 	}
-	return laneMiddles;
 }
 
 double calcX(cv::Mat func, float y) {
@@ -191,7 +183,6 @@ VisionResult PointLaneDetector::getResult() {
 
 bool PointLaneDetector::internalCalc(cv::Mat frame, int startLine)
 {
-	
 	const int stepSize = (frame.rows - edgeOffset) / (numberOfLines - 1);
 
 	result.at(0).clear();
@@ -200,7 +191,6 @@ bool PointLaneDetector::internalCalc(cv::Mat frame, int startLine)
 	result.at(1).reserve(numberOfLines);
 	result.at(2).clear();
 	result.at(2).reserve(numberOfLines);
-
 
 
 	allokierung = std::chrono::high_resolution_clock::now();
@@ -213,7 +203,11 @@ bool PointLaneDetector::internalCalc(cv::Mat frame, int startLine)
 	Mat row = frame.row(lineY);
 	Mat linePoints;
 	cv::findNonZero(row, linePoints);
-	std::vector<cv::Point> laneMiddles = laneMiddlePoints(linePoints, lineY);
+
+	std::vector<cv::Point> laneMiddles;
+	laneMiddles.reserve(25);
+
+	laneMiddlePoints(laneMiddles, linePoints, lineY);
 	detectedPoints.push_back(laneMiddles);
 	lineY -= stepSize;
 
@@ -266,15 +260,11 @@ bool PointLaneDetector::internalCalc(cv::Mat frame, int startLine)
 	auto minima = std::chrono::high_resolution_clock::now();
 	auto ergebnis = std::chrono::high_resolution_clock::now();
 	auto distanzen = std::chrono::high_resolution_clock::now();
-	
 	for (int i = 1; i < numberOfLines; i++) {
 		auto startBerechnung = std::chrono::high_resolution_clock::now();
-		Mat row = frame.row(lineY);
-		
-		Mat linePoints;
-		cv::findNonZero(row, linePoints);
+		cv::findNonZero(frame.row(lineY), linePoints);
 		auto nonZero = std::chrono::high_resolution_clock::now();
-		std::vector<cv::Point> laneMiddles = laneMiddlePoints(linePoints, lineY);
+		laneMiddlePoints(laneMiddles, linePoints, lineY);
 		auto mittelpunkte = std::chrono::high_resolution_clock::now();
 		auto distStart = std::chrono::high_resolution_clock::now();
 		if (!laneMiddles.empty()) {

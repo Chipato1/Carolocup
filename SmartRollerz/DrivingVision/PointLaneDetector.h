@@ -13,7 +13,7 @@ public:
 
 private:
 	bool internalCalc(cv::Mat frame, int startLine);
-	std::vector<cv::Point> laneMiddlePoints(cv::Mat, int);
+	void laneMiddlePoints(std::vector<cv::Point>&, cv::Mat, int);
 
 	const int grade = 3;
 	cv::Mat leftLane;
@@ -35,7 +35,6 @@ private:
 
 	cv::Ptr<cv::cuda::CannyEdgeDetector> canny;
 
-	cv::cuda::GpuMat edgeDetection(cv::cuda::GpuMat&);
 
 };
 
