@@ -18,5 +18,17 @@ private:
 	cv::Mat rightLane;
 	std::array<std::vector<cv::Point>, 3> result;
 
+	cv::Mat lA;
+	cv::Mat lB;
+
+	cv::Mat mA;
+	cv::Mat mB;
+
+	cv::Mat rA;
+	cv::Mat rB;
+
+	const int edgeOffset = 1;
+	const int numberOfLines = 60;
+
 };
 
