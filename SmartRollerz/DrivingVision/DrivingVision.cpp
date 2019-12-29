@@ -42,7 +42,7 @@ namespace dv {
 	VisionResult DrivingVision::doLaneDetection() {
 		
 
-		ImageSource* source = new StaticImageSource("C:\\Users\\Maximilian\\source\\repos\\Carolocup\\SmartRollerz\\x64\\Debug\\Parkplatz_Testbild.png");
+		ImageSource* source = new StaticImageSource("C:\\images\\Parkplatz_Testbild.png");
 		cv::Mat matrix = source->next();
 		cv::imshow("source", matrix);
 		type2str(matrix.type());
