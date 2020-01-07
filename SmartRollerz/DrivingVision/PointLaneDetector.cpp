@@ -34,11 +34,11 @@ PointLaneDetector::PointLaneDetector() {
 	canny = cuda::createCannyEdgeDetector(700, 200, 3);
 
 
-	int alpha_ = 30, beta_ = 90, gamma_ = 90;
-	int f_ = 500, dist_ = 0, skew_ = 0;             //skew ist SchrŠglageparameter (dreht das Bild nach Rechts oder Links) ->VollstŠndigkeit
+	int alpha_ = 90, beta_ = 90, gamma_ = 90;
+	int f_ = 500, dist_ = 500, skew_ = 0;             //skew ist SchrŠglageparameter (dreht das Bild nach Rechts oder Links) ->VollstŠndigkeit
 
     //TODO: dist_ aendern
-    dist_ = 82;
+    //dist_ = 82;
     
 	double focalLength, dist, alpha, beta, gamma, skew;
 
@@ -124,7 +124,7 @@ Mat* halfImage(Mat image) {
 #define LL_MAX_X	730
 #define ML_MIN_X	780
 #define ML_MAX_X	820
-#define RL_MIN_X	900
+#define RL_MIN_X	880
 #define RL_MAX_X	930
 
 /*#define LANE_THRES_MIN 5
@@ -201,14 +201,12 @@ void PointLaneDetector::calculateFrame(cv::Mat frame) {
 	//cv::Mat down(ddown);
 	//imshow("TESTer", down);
 	canny->detect(ddown, upload);
-	auto downloadZeit = std::chrono::high_resolution_clock::now();
-	std::cout << transformationMat << std::endl;
-	
+	auto gpuCalc = std::chrono::high_resolution_clock::now();
 
 
 	//Download image to RAM
 	Mat edgeImage(upload);
-	auto cannyEnd = std::chrono::high_resolution_clock::now();
+	auto downloadZeit = std::chrono::high_resolution_clock::now();
 	//Mat* splitImage = halfImage(edgeImage);
 
 	Mat lowerHalf = edgeImage;
@@ -219,7 +217,7 @@ void PointLaneDetector::calculateFrame(cv::Mat frame) {
 
 	cv::cvtColor(lowerHalf, lowerHalf, COLOR_GRAY2BGR);
 	drawResult(lowerHalf, this->leftLane, Scalar(255, 0, 0));
-	drawResult(lowerHalf, this->middleLane, Scalar(0, 255, 0));
+	drawResult(lowerHalf, this->middleLane, Scalar(255, 255, 255));
 	drawResult(lowerHalf, this->rightLane, Scalar(0, 0, 255));
 
 
@@ -235,22 +233,22 @@ void PointLaneDetector::calculateFrame(cv::Mat frame) {
 	std::cout << "----------------------------------" << std::endl;
 	std::cout << "Laufzeit gesamt: \t\t\t" << duration << " us" << std::endl;
 	std::cout << "----------------------------------" << std::endl;
-	duration = std::chrono::duration_cast<std::chrono::microseconds>(cannyEnd - start).count();
+	duration = std::chrono::duration_cast<std::chrono::microseconds>(downloadZeit - start).count();
 	std::cout << "Laufzeit GPU (Gesamt): \t\t\t" << duration << " us" << std::endl;
 
 	duration = std::chrono::duration_cast<std::chrono::microseconds>(uploadZeit - start).count();
 	std::cout << "Zeit für GPU (Upload): \t\t\t" << duration << " us" << std::endl;
 
-	duration = std::chrono::duration_cast<std::chrono::microseconds>(downloadZeit - uploadZeit).count();
+	duration = std::chrono::duration_cast<std::chrono::microseconds>(gpuCalc - uploadZeit).count();
 	std::cout << "Zeit für GPU (Canny Edge Detector): \t" << duration << " us" << std::endl;
 
 
-	duration = std::chrono::duration_cast<std::chrono::microseconds>(cannyEnd - downloadZeit).count();
+	duration = std::chrono::duration_cast<std::chrono::microseconds>(downloadZeit - gpuCalc).count();
 	std::cout << "Zeit für GPU (Download): \t\t" << duration << " us" << std::endl;
 
 
 	std::cout << "----------------------------------" << std::endl;
-	duration = std::chrono::duration_cast<std::chrono::microseconds>(algorithmEnd - cannyEnd).count();
+	duration = std::chrono::duration_cast<std::chrono::microseconds>(algorithmEnd - downloadZeit).count();
 	std::cout << "Laufzeit Algorithmus (Gesamt) (CPU): \t\t" << duration << " us" << std::endl;
 
 	duration = std::chrono::duration_cast<std::chrono::microseconds>(allokierung - algorithmStart).count();
@@ -355,6 +353,7 @@ bool PointLaneDetector::internalCalc(cv::Mat frame, int startLine)
 							result.at(0).push_back(analysisPoint);
 							calculateSolveMatrix(analysisPoint, lA, lB, numberOfLeftPoints);
 							laneMiddles.erase(laneMiddles.begin() + pointI);
+							pointI--;
 							numberOfLeftPoints++;
 						}
 					}
@@ -365,6 +364,7 @@ bool PointLaneDetector::internalCalc(cv::Mat frame, int startLine)
 							result.at(1).push_back(analysisPoint);
 							calculateSolveMatrix(analysisPoint, mA, mB, numberOfMiddlePoints);
 							laneMiddles.erase(laneMiddles.begin() + pointI);
+							pointI--;
 							numberOfMiddlePoints++;
 						}
 					}
@@ -375,12 +375,13 @@ bool PointLaneDetector::internalCalc(cv::Mat frame, int startLine)
 							result.at(2).push_back(analysisPoint);
 							calculateSolveMatrix(analysisPoint, rA, rB, numberOfRightPoints);
 							laneMiddles.erase(laneMiddles.begin() + pointI);
+							pointI--;
 							numberOfRightPoints++;
 						}
 					}
 				}
 			}
-			if (foundLL || foundML || foundRL) {
+			if (!laneMiddles.empty() && (foundLL || foundML || foundRL)) {
 				distStart = std::chrono::high_resolution_clock::now();
 				std::vector<double> distancesLeft;
 				distancesLeft.reserve(laneMiddles.size());
@@ -409,7 +410,6 @@ bool PointLaneDetector::internalCalc(cv::Mat frame, int startLine)
 				if (leftIndex == middleIndex) {
 					if (*iteratorLeft <= *iteratorMiddle) {
 						middleIndex = -1;
-						foundML = false;
 					}
 					else {
 						leftIndex = -1;
@@ -433,7 +433,7 @@ bool PointLaneDetector::internalCalc(cv::Mat frame, int startLine)
 					}
 				}
 				minima = std::chrono::high_resolution_clock::now();
-				if (foundLL && leftIndex != -1) {
+				if (foundLL && leftIndex != -1 && distancesLeft.at(leftIndex) < 100) {
 					result.at(0).push_back(laneMiddles.at(leftIndex));
 					calculateSolveMatrix(laneMiddles.at(leftIndex), lA, lB, numberOfLeftPoints);
 					leftLaneStartPoint = laneMiddles.at(leftIndex);
@@ -445,7 +445,7 @@ bool PointLaneDetector::internalCalc(cv::Mat frame, int startLine)
 					middleLaneStartPoint = laneMiddles.at(middleIndex);
 					numberOfMiddlePoints++;
 				}
-				if (foundRL && rightIndex != -1) {
+				if (foundRL && rightIndex != -1 && distancesRight.at(rightIndex) < 100) {
 					result.at(2).push_back(laneMiddles.at(rightIndex));
 					calculateSolveMatrix(laneMiddles.at(rightIndex), rA, rB, numberOfRightPoints);
 					rightLaneStartPoint = laneMiddles.at(rightIndex);
@@ -490,8 +490,7 @@ bool PointLaneDetector::internalCalc(cv::Mat frame, int startLine)
 		r2 = Range(0, mA.cols);
 		solveResultM = cv::solve(mA(r1, r2), mB(r1, r3), this->middleLane, DECOMP_QR);
 	}
-	std::cout << lA << std::endl;
-	std::cout << lB << std::endl;
+
 	bool solveResultR = false;
 	if (foundRL) {
 		r1 = Range(0, numberOfRightPoints);
