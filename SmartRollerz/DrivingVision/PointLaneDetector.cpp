@@ -34,16 +34,22 @@ PointLaneDetector::PointLaneDetector() {
 	canny = cuda::createCannyEdgeDetector(700, 200, 3);
 
 
-	int alpha_ = 90, beta_ = 90, gamma_ = 90;
-	int f_ = 500, dist_ = 500;
+	int alpha_ = 30, beta_ = 90, gamma_ = 90;
+	int f_ = 500, dist_ = 0, skew_ = 0;             //skew ist Schräglageparameter (dreht das Bild nach Rechts oder Links) ->Vollständigkeit
 
-	double focalLength, dist, alpha, beta, gamma;
+    //TODO: dist_ aendern
+    dist_ = 82;
+    
+	double focalLength, dist, alpha, beta, gamma, skew;
 
 	alpha = ((double)alpha_ - 90) * M_PI / 180;
 	beta = ((double)beta_ - 90) * M_PI / 180;
 	gamma = ((double)gamma_ - 90) * M_PI / 180;
 	focalLength = (double)f_;
+    
+    //TODO: dist ist eigentlich: dist = (KamHöhe/sin((180-KameraWinkel)))
 	dist = (double)dist_;
+    skew = skew_;
 
 	Size image_size = Size(1600, 1200);
 	double w = (double)image_size.width, h = (double)image_size.height;
@@ -65,6 +71,7 @@ PointLaneDetector::PointLaneDetector() {
 		0, sin(alpha), cos(alpha), 0,
 		0, 0, 0, 1);
 
+    // Change for different y-rotation
 	Mat RY = (Mat_<float>(4, 4) <<
 		cos(beta), 0, -sin(beta), 0,
 		0, 1, 0, 0,
@@ -88,9 +95,9 @@ PointLaneDetector::PointLaneDetector() {
 		0, 0, 1, dist,
 		0, 0, 0, 1);
 
-	// K - intrinsic matrix 
+	// K - camera matrix
 	Mat K = (Mat_<float>(3, 4) <<
-		focalLength, 0, w / 2, 0,
+		focalLength, skew, w / 2, 0,
 		0, focalLength, h / 2, 0,
 		0, 0, 1, 0
 		);
