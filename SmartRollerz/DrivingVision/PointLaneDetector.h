@@ -35,6 +35,6 @@ private:
 
 	cv::Ptr<cv::cuda::CannyEdgeDetector> canny;
 
-
+	cv::Mat transformationMat;
 };
 

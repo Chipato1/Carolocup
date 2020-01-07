@@ -5,11 +5,14 @@
 #include <opencv2/core/cuda.hpp>
 #include <opencv2/cudaimgproc.hpp>
 #include <opencv2/highgui.hpp>
+#include <opencv2/cudawarping.hpp>
 
 #include <opencv2/calib3d.hpp>
 
 #include <iostream>
 #include <chrono>
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 using namespace cv;
 using namespace cv::cuda;
@@ -29,6 +32,71 @@ PointLaneDetector::PointLaneDetector() {
 	rB = cv::Mat::zeros(numberOfLines, 1, CV_64F);
 
 	canny = cuda::createCannyEdgeDetector(700, 200, 3);
+
+
+	int alpha_ = 90, beta_ = 90, gamma_ = 90;
+	int f_ = 500, dist_ = 500;
+
+	double focalLength, dist, alpha, beta, gamma;
+
+	alpha = ((double)alpha_ - 90) * M_PI / 180;
+	beta = ((double)beta_ - 90) * M_PI / 180;
+	gamma = ((double)gamma_ - 90) * M_PI / 180;
+	focalLength = (double)f_;
+	dist = (double)dist_;
+
+	Size image_size = Size(1600, 1200);
+	double w = (double)image_size.width, h = (double)image_size.height;
+
+
+	// Projecion matrix 2D -> 3D
+	Mat A1 = (Mat_<float>(4, 3) <<
+		1, 0, -w / 2,
+		0, 1, -h / 2,
+		0, 0, 0,
+		0, 0, 1);
+
+
+	// Rotation matrices Rx, Ry, Rz
+
+	Mat RX = (Mat_<float>(4, 4) <<
+		1, 0, 0, 0,
+		0, cos(alpha), -sin(alpha), 0,
+		0, sin(alpha), cos(alpha), 0,
+		0, 0, 0, 1);
+
+	Mat RY = (Mat_<float>(4, 4) <<
+		cos(beta), 0, -sin(beta), 0,
+		0, 1, 0, 0,
+		sin(beta), 0, cos(beta), 0,
+		0, 0, 0, 1);
+
+	Mat RZ = (Mat_<float>(4, 4) <<
+		cos(gamma), -sin(gamma), 0, 0,
+		sin(gamma), cos(gamma), 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1);
+
+
+	// R - rotation matrix
+	Mat R = RX * RY * RZ;
+
+	// T - translation matrix
+	Mat T = (Mat_<float>(4, 4) <<
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, dist,
+		0, 0, 0, 1);
+
+	// K - intrinsic matrix 
+	Mat K = (Mat_<float>(3, 4) <<
+		focalLength, 0, w / 2, 0,
+		0, focalLength, h / 2, 0,
+		0, 0, 1, 0
+		);
+
+
+	transformationMat = K * (T * (R * A1));
 }
 
 
@@ -46,11 +114,20 @@ Mat* halfImage(Mat image) {
 #define LANE_THRES_MIN 5
 #define LANE_THRES_MAX 60
 #define LL_MIN_X	670
-#define LL_MAX_X	690
+#define LL_MAX_X	730
 #define ML_MIN_X	780
+#define ML_MAX_X	820
+#define RL_MIN_X	900
+#define RL_MAX_X	930
+
+/*#define LANE_THRES_MIN 5
+#define LANE_THRES_MAX 60
+#define LL_MIN_X	400
+#define LL_MAX_X	550
+#define ML_MIN_X	670
 #define ML_MAX_X	800
-#define RL_MIN_X	880
-#define RL_MAX_X	900
+#define RL_MIN_X	1000
+#define RL_MAX_X	1200*/
 
 void PointLaneDetector::laneMiddlePoints(std::vector<cv::Point>& laneMiddles, Mat linePoints, int yPos) {
 	laneMiddles.clear();
@@ -112,8 +189,16 @@ void PointLaneDetector::calculateFrame(cv::Mat frame) {
 	auto uploadZeit = std::chrono::high_resolution_clock::now();
 	//Do Canny edge detection
 	//GpuMat edgeImageGPU = edgeDetection(upload);
-	canny->detect(upload, upload);
+	GpuMat ddown;
+	cv::cuda::warpPerspective(upload, ddown,this->transformationMat, frame.size(), INTER_CUBIC | WARP_INVERSE_MAP);
+	//cv::Mat down(ddown);
+	//imshow("TESTer", down);
+	canny->detect(ddown, upload);
 	auto downloadZeit = std::chrono::high_resolution_clock::now();
+	std::cout << transformationMat << std::endl;
+	
+
+
 	//Download image to RAM
 	Mat edgeImage(upload);
 	auto cannyEnd = std::chrono::high_resolution_clock::now();
@@ -132,11 +217,11 @@ void PointLaneDetector::calculateFrame(cv::Mat frame) {
 
 
 	for (int x = 0; x < this->result.size(); x++) {
-		for (int y = 0; y < this->result.at(x).size(); y++) {
-			circle(lowerHalf, this->result.at(x).at(y), 5, Scalar(x, 255, 255));
-		}
+			for (int y = 0; y < this->result.at(x).size(); y++) {
+				circle(lowerHalf, this->result.at(x).at(y), 5, Scalar(x*128, 255, 255));
+			}
 	}
-
+	cv::resize(lowerHalf, lowerHalf, Size(1000, 750));
 	imshow("TEST", lowerHalf);
 	auto totalEnd = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(algorithmEnd - start).count();
@@ -180,6 +265,30 @@ VisionResult PointLaneDetector::getResult() {
 }
 
 
+static cv::Mat InversePerspectiveMapping(cv::Mat input, int w, int h, int n) {// w : width and h : height
+
+	Point2f inputPts[4] = { Point2f(0,0),Point2f(1600,0), Point2f(0,1200), Point2f(1600,1200) };
+	Point2f outputPts[4] = { Point2f(0,0),Point2f(0,0), Point2f(0,0), Point2f(0,0) };
+
+	cv::Mat output, M;  //create the output matrice
+
+	 M = cv::getPerspectiveTransform(inputPts, outputPts);
+
+
+	cv::cuda::GpuMat gpuOutput;
+	cv::cuda::GpuMat gpuInput = cv::cuda::GpuMat(input);
+
+	cv::cuda::warpPerspective(gpuInput, gpuOutput, M, cv::Size(w, h), INTER_LINEAR, BORDER_CONSTANT, 0, Stream::Null());
+
+	gpuOutput.download(output);
+	gpuOutput.release();
+	gpuInput.release();
+
+	
+	imshow("left_IPM", output);
+	return output;
+}
+
 
 bool PointLaneDetector::internalCalc(cv::Mat frame, int startLine)
 {
@@ -199,68 +308,26 @@ bool PointLaneDetector::internalCalc(cv::Mat frame, int startLine)
 	std::vector<std::vector<cv::Point>> detectedPoints;
 	detectedPoints.reserve(numberOfLines);
 
-	//Do the detection for the first line (modifies iterator)
-	Mat row = frame.row(lineY);
 	Mat linePoints;
-	cv::findNonZero(row, linePoints);
-
 	std::vector<cv::Point> laneMiddles;
 	laneMiddles.reserve(25);
-
-	laneMiddlePoints(laneMiddles, linePoints, lineY);
-	detectedPoints.push_back(laneMiddles);
-	lineY -= stepSize;
-
-	std::vector<cv::Point> firstLine = detectedPoints.at(0);
-	int numberOfDetectionsFL = firstLine.size();
 
 	cv::Point leftLaneStartPoint, middleLaneStartPoint, rightLaneStartPoint;
 	bool foundLL = false;
 	bool foundML = false;
 	bool foundRL = false;
+	bool hasMiddleLane = false;
 
 	int numberOfLeftPoints = 0;
 	int numberOfMiddlePoints = 0;
 	int numberOfRightPoints = 0;
 
-	if (numberOfDetectionsFL < 2) {
-		//Again with next line
-
-	}
-	else {
-		for (int pointI = 0; pointI < firstLine.size(); pointI++) {
-			cv::Point analysisPoint = firstLine.at(pointI);
-
-			if (analysisPoint.x > LL_MIN_X&& analysisPoint.x < LL_MAX_X) {
-				foundLL = true;
-				leftLaneStartPoint = analysisPoint;
-				result.at(0).push_back(analysisPoint);
-				calculateSolveMatrix(analysisPoint, lA, lB,0);
-				numberOfLeftPoints++;
-			}
-			else if (analysisPoint.x > ML_MIN_X&& analysisPoint.x < ML_MAX_X) {
-				foundML = true;
-				middleLaneStartPoint = analysisPoint;
-				result.at(1).push_back(analysisPoint);
-				calculateSolveMatrix(analysisPoint, mA, mB,0);
-				numberOfMiddlePoints++;
-			}
-			else if (analysisPoint.x > RL_MIN_X&& analysisPoint.x < RL_MAX_X) {
-				foundRL = true;
-				rightLaneStartPoint = analysisPoint;
-				result.at(2).push_back(analysisPoint);
-				calculateSolveMatrix(analysisPoint, rA, rB,0);
-				numberOfRightPoints++;
-			}
-		}
-	}
-	ersteBerechnung = std::chrono::high_resolution_clock::now();
 	//If not all lines are found -> do it again!
 
 	auto minima = std::chrono::high_resolution_clock::now();
 	auto ergebnis = std::chrono::high_resolution_clock::now();
 	auto distanzen = std::chrono::high_resolution_clock::now();
-	for (int i = 1; i < numberOfLines; i++) {
+	for (int i = 0; i < numberOfLines; i++) {
 		auto startBerechnung = std::chrono::high_resolution_clock::now();
 		cv::findNonZero(frame.row(lineY), linePoints);
 		auto nonZero = std::chrono::high_resolution_clock::now();
@@ -269,74 +336,118 @@ bool PointLaneDetector::internalCalc(cv::Mat frame, int startLine)
 		auto distStart = std::chrono::high_resolution_clock::now();
 		if (!laneMiddles.empty()) {
 			detectedPoints.push_back(laneMiddles);
+			//Wenn eine der Linien noch nicht erkannt wurde...
+			if (!foundLL || !foundML || !foundRL) {
+				for (int pointI = 0; pointI < laneMiddles.size(); pointI++) {
+					cv::Point analysisPoint = laneMiddles.at(pointI);
 
-			distStart = std::chrono::high_resolution_clock::now();
-			std::vector<double> distancesLeft;
-			distancesLeft.reserve(laneMiddles.size());
-
-			std::vector<double> distancesMiddle;
-			distancesMiddle.reserve(laneMiddles.size());
-
-			std::vector<double> distancesRight;
-			distancesRight.reserve(laneMiddles.size());
-
-			std::for_each(laneMiddles.begin(), laneMiddles.end(),
-				[leftLaneStartPoint, middleLaneStartPoint, rightLaneStartPoint, &distancesLeft, &distancesMiddle, &distancesRight](cv::Point pt) -> void {
-					distancesLeft.push_back(cv::norm(pt - leftLaneStartPoint));
-					distancesMiddle.push_back(cv::norm(pt - middleLaneStartPoint));
-					distancesRight.push_back(cv::norm(pt - rightLaneStartPoint));
+					if (analysisPoint.x > LL_MIN_X&& analysisPoint.x < LL_MAX_X) {
+						if (!foundLL) {
+							foundLL = true;
+							leftLaneStartPoint = analysisPoint;
+							result.at(0).push_back(analysisPoint);
+							calculateSolveMatrix(analysisPoint, lA, lB, numberOfLeftPoints);
+							laneMiddles.erase(laneMiddles.begin() + pointI);
+							numberOfLeftPoints++;
+						}
+					}
+					else if (analysisPoint.x > ML_MIN_X&& analysisPoint.x < ML_MAX_X) {
+						if (!foundML) {
+							foundML = true;
+							middleLaneStartPoint = analysisPoint;
+							result.at(1).push_back(analysisPoint);
+							calculateSolveMatrix(analysisPoint, mA, mB, numberOfMiddlePoints);
+							laneMiddles.erase(laneMiddles.begin() + pointI);
+							numberOfMiddlePoints++;
+						}
+					}
+					else if (analysisPoint.x > RL_MIN_X&& analysisPoint.x < RL_MAX_X) {
+						if (!foundRL) {
+							foundRL = true;
+							rightLaneStartPoint = analysisPoint;
+							result.at(2).push_back(analysisPoint);
+							calculateSolveMatrix(analysisPoint, rA, rB, numberOfRightPoints);
+							laneMiddles.erase(laneMiddles.begin() + pointI);
+							numberOfRightPoints++;
+						}
+					}
 				}
+			}
+			if (foundLL || foundML || foundRL) {
+				distStart = std::chrono::high_resolution_clock::now();
+				std::vector<double> distancesLeft;
+				distancesLeft.reserve(laneMiddles.size());
+
+				std::vector<double> distancesMiddle;
+				distancesMiddle.reserve(laneMiddles.size());
+
+				std::vector<double> distancesRight;
+				distancesRight.reserve(laneMiddles.size());
+
+				std::for_each(laneMiddles.begin(), laneMiddles.end(),
+					[leftLaneStartPoint, middleLaneStartPoint, rightLaneStartPoint, &distancesLeft, &distancesMiddle, &distancesRight](cv::Point pt) -> void {
+						distancesLeft.push_back(cv::norm(pt - leftLaneStartPoint));
+						distancesMiddle.push_back(cv::norm(pt - middleLaneStartPoint));
+						distancesRight.push_back(cv::norm(pt - rightLaneStartPoint));
+					}
 				);
-			distanzen = std::chrono::high_resolution_clock::now();
-			std::vector<double>::iterator iteratorLeft = std::min_element(distancesLeft.begin(), distancesLeft.end());
-			int leftIndex = iteratorLeft - distancesLeft.begin();
-			std::vector<double>::iterator iteratorMiddle = std::min_element(distancesMiddle.begin(), distancesMiddle.end());
-			int middleIndex = iteratorMiddle - distancesMiddle.begin();
-			std::vector<double>::iterator iteratorRight = std::min_element(distancesRight.begin(), distancesRight.end());
-			int rightIndex = iteratorRight - distancesRight.begin();
+				distanzen = std::chrono::high_resolution_clock::now();
+				std::vector<double>::iterator iteratorLeft = std::min_element(distancesLeft.begin(), distancesLeft.end());
+				int leftIndex = iteratorLeft - distancesLeft.begin();
+				std::vector<double>::iterator iteratorMiddle = std::min_element(distancesMiddle.begin(), distancesMiddle.end());
+				int middleIndex = iteratorMiddle - distancesMiddle.begin();
+				std::vector<double>::iterator iteratorRight = std::min_element(distancesRight.begin(), distancesRight.end());
+				int rightIndex = iteratorRight - distancesRight.begin();
 
-			if (leftIndex == middleIndex) {
-				if (*iteratorLeft <= *iteratorMiddle) {
-					middleIndex = -1;
+				if (leftIndex == middleIndex) {
+					if (*iteratorLeft <= *iteratorMiddle) {
+						middleIndex = -1;
+						foundML = false;
+					}
+					else {
+						leftIndex = -1;
+					}
 				}
-				else {
-					leftIndex = -1;
+				if (leftIndex == rightIndex) {
+					if (*iteratorLeft <= *iteratorRight) {
+						rightIndex = -1;
+					}
+					else {
+						leftIndex = -1;
+					}
 				}
-			}
-			if (leftIndex == rightIndex) {
-				if (*iteratorLeft <= *iteratorRight) {
-					rightIndex = -1;
-				}
-				else {
-					leftIndex = -1;
-				}
-			}
 
-			if (middleIndex == rightIndex) {
-				if (*iteratorMiddle <= *iteratorRight) {
-					rightIndex = -1;
+				if (middleIndex == rightIndex) {
+					if (*iteratorMiddle <= *iteratorRight) {
+						rightIndex = -1;
+					}
+					else {
+						middleIndex = -1;
+					}
 				}
-				else {
-					middleIndex = -1;
+				minima = std::chrono::high_resolution_clock::now();
+				if (foundLL && leftIndex != -1) {
+					result.at(0).push_back(laneMiddles.at(leftIndex));
+					calculateSolveMatrix(laneMiddles.at(leftIndex), lA, lB, numberOfLeftPoints);
+					leftLaneStartPoint = laneMiddles.at(leftIndex);
+					numberOfLeftPoints++;
 				}
+				if (foundML && middleIndex != -1) {
+					result.at(1).push_back(laneMiddles.at(middleIndex));
+					calculateSolveMatrix(laneMiddles.at(middleIndex), mA, mB, numberOfMiddlePoints);
+					middleLaneStartPoint = laneMiddles.at(middleIndex);
+					numberOfMiddlePoints++;
+				}
+				if (foundRL && rightIndex != -1) {
+					result.at(2).push_back(laneMiddles.at(rightIndex));
+					calculateSolveMatrix(laneMiddles.at(rightIndex), rA, rB, numberOfRightPoints);
+					rightLaneStartPoint = laneMiddles.at(rightIndex);
+					numberOfRightPoints++;
+				}
+				ergebnis = std::chrono::high_resolution_clock::now();
+
 			}
-			minima = std::chrono::high_resolution_clock::now();
-			if (foundLL && leftIndex != -1) {
-				result.at(0).push_back(laneMiddles.at(leftIndex));
-				calculateSolveMatrix(laneMiddles.at(leftIndex), lA, lB,i);
-				numberOfLeftPoints++;
-			}
-			if (foundML && middleIndex != -1) {
-				result.at(1).push_back(laneMiddles.at(middleIndex));
-				calculateSolveMatrix(laneMiddles.at(middleIndex), mA, mB,i);
-				numberOfMiddlePoints++;
-			}
-			if (foundRL && rightIndex != -1) {
-				result.at(2).push_back(laneMiddles.at(rightIndex));
-				calculateSolveMatrix(laneMiddles.at(rightIndex), rA, rB,i);
-				numberOfRightPoints++;
-			}
-			ergebnis = std::chrono::high_resolution_clock::now();
+			
 		}
 
 		/*std::cout << "----------------------------------" << std::endl;
@@ -362,13 +473,24 @@ bool PointLaneDetector::internalCalc(cv::Mat frame, int startLine)
 	Range r1 = Range(0, numberOfLeftPoints);
 	Range r2 = Range(0, lA.cols);
 	Range r3 = Range(0, 1);
-	bool solveResultL = cv::solve(lA(r1,r2), lB(r1,r3), this->leftLane, DECOMP_QR);
-	r1 = Range(0, numberOfMiddlePoints);
-	r2 = Range(0, mA.cols);
-	bool solveResultM = cv::solve(mA(r1,r2), mB(r1,r3), this->middleLane, DECOMP_QR);
-	r1 = Range(0, numberOfRightPoints);
-	r2 = Range(0, rA.cols);
-	bool solveResultR = cv::solve(rA(r1,r2), rB(r1,r3), this->rightLane, DECOMP_QR);
+	bool solveResultL = false; 
+	if (foundLL) {
+		solveResultL = cv::solve(lA(r1, r2), lB(r1, r3), this->leftLane, DECOMP_QR);
+	}
+	bool solveResultM = false;
+	if (foundML) {
+		r1 = Range(0, numberOfMiddlePoints);
+		r2 = Range(0, mA.cols);
+		solveResultM = cv::solve(mA(r1, r2), mB(r1, r3), this->middleLane, DECOMP_QR);
+	}
+	std::cout << lA << std::endl;
+	std::cout << lB << std::endl;
+	bool solveResultR = false;
+	if (foundRL) {
+		r1 = Range(0, numberOfRightPoints);
+		r2 = Range(0, rA.cols);
+		solveResultR = cv::solve(rA(r1, r2), rB(r1, r3), this->rightLane, DECOMP_QR);
+	}
 	solveZeit = std::chrono::high_resolution_clock::now();
 	return solveResultL && solveResultM && solveResultR;
 }
