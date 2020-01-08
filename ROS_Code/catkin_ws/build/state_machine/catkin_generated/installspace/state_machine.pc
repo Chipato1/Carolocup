@@ -1,0 +1,8 @@
+prefix=/home/chipato/Desktop/Test_git/Carolocup/ROS_Code/catkin_ws/install
+
+Name: state_machine
+Description: Description of state_machine
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/chipato/Desktop/Test_git/Carolocup/ROS_Code/catkin_ws/install/lib 
+Requires: 
