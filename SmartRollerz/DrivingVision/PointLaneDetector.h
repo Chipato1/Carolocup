@@ -80,4 +80,6 @@ private:
 	std::array<int, numberOfLines> middleLineIndices;
 	std::array<int, numberOfLines> rightLineIndices;
 
+	int intersectionPosL, intersectionPosM, intersectionPosR;
+
 };

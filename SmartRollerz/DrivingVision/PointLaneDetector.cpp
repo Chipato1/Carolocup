@@ -20,7 +20,7 @@
 using namespace cv;
 using namespace cv::cuda;
 
-void drawResult(cv::Mat im, cv::Mat x, cv::Scalar color);
+void drawResult(cv::Mat im, cv::Mat x1, cv::Mat x2, cv::Scalar color, int intersect);
 
 PointLaneDetector::PointLaneDetector() {
 	this->leftLane1 = cv::Mat::zeros(this->grade, 1, CV_64F);
@@ -130,13 +130,10 @@ PointLaneDetector::PointLaneDetector() {
 
 void PointLaneDetector::debugDraw(cv::Mat& frame) {
 	cv::cvtColor(frame, frame, COLOR_GRAY2BGR);
-	drawResult(frame, this->leftLane1, Scalar(255, 0, 0));
-	drawResult(frame, this->middleLane1, Scalar(255, 255, 255));
-	drawResult(frame, this->rightLane1, Scalar(0, 0, 255));
+	drawResult(frame, this->leftLane1, this->leftLane2, Scalar(255, 0, 0), this->intersectionPosL);
+	drawResult(frame, this->middleLane1, this->middleLane2, Scalar(255, 255, 255), this->intersectionPosM);
+	drawResult(frame, this->rightLane1, this->rightLane2, Scalar(0, 0, 255),this->intersectionPosR);
 
-	drawResult(frame, this->leftLane2, Scalar(255, 0, 0));
-	drawResult(frame, this->middleLane2, Scalar(255, 255, 255));
-	drawResult(frame, this->rightLane2, Scalar(0, 0, 255));
 
 	for (int x = 0; x < this->result.size(); x++) {
 		for (int y = 0; y < this->result.at(x).size(); y++) {
@@ -156,12 +153,17 @@ double calcX(cv::Mat func, float y) {
 	return res;
 }
 
-void drawResult(cv::Mat im, cv::Mat x, cv::Scalar color) {
+void drawResult(cv::Mat im, cv::Mat x1, cv::Mat x2, cv::Scalar color, int intersect) {
 	for (int row = 0; row < im.rows; row++) {
 		cv::Mat column = im.row(row);
 		int type = column.type();
-
-		float val = calcX(x, row);
+		float val = 0;
+		if (row > (im.size().height - intersect)) {
+			val = calcX(x1, row);
+		}
+		else {
+			val = calcX(x2, row);
+		}
 		if (val <= im.cols - 1 && val >= 0) {
 			circle(im, (cv::Point((int)val, row)), 1, color);
 		}
@@ -417,34 +419,41 @@ void PointLaneDetector::prepareInterpolation(int i) {
 bool PointLaneDetector::solveClothoide() {
 	std::adjacent_difference(leftDistances.begin(), leftDistances.end(), leftDistances.begin());
 	leftDistances.at(0) = 0;
-	std::array<double, numberOfLines>::iterator posL = std::find_if_not(leftDistances.begin(), leftDistances.end(), [](double val) ->bool {
-		return val == 0;
+	std::array<double, numberOfLines>::iterator posL = std::find_if(leftDistances.begin(), leftDistances.end(), [](double val) ->bool {
+		return abs(val) >= 0.05;
 		});
-	int leftIndex = 0;
+	int leftIndex = this->leftLineIndices.at(posL - leftDistances.begin());
 	int leftTempI = posL - leftDistances.begin();
 	while (leftIndex == 0) {
-		leftIndex =  this->leftLineIndices.at(leftTempI);
 		leftTempI++;
+		leftIndex =  this->leftLineIndices.at(leftTempI);
+		
 	}
 
 	std::adjacent_difference(rightDistances.begin(), rightDistances.end(), rightDistances.begin());
 	rightDistances.at(0) = 0;
-	std::array<double, numberOfLines>::iterator posR = std::find_if_not(rightDistances.begin(), rightDistances.end(), [](double val) ->bool {
-		return val == 0;
+	std::array<double, numberOfLines>::iterator posR = std::find_if(rightDistances.begin(), rightDistances.end(), [](double val) ->bool {
+		return abs(val) >= 0.05;
 		});
 	int rightIndex = this->rightLineIndices.at(posR - rightDistances.begin());
 	int rightTempI = posR - rightDistances.begin();
 	while (rightIndex == 0) {
-		rightIndex = this->leftLineIndices.at(rightTempI);
 		rightTempI++;
+		rightIndex = this->leftLineIndices.at(rightTempI);
+		
 	}
 
 	int middleTempI = ((posL - leftDistances.begin()) + (posR - rightDistances.begin())) / 2;
 	int middleIndex = this->middleLineIndices.at(middleTempI);
 	while (middleIndex == 0) {
-		middleIndex = this->middleLineIndices.at(middleTempI);
 		middleTempI++;
+		middleIndex = this->middleLineIndices.at(middleTempI);
+		
 	}
+
+	intersectionPosL = leftTempI * stepSize;
+	intersectionPosM = middleTempI * stepSize;
+	intersectionPosR = rightTempI * stepSize;
 
 	Range rowRange = Range(0, numberOfLeftPoints - leftIndex - 1);
 	Range colRange = Range(0, this->grade);
