@@ -8,14 +8,13 @@
 %regelungsnormalform vor:
 n=2;
 tau = 3.215/5;
-tasten = 0.5
-w=0.25*(2*pi/tasten);%annahme: es wird mit 1ms abgetastet
-%Der Ausgang ist standartmäßig die Ableitung der Eingangsgöße, daraus
-%folgt:
+tasten = 0.1;%es wird mit einer Abtastzeit von tasten abgetastet
+w=(2*pi/tasten)/10;%Grenzfrequenz des Tiefpasses, diese sollte um einiges kleiner sein als die abtastfrequenz
 b = [0; 1];
-cT = [0 1];
-p=0.45*25;%p anteil des reglers
-i=0.5422*25/2.3;%i anteil des reglers
+%cT = [0 40];
+pr=1.3;%5%0.45*25;%p anteil des reglers
+ir=1.7;%1.1%0.5422*25/2.3;%i anteil des reglers
+dr=-0.5;%nur ein test
 u = 7;%getriebeübersetzug
 %d=10
 Ur = pi*0.056%Umfang der Reifen bei 5cm durchmesser
@@ -32,13 +31,34 @@ for i = 0:n-1
     %diese muss glaube ich der Abtastrate entprechen
 end
 A = [0, 1;-f(1), -f(2)];
+cT=[0,f(1)]%ct muss kompensieren, damit der ZVF eine gesamst Verstärkung von 1 hat!!!
 s=tf('s');
-Gf = tf(ss(A,b,cT,0));
-Gr = p+i/s;
+Gf = tf(ss(A,b,cT,0))
+
 Gs = 1/(tau*s+1);
-Gi = 1/i;
+Gi = 1/s;
+figure(1)
+bode(Gf*Gi)
 pole_filter = pole(Gf)
+
+Gr = pr+ir/s;
+
 pole_system = pole( (Gr*Gs) / (1+Gr*Gs*Gf*Gi) )
+% for ir=0.01:0.05:10
+%     for pr = 0.01:0.05:10
+%         Gr = pr+ir/s;
+%         pole_system = pole( (Gr*Gs) / (1+Gr*Gs*Gf*Gi) )
+%         if real(pole_system(:)) < 0
+%            ir
+%            pr
+%            pr = 20
+%            ir=20
+%         end
+%     end
+% end
+
+figure(2)
+bode( (Gr*Gs) / (1+Gr*Gs*Gf*Gi) )
 % bode(filter)
 % data = timeseries(DATA012.AccX);
 % data.time = DATA012.Time;
