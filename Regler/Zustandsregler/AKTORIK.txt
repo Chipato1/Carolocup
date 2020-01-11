@@ -1,0 +1,2 @@
+Der hier berechnete Lenkwinkel wird als Float mit 32 bit an die Aktorik übergeben. 
+Er muss von UNS auf +-20 grad bzw +-0.349 begrenzt werden! 
