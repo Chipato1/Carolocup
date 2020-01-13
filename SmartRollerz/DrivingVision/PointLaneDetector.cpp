@@ -140,8 +140,10 @@ void PointLaneDetector::debugDraw(cv::Mat& frame) {
 			circle(frame, this->result.at(x).at(y), 5, Scalar(x * 128, 255, 255));
 		}
 	}
-	cv::resize(frame, frame, Size(1000, 750));
-	imshow("Result image", frame);
+	//cv::resize(frame, frame, Size(800, 600));
+	//imshow("Result image", frame);
+	imwrite("C:\\images\\res.png", frame);
+	exit(0);
 }
 
 double calcX(cv::Mat func, float y) {
@@ -334,6 +336,27 @@ void PointLaneDetector::classifyPoints(int line) {
 	}
 }
 
+void PointLaneDetector::doMean(std::array<double, numberOfLines>& arr) {
+	int counter = 0;
+	std::for_each(arr.begin(), arr.end(), [this, &counter, &arr](double element) -> void {
+		if (element == 0) {
+			int i = 1;
+			double itElement = 0;
+			do {
+				if (i + counter >= numberOfLines) {
+					return;
+				}
+				itElement = arr.at(counter + i);
+				if (itElement != 0) {
+					std::fill(arr.begin() + counter, arr.begin() + counter + i + 1, itElement / (i+1));
+				}
+				i++;
+			} while (itElement == 0);
+		}
+		counter++;
+	});
+}
+
 void PointLaneDetector::prepareInterpolation(int i) {
 	if (!laneMiddles.empty() && (foundLL || foundML || foundRL)) {
 		std::vector<double> distancesLeft;
@@ -389,13 +412,18 @@ void PointLaneDetector::prepareInterpolation(int i) {
 
 
 
-		if (foundLL && leftIndex != -1 && distancesLeft.at(leftIndex) < 100) {
-			result.at(0).push_back(laneMiddles.at(leftIndex));
-			calculateSolveMatrix(laneMiddles.at(leftIndex), lA, lB, numberOfLeftPoints);
-			leftLaneStartPoint = laneMiddles.at(leftIndex);
-			this->leftDistances.at(i-1) = distancesLeft.at(leftIndex);
-			this->leftLineIndices.at(i) = numberOfLeftPoints;
-			numberOfLeftPoints++;
+		if (foundLL ) {
+			if (leftIndex != -1 && distancesLeft.at(leftIndex) < 100) {
+				result.at(0).push_back(laneMiddles.at(leftIndex));
+				calculateSolveMatrix(laneMiddles.at(leftIndex), lA, lB, numberOfLeftPoints);
+				leftLaneStartPoint = laneMiddles.at(leftIndex);
+				this->leftDistances.at(i - 1) = distancesLeft.at(leftIndex);
+				this->leftLineIndices.at(i) = numberOfLeftPoints;
+				numberOfLeftPoints++;
+			}
+			else {
+				
+			}
 		}
 		if (foundML && middleIndex != -1) {
 			result.at(1).push_back(laneMiddles.at(middleIndex));
@@ -416,12 +444,45 @@ void PointLaneDetector::prepareInterpolation(int i) {
 	}
 }
 
+void PointLaneDetector::removeFalse(std::array<double, numberOfLines>& arr) {
+	double summe = std::accumulate(arr.begin(), arr.end(), 0.0);
+	double mittelwert = summe / numberOfLines;
+
+	std::array<double, numberOfLines> result;
+	std::transform(arr.begin(), arr.end(), result.begin(), [](double elem)->double {
+		return elem * elem;
+		});
+	
+
+	double stdDev = sqrt(std::accumulate(result.begin(), result.end(), 0.0) / numberOfLines - mittelwert * mittelwert);
+	std::transform(arr.begin(), arr.end(), arr.begin(), [stdDev](double elem)->double {
+		if (elem > stdDev || elem < -stdDev) {
+			return 0;
+		}
+		else {
+			return elem;
+		}
+		});
+}
+
 bool PointLaneDetector::solveClothoide() {
+	doMean(leftDistances);
+	doMean(middleDistances);
+	doMean(rightDistances);
+	std::transform(leftDistances.begin(), leftDistances.end(), leftDistances.begin(), [this](double elem) -> double {
+		return (acos(20 / elem));
+		});
 	std::adjacent_difference(leftDistances.begin(), leftDistances.end(), leftDistances.begin());
 	leftDistances.at(0) = 0;
+
+	leftDistances.at(numberOfLines - 2) = 0;
+	leftDistances.at(numberOfLines - 1) = 0;
+	removeFalse(this->leftDistances);
+
 	std::array<double, numberOfLines>::iterator posL = std::find_if(leftDistances.begin(), leftDistances.end(), [](double val) ->bool {
 		return abs(val) >= 0.05;
 		});
+	
 	int leftIndex = this->leftLineIndices.at(posL - leftDistances.begin());
 	int leftTempI = posL - leftDistances.begin();
 	while (leftIndex == 0) {

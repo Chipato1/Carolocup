@@ -20,6 +20,7 @@ private:
 	void prepareInterpolation(int);
 	void debugDraw(cv::Mat&);
 	bool solveClothoide();
+	
 	void clear();
 
 	//MODELLPARAMETER
@@ -81,5 +82,8 @@ private:
 	std::array<int, numberOfLines> rightLineIndices;
 
 	int intersectionPosL, intersectionPosM, intersectionPosR;
+
+	void doMean(std::array<double, numberOfLines>&);
+	void removeFalse(std::array<double, numberOfLines>&);
 
 };
