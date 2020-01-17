@@ -1,4 +1,4 @@
-#include "PointLaneDetector.hpp"
+#include <vision/lane_detection/PointLaneDetector.hpp>
 
 #include <opencv2/core/utility.hpp>
 #include <opencv2/imgproc.hpp>

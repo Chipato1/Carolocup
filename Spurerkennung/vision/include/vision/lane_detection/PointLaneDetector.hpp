@@ -1,5 +1,5 @@
 #pragma once
-#include "VisionResult.hpp"
+#include <vision/lane_detection/VisionResult.hpp>
 #include <opencv2/core/cuda.hpp>
 #include <opencv2/cudaimgproc.hpp>
 #include <map>
