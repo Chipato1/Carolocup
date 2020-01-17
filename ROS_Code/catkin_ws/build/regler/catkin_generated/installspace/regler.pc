@@ -1,0 +1,8 @@
+prefix=/home/alex/Desktop/repo/Carolocup/ROS_Code/catkin_ws/install
+
+Name: regler
+Description: Description of regler
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

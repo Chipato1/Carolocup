@@ -1,8 +1,8 @@
-# Install script for directory: /home/chipato/Desktop/Test_git/Carolocup/ROS_Code/catkin_ws/src/state_machine
+# Install script for directory: /home/alex/Desktop/repo/Carolocup/ROS_Code/catkin_ws/src/state_machine
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/chipato/Desktop/Test_git/Carolocup/ROS_Code/catkin_ws/install")
+  set(CMAKE_INSTALL_PREFIX "/home/alex/Desktop/repo/Carolocup/ROS_Code/catkin_ws/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -38,17 +38,17 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/chipato/Desktop/Test_git/Carolocup/ROS_Code/catkin_ws/build/state_machine/catkin_generated/installspace/state_machine.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/alex/Desktop/repo/Carolocup/ROS_Code/catkin_ws/build/state_machine/catkin_generated/installspace/state_machine.pc")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/state_machine/cmake" TYPE FILE FILES
-    "/home/chipato/Desktop/Test_git/Carolocup/ROS_Code/catkin_ws/build/state_machine/catkin_generated/installspace/state_machineConfig.cmake"
-    "/home/chipato/Desktop/Test_git/Carolocup/ROS_Code/catkin_ws/build/state_machine/catkin_generated/installspace/state_machineConfig-version.cmake"
+    "/home/alex/Desktop/repo/Carolocup/ROS_Code/catkin_ws/build/state_machine/catkin_generated/installspace/state_machineConfig.cmake"
+    "/home/alex/Desktop/repo/Carolocup/ROS_Code/catkin_ws/build/state_machine/catkin_generated/installspace/state_machineConfig-version.cmake"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/state_machine" TYPE FILE FILES "/home/chipato/Desktop/Test_git/Carolocup/ROS_Code/catkin_ws/src/state_machine/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/state_machine" TYPE FILE FILES "/home/alex/Desktop/repo/Carolocup/ROS_Code/catkin_ws/src/state_machine/package.xml")
 endif()
 
