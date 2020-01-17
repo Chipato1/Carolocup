@@ -124,6 +124,7 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/vision.cpp
@@ -137,7 +138,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(${PROJECT_NAME}_lanedetectionnode src/lane_detection/main.cpp)
+add_executable(${PROJECT_NAME}_lanedetectionnode src/lane_detection/main.cpp src/lane_detection/PointLaneDetector.cpp src/lane_detection/VisionResult.cpp)
 target_link_libraries( ${PROJECT_NAME}_lanedetectionnode ${OpenCV_LIBS} )
 
 ## Rename C++ executable without prefix
