@@ -1,6 +1,5 @@
 #include "DrivingVision.h"
 #include "PointLaneDetector.h"
-#include "StaticImageSource.h"
 #include <opencv2/core/utility.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/core/cuda.hpp>
@@ -31,33 +30,20 @@ std::string type2str(int type) {
 }
 
 namespace dv {
-	DrivingVision::DrivingVision() {
-		this->detector = new PointLaneDetector();
-        //this->startDetector = new StartDetection();
+	DrivingVision::DrivingVision(std::map<std::string, std::string>& config) {
+		this->detector = new PointLaneDetector(config);
+		this->config = config;
+
 		//Initialize GPU context -> Performance
 		cv::cuda::GpuMat test;
-		test.create(1, 1, CV_8U); // Just to initialize context
+		test.create(1, 1, CV_8U);
 	}
 
-	VisionResult DrivingVision::doLaneDetection() {
-		
-
-		ImageSource* source = new StaticImageSource("C:\\images\\t1.bmp");
-		cv::Mat matrix = source->next();
-		cv::imshow("source", matrix);
-		type2str(matrix.type());
-		this->detector->calculateFrame(source->next());
-		matrix.release();
-		cv::waitKey(100);
+	VisionResult DrivingVision::doLaneDetection(cv::Mat& image) {
+		this->detector->calculateFrame(image);
 		return this->detector->getResult();
 	}
 
-	bool DrivingVision::doQRCodeDetection() {
-		ImageSource* source = new StaticImageSource("C:\\Users\\Maximilian\\source\\repos\\Carolocup\\SmartRollerz\\x64\\Debug\\gerade_1.jpg");
-        cv::Mat matrix = source->next();
-		//return this->startDetector->checkQRCode(matrix);
-		return false;
-	}
 	LaneDetector* DrivingVision::getDetector()
 	{
 		return this->detector;

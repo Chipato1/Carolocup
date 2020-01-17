@@ -8,7 +8,7 @@ class PointLaneDetector :
 {
 public:
 	PointLaneDetector();
-	virtual void calculateFrame(cv::Mat) override;
+	virtual void calculateFrame(cv::Mat&) override;
 	virtual VisionResult getResult() override;
 
 	//Ergebnis (alle Spurpunkte)

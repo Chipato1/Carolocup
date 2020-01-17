@@ -63,7 +63,7 @@ PointLaneDetector::PointLaneDetector() {
 	gamma = ((double)gamma_ - 90) * M_PI / 180;
 	focalLength = (double)f_;
 
-	//TODO: dist ist eigentlich: dist = (KamHšhe/sin((180-KameraWinkel)))
+	//TODO: dist ist eigentlich: dist = (KamHï¿½he/sin((180-KameraWinkel)))
 	dist = (double)dist_;
 	skew = skew_;
 
@@ -178,7 +178,7 @@ VisionResult PointLaneDetector::getResult() {
 }
 
 //Detectes the driving lanes for one frame
-void PointLaneDetector::calculateFrame(cv::Mat frame) {
+void PointLaneDetector::calculateFrame(cv::Mat& frame) {
 	cv::Mat edgeImage;
 	cv::Mat binaryImage;
 	auto timeStart = std::chrono::high_resolution_clock::now();
