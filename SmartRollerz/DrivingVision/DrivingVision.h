@@ -8,6 +8,7 @@ namespace dv {
 		DrivingVision();
 		VisionResult doLaneDetection();
 		bool doQRCodeDetection();
+		LaneDetector* getDetector();
 
 	private:
 		LaneDetector* detector;

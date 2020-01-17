@@ -11,6 +11,11 @@ public:
 	virtual void calculateFrame(cv::Mat) override;
 	virtual VisionResult getResult() override;
 
+	//Ergebnis (alle Spurpunkte)
+	std::array<std::vector<cv::Point>, 3> result;
+	//Alle erkannten Punkte auf den Linien
+	std::vector<std::vector<cv::Point>> detectedPoints;
+
 private:
 	bool calculateAlgorithm(cv::Mat&, int startLine);
 	void laneMiddlePoints(std::vector<cv::Point>&, cv::Mat, int);
@@ -46,9 +51,7 @@ private:
 	cv::Mat middleLane2;
 	cv::Mat rightLane2;
 
-	//Ergebnis
-	std::array<std::vector<cv::Point>, 3> result;
-	std::vector<std::vector<cv::Point>> detectedPoints;
+	
 
 	//Temporaere Variablen
 	cv::Mat linePoints;

@@ -46,10 +46,12 @@ PointLaneDetector::PointLaneDetector() {
 
 	this->laneMiddles.reserve(25);
 
-	this->canny = cuda::createCannyEdgeDetector(700, 200, 3);
+	this->canny = cuda::createCannyEdgeDetector(900, 50, 3);
 
-	int alpha_ = 90, beta_ = 90, gamma_ = 90;
-	int f_ = 500, dist_ = 500, skew_ = 0;             //skew ist Schraeglageparameter (dreht das Bild nach Rechts oder Links) ->Vollstaendigkeit
+	int alpha_ = 60, beta_ = 90, gamma_ = 90;
+	double f_ = 300, dist_ = 200, skew_ = 0;             //skew ist Schraeglageparameter (dreht das Bild nach Rechts oder Links) ->Vollstaendigkeit
+	double pixel_width = 7.2;
+	double pixel_height = 5.4;
 
 	//TODO: dist_ aendern
 	//dist_ = 82;
@@ -111,9 +113,9 @@ PointLaneDetector::PointLaneDetector() {
 
 	// K - camera matrix
 	Mat K = (Mat_<float>(3, 4) <<
-		focalLength, skew, w / 2, 0,
-		0, focalLength, h / 2, 0,
-		0, 0, 1, 0
+		focalLength * pixel_width	,		skew,						w / 2,		0,
+		0							,		focalLength * pixel_height,	h / 2,		0,
+		0							,		0,							1,			0
 		);
 	this->transformationMat = K * (T * (R * A1));
 }
@@ -140,10 +142,9 @@ void PointLaneDetector::debugDraw(cv::Mat& frame) {
 			circle(frame, this->result.at(x).at(y), 5, Scalar(x * 128, 255, 255));
 		}
 	}
-	//cv::resize(frame, frame, Size(800, 600));
-	//imshow("Result image", frame);
-	imwrite("C:\\images\\res.png", frame);
-	exit(0);
+	cv::resize(frame, frame, Size(800, 600));
+	imshow("Result image", frame);
+
 }
 
 double calcX(cv::Mat func, float y) {
@@ -182,6 +183,7 @@ void PointLaneDetector::calculateFrame(cv::Mat frame) {
 	cv::Mat binaryImage;
 	auto timeStart = std::chrono::high_resolution_clock::now();
 	this->doGPUTransform(frame,edgeImage, binaryImage);
+	imshow("edge", edgeImage);
 	auto timeEnd = std::chrono::high_resolution_clock::now();
 
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
@@ -261,6 +263,9 @@ void PointLaneDetector::doGPUTransform(cv::Mat frame, cv::Mat& edgeImage, cv::Ma
 	cv::cuda::GpuMat edge;
 
 	cv::cuda::warpPerspective(upload, ipm, this->transformationMat, frame.size(), INTER_CUBIC | WARP_INVERSE_MAP);
+	cv::Mat test(ipm);
+	cv::resize(test, test, Size(800, 600));
+	imshow("tester", test);
 
 	std::thread binThread([&ipm, &binary, &binaryImage]() -> void {
 		cv::cuda::threshold(ipm, binary, 128, 255, THRESH_BINARY);
@@ -466,7 +471,7 @@ void PointLaneDetector::removeFalse(std::array<double, numberOfLines>& arr) {
 }
 
 bool PointLaneDetector::solveClothoide() {
-	doMean(leftDistances);
+	/*doMean(leftDistances);
 	doMean(middleDistances);
 	doMean(rightDistances);
 	std::transform(leftDistances.begin(), leftDistances.end(), leftDistances.begin(), [this](double elem) -> double {
@@ -477,7 +482,7 @@ bool PointLaneDetector::solveClothoide() {
 
 	leftDistances.at(numberOfLines - 2) = 0;
 	leftDistances.at(numberOfLines - 1) = 0;
-	removeFalse(this->leftDistances);
+	//removeFalse(this->leftDistances);
 
 	std::array<double, numberOfLines>::iterator posL = std::find_if(leftDistances.begin(), leftDistances.end(), [](double val) ->bool {
 		return abs(val) >= 0.05;
@@ -510,7 +515,14 @@ bool PointLaneDetector::solveClothoide() {
 		middleTempI++;
 		middleIndex = this->middleLineIndices.at(middleTempI);
 		
-	}
+	}*/
+
+	int leftIndex = 0;
+	int leftTempI = 0;
+	int rightIndex = 0;
+	int rightTempI = 0;
+	int middleTempI = 0;
+	int middleIndex = 0;
 
 	intersectionPosL = leftTempI * stepSize;
 	intersectionPosM = middleTempI * stepSize;
