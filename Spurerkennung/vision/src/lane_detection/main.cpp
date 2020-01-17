@@ -13,17 +13,19 @@ std::map<std::string, std::string> readConfigFile() {
 	std::ifstream infile("config.cfg");
 	std::string line;
 	std::map<std::string, std::string> my_map;
-	while(std::getline(infile, line)) {
-	  	std::istringstream is_line(line);
-	  	std::string key;
-	  	if( std::getline(is_line, key, '=') ) {
-	  	  	std::string value;
-	  	  	if( std::getline(is_line, value) ) {
-	  	    	map.insert(key, value);
+	
+	while (std::getline(infile, line)) {
+		std::istringstream is_line(line);
+		std::string key;
+		if (std::getline(is_line, key, '=')) {
+			std::string value;
+			if (std::getline(is_line, value)) {
+				std::map<std::string, std::string>::iterator it = my_map.begin();
+				my_map.insert(it, std::pair<std::string, std::string>(key, value));
 			}
-	  	}
+		}
 	}
-	return map;
+	return my_map;
 }
 
 PointLaneDetector detector;
