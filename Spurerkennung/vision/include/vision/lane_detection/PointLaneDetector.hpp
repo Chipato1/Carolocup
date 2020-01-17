@@ -1,15 +1,14 @@
 #pragma once
-#include "LaneDetector.h"
+#include "VisionResult.hpp"
 #include <opencv2/core/cuda.hpp>
-
 #include <opencv2/cudaimgproc.hpp>
-class PointLaneDetector :
-	public LaneDetector
+#include <map>
+class PointLaneDetector
 {
 public:
-	PointLaneDetector();
-	virtual void calculateFrame(cv::Mat&) override;
-	virtual VisionResult getResult() override;
+	PointLaneDetector(std::map<std::string, std::string>&);
+	void calculateFrame(cv::Mat&);
+	VisionResult getResult();
 
 	//Ergebnis (alle Spurpunkte)
 	std::array<std::vector<cv::Point>, 3> result;

@@ -1,4 +1,4 @@
-#include "PointLaneDetector.h"
+#include "PointLaneDetector.hpp"
 
 #include <opencv2/core/utility.hpp>
 #include <opencv2/imgproc.hpp>
@@ -17,12 +17,13 @@
 #include <thread>
 #include <numeric>
 
+
 using namespace cv;
 using namespace cv::cuda;
 
 void drawResult(cv::Mat im, cv::Mat x1, cv::Mat x2, cv::Scalar color, int intersect);
 
-PointLaneDetector::PointLaneDetector() {
+PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config) {
 	this->leftLane1 = cv::Mat::zeros(this->grade, 1, CV_64F);
 	this->middleLane1 = cv::Mat::zeros(this->grade, 1, CV_64F);
 	this->rightLane1 = cv::Mat::zeros(this->grade, 1, CV_64F);
