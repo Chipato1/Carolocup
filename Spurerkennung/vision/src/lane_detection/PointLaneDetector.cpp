@@ -14,7 +14,6 @@
 #include <chrono>
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include <thread>
 #include <numeric>
 
 
@@ -270,17 +269,10 @@ void PointLaneDetector::doGPUTransform(cv::Mat frame, cv::Mat& edgeImage, cv::Ma
 	cv::resize(test, test, Size(800, 600));
 	imshow("tester", test);
 
-	std::thread binThread([&ipm, &binary, &binaryImage]() -> void {
 		cv::cuda::threshold(ipm, binary, 128, 255, THRESH_BINARY);
 		binary.download(binaryImage);
-		});
-	std::thread cannyThread([this, &ipm, &edge, &edgeImage]() -> void {
 		this->canny->detect(ipm, edge);
 		edge.download(edgeImage);
-		});
-
-	binThread.join();
-	cannyThread.join();
 	}
 
 
