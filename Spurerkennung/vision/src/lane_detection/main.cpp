@@ -26,17 +26,17 @@ std::map<std::string, std::string> readConfigFile() {
 	return map;
 }
 
-dv::DrivingVision drivingVision;
+PointLaneDetector detector;
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 	cv::Mat image = cv_bridge::toCvShare(msg, "bgr8")->image;
-	drivingVision.doLaneDetection(image);
+	detector.calculateFrame(image);
 }
 
 int main() {
 	//Config Datei lesen und DrivingVision-Klasse erstellen
 	std::map<std::string, std::string> config = readConfigFile();
-	dv::DrivingVision(config);
+	detector = PointLaneDetector(config);
 
 	//ROS Setup
 	ros::NodeHandle nh;
