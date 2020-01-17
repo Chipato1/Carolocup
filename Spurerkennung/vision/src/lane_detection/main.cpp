@@ -37,6 +37,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 }
 
 int main() {
+	ros::init();
 	//Config Datei lesen und DrivingVision-Klasse erstellen
 	std::map<std::string, std::string> config = readConfigFile();
 	
