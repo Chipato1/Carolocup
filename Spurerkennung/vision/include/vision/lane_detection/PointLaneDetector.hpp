@@ -6,7 +6,7 @@
 class PointLaneDetector
 {
 public:
-	PointLaneDetector(std::map<std::string, std::string>&);
+	PointLaneDetector();
 	void calculateFrame(cv::Mat&);
 	VisionResult getResult();
 

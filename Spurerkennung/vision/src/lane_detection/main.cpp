@@ -38,8 +38,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 int main() {
 	//Config Datei lesen und DrivingVision-Klasse erstellen
 	std::map<std::string, std::string> config = readConfigFile();
-	detector = PointLaneDetector(config);
-
+	
 	//ROS Setup
 	ros::NodeHandle nh;
 	image_transport::ImageTransport it(nh);
