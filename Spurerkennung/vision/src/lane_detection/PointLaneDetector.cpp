@@ -184,7 +184,7 @@ void PointLaneDetector::calculateFrame(cv::Mat& frame) {
 	cv::Mat edgeImage;
 	cv::Mat binaryImage;
 	imshow("test", frame);
-	auto timeStart = std::chrono::high_resolution_clock::now();
+	/*auto timeStart = std::chrono::high_resolution_clock::now();
 	this->doGPUTransform(frame,edgeImage, binaryImage);
 	imshow("edge", edgeImage);
 	auto timeEnd = std::chrono::high_resolution_clock::now();
@@ -192,7 +192,7 @@ void PointLaneDetector::calculateFrame(cv::Mat& frame) {
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
 	std::cout << duration;
 	this->calculateAlgorithm(edgeImage, 0);
-	this->debugDraw(edgeImage);
+	this->debugDraw(edgeImage);*/
 }
 
 void PointLaneDetector::clear() {
