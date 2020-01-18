@@ -271,14 +271,14 @@ void PointLaneDetector::doGPUTransform(cv::Mat frame, cv::Mat& edgeImage, cv::Ma
 	cv::cuda::GpuMat edge;
 
 	cv::cuda::warpPerspective(upload, ipm, this->transformationMat, frame.size(), INTER_CUBIC | WARP_INVERSE_MAP);
-	cv::Mat test(ipm);
-	cv::resize(test, test, Size(800, 600));
+	//cv::Mat test(ipm);
+	//cv::resize(test, test, Size(800, 600));
 	//imshow("tester", test);
 
-		cv::cuda::threshold(ipm, binary, 128, 255, THRESH_BINARY);
-		binary.download(binaryImage);
-		this->canny->detect(ipm, edge);
-		edge.download(edgeImage);
+	//cv::cuda::threshold(ipm, binary, 128, 255, THRESH_BINARY);
+	//binary.download(binaryImage);
+	this->canny->detect(ipm, edge);
+	edge.download(edgeImage);
 	}
 
 
