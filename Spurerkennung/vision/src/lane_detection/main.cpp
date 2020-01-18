@@ -11,9 +11,15 @@
 
 std::map<std::string, std::string> readConfigFile() {
 	std::ifstream infile("config.cfg");
-	std::string line;
 	std::map<std::string, std::string> my_map;
-	
+	if (infile.fail()) {
+		std::cerr << "Error: Could not load config file. Reason:" << strerror(errno) << std::endl;
+		std::cerr << "Program exit" << std::endl;
+		exit(0);
+		return my_map;
+	}
+
+	std::string line;
 	while (std::getline(infile, line)) {
 		std::istringstream is_line(line);
 		std::string key;
@@ -37,11 +43,16 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 }
 
 int main(int argc, char** argv) {
+	std::cout << "Launching ROS Lane Detection node..." << std::endl;
+	std::cout << "Initializing ROS features with parameters: " << std::endl;
+	std::cout << "argc: " << argc << "; Node name: vision_lanedetectionnode" << std::endl;
 	ros::init(argc, argv, "vision_lanedetectionnode");
+	std::cout << "Success!" << std::endl;
+	std::cout << "Loading config file config.cfg" << std::endl;
 	//Config Datei lesen und DrivingVision-Klasse erstellen
 	std::map<std::string, std::string> config = readConfigFile();
-	std::cout << "TEST" << config << std::endl;
-	//ROS Setup
+	std::cout << "Success!" << std::endl;
+
 	ros::NodeHandle nh;
 	image_transport::ImageTransport it(nh);
 	//config["cam_im_topic_name"]
