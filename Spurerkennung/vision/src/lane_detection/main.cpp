@@ -13,7 +13,7 @@ std::map<std::string, std::string> readConfigFile() {
 	std::ifstream infile("config.cfg");
 	std::map<std::string, std::string> my_map;
 	if (infile.fail()) {
-		std::cerr << "Error: Could not load config file. Reason:" << strerror(errno) << std::endl;
+		std::cerr << "Error: Could not load config file. Reason: " << strerror(errno) << std::endl;
 		std::cerr << "Program exit" << std::endl;
 		exit(0);
 		return my_map;
@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
 	std::cout << "argc: " << argc << "; Node name: vision_lanedetectionnode" << std::endl;
 	ros::init(argc, argv, "vision_lanedetectionnode");
 	std::cout << "Success!" << std::endl;
-	std::cout << "Loading config file config.cfg" << std::endl;
+	std::cout << "Trying to load config file config.cfg" << std::endl;
 	//Config Datei lesen und DrivingVision-Klasse erstellen
 	std::map<std::string, std::string> config = readConfigFile();
 	std::cout << "Success!" << std::endl;
