@@ -183,15 +183,16 @@ VisionResult PointLaneDetector::getResult() {
 void PointLaneDetector::calculateFrame(cv::Mat& frame) {
 	cv::Mat edgeImage;
 	cv::Mat binaryImage;
-	imshow("~/Desktop/test.png", frame);
+	//imshow("~/Desktop/test.png", frame);
 	auto timeStart = std::chrono::high_resolution_clock::now();
 	this->doGPUTransform(frame,edgeImage, binaryImage);
-	auto timeEnd = std::chrono::high_resolution_clock::now();
-	imshow("edge", edgeImage);
-	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
-	std::cout << duration;
 	this->calculateAlgorithm(edgeImage, 0);
-	this->debugDraw(edgeImage);
+	auto timeEnd = std::chrono::high_resolution_clock::now();
+	//imshow("edge", edgeImage);
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
+	std::cout <<"Dauer: " << duration << std::endl;
+	
+	//this->debugDraw(edgeImage);
 	waitKey(1);
 }
 
