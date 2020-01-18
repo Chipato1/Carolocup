@@ -8,6 +8,7 @@
 #include <ros/ros.h>
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
+#include <chrono>
 
 std::map<std::string, std::string> readConfigFile() {
 	std::ifstream infile("/home/xavier/config/config.cfg");
@@ -37,8 +38,12 @@ std::map<std::string, std::string> readConfigFile() {
 PointLaneDetector detector;
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
+	auto timeStart = std::chrono::high_resolution_clock::now();
 	cv::Mat image = cv_bridge::toCvShare(msg, "mono8")->image;
 	detector.calculateFrame(image);
+	auto timeEnd = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
+	std::cout <<"Dauer Gesamt: " << duration << std::endl;
 }
 
 int main(int argc, char** argv) {
