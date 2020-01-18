@@ -143,7 +143,7 @@ include_directories(
 add_executable(${PROJECT_NAME}_lanedetectionnode src/lane_detection/main.cpp src/lane_detection/PointLaneDetector.cpp src/lane_detection/VisionResult.cpp)
 target_link_libraries( ${PROJECT_NAME}_lanedetectionnode ${catkin_LIBRARIES} ${OpenCV_LIBS} )
 
-add_executable(${PROJECT_NAME}_startboxdetectionnode src/startbox_detection/main.cpp src/startbox_detection/StartDetection.cpp)
+add_executable(${PROJECT_NAME}_startboxdetectionnode src/startbox_detection/main.cpp src/startbox_detection/StartDetector.cpp)
 target_link_libraries( ${PROJECT_NAME}_startboxdetectionnode ${catkin_LIBRARIES} ${OpenCV_LIBS} )
 
 add_executable(${PROJECT_NAME}_parkinglotdetectionnode src/parkinglot_detection/main.cpp src/parkinglot_detection/ParkinglotDetector.cpp)
