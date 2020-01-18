@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
 	ros::init(argc, argv, "vision_lanedetectionnode");
 	//Config Datei lesen und DrivingVision-Klasse erstellen
 	std::map<std::string, std::string> config = readConfigFile();
-	std::cout << "TEST" << config["cam_im_topic_name"] << std::endl;
+	std::cout << "TEST" << config << std::endl;
 	//ROS Setup
 	ros::NodeHandle nh;
 	image_transport::ImageTransport it(nh);
