@@ -190,6 +190,7 @@ void PointLaneDetector::calculateFrame(cv::Mat& frame) {
 	auto timeEnd = std::chrono::high_resolution_clock::now();
 	//imshow("edge", edgeImage);
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
+	cout << "\033[2J\033[1;1H";
 	std::cout <<"Dauer: " << duration << std::endl;
 	
 	//this->debugDraw(edgeImage);
@@ -268,7 +269,7 @@ void PointLaneDetector::doGPUTransform(cv::Mat frame, cv::Mat& edgeImage, cv::Ma
 	cv::cuda::warpPerspective(upload, ipm, this->transformationMat, frame.size(), INTER_CUBIC | WARP_INVERSE_MAP);
 	cv::Mat test(ipm);
 	cv::resize(test, test, Size(800, 600));
-	imshow("tester", test);
+	//imshow("tester", test);
 
 		cv::cuda::threshold(ipm, binary, 128, 255, THRESH_BINARY);
 		binary.download(binaryImage);
