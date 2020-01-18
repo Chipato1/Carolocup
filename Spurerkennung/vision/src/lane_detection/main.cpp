@@ -44,7 +44,8 @@ int main(int argc, char** argv) {
 	//ROS Setup
 	ros::NodeHandle nh;
 	image_transport::ImageTransport it(nh);
-	image_transport::Subscriber sub = it.subscribe(config["cam_im_topic_name"] , 1, imageCallback);
+	//config["cam_im_topic_name"]
+	image_transport::Subscriber sub = it.subscribe("camera/image_raw" , 1, imageCallback);
 	ros::spin();
 	return 0;
 }
