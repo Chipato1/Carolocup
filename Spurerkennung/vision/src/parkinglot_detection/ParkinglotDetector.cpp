@@ -1,4 +1,4 @@
-#include  <vision/parkinglot_detector/ParkingotDetector.hpp>
+#include  <vision/parkinglot_detector/ParkinglotDetector.hpp>
 
 ParkinglotDetector::ParkinglotDetector() {
 

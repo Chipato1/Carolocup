@@ -10,7 +10,7 @@ class StartboxDetector
 {
 public:
     bool checkQRCode(cv::Mat inputImage);
-    StartDetection();
+    StartboxDetector();
     
 private:
     cv::Mat inputImage;
