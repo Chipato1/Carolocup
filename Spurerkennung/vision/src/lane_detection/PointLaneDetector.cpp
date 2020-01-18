@@ -186,13 +186,17 @@ void PointLaneDetector::calculateFrame(cv::Mat& frame) {
 	//imshow("~/Desktop/test.png", frame);
 	auto timeStart = std::chrono::high_resolution_clock::now();
 	this->doGPUTransform(frame,edgeImage, binaryImage);
+	auto timeGPU = std::chrono::high_resolution_clock::now();
 	this->calculateAlgorithm(edgeImage, 0);
 	auto timeEnd = std::chrono::high_resolution_clock::now();
 	//imshow("edge", edgeImage);
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
 	//std::cout << "\033[2J\033[1;1H";
-	std::cout <<"Dauer: " << duration << std::endl;
-	
+	std::cout <<"Dauer Gesamt: " << duration << std::endl;
+	duration = std::chrono::duration_cast<std::chrono::microseconds>(timeGPU - timeStart).count();
+	std::cout << "Dauer GPU: " << duration << std::endl;
+	duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeGPU).count();
+	std::cout << "Dauer CPU: " << duration << std::endl;
 	//this->debugDraw(edgeImage);
 	waitKey(1);
 }
