@@ -1,9 +1,9 @@
-#include "ParkinglotDetection.h"
+#include  <vision/parkinglot_detector/ParkingotDetector.hpp>
 
-ParkinglotDetection::ParkinglotDetection() {
+ParkinglotDetector::ParkinglotDetector() {
 
 }
 
-void ParkinglotDetection::checkForParkinglots{
+void ParkinglotDetector::checkForParkinglots() {
 	
 }

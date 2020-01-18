@@ -1,12 +1,12 @@
-#include  <vision/lane_detection/StartDetection.hpp>
+#include  <vision/startbox_detection/StartboxDetector.hpp>
 
 using namespace cv;
 
-StartDetection::StartDetection() {
+StartboxDetector::StartboxDetector() {
     qrDecoder = QRCodeDetector();
 }
 
-bool StartDetection::checkQRCode(cv::Mat inputImage) {
+bool StartboxDetector::checkQRCode(cv::Mat inputImage) {
     //Detect and Decode the QRCode in the image
     extractedData = qrDecoder.detectAndDecode(inputImage, bbox, rectifiedImage);
        

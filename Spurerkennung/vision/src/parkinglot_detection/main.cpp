@@ -1,4 +1,4 @@
-#include <vision/startbox_detection/StartDetection.hpp>
+#include <vision/parkinglot_detection/ParkinglotDetector.hpp>
 
 #include <iostream>
 #include <map>
@@ -38,14 +38,14 @@ std::map<std::string, std::string> readConfigFile() {
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 	cv::Mat image = cv_bridge::toCvShare(msg, "mono8")->image;
-	//---------------CODE HIER EINFÜGEN---------------------
+	//----------------------------CODE HIER EINFÜGEN---------------
 }
 
 int main(int argc, char** argv) {
 	std::cout << "Launching ROS Lane Detection node..." << std::endl;
 	std::cout << "Initializing ROS features with parameters: " << std::endl;
 	std::cout << "argc: " << argc << "; Node name: vision_lanedetectionnode" << std::endl;
-	ros::init(argc, argv, "vision_startboxdetectionnnode");
+	ros::init(argc, argv, "vision_lanedetectionnode");
 	std::cout << "Success!" << std::endl;
 	std::cout << "Trying to load config file config.cfg" << std::endl;
 	//Config Datei lesen und DrivingVision-Klasse erstellen
@@ -54,6 +54,7 @@ int main(int argc, char** argv) {
 
 	ros::NodeHandle nh;
 	image_transport::ImageTransport it(nh);
+	//
 	image_transport::Subscriber sub = it.subscribe(config["cam_im_topic_name"] , 1, imageCallback);
 	ros::spin();
 	return 0;

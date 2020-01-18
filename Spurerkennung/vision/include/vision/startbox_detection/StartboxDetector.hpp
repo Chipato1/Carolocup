@@ -6,7 +6,7 @@
 
 
 
-class StartDetection
+class StartboxDetector
 {
 public:
     bool checkQRCode(cv::Mat inputImage);

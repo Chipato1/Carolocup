@@ -1,4 +1,4 @@
-#include <vision/startbox_detection/StartDetection.hpp>
+#include <vision/stopline_detection/StoplineDetector.hpp>
 
 #include <iostream>
 #include <map>
@@ -35,17 +35,23 @@ std::map<std::string, std::string> readConfigFile() {
 	return my_map;
 }
 
+PointLaneDetector detector;
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
+	
+	auto timeStart = std::chrono::high_resolution_clock::now();
 	cv::Mat image = cv_bridge::toCvShare(msg, "mono8")->image;
-	//---------------CODE HIER EINFÜGEN---------------------
+	detector.calculateFrame(image);
+	auto timeEnd = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
+	std::cout <<"Dauer Gesamt: " << duration << std::endl;
 }
 
 int main(int argc, char** argv) {
 	std::cout << "Launching ROS Lane Detection node..." << std::endl;
 	std::cout << "Initializing ROS features with parameters: " << std::endl;
-	std::cout << "argc: " << argc << "; Node name: vision_lanedetectionnode" << std::endl;
-	ros::init(argc, argv, "vision_startboxdetectionnnode");
+	std::cout << "argc: " << argc << "; Node name: vision_stoplinedetectionnode" << std::endl;
+	ros::init(argc, argv, "vision_stoplinedetectionnode");
 	std::cout << "Success!" << std::endl;
 	std::cout << "Trying to load config file config.cfg" << std::endl;
 	//Config Datei lesen und DrivingVision-Klasse erstellen
@@ -54,6 +60,7 @@ int main(int argc, char** argv) {
 
 	ros::NodeHandle nh;
 	image_transport::ImageTransport it(nh);
+	//
 	image_transport::Subscriber sub = it.subscribe(config["cam_im_topic_name"] , 1, imageCallback);
 	ros::spin();
 	return 0;
