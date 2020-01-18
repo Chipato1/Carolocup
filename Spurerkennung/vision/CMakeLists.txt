@@ -146,6 +146,12 @@ target_link_libraries( ${PROJECT_NAME}_lanedetectionnode ${catkin_LIBRARIES} ${O
 add_executable(${PROJECT_NAME}_startboxdetectionnode src/startbox_detection/main.cpp src/startbox_detection/StartDetection.cpp)
 target_link_libraries( ${PROJECT_NAME}_startboxdetectionnode ${catkin_LIBRARIES} ${OpenCV_LIBS} )
 
+add_executable(${PROJECT_NAME}_parkinglotdetectionnode src/parkinglot_detection/main.cpp src/parkinglot_detection/ParkinglotDetector.cpp)
+target_link_libraries( ${PROJECT_NAME}_parkinglotdetectionnode ${catkin_LIBRARIES} ${OpenCV_LIBS} )
+
+add_executable(${PROJECT_NAME}_stoplinedetectionnode src/stopline_detection/main.cpp src/stopline_detection/StoplineDetector.cpp)
+target_link_libraries( ${PROJECT_NAME}_stoplinedetectionnode ${catkin_LIBRARIES} ${OpenCV_LIBS} )
+
 ## Copy the config.cfg file
 #add_custom_command(TARGET ${PROJECT_NAME}_lanedetectionnode POST_BUILD        # Adds a post-build event to MyTest
 #    COMMAND ${CMAKE_COMMAND} -E copy_if_different  # which executes "cmake - E copy_if_different..."
