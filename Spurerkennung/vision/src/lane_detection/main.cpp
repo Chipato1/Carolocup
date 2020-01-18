@@ -38,7 +38,6 @@ PointLaneDetector detector;
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 	cv::Mat image = cv_bridge::toCvShare(msg, "mono8")->image;
-	std::cout << "Showing image" << std::endl;
 	detector.calculateFrame(image);
 }
 
