@@ -265,11 +265,13 @@ cv::Mat PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 
 
 void PointLaneDetector::doGPUTransform(cv::Mat frame, cv::Mat& edgeImage, cv::Mat& binaryImage) {
+
+	auto timeStart = std::chrono::high_resolution_clock::now();
 	cv::cuda::GpuMat upload(frame);
 	cv::cuda::GpuMat ipm;
 	cv::cuda::GpuMat binary;
 	cv::cuda::GpuMat edge;
-
+	auto uploadEnd = std::chrono::high_resolution_clock::now();
 	cv::cuda::warpPerspective(upload, ipm, this->transformationMat, frame.size(), INTER_CUBIC | WARP_INVERSE_MAP);
 	//cv::Mat test(ipm);
 	//cv::resize(test, test, Size(800, 600));
@@ -277,8 +279,25 @@ void PointLaneDetector::doGPUTransform(cv::Mat frame, cv::Mat& edgeImage, cv::Ma
 
 	//cv::cuda::threshold(ipm, binary, 128, 255, THRESH_BINARY);
 	//binary.download(binaryImage);
+	auto warpEnd = std::chrono::high_resolution_clock::now();
 	this->canny->detect(ipm, edge);
+	auto cannyEnd = std::chrono::high_resolution_clock::now();
 	edge.download(edgeImage);
+	auto timeEnd = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
+	std::cout <<"Dauer GPU Gesamt: " << duration << std::endl;
+
+	duration = std::chrono::duration_cast<std::chrono::microseconds>(uploadEnd - timeStart).count();
+	std::cout <<"Dauer Upload: " << duration << std::endl;
+
+	duration = std::chrono::duration_cast<std::chrono::microseconds>(warpEnd - uploadEnd).count();
+	std::cout <<"Dauer Warp: " << duration << std::endl;
+
+	duration = std::chrono::duration_cast<std::chrono::microseconds>(cannyEnd - warpEnd).count();
+	std::cout <<"Dauer Canny: " << duration << std::endl;
+
+	duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - cannyEnd).count();
+	std::cout <<"Dauer Download: " << duration << std::endl;
 	}
 
 
