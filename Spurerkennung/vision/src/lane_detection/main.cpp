@@ -10,7 +10,7 @@
 #include <image_transport/image_transport.h>
 
 std::map<std::string, std::string> readConfigFile() {
-	std::ifstream infile("/home/config/config.cfg");
+	std::ifstream infile("/home/xavier/config/config.cfg");
 	std::map<std::string, std::string> my_map;
 	if (infile.fail()) {
 		std::cerr << "Error: Could not load config file. Reason: " << strerror(errno) << std::endl;
