@@ -38,7 +38,6 @@ std::map<std::string, std::string> readConfigFile() {
 PointLaneDetector detector;
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
-	
 	auto timeStart = std::chrono::high_resolution_clock::now();
 	cv::Mat image = cv_bridge::toCvShare(msg, "mono8")->image;
 	detector.calculateFrame(image);
