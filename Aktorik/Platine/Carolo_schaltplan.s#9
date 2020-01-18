@@ -6669,6 +6669,7 @@ Grid 2.54 mm&lt;p&gt;
 <part name="R3" library="resistor" deviceset="R-EU_" device="0309/12" value="49.9k"/>
 <part name="R4" library="resistor" deviceset="R-EU_" device="0309/12" value="365k"/>
 <part name="C4" library="capacitor-wima" deviceset="C" device="5/2.5" value="5pF"/>
+<part name="GND4" library="SparkFun-PowerSymbols" deviceset="GND" device=""/>
 <part name="C5" library="capacitor-wima" deviceset="C" device="5/2.5" value="470n"/>
 <part name="L1" library="inductors" deviceset="82114R" device=""/>
 <part name="C6" library="capacitor-wima" deviceset="C" device="5/2.5" value="22u"/>
@@ -6743,6 +6744,7 @@ Grid 2.54 mm&lt;p&gt;
 <instance part="R3" gate="G$1" x="81.28" y="53.34" rot="R90"/>
 <instance part="R4" gate="G$1" x="88.9" y="68.58" rot="R180"/>
 <instance part="C4" gate="G$1" x="88.9" y="60.96" rot="R90"/>
+<instance part="GND4" gate="1" x="81.28" y="43.18"/>
 <instance part="C5" gate="G$1" x="114.3" y="83.82" rot="R90"/>
 <instance part="L1" gate="1" x="121.92" y="68.58" rot="R90"/>
 <instance part="C6" gate="G$1" x="101.6" y="53.34"/>
@@ -6961,6 +6963,11 @@ Grid 2.54 mm&lt;p&gt;
 <wire x1="106.68" y1="78.74" x2="106.68" y2="73.66" width="0.1524" layer="91"/>
 </segment>
 <segment>
+<pinref part="GND4" gate="1" pin="GND"/>
+<pinref part="R3" gate="G$1" pin="1"/>
+<wire x1="81.28" y1="45.72" x2="81.28" y2="48.26" width="0.1524" layer="91"/>
+</segment>
+<segment>
 <pinref part="GND5" gate="1" pin="GND"/>
 <wire x1="106.68" y1="45.72" x2="101.6" y2="45.72" width="0.1524" layer="91"/>
 <pinref part="C6" gate="G$1" pin="2"/>
@@ -6980,6 +6987,14 @@ Grid 2.54 mm&lt;p&gt;
 <pinref part="SUPPLY1" gate="GND" pin="GND"/>
 <pinref part="R5" gate="G$1" pin="1"/>
 <wire x1="45.72" y1="-7.62" x2="45.72" y2="-5.08" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="SUPPLY3" gate="GND" pin="GND"/>
+<wire x1="172.72" y1="-55.88" x2="180.34" y2="-55.88" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="SUPPLY6" gate="GND" pin="GND"/>
+<wire x1="172.72" y1="-73.66" x2="180.34" y2="-73.66" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="SERVO" gate="-3" pin="S"/>
@@ -7041,16 +7056,6 @@ Grid 2.54 mm&lt;p&gt;
 <pinref part="GND6" gate="1" pin="GND"/>
 <pinref part="X15" gate="-1" pin="KL"/>
 <wire x1="200.66" y1="48.26" x2="205.74" y2="48.26" width="0.1524" layer="91"/>
-</segment>
-<segment>
-<pinref part="SUPPLY6" gate="GND" pin="GND"/>
-<pinref part="MOTOR(FERNBEDIENUNG)" gate="-2" pin="S"/>
-<wire x1="172.72" y1="-73.66" x2="177.8" y2="-73.66" width="0.1524" layer="91"/>
-</segment>
-<segment>
-<pinref part="SUPPLY3" gate="GND" pin="GND"/>
-<pinref part="MOTOR" gate="-2" pin="S"/>
-<wire x1="172.72" y1="-55.88" x2="177.8" y2="-55.88" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$41" class="0">
@@ -7330,10 +7335,9 @@ Grid 2.54 mm&lt;p&gt;
 <net name="N$17" class="0">
 <segment>
 <wire x1="38.1" y1="73.66" x2="38.1" y2="-60.96" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="-60.96" x2="180.34" y2="-60.96" width="0.1524" layer="91"/>
 <pinref part="B1" gate="B1" pin="11"/>
 <wire x1="12.7" y1="73.66" x2="38.1" y2="73.66" width="0.1524" layer="91"/>
-<pinref part="MOTOR" gate="-1" pin="S"/>
-<wire x1="38.1" y1="-60.96" x2="177.8" y2="-60.96" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$15" class="0">
@@ -7770,8 +7774,7 @@ Grid 2.54 mm&lt;p&gt;
 <wire x1="-22.86" y1="-20.32" x2="-22.86" y2="-38.1" width="0.1524" layer="91"/>
 <wire x1="-22.86" y1="-38.1" x2="5.08" y2="-38.1" width="0.1524" layer="91"/>
 <wire x1="5.08" y1="-38.1" x2="5.08" y2="-53.34" width="0.1524" layer="91"/>
-<pinref part="X14" gate="-1" pin="KL"/>
-<wire x1="-2.54" y1="-53.34" x2="5.08" y2="-53.34" width="0.1524" layer="91"/>
+<wire x1="5.08" y1="-53.34" x2="-5.08" y2="-53.34" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$44" class="0">
@@ -7844,9 +7847,9 @@ Grid 2.54 mm&lt;p&gt;
 <label x="15.24" y="71.12" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
-<label x="-129.54" y="-121.92" size="1.778" layer="95" xref="yes"/>
-<pinref part="X19" gate="-1" pin="1"/>
-<wire x1="-139.7" y1="-121.92" x2="-129.54" y2="-121.92" width="0.1524" layer="91"/>
+<label x="-132.08" y="-101.6" size="1.778" layer="95" xref="yes"/>
+<pinref part="X19" gate="-5" pin="1"/>
+<wire x1="-139.7" y1="-101.6" x2="-132.08" y2="-101.6" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="PIN9" class="0">
@@ -7856,9 +7859,9 @@ Grid 2.54 mm&lt;p&gt;
 <label x="15.24" y="68.58" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
-<label x="-132.08" y="-116.84" size="1.778" layer="95" xref="yes"/>
-<pinref part="X19" gate="-2" pin="1"/>
-<wire x1="-139.7" y1="-116.84" x2="-132.08" y2="-116.84" width="0.1524" layer="91"/>
+<label x="-132.08" y="-106.68" size="1.778" layer="95" xref="yes"/>
+<pinref part="X19" gate="-4" pin="1"/>
+<wire x1="-139.7" y1="-106.68" x2="-132.08" y2="-106.68" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="PIN1" class="0">
@@ -7868,21 +7871,21 @@ Grid 2.54 mm&lt;p&gt;
 <label x="15.24" y="45.72" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
-<label x="-132.08" y="-101.6" size="1.778" layer="95" xref="yes"/>
-<pinref part="X19" gate="-5" pin="1"/>
-<wire x1="-139.7" y1="-101.6" x2="-132.08" y2="-101.6" width="0.1524" layer="91"/>
+<label x="-129.54" y="-121.92" size="1.778" layer="95" xref="yes"/>
+<pinref part="X19" gate="-1" pin="1"/>
+<wire x1="-139.7" y1="-121.92" x2="-129.54" y2="-121.92" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="PIN2" class="0">
 <segment>
+<label x="-132.08" y="-116.84" size="1.778" layer="95" xref="yes"/>
+<pinref part="X19" gate="-2" pin="1"/>
+<wire x1="-139.7" y1="-116.84" x2="-132.08" y2="-116.84" width="0.1524" layer="91"/>
+</segment>
+<segment>
 <pinref part="B1" gate="B1" pin="2"/>
 <wire x1="12.7" y1="48.26" x2="17.78" y2="48.26" width="0.1524" layer="91"/>
 <label x="17.78" y="48.26" size="1.778" layer="95" xref="yes"/>
-</segment>
-<segment>
-<label x="-132.08" y="-106.68" size="1.778" layer="95" xref="yes"/>
-<pinref part="X19" gate="-4" pin="1"/>
-<wire x1="-139.7" y1="-106.68" x2="-132.08" y2="-106.68" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="PIN3" class="0">
@@ -8079,6 +8082,18 @@ Grid 2.54 mm&lt;p&gt;
 <pinref part="SV1" gate="1" pin="4"/>
 <wire x1="152.4" y1="-88.9" x2="147.32" y2="-88.9" width="0.1524" layer="91"/>
 <label x="147.32" y="-88.9" size="1.778" layer="95" rot="R180" xref="yes"/>
+</segment>
+</net>
+<net name="TIEFPASS_PWM" class="0">
+<segment>
+<pinref part="B1" gate="B1" pin="4"/>
+<wire x1="12.7" y1="53.34" x2="27.94" y2="53.34" width="0.1524" layer="91"/>
+<label x="27.94" y="53.34" size="1.778" layer="95" xref="yes"/>
+</segment>
+<segment>
+<pinref part="SV1" gate="1" pin="2"/>
+<wire x1="152.4" y1="-91.44" x2="149.86" y2="-91.44" width="0.1524" layer="91"/>
+<label x="149.86" y="-91.44" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
 <net name="N$55" class="0">
