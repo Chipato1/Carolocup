@@ -190,7 +190,6 @@ void PointLaneDetector::calculateFrame(cv::Mat& frame) {
 	auto timeEnd = std::chrono::high_resolution_clock::now();
 
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
-	system("cls");
 	std::cout << duration;
 	this->calculateAlgorithm(edgeImage, 0);
 	this->debugDraw(edgeImage);
