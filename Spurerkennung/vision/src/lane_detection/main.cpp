@@ -6,7 +6,7 @@
 #include <string>
 
 #include <ros/ros.h>
-//#include <cv_bridge/cv_bridge.h>
+#include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
 
 std::map<std::string, std::string> readConfigFile() {
@@ -31,8 +31,7 @@ std::map<std::string, std::string> readConfigFile() {
 PointLaneDetector detector;
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
-	cv::Mat image;
-	// = cv_bridge::toCvShare(msg, "bgr8")->image;
+	cv::Mat image = cv_bridge::toCvShare(msg, "bgr8")->image;
 	detector.calculateFrame(image);
 }
 
