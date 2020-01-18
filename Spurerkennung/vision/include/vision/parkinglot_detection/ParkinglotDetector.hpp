@@ -5,4 +5,5 @@ class ParkinglotDetector
 {
 public:
 	void checkForParkinglots();
+	ParkinglotDetector();
 };
