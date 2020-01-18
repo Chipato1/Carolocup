@@ -184,7 +184,7 @@ void PointLaneDetector::calculateFrame(cv::Mat& frame) {
 	cv::Mat edgeImage;
 	cv::Mat binaryImage;
 	imshow("~/Desktop/test.png", frame);
-	waitkey(10000);
+	waitKey(10000);
 	/*auto timeStart = std::chrono::high_resolution_clock::now();
 	this->doGPUTransform(frame,edgeImage, binaryImage);
 	imshow("edge", edgeImage);
