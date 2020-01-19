@@ -42,7 +42,7 @@ namespace dv {
 	VisionResult DrivingVision::doLaneDetection() {
 		
 
-		ImageSource* source = new StaticImageSource("C:\\images\\Parkplatz_Testbild.png");
+		ImageSource* source = new StaticImageSource("C:\\images\\t1.bmp");
 		cv::Mat matrix = source->next();
 		cv::imshow("source", matrix);
 		type2str(matrix.type());
@@ -57,5 +57,9 @@ namespace dv {
         cv::Mat matrix = source->next();
 		//return this->startDetector->checkQRCode(matrix);
 		return false;
+	}
+	LaneDetector* DrivingVision::getDetector()
+	{
+		return this->detector;
 	}
 }
