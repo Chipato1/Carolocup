@@ -1,8 +1,0 @@
-prefix=/home/chipato/Desktop/Carolo_Git/Carolocup/catkin_ws/devel
-
-Name: behavior_tree_core
-Description: Description of behavior_tree_core
-Version: 0.0.0
-Cflags: -I/home/chipato/Desktop/Carolo_Git/Carolocup/catkin_ws/devel/include -I/home/chipato/Desktop/Carolo_Git/Carolocup/catkin_ws/src/ROS-Behavior-Tree/behavior_tree_core/include
-Libs: -L/home/chipato/Desktop/Carolo_Git/Carolocup/catkin_ws/devel/lib -lbehavior_tree_core
-Requires: actionlib_msgs
