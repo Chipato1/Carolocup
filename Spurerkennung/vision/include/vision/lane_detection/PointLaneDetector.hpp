@@ -3,10 +3,11 @@
 #include <opencv2/core/cuda.hpp>
 #include <opencv2/cudaimgproc.hpp>
 #include <map>
+#include <string>
 class PointLaneDetector
 {
 public:
-	PointLaneDetector();
+	PointLaneDetector(std::map<std::string, std::string>&);
 	void calculateFrame(cv::Mat&);
 
 	//Ergebnis (alle Spurpunkte)
