@@ -201,53 +201,6 @@ void PointLaneDetector::calculateFrame(cv::Mat& frame) {
 	waitKey(1);
 }
 
-void PointLaneDetector::clear() {
-	this->vres.lanePoints.at(0).clear();
-	this->vres.lanePoints.at(0).reserve(numberOfLines);
-	this->vres.lanePoints.at(1).clear();
-	this->vres.lanePoints.at(1).reserve(numberOfLines);
-	this->vres.lanePoints.at(2).clear();
-	this->vres.lanePoints.at(2).reserve(numberOfLines);
-
-	this->vres.detectedPoints.clear();
-	this->vres.detectedPoints.reserve(numberOfLines);
-
-	this->linePoints.release();
-
-	this->laneMiddles.clear();
-	this->laneMiddles.reserve(25);
-}
-
-
-
-bool PointLaneDetector::calculateAlgorithm()
-{
-	this->clear();
-	stepSize = (this->edge.rows - edgeOffset) / (numberOfLines - 1);
-	int lineY = this->edge.rows - 2 - stepSize * startLine;											//1: Offset wegen Canny (letzte Zeile schwarz)
-
-	
-	this->foundLL = false;
-	this->foundML = false;
-	this->foundRL = false;
-
-	this->numberOfLeftPoints = 0;
-	this->numberOfMiddlePoints = 0;
-	this->numberOfRightPoints = 0;
-
-	for (int i = 0; i < this->numberOfLines; i++) {
-		cv::findNonZero(this->edge.row(lineY), this->linePoints);
-		this->laneMiddlePoints(this->laneMiddles, this->linePoints, lineY);
-		this->vres.detectedPoints.push_back(this->laneMiddles);
-
-		this->classifyPoints(i);
-		this->prepareInterpolation(i);
-
-		lineY -= stepSize;
-	}
-	bool solveRes = this->solveClothoide();
-	return solveRes;
-}
 
 void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 	auto timeStart = std::chrono::high_resolution_clock::now();
@@ -284,6 +237,50 @@ void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 }
 
 
+bool PointLaneDetector::calculateAlgorithm() {
+	this->clear();
+	stepSize = (this->edge.rows - edgeOffset) / (numberOfLines - 1);
+	int lineY = this->edge.rows - 2 - stepSize * startLine;											//1: Offset wegen Canny (letzte Zeile schwarz)
+
+	
+	this->foundLL = false;
+	this->foundML = false;
+	this->foundRL = false;
+
+	this->numberOfLeftPoints = 0;
+	this->numberOfMiddlePoints = 0;
+	this->numberOfRightPoints = 0;
+
+	for (int i = 0; i < this->numberOfLines; i++) {
+		cv::findNonZero(this->edge.row(lineY), this->linePoints);
+		this->laneMiddlePoints(this->laneMiddles, this->linePoints, lineY);
+		this->vres.detectedPoints.push_back(this->laneMiddles);
+
+		this->classifyPoints(i);
+		this->prepareInterpolation(i);
+
+		lineY -= stepSize;
+	}
+	bool solveRes = this->solveClothoide();
+	return solveRes;
+}
+
+void PointLaneDetector::clear() {
+	this->vres.lanePoints.at(0).clear();
+	this->vres.lanePoints.at(0).reserve(numberOfLines);
+	this->vres.lanePoints.at(1).clear();
+	this->vres.lanePoints.at(1).reserve(numberOfLines);
+	this->vres.lanePoints.at(2).clear();
+	this->vres.lanePoints.at(2).reserve(numberOfLines);
+
+	this->vres.detectedPoints.clear();
+	this->vres.detectedPoints.reserve(numberOfLines);
+
+	this->linePoints.release();
+
+	this->laneMiddles.clear();
+	this->laneMiddles.reserve(25);
+}
 
 void PointLaneDetector::classifyPoints(int line) {
 	if (!laneMiddles.empty() && (!foundLL || !foundML || !foundRL)) {
