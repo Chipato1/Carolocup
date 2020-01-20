@@ -69,14 +69,23 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 
 	this->canny = cuda::createCannyEdgeDetector(low_thresh, high_thresh, aperture_size, false);
 
-	double alpha_ 			= 90 - camera_angle_pitch;
+	/*double alpha_ 			= 90 - camera_angle_pitch;
 	double beta_ 			= 90 - camera_angle_roll;
 	double gamma_ 			= 90 - camera_angle_yaw;
 	double f_ 				= camera_focallength;
 	double height 			= camera_height;
 	double skew_ 			= 0;
 	double pixel_width 		= 7.2;
-	double pixel_height 	= 5.4;
+	double pixel_height 	= 5.4;*/
+
+	double alpha_ = 42;
+	double beta_ = 90 - camera_angle_roll;
+	double gamma_ = 90 - camera_angle_yaw;
+	double f_ = 500;
+	double height = camera_height;
+	double skew_ = 0;
+	double pixel_width = 7.2;
+	double pixel_height = 5.4;
 
 	double focalLength, dist, alpha, beta, gamma, skew;
 
@@ -84,7 +93,7 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 	beta = ((double)beta_ - 90) * M_PI / 180;
 	gamma = ((double)gamma_ - 90) * M_PI / 180;
 	focalLength = (double)f_;
-	dist = ((double)height) / cos(alpha);
+	dist = 600;//-((double)height) / sin(alpha);
 	skew = skew_;
 
 	Size image_size = Size(camera_res_wid, camera_res_hei);
@@ -134,7 +143,7 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 	// K - camera matrix
 	Mat K = (Mat_<float>(3, 4) <<
 		focalLength	,		skew,						w / 2,		0,
-		0							,		focalLength,	h / 2,		0,
+		0							,		focalLength,	h / 6,		0,
 		0							,		0,							1,			0
 		);
 	this->transformationMat = K * (T * (R * A1));
@@ -152,13 +161,12 @@ void PointLaneDetector::debugDraw(cv::Mat& frame) {
 			circle(frame, this->vRes.lanePoints.at(x).at(y), 5, Scalar(x * 128, 255, 255));
 		}
 	}
-	cv::resize(frame, frame, Size(800, 600));
 	imshow("Result image", frame);
 
 }
 
 double calcX(cv::Mat func, float y) {
-	double res = 1/6 * func.at<double>(0,0) + 1/2 * func.at<double>(1,0) + func.at<double>(2,0) + func.at<double>(3,0);
+	double res = 1/6 * func.at<double>(0,0)*y*y*y + 1/2 * func.at<double>(1,0)*y*y + func.at<double>(2,0)*y + func.at<double>(3,0);
 	return res;
 }
 
@@ -205,16 +213,19 @@ void PointLaneDetector::calculateFrame(cv::Mat& frame) {
 
 void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 	auto timeStart = std::chrono::high_resolution_clock::now();
+	
 	this->imageGPU.upload(frame);
+	cv::Mat down(this->imageGPU);
+	imshow("T", down);
 
 	auto uploadEnd = std::chrono::high_resolution_clock::now();
 	cv::cuda::warpPerspective(this->imageGPU, this->ipmGPU, this->transformationMat, frame.size(), INTER_CUBIC | WARP_INVERSE_MAP);
-	//cv::Mat test(ipm);
-	//cv::resize(test, test, Size(800, 600));
-	//imshow("tester", test);
+	cv::cuda::threshold(this->ipmGPU, this->imageGPU, 230, 255, 0);
+	cv::Mat test(this->imageGPU);
+	imshow("tester", test);
 
 	auto warpEnd = std::chrono::high_resolution_clock::now();
-	this->canny->detect(this->ipmGPU, this->edgeGPU);
+	this->canny->detect(this->imageGPU, this->edgeGPU);
 
 	auto cannyEnd = std::chrono::high_resolution_clock::now();
 	this->edgeGPU.download(edge);
@@ -458,8 +469,8 @@ void PointLaneDetector::removeFalse(std::array<double, numberOfLines>& arr) {
 }
 
 void makeClothoide(cv::Mat& res) {
-	res.at<double>(0) = res.at<double>(0) / 6;
-	res.at<double>(1) = res.at<double>(0) / 2;
+	res.at<double>(0) = res.at<double>(0) * 6;
+	res.at<double>(1) = res.at<double>(1) * 2;
 }
 
 bool PointLaneDetector::solveClothoide() {
@@ -524,12 +535,12 @@ bool PointLaneDetector::solveClothoide() {
 	Range colRange = Range(0, this->grade);
 	Range zeroOneRange = Range(0, 1);
 	bool solveResultL1 = false;
-	if (this->foundLL && leftIndex > 2) {
+	if (this->foundLL && leftIndex > grade) {
 		solveResultL1 = cv::solve(lA(rowRange, colRange), lB(rowRange, zeroOneRange), this->vRes.leftLane1, DECOMP_QR);
 		makeClothoide(this->vRes.leftLane1);
 	}
 	bool solveResultM1 = false;
-	if (this->foundML && middleIndex > 2) {
+	if (this->foundML && middleIndex > grade) {
 		rowRange = Range(0, middleIndex);
 		colRange = Range(0, mA.cols);
 		solveResultM1 = cv::solve(mA(rowRange, colRange), mB(rowRange, zeroOneRange), this->vRes.middleLane1, DECOMP_QR);
@@ -537,7 +548,7 @@ bool PointLaneDetector::solveClothoide() {
 	}
 
 	bool solveResultR1 = false;
-	if (this->foundRL && rightIndex > 2) {
+	if (this->foundRL && rightIndex > grade) {
 		rowRange = Range(0, numberOfRightPoints - rightIndex - 1);
 		colRange = Range(0, rA.cols);
 		solveResultR1 = cv::solve(rA(rowRange, colRange), rB(rowRange, zeroOneRange), this->vRes.rightLane1, DECOMP_QR);
@@ -546,12 +557,12 @@ bool PointLaneDetector::solveClothoide() {
 
 	rowRange = Range(leftIndex, numberOfLeftPoints);
 	bool solveResultL2 = false;
-	if (this->foundLL && (numberOfLeftPoints - leftIndex) > 2) {
+	if (this->foundLL && (numberOfLeftPoints - leftIndex) > grade) {
 		solveResultL2 = cv::solve(lA(rowRange, colRange), lB(rowRange, zeroOneRange), this->vRes.leftLane2, DECOMP_QR);
 		makeClothoide(this->vRes.leftLane2);
 	}
 	bool solveResultM2 = false;
-	if (this->foundML && (numberOfMiddlePoints - middleIndex) > 2) {
+	if (this->foundML && (numberOfMiddlePoints - middleIndex) > grade) {
 		rowRange = Range(middleIndex, numberOfMiddlePoints);
 		colRange = Range(0, mA.cols);
 		solveResultM2 = cv::solve(mA(rowRange, colRange), mB(rowRange, zeroOneRange), this->vRes.middleLane2, DECOMP_QR);
@@ -559,7 +570,7 @@ bool PointLaneDetector::solveClothoide() {
 	}
 
 	bool solveResultR2 = false;
-	if (this->foundRL && (numberOfRightPoints - rightIndex) > 2) {
+	if (this->foundRL && (numberOfRightPoints - rightIndex) > grade) {
 		rowRange = Range(rightIndex, numberOfRightPoints);
 		colRange = Range(0, rA.cols);
 		solveResultR2 = cv::solve(rA(rowRange, colRange), rB(rowRange, zeroOneRange), this->vRes.rightLane2, DECOMP_QR);
