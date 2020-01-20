@@ -66,7 +66,7 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 	this->ML_MAX_X	 			= 	config.count("ML_MAX_X") 	 		? stoi(config["ML_MAX_X"])				: 850;
 	this->RL_MIN_X	 			= 	config.count("RL_MIN_X") 	 		? stoi(config["RL_MIN_X"])				: 1100;
 	this->RL_MAX_X	 			= 	config.count("RL_MAX_X") 	 		? stoi(config["RL_MAX_X"])				: 1300;
-	
+
 	this->canny = cuda::createCannyEdgeDetector(low_thresh, high_thresh, aperture_size, false);
 
 	double alpha_ 			= 90 - camera_angle_pitch;
@@ -138,16 +138,6 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 		0							,		0,							1,			0
 		);
 	this->transformationMat = K * (T * (R * A1));
-
-	this->LANE_THRES_MIN = 5;
-	this->LANE_THRES_MAX = 60;
-	this->LL_MIN_X = 580;
-	this->LL_MAX_X = 630;
-	this->ML_MIN_X = 680;
-	this->ML_MAX_X = 730;
-	this->RL_MIN_X = 800;
-	this->RL_MAX_X = 850;
-
 }
 
 void PointLaneDetector::debugDraw(cv::Mat& frame) {
