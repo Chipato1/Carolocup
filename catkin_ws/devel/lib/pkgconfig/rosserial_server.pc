@@ -1,0 +1,8 @@
+prefix=/home/chipato/Desktop/Carolo_Git/Carolocup/catkin_ws/devel
+
+Name: rosserial_server
+Description: Description of rosserial_server
+Version: 0.8.0
+Cflags: -I/home/chipato/Desktop/Carolo_Git/Carolocup/catkin_ws/src/rosserial/rosserial_server/include
+Libs: -L/home/chipato/Desktop/Carolo_Git/Carolocup/catkin_ws/devel/lib -lrosserial_server_lookup
+Requires: roscpp rosserial_msgs std_msgs topic_tools

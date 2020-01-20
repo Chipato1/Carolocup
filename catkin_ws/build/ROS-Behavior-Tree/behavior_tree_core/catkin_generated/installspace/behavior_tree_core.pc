@@ -1,0 +1,8 @@
+prefix=/home/chipato/Desktop/Carolo_Git/Carolocup/catkin_ws/install
+
+Name: behavior_tree_core
+Description: Description of behavior_tree_core
+Version: 0.0.0
+Cflags: -I/home/chipato/Desktop/Carolo_Git/Carolocup/catkin_ws/install/include
+Libs: -L/home/chipato/Desktop/Carolo_Git/Carolocup/catkin_ws/install/lib -lbehavior_tree_core
+Requires: actionlib_msgs

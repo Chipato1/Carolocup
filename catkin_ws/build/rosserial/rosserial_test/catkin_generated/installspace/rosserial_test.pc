@@ -1,0 +1,8 @@
+prefix=/home/chipato/Desktop/Carolo_Git/Carolocup/catkin_ws/install
+
+Name: rosserial_test
+Description: Description of rosserial_test
+Version: 0.8.0
+Cflags: 
+Libs: -L/home/chipato/Desktop/Carolo_Git/Carolocup/catkin_ws/install/lib 
+Requires: rosserial_msgs std_msgs

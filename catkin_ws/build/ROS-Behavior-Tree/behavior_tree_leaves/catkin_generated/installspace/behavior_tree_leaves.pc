@@ -1,0 +1,8 @@
+prefix=/home/chipato/Desktop/Carolo_Git/Carolocup/catkin_ws/install
+
+Name: behavior_tree_leaves
+Description: Description of behavior_tree_leaves
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/chipato/Desktop/Carolo_Git/Carolocup/catkin_ws/install/lib 
+Requires: actionlib_msgs
