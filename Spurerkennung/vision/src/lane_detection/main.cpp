@@ -46,6 +46,8 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 	std::cout <<"Dauer Gesamt: " << duration << std::endl;
 }
 
+
+
 int main(int argc, char** argv) {
 	std::cout << "Launching ROS Lane Detection node..." << std::endl;
 	std::cout << "Initializing ROS features with parameters: " << std::endl;
