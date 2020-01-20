@@ -5,12 +5,11 @@
 #include <std_msgs/UInt16.h>
 
 ros::NodeHandle aktorik_knoten;
-ros::NodeHandle lichter_knoten;
 
 
 ros::Subscriber<std_msgs::UInt16> sub_aktorik("servo", servo_cb);
 ros::Subscriber<std_msgs::UInt16> sub_aktorik("motor", motor_cb);
-ros::Subscriber<std_msgs::UInt16> sub_lichter("licht", licht_cb);
+ros::Subscriber<std_msgs::UInt16> sub_aktorik("licht", licht_cb);
 
 
 void usb_init();

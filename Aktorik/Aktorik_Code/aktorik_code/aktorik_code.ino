@@ -31,5 +31,4 @@ void loop()
       motor_bewegung_RC_mode();
       
   }
-  lichter_knoten.spinOnce();
 }
