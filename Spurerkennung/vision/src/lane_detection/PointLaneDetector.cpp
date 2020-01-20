@@ -23,40 +23,60 @@ using namespace cv::cuda;
 void drawResult(cv::Mat im, cv::Mat x1, cv::Mat x2, cv::Scalar color, int intersect);
 
 
-PointLaneDetector::PointLaneDetector() {
+PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config) {
 
-	this->leftLane1 = cv::Mat::zeros(this->grade, 1, CV_64F);
-	this->middleLane1 = cv::Mat::zeros(this->grade, 1, CV_64F);
-	this->rightLane1 = cv::Mat::zeros(this->grade, 1, CV_64F);
+	this->leftLane1		= cv::Mat::zeros(this->grade, 1, CV_64F);
+	this->middleLane1	= cv::Mat::zeros(this->grade, 1, CV_64F);
+	this->rightLane1	= cv::Mat::zeros(this->grade, 1, CV_64F);
 
-	this->leftLane2 = cv::Mat::zeros(this->grade, 1, CV_64F);
-	this->middleLane2 = cv::Mat::zeros(this->grade, 1, CV_64F);
-	this->rightLane2 = cv::Mat::zeros(this->grade, 1, CV_64F);
+	this->leftLane2		= cv::Mat::zeros(this->grade, 1, CV_64F);
+	this->middleLane2	= cv::Mat::zeros(this->grade, 1, CV_64F);
+	this->rightLane2	= cv::Mat::zeros(this->grade, 1, CV_64F);
 
-	this->lA = cv::Mat::zeros(numberOfLines, grade, CV_64F);
-	this->lB = cv::Mat::zeros(numberOfLines, 1, CV_64F);
+	this->lA			= cv::Mat::zeros(numberOfLines, grade, CV_64F);
+	this->lB			= cv::Mat::zeros(numberOfLines, 1, CV_64F);
 
-	this->mA = cv::Mat::zeros(numberOfLines, grade, CV_64F);
-	this->mB = cv::Mat::zeros(numberOfLines, 1, CV_64F);
+	this->mA			= cv::Mat::zeros(numberOfLines, grade, CV_64F);
+	this->mB			= cv::Mat::zeros(numberOfLines, 1, CV_64F);
 
-	this->rA = cv::Mat::zeros(numberOfLines, grade, CV_64F);
-	this->rB = cv::Mat::zeros(numberOfLines, 1, CV_64F);
+	this->rA			= cv::Mat::zeros(numberOfLines, grade, CV_64F);
+	this->rB			= cv::Mat::zeros(numberOfLines, 1, CV_64F);
 
+	this->linePoints 	= cv::Mat::zeros(1, 25, CV_64F);
 	this->detectedPoints.reserve(numberOfLines);
-
-	linePoints = cv::Mat::zeros(1, 25, CV_64F);
-
 	this->laneMiddles.reserve(25);
 
-	this->canny = cuda::createCannyEdgeDetector(900, 50, 3);
+	double camera_angle_pitch 	= 	config.count("camera_angle_pitch") 	? stod(config["camera_angle_pitch"]) 	: 17.77;
+	double cam_angle_roll 		= 	config.count("cam_angle_roll") 		? stod(config["cam_angle_roll"]) 		: 0.0;
+	double camera_angle_yaw 	= 	config.count("camera_angle_yaw") 	? stod(config["camera_angle_yaw"])		: 0.0;
+	double camera_focallength 	= 	config.count("camera_focallength") 	? stod(config["camera_focallength"])	: 6.0;
+	double camera_height	 	= 	config.count("camera_height") 	 	? stod(config["camera_height"])			: 250.0;
+	double camera_res_wid	 	= 	config.count("camera_res_wid") 	 	? stod(config["camera_res_wid"])		: 1600;
+	double camera_res_hei	 	= 	config.count("camera_res_hei") 	 	? stod(config["camera_res_hei"])		: 1200;
 
-	int alpha_ = 60, beta_ = 90, gamma_ = 90;
-	double f_ = 300, dist_ = 200, skew_ = 0;             //skew ist Schraeglageparameter (dreht das Bild nach Rechts oder Links) ->Vollstaendigkeit
-	double pixel_width = 7.2;
-	double pixel_height = 5.4;
+	double low_thresh		 	= 	config.count("low_thresh") 	 		? stod(config["low_thresh"])			: 50;
+	double high_thresh	 		= 	config.count("high_thresh") 	 	? stod(config["high_thresh"])			: 80;
+	double aperture_size	 	= 	config.count("aperture_size") 	 	? stod(config["aperture_size"])			: 3;
 
-	//TODO: dist_ aendern
-	//dist_ = 82;
+	this->LANE_THRES_MIN 		= 	config.count("LANE_THRES_MIN") 		? stoi(config["LANE_THRES_MIN"]) 		: 17;
+	this->LANE_THRES_MAX 		= 	config.count("LANE_THRES_MAX") 		? stoi(config["LANE_THRES_MAX"]) 		: 0;
+	this->LL_MIN_X			 	= 	config.count("LL_MIN_X") 			? stoi(config["LL_MIN_X"])				: 250;
+	this->LL_MAX_X 				= 	config.count("LL_MAX_X") 			? stoi(config["LL_MAX_X"])				: 350;
+	this->ML_MIN_X	 			= 	config.count("ML_MIN_X") 	 		? stoi(config["ML_MIN_X"])				: 650;
+	this->ML_MAX_X	 			= 	config.count("ML_MAX_X") 	 		? stoi(config["ML_MAX_X"])				: 850;
+	this->RL_MIN_X	 			= 	config.count("RL_MIN_X") 	 		? stoi(config["RL_MIN_X"])				: 1100;
+	this->RL_MAX_X	 			= 	config.count("RL_MAX_X") 	 		? stoi(config["RL_MAX_X"])				: 1300;
+	
+	this->canny = cuda::createCannyEdgeDetector(low_thresh, high_thresh, aperture_size, false);
+
+	double alpha_ 			= 90 - camera_angle_pitch;
+	double beta_ 			= 90 - cam_angle_roll;
+	double gamma_ 			= 90 - cam_angle_yaw;
+	double f_ 				= camera_focallength;
+	double height 			= camera_height;
+	double skew_ 			= 0;
+	double pixel_width 		= 7.2;
+	double pixel_height 	= 5.4;
 
 	double focalLength, dist, alpha, beta, gamma, skew;
 
@@ -64,12 +84,10 @@ PointLaneDetector::PointLaneDetector() {
 	beta = ((double)beta_ - 90) * M_PI / 180;
 	gamma = ((double)gamma_ - 90) * M_PI / 180;
 	focalLength = (double)f_;
-
-	//TODO: dist ist eigentlich: dist = (KamH�he/sin((180-KameraWinkel)))
-	dist = (double)dist_;
+	dist = ((double)height) / cos(alpha);
 	skew = skew_;
 
-	Size image_size = Size(1600, 1200);
+	Size image_size = Size(camera_res_wid, camera_res_hei);
 	double w = (double)image_size.width, h = (double)image_size.height;
 
 
@@ -115,22 +133,22 @@ PointLaneDetector::PointLaneDetector() {
 
 	// K - camera matrix
 	Mat K = (Mat_<float>(3, 4) <<
-		focalLength * pixel_width	,		skew,						w / 2,		0,
-		0							,		focalLength * pixel_height,	h / 2,		0,
+		focalLength	,		skew,						w / 2,		0,
+		0							,		focalLength,	h / 2,		0,
 		0							,		0,							1,			0
 		);
 	this->transformationMat = K * (T * (R * A1));
+
+	this->LANE_THRES_MIN = 5;
+	this->LANE_THRES_MAX = 60;
+	this->LL_MIN_X = 580;
+	this->LL_MAX_X = 630;
+	this->ML_MIN_X = 680;
+	this->ML_MAX_X = 730;
+	this->RL_MIN_X = 800;
+	this->RL_MAX_X = 850;
+
 }
-
-#define LANE_THRES_MIN 5
-#define LANE_THRES_MAX 60
-#define LL_MIN_X	580
-#define LL_MAX_X	630
-#define ML_MIN_X	680
-#define ML_MAX_X	730
-#define RL_MIN_X	800
-#define RL_MAX_X	850
-
 
 void PointLaneDetector::debugDraw(cv::Mat& frame) {
 	cv::cvtColor(frame, frame, COLOR_GRAY2BGR);

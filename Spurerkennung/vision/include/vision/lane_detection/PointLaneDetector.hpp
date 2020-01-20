@@ -27,6 +27,15 @@ private:
 	
 	void clear();
 
+	int LANE_THRES_MIN = 5;
+	int LANE_THRES_MAX = 60;
+	int LL_MIN_X = 580;
+	int LL_MAX_X = 630;
+	int ML_MIN_X = 680;
+	int ML_MAX_X = 730;
+	int RL_MIN_X = 800;
+	int RL_MAX_X = 850;
+
 	//MODELLPARAMETER
 	//Grad des Modells (Klothoide)
 	const static int grade = 3;
