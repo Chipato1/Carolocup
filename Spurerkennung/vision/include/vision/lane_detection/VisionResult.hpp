@@ -1,18 +1,26 @@
 #include <array>
 #include <vector>
-#include <opencv2/core.hpp>
+
+enum ERROR_TYPES {
+	SUCCESS, ERROR
+};
+
+//std::array<double, 4>
+
 class VisionResult {
 public:
     std::array<std::vector<cv::Point>, 3> lanePoints;
     std::vector<std::vector<cv::Point>> detectedPoints;
 
-    cv::Mat leftLane1;
-	cv::Mat middleLane1;
-	cv::Mat rightLane1;
+    std::array<double, 4> leftLane1;
+	std::array<double, 4> middleLane1;
+	std::array<double, 4> rightLane1;
 
-	cv::Mat leftLane2;
-	cv::Mat middleLane2;
-	cv::Mat rightLane2;
+	std::array<double, 4> leftLane2;
+	std::array<double, 4> middleLane2;
+	std::array<double, 4> rightLane2;
 
-    cv::Mat edgeImage;
+	double clothoideCutDistance_mm;
+
+	ERROR_TYPES state;
 };

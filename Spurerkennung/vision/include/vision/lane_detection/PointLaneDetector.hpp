@@ -24,7 +24,9 @@ private:
 	void prepareInterpolation(int);
 	void debugDraw(cv::Mat&);
 	bool solveClothoide();
+	void copyResult();
 	
+
 	void clear();
 
 	int LANE_THRES_MIN = 5;

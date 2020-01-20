@@ -36,6 +36,7 @@ std::map<std::string, std::string> readConfigFile() {
 }
 
 PointLaneDetector* detector;
+ros::Publisher pub;
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 	auto timeStart = std::chrono::high_resolution_clock::now();
@@ -44,6 +45,8 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 	auto timeEnd = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
 	std::cout <<"Dauer Gesamt: " << duration << std::endl;
+	pub.publish(detector->vRes);
+	ros::spinOnce();
 }
 
 
@@ -63,6 +66,10 @@ int main(int argc, char** argv) {
 	image_transport::ImageTransport it(nh);
 	//
 	image_transport::Subscriber sub = it.subscribe(config["cam_im_topic_name"] , 1, imageCallback);
+	
+	pub = nh.advertise<VisionResult>(config["vision_result_topic_name"], 5);
+
+
 	ros::spin();
 	return 0;
 }
