@@ -7,9 +7,6 @@ void usb_init()
 
   aktorik_knoten.initNode();
   aktorik_knoten.subscribe(sub_aktorik);
-
-  lichter_knoten.initNode();
-  lichter_knoten.subscribe(sub_lichter);
  
 }
 
