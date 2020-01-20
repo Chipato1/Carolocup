@@ -35,12 +35,12 @@ std::map<std::string, std::string> readConfigFile() {
 	return my_map;
 }
 
-PointLaneDetector detector;
+PointLaneDetector* detector;
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 	auto timeStart = std::chrono::high_resolution_clock::now();
 	cv::Mat image = cv_bridge::toCvShare(msg, "mono8")->image;
-	detector.calculateFrame(image);
+	detector->calculateFrame(image);
 	auto timeEnd = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
 	std::cout <<"Dauer Gesamt: " << duration << std::endl;
@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
 	//Config Datei lesen und DrivingVision-Klasse erstellen
 	std::map<std::string, std::string> config = readConfigFile();
 	std::cout << "Success!" << std::endl;
-
+	detector = new PointLaneDetector(config);
 	ros::NodeHandle nh;
 	image_transport::ImageTransport it(nh);
 	//
