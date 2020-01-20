@@ -158,11 +158,7 @@ void PointLaneDetector::debugDraw(cv::Mat& frame) {
 }
 
 double calcX(cv::Mat func, float y) {
-	double res = 0;
-	for (int i = 0; i < func.rows; i++) {
-		double num = func.at<double>(i, 0);
-		res = res + num * pow(y, func.rows - 1 - i);
-	}
+	double res = 1/6 * func.at<double>(0,0) + 1/2 * func.at<double>(1,0) + func.at<double>(2,0) + func.at<double>(3,0);
 	return res;
 }
 
@@ -501,6 +497,11 @@ void PointLaneDetector::removeFalse(std::array<double, numberOfLines>& arr) {
 		});
 }
 
+void makeClothoide(cv::Mat& res) {
+	res.at<double>(0) = res.at<double>(0) / 6;
+	res.at<double>(1) = res.at<double>(0) / 2;
+}
+
 bool PointLaneDetector::solveClothoide() {
 	/*doMean(leftDistances);
 	doMean(middleDistances);
@@ -565,12 +566,14 @@ bool PointLaneDetector::solveClothoide() {
 	bool solveResultL1 = false;
 	if (this->foundLL && leftIndex > 2) {
 		solveResultL1 = cv::solve(lA(rowRange, colRange), lB(rowRange, zeroOneRange), this->leftLane1, DECOMP_QR);
+		makeClothoide(solveResultL1);
 	}
 	bool solveResultM1 = false;
 	if (this->foundML && middleIndex > 2) {
 		rowRange = Range(0, middleIndex);
 		colRange = Range(0, mA.cols);
 		solveResultM1 = cv::solve(mA(rowRange, colRange), mB(rowRange, zeroOneRange), this->middleLane1, DECOMP_QR);
+		makeClothoide(solveResultM1);
 	}
 
 	bool solveResultR1 = false;
@@ -578,20 +581,21 @@ bool PointLaneDetector::solveClothoide() {
 		rowRange = Range(0, numberOfRightPoints - rightIndex - 1);
 		colRange = Range(0, rA.cols);
 		solveResultR1 = cv::solve(rA(rowRange, colRange), rB(rowRange, zeroOneRange), this->rightLane1, DECOMP_QR);
+		makeClothoide(solveResultR1);
 	}
-
-
 
 	rowRange = Range(leftIndex, numberOfLeftPoints);
 	bool solveResultL2 = false;
 	if (this->foundLL && (numberOfLeftPoints - leftIndex) > 2) {
 		solveResultL2 = cv::solve(lA(rowRange, colRange), lB(rowRange, zeroOneRange), this->leftLane2, DECOMP_QR);
+		makeClothoide(solveResultL2);
 	}
 	bool solveResultM2 = false;
 	if (this->foundML && (numberOfMiddlePoints - middleIndex) > 2) {
 		rowRange = Range(middleIndex, numberOfMiddlePoints);
 		colRange = Range(0, mA.cols);
 		solveResultM2 = cv::solve(mA(rowRange, colRange), mB(rowRange, zeroOneRange), this->middleLane2, DECOMP_QR);
+		makeClothoide(solveResultM2);
 	}
 
 	bool solveResultR2 = false;
@@ -599,6 +603,7 @@ bool PointLaneDetector::solveClothoide() {
 		rowRange = Range(rightIndex, numberOfRightPoints);
 		colRange = Range(0, rA.cols);
 		solveResultR2 = cv::solve(rA(rowRange, colRange), rB(rowRange, zeroOneRange), this->rightLane2, DECOMP_QR);
+		makeClothoide(solveResultR2);
 	}
 	return solveResultL1 && solveResultM1 && solveResultR1 && solveResultL2 && solveResultM2 && solveResultR2;
 }
@@ -619,9 +624,10 @@ void PointLaneDetector::laneMiddlePoints(std::vector<cv::Point>& laneMiddles, Ma
 }
 
 void PointLaneDetector::calculateSolveMatrix(Point point, cv::Mat& A, cv::Mat& B, int i) {
-	A.at<double>(i, 0) = point.y * point.y;
-	A.at<double>(i, 1) = point.y;
-	A.at<double>(i, 2) = 1;
+	A.at<double>(i, 0) = point.y * point.y * point.y;
+	A.at<double>(i, 1) = point.y * point.y;
+	A.at<double>(i, 2) = point.y;
+	A.at<double>(i, 3) = 1;
 	B.at<double>(i, 0) = point.x;
 }
 

@@ -38,7 +38,7 @@ private:
 
 	//MODELLPARAMETER
 	//Grad des Modells (Klothoide)
-	const static int grade = 3;
+	const static int grade = 4;
 	//Offset vom oberen und unteren Bildrand
 	const static int edgeOffset = 1;
 	//Anzahl der Detektionslinien
