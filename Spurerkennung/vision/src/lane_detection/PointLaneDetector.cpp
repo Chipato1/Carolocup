@@ -24,26 +24,25 @@ void drawResult(cv::Mat im, cv::Mat x1, cv::Mat x2, cv::Scalar color, int inters
 
 
 PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config) {
+	this->vres.leftLane1		= cv::Mat::zeros(this->grade, 1, CV_64F);
+	this->vres.middleLane1		= cv::Mat::zeros(this->grade, 1, CV_64F);
+	this->vres.rightLane1		= cv::Mat::zeros(this->grade, 1, CV_64F);
 
-	this->leftLane1		= cv::Mat::zeros(this->grade, 1, CV_64F);
-	this->middleLane1	= cv::Mat::zeros(this->grade, 1, CV_64F);
-	this->rightLane1	= cv::Mat::zeros(this->grade, 1, CV_64F);
+	this->vres.leftLane2		= cv::Mat::zeros(this->grade, 1, CV_64F);
+	this->vres.middleLane2		= cv::Mat::zeros(this->grade, 1, CV_64F);
+	this->vres.rightLane2		= cv::Mat::zeros(this->grade, 1, CV_64F);
 
-	this->leftLane2		= cv::Mat::zeros(this->grade, 1, CV_64F);
-	this->middleLane2	= cv::Mat::zeros(this->grade, 1, CV_64F);
-	this->rightLane2	= cv::Mat::zeros(this->grade, 1, CV_64F);
+	this->lA					= cv::Mat::zeros(numberOfLines, grade, CV_64F);
+	this->lB					= cv::Mat::zeros(numberOfLines, 1, CV_64F);
 
-	this->lA			= cv::Mat::zeros(numberOfLines, grade, CV_64F);
-	this->lB			= cv::Mat::zeros(numberOfLines, 1, CV_64F);
+	this->mA					= cv::Mat::zeros(numberOfLines, grade, CV_64F);
+	this->mB					= cv::Mat::zeros(numberOfLines, 1, CV_64F);
 
-	this->mA			= cv::Mat::zeros(numberOfLines, grade, CV_64F);
-	this->mB			= cv::Mat::zeros(numberOfLines, 1, CV_64F);
+	this->rA					= cv::Mat::zeros(numberOfLines, grade, CV_64F);
+	this->rB					= cv::Mat::zeros(numberOfLines, 1, CV_64F);
 
-	this->rA			= cv::Mat::zeros(numberOfLines, grade, CV_64F);
-	this->rB			= cv::Mat::zeros(numberOfLines, 1, CV_64F);
-
-	this->linePoints 	= cv::Mat::zeros(1, 25, CV_64F);
-	this->detectedPoints.reserve(numberOfLines);
+	this->linePoints 			= cv::Mat::zeros(1, 25, CV_64F);
+	this->vres.detectedPoints.reserve(numberOfLines);
 	this->laneMiddles.reserve(25);
 
 	double camera_angle_pitch 	= 	config.count("camera_angle_pitch") 	? stod(config["camera_angle_pitch"]) 	: 17.77;
@@ -142,14 +141,14 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 
 void PointLaneDetector::debugDraw(cv::Mat& frame) {
 	cv::cvtColor(frame, frame, COLOR_GRAY2BGR);
-	drawResult(frame, this->leftLane1, this->leftLane2, Scalar(255, 0, 0), this->intersectionPosL);
-	drawResult(frame, this->middleLane1, this->middleLane2, Scalar(255, 255, 255), this->intersectionPosM);
-	drawResult(frame, this->rightLane1, this->rightLane2, Scalar(0, 0, 255),this->intersectionPosR);
+	drawResult(frame, this->vres.leftLane1, this->vres.leftLane2, Scalar(255, 0, 0), this->intersectionPosL);
+	drawResult(frame, this->vres.middleLane1, this->vres.middleLane2, Scalar(255, 255, 255), this->intersectionPosM);
+	drawResult(frame, this->vres.rightLane1, this->vres.rightLane2, Scalar(0, 0, 255),this->intersectionPosR);
 
 
-	for (int x = 0; x < this->result.size(); x++) {
-		for (int y = 0; y < this->result.at(x).size(); y++) {
-			circle(frame, this->result.at(x).at(y), 5, Scalar(x * 128, 255, 255));
+	for (int x = 0; x < this->vres.lanePoints.size(); x++) {
+		for (int y = 0; y < this->vres.lanePoints.at(x).size(); y++) {
+			circle(frame, this->vres.lanePoints.at(x).at(y), 5, Scalar(x * 128, 255, 255));
 		}
 	}
 	cv::resize(frame, frame, Size(800, 600));
@@ -179,21 +178,15 @@ void drawResult(cv::Mat im, cv::Mat x1, cv::Mat x2, cv::Scalar color, int inters
 	}
 }
 
-VisionResult PointLaneDetector::getResult() {
-	return VisionResult();
-}
-
 //Detectes the driving lanes for one frame
 void PointLaneDetector::calculateFrame(cv::Mat& frame) {
-	cv::Mat edgeImage;
-	cv::Mat binaryImage;
 	//imshow("~/Desktop/test.png", frame);
 	//auto timeStart = std::chrono::high_resolution_clock::now();
-	this->doGPUTransform(frame,edgeImage, binaryImage);
+	this->doGPUTransform(frame);
 	//auto timeGPU = std::chrono::high_resolution_clock::now();
-	this->calculateAlgorithm(edgeImage, 0);
+	this->calculateAlgorithm();
 	//auto timeEnd = std::chrono::high_resolution_clock::now();
-	imshow("edge", edgeImage);
+	imshow("edge", this->edge);
 	//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
 	//std::cout << "\033[2J\033[1;1H";
 	/*std::cout <<"Dauer Gesamt: " << duration << std::endl;
@@ -201,23 +194,23 @@ void PointLaneDetector::calculateFrame(cv::Mat& frame) {
 	std::cout << "Dauer GPU: " << duration << std::endl;
 	duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeGPU).count();
 	std::cout << "Dauer CPU: " << duration << std::endl;*/
-	this->debugDraw(edgeImage);
-	std::cout << this->leftLane2;
-	std::cout << this->middleLane2;
-	std::cout << this->rightLane2;
+	this->debugDraw(this->edge);
+	std::cout << this->vres.leftLane2;
+	std::cout << this->vres.middleLane2;
+	std::cout << this->vres.rightLane2;
 	waitKey(1);
 }
 
 void PointLaneDetector::clear() {
-	this->result.at(0).clear();
-	this->result.at(0).reserve(numberOfLines);
-	this->result.at(1).clear();
-	this->result.at(1).reserve(numberOfLines);
-	this->result.at(2).clear();
-	this->result.at(2).reserve(numberOfLines);
+	this->vres.lanePoints.at(0).clear();
+	this->vres.lanePoints.at(0).reserve(numberOfLines);
+	this->vres.lanePoints.at(1).clear();
+	this->vres.lanePoints.at(1).reserve(numberOfLines);
+	this->vres.lanePoints.at(2).clear();
+	this->vres.lanePoints.at(2).reserve(numberOfLines);
 
-	this->detectedPoints.clear();
-	this->detectedPoints.reserve(numberOfLines);
+	this->vres.detectedPoints.clear();
+	this->vres.detectedPoints.reserve(numberOfLines);
 
 	this->linePoints.release();
 
@@ -227,11 +220,11 @@ void PointLaneDetector::clear() {
 
 
 
-bool PointLaneDetector::calculateAlgorithm(cv::Mat& frame, int startLine)
+bool PointLaneDetector::calculateAlgorithm()
 {
 	this->clear();
-	stepSize = (frame.rows - edgeOffset) / (numberOfLines - 1);
-	int lineY = frame.rows - 2 - stepSize * startLine;											//1: Offset wegen Canny (letzte Zeile schwarz)
+	stepSize = (this->edge.rows - edgeOffset) / (numberOfLines - 1);
+	int lineY = this->edge.rows - 2 - stepSize * startLine;											//1: Offset wegen Canny (letzte Zeile schwarz)
 
 	
 	this->foundLL = false;
@@ -243,9 +236,9 @@ bool PointLaneDetector::calculateAlgorithm(cv::Mat& frame, int startLine)
 	this->numberOfRightPoints = 0;
 
 	for (int i = 0; i < this->numberOfLines; i++) {
-		cv::findNonZero(frame.row(lineY), this->linePoints);
+		cv::findNonZero(this->edge.row(lineY), this->linePoints);
 		this->laneMiddlePoints(this->laneMiddles, this->linePoints, lineY);
-		this->detectedPoints.push_back(this->laneMiddles);
+		this->vres.detectedPoints.push_back(this->laneMiddles);
 
 		this->classifyPoints(i);
 		this->prepareInterpolation(i);
@@ -256,41 +249,24 @@ bool PointLaneDetector::calculateAlgorithm(cv::Mat& frame, int startLine)
 	return solveRes;
 }
 
-/*
-
-cv::Mat PointLaneDetector::doGPUTransform(cv::Mat& frame) {
-	cv::cuda::GpuMat upload(frame);
-	cv::cuda::GpuMat binary;
-	cv::cuda::threshold(upload, binary, 128, 255, THRESH_BINARY);
-	cv::cuda::GpuMat ipm;
-	cv::cuda::warpPerspective(binary, ipm,this->transformationMat, frame.size(), INTER_CUBIC | WARP_INVERSE_MAP);
-	canny->detect(ipm, upload);
-	Mat edgeImage(upload);
-	frame = edgeImage;
-	return Mat(binary);
-}*/
-
-
-void PointLaneDetector::doGPUTransform(cv::Mat frame, cv::Mat& edgeImage, cv::Mat& binaryImage) {
-
+void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 	auto timeStart = std::chrono::high_resolution_clock::now();
-	cv::cuda::GpuMat upload(frame);
-	cv::cuda::GpuMat ipm = upload;
-	cv::cuda::GpuMat binary;
-	cv::cuda::GpuMat edge;
+	this->imageGPU.upload(frame);
+
 	auto uploadEnd = std::chrono::high_resolution_clock::now();
-	//cv::cuda::warpPerspective(upload, ipm, this->transformationMat, frame.size(), INTER_CUBIC | WARP_INVERSE_MAP);
+	cv::cuda::warpPerspective(this->imageGPU, this->ipmGPU, this->transformationMat, frame.size(), INTER_CUBIC | WARP_INVERSE_MAP);
 	//cv::Mat test(ipm);
 	//cv::resize(test, test, Size(800, 600));
 	//imshow("tester", test);
 
-	//cv::cuda::threshold(ipm, binary, 128, 255, THRESH_BINARY);
-	//binary.download(binaryImage);
 	auto warpEnd = std::chrono::high_resolution_clock::now();
-	this->canny->detect(ipm, edge);
+	this->canny->detect(this->ipmGPU, this->edgeGPU);
+
 	auto cannyEnd = std::chrono::high_resolution_clock::now();
-	edge.download(edgeImage);
+	this->edgeGPU.download(edge);
 	auto timeEnd = std::chrono::high_resolution_clock::now();
+
+
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
 	std::cout <<"Dauer GPU Gesamt: " << duration << std::endl;
 
@@ -305,23 +281,9 @@ void PointLaneDetector::doGPUTransform(cv::Mat frame, cv::Mat& edgeImage, cv::Ma
 
 	duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - cannyEnd).count();
 	std::cout <<"Dauer Download: " << duration << std::endl;
-	}
+}
 
 
-/*void PointLaneDetector::doGPUTransform(cv::Mat frame, cv::Mat& edgeImage, cv::Mat& binaryImage) {
-	cv::cuda::GpuMat upload(frame);
-	cv::cuda::GpuMat ipm;
-	cv::cuda::GpuMat binary;
-	cv::cuda::GpuMat edge;
-
-	cv::cuda::warpPerspective(upload, ipm, this->transformationMat, frame.size(), INTER_CUBIC | WARP_INVERSE_MAP);
-
-	cv::cuda::threshold(ipm, binary, 128, 255, THRESH_BINARY);
-	binary.download(binaryImage);
-	this->canny->detect(ipm, edge);
-	edge.download(edgeImage);
-
-}*/
 
 void PointLaneDetector::classifyPoints(int line) {
 	if (!laneMiddles.empty() && (!foundLL || !foundML || !foundRL)) {
@@ -332,7 +294,7 @@ void PointLaneDetector::classifyPoints(int line) {
 				if (!foundLL) {
 					foundLL = true;
 					leftLaneStartPoint = analysisPoint;
-					result.at(0).push_back(analysisPoint);
+					vres.lanePoints.at(0).push_back(analysisPoint);
 					calculateSolveMatrix(analysisPoint, lA, lB, numberOfLeftPoints);
 					laneMiddles.erase(laneMiddles.begin() + pointI);
 					pointI--;
@@ -344,7 +306,7 @@ void PointLaneDetector::classifyPoints(int line) {
 				if (!foundML) {
 					foundML = true;
 					middleLaneStartPoint = analysisPoint;
-					result.at(1).push_back(analysisPoint);
+					vres.lanePoints.at(1).push_back(analysisPoint);
 					calculateSolveMatrix(analysisPoint, mA, mB, numberOfMiddlePoints);
 					laneMiddles.erase(laneMiddles.begin() + pointI);
 					pointI--;
@@ -356,7 +318,7 @@ void PointLaneDetector::classifyPoints(int line) {
 				if (!foundRL) {
 					foundRL = true;
 					rightLaneStartPoint = analysisPoint;
-					result.at(2).push_back(analysisPoint);
+					vres.lanePoints.at(2).push_back(analysisPoint);
 					calculateSolveMatrix(analysisPoint, rA, rB, numberOfRightPoints);
 					laneMiddles.erase(laneMiddles.begin() + pointI);
 					pointI--;
@@ -446,7 +408,7 @@ void PointLaneDetector::prepareInterpolation(int i) {
 
 		if (foundLL ) {
 			if (leftIndex != -1 && distancesLeft.at(leftIndex) < 100) {
-				result.at(0).push_back(laneMiddles.at(leftIndex));
+				vres.lanePoints.at(0).push_back(laneMiddles.at(leftIndex));
 				calculateSolveMatrix(laneMiddles.at(leftIndex), lA, lB, numberOfLeftPoints);
 				leftLaneStartPoint = laneMiddles.at(leftIndex);
 				this->leftDistances.at(i - 1) = distancesLeft.at(leftIndex);
@@ -458,7 +420,7 @@ void PointLaneDetector::prepareInterpolation(int i) {
 			}
 		}
 		if (foundML && middleIndex != -1) {
-			result.at(1).push_back(laneMiddles.at(middleIndex));
+			vres.lanePoints.at(1).push_back(laneMiddles.at(middleIndex));
 			calculateSolveMatrix(laneMiddles.at(middleIndex), mA, mB, numberOfMiddlePoints);
 			middleLaneStartPoint = laneMiddles.at(middleIndex);
 			this->middleDistances.at(i-1) = distancesMiddle.at(middleIndex);
@@ -466,7 +428,7 @@ void PointLaneDetector::prepareInterpolation(int i) {
 			numberOfMiddlePoints++;
 		}
 		if (foundRL && rightIndex != -1 && distancesRight.at(rightIndex) < 100) {
-			result.at(2).push_back(laneMiddles.at(rightIndex));
+			vres.lanePoints.at(2).push_back(laneMiddles.at(rightIndex));
 			calculateSolveMatrix(laneMiddles.at(rightIndex), rA, rB, numberOfRightPoints);
 			rightLaneStartPoint = laneMiddles.at(rightIndex);
 			this->rightDistances.at(i-1) = distancesRight.at(rightIndex);
@@ -565,14 +527,14 @@ bool PointLaneDetector::solveClothoide() {
 	Range zeroOneRange = Range(0, 1);
 	bool solveResultL1 = false;
 	if (this->foundLL && leftIndex > 2) {
-		solveResultL1 = cv::solve(lA(rowRange, colRange), lB(rowRange, zeroOneRange), this->leftLane1, DECOMP_QR);
+		solveResultL1 = cv::solve(lA(rowRange, colRange), lB(rowRange, zeroOneRange), this->vres.leftLane1, DECOMP_QR);
 		makeClothoide(solveResultL1);
 	}
 	bool solveResultM1 = false;
 	if (this->foundML && middleIndex > 2) {
 		rowRange = Range(0, middleIndex);
 		colRange = Range(0, mA.cols);
-		solveResultM1 = cv::solve(mA(rowRange, colRange), mB(rowRange, zeroOneRange), this->middleLane1, DECOMP_QR);
+		solveResultM1 = cv::solve(mA(rowRange, colRange), mB(rowRange, zeroOneRange), this->vres.middleLane1, DECOMP_QR);
 		makeClothoide(solveResultM1);
 	}
 
@@ -580,21 +542,21 @@ bool PointLaneDetector::solveClothoide() {
 	if (this->foundRL && rightIndex > 2) {
 		rowRange = Range(0, numberOfRightPoints - rightIndex - 1);
 		colRange = Range(0, rA.cols);
-		solveResultR1 = cv::solve(rA(rowRange, colRange), rB(rowRange, zeroOneRange), this->rightLane1, DECOMP_QR);
+		solveResultR1 = cv::solve(rA(rowRange, colRange), rB(rowRange, zeroOneRange), this->vres.rightLane1, DECOMP_QR);
 		makeClothoide(solveResultR1);
 	}
 
 	rowRange = Range(leftIndex, numberOfLeftPoints);
 	bool solveResultL2 = false;
 	if (this->foundLL && (numberOfLeftPoints - leftIndex) > 2) {
-		solveResultL2 = cv::solve(lA(rowRange, colRange), lB(rowRange, zeroOneRange), this->leftLane2, DECOMP_QR);
+		solveResultL2 = cv::solve(lA(rowRange, colRange), lB(rowRange, zeroOneRange), this->vres.leftLane2, DECOMP_QR);
 		makeClothoide(solveResultL2);
 	}
 	bool solveResultM2 = false;
 	if (this->foundML && (numberOfMiddlePoints - middleIndex) > 2) {
 		rowRange = Range(middleIndex, numberOfMiddlePoints);
 		colRange = Range(0, mA.cols);
-		solveResultM2 = cv::solve(mA(rowRange, colRange), mB(rowRange, zeroOneRange), this->middleLane2, DECOMP_QR);
+		solveResultM2 = cv::solve(mA(rowRange, colRange), mB(rowRange, zeroOneRange), this->vres.middleLane2, DECOMP_QR);
 		makeClothoide(solveResultM2);
 	}
 
@@ -602,7 +564,7 @@ bool PointLaneDetector::solveClothoide() {
 	if (this->foundRL && (numberOfRightPoints - rightIndex) > 2) {
 		rowRange = Range(rightIndex, numberOfRightPoints);
 		colRange = Range(0, rA.cols);
-		solveResultR2 = cv::solve(rA(rowRange, colRange), rB(rowRange, zeroOneRange), this->rightLane2, DECOMP_QR);
+		solveResultR2 = cv::solve(rA(rowRange, colRange), rB(rowRange, zeroOneRange), this->vres.rightLane2, DECOMP_QR);
 		makeClothoide(solveResultR2);
 	}
 	return solveResultL1 && solveResultM1 && solveResultR1 && solveResultL2 && solveResultM2 && solveResultR2;

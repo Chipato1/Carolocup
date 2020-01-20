@@ -8,18 +8,17 @@ class PointLaneDetector
 public:
 	PointLaneDetector();
 	void calculateFrame(cv::Mat&);
-	VisionResult getResult();
 
 	//Ergebnis (alle Spurpunkte)
-	std::array<std::vector<cv::Point>, 3> result;
+	VisionResult vRes;
 	//Alle erkannten Punkte auf den Linien
-	std::vector<std::vector<cv::Point>> detectedPoints;
+	
 
 private:
-	bool calculateAlgorithm(cv::Mat&, int startLine);
+	bool calculateAlgorithm();
 	void laneMiddlePoints(std::vector<cv::Point>&, cv::Mat, int);
 	void calculateSolveMatrix(cv::Point, cv::Mat& , cv::Mat& , int i);
-	void doGPUTransform(cv::Mat frame, cv::Mat& edgeImage, cv::Mat& binaryImage);
+	void doGPUTransform(cv::Mat&);
 	void classifyPoints(int line);
 	void prepareInterpolation(int);
 	void debugDraw(cv::Mat&);
@@ -59,7 +58,11 @@ private:
 	cv::Mat middleLane2;
 	cv::Mat rightLane2;
 
-	
+	cv::cuda::GpuMat imageGPU;
+	cv::cuda::GpuMat ipmGPU;
+	cv::cuda::GpuMat edgeGPU;
+
+	cv::Mat edge;
 
 	//Temporaere Variablen
 	cv::Mat linePoints;
