@@ -2,6 +2,9 @@
 
 void usb_init()
 {
+  servo_init();
+  ligths_init();
+  motor_init();
   aktorik_knoten.initNode();
   aktorik_knoten.subscribe(sub_servo);
   aktorik_knoten.subscribe(sub_motor);

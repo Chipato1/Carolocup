@@ -1,4 +1,3 @@
-#include <Servo.h> //keine Ahnung muss rein nicht rausmachen lol xD
 #include "akt_servo.h"
 #include "Motor.h"
 #include "Lights.h"

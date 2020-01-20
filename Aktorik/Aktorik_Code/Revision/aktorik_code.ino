@@ -4,20 +4,18 @@
 
 
 //Includes
-#include <Servo.h>
-#include "Lights.h"
-#include "Motaktorik_knotenor.h"
-#include "Servo.h"
 #include "USB_Handle.h"
 #define referenzvolatage 0.0021259765
 #include <ros.h>
 
 void setup() 
 {
+  usb_init();
+  /*
   lights_init();
   servo_init();
   motor_init();
-  usb_init();
+  ;*/
 }
 
 void loop() 

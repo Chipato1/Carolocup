@@ -1,14 +1,15 @@
-#include "Servo.h"
+#include "akt_servo.h"
+
 #define pi 3.141592653589
 void servo_init()
 {
   servo.attach(9);
-  pinMode(xxxx, OUTPUT);//Pin vom Multiplexer Select einschreiben
+  //pinMode(xxxx, OUTPUT);//Pin vom Multiplexer Select einschreiben
 }
 
-void servo_bewegung(float lenkwinkel_bogenmaß)
+void servo_bewegung(float lenkwinkel_bogenmass)
 {
-  lenkwinkel_grad = (lenkwinkel_bogenmaß/pi)*180;
+  lenkwinkel_grad = (lenkwinkel_bogenmass/pi)*180;
   if(lenkwinkel_grad<=0)
   {
     lenkwinkel_servosize = ((3/2)*lenkwinkel_grad) + 96;
