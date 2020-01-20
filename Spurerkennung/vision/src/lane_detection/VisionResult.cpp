@@ -1,1 +1,0 @@
-#include <vision/lane_detection/VisionResult.hpp>

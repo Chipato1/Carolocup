@@ -2,8 +2,6 @@
 # Created by https://www.gitignore.io/api/c++,opencv,visualstudio,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=c++,opencv,visualstudio,visualstudiocode
 
-localMain.cpp
-
 ### C++ ###
 # Prerequisites
 *.d
