@@ -124,12 +124,12 @@ PointLaneDetector::PointLaneDetector() {
 
 #define LANE_THRES_MIN 5
 #define LANE_THRES_MAX 60
-#define LL_MIN_X	670
-#define LL_MAX_X	730
-#define ML_MIN_X	780
-#define ML_MAX_X	820
-#define RL_MIN_X	880
-#define RL_MAX_X	930
+#define LL_MIN_X	580
+#define LL_MAX_X	630
+#define ML_MIN_X	680
+#define ML_MAX_X	730
+#define RL_MIN_X	800
+#define RL_MAX_X	850
 
 
 void PointLaneDetector::debugDraw(cv::Mat& frame) {
@@ -189,16 +189,19 @@ void PointLaneDetector::calculateFrame(cv::Mat& frame) {
 	//auto timeGPU = std::chrono::high_resolution_clock::now();
 	this->calculateAlgorithm(edgeImage, 0);
 	//auto timeEnd = std::chrono::high_resolution_clock::now();
-	//imshow("edge", edgeImage);
+	imshow("edge", edgeImage);
 	//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
 	//std::cout << "\033[2J\033[1;1H";
 	/*std::cout <<"Dauer Gesamt: " << duration << std::endl;
 	duration = std::chrono::duration_cast<std::chrono::microseconds>(timeGPU - timeStart).count();
 	std::cout << "Dauer GPU: " << duration << std::endl;
 	duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeGPU).count();
-	std::cout << "Dauer CPU: " << duration << std::endl;
-	//this->debugDraw(edgeImage);
-	waitKey(1);*/
+	std::cout << "Dauer CPU: " << duration << std::endl;*/
+	this->debugDraw(edgeImage);
+	std::cout << this->leftLane2;
+	std::cout << this->middleLane2;
+	std::cout << this->rightLane2;
+	waitKey(1);
 }
 
 void PointLaneDetector::clear() {
@@ -268,11 +271,11 @@ void PointLaneDetector::doGPUTransform(cv::Mat frame, cv::Mat& edgeImage, cv::Ma
 
 	auto timeStart = std::chrono::high_resolution_clock::now();
 	cv::cuda::GpuMat upload(frame);
-	cv::cuda::GpuMat ipm;
+	cv::cuda::GpuMat ipm = upload;
 	cv::cuda::GpuMat binary;
 	cv::cuda::GpuMat edge;
 	auto uploadEnd = std::chrono::high_resolution_clock::now();
-	cv::cuda::warpPerspective(upload, ipm, this->transformationMat, frame.size(), INTER_CUBIC | WARP_INVERSE_MAP);
+	//cv::cuda::warpPerspective(upload, ipm, this->transformationMat, frame.size(), INTER_CUBIC | WARP_INVERSE_MAP);
 	//cv::Mat test(ipm);
 	//cv::resize(test, test, Size(800, 600));
 	//imshow("tester", test);
