@@ -4,6 +4,7 @@
 #include "Servo.h"
 #include "USB_Handle.h"
 #define referenzvolatage 0.0021259765
+#include <ros.h>
 
 void setup() 
 {
@@ -15,7 +16,7 @@ void setup()
 
 void loop() 
 {
-  analogvalue_1 = analogRead(xxxx);//Einlesen des Pins vom Tiefpass
+ /* analogvalue_1 = analogRead(xxxx);//Einlesen des Pins vom Tiefpass
   voltage_1 = referenzvolatage * analogvalue_1; // 5V/1024 = 0.0048V pro Schritt
   if (voltage_1 < 0.3)//Autonom betrieb
   {
@@ -31,4 +32,6 @@ void loop()
       motor_bewegung_RC_mode();
       
   }
+  */
+  aktorik_knoten.spinOnce();
 }

@@ -1,5 +1,4 @@
 #include "Lights.h"
-//#include <MyLedMatrix.h>
 
 void lights_init()
 {
@@ -22,28 +21,28 @@ void licht_leuchti(byte led_signal)
 {
   switch (led_signal)
   {
-    case 0x00: digitalWrite(brake_light,ON); 
+    case 0x00: digitalWrite(brake_light,ON);
       break;
     
-    case 0x01: digitalWrite(brake_light,Off); 
+    case 0x01: digitalWrite(brake_light,Off);
       break;
       
-    case 0x02: digitalWrite(flasher_right,ON);  
+    case 0x02: digitalWrite(flasher_right,ON);
       break;
       
-    case 0x03: digitalWrite(flasher_right,Off);  
+    case 0x03: digitalWrite(flasher_right,Off);
       break;
                  
-    case 0x04: digitalWrite(flasher_left,ON);   
+    case 0x04: digitalWrite(flasher_left,ON);
        break;
               
-    case 0x05: digitalWrite(flasher_left,Off);  
+    case 0x05: digitalWrite(flasher_left,Off);
        break; 
     
-    case 0x06: digitalWrite(reversing_light,ON); 
+    case 0x06: digitalWrite(reversing_light,ON);
       break;
     
-    case 0x07: digitalWrite(reversing_light,Off); 
+    case 0x07: digitalWrite(reversing_light,Off);
       break;
             
     default:  
