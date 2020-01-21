@@ -87,11 +87,11 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 
 	double focalLength, dist, alpha, beta, gamma, skew;
 
-	alpha = alpha_ * M_PI / 180;
-	beta = beta_ * M_PI / 180;
-	gamma = gamma_ * M_PI / 180;
+	alpha = (alpha_-90) * M_PI / 180;
+	beta = (beta_-90) * M_PI / 180;
+	gamma = (gamma_-90) * M_PI / 180;
 	focalLength = f_;
-	dist = height / sin(alpha);
+	dist = height / cos(alpha);
 	skew = skew_;
 
 	Size image_size = Size(camera_res_wid, camera_res_hei);
@@ -210,15 +210,17 @@ void PointLaneDetector::calculateFrame(cv::Mat& frame) {
 
 void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 	auto timeStart = std::chrono::high_resolution_clock::now();
-	
+	this->imageGPU.release();
+	this->ipmGPU.release();
 	this->imageGPU.upload(frame);
 	cv::Mat down(this->imageGPU);
 	imshow("T", down);
 
 	auto uploadEnd = std::chrono::high_resolution_clock::now();
 	cv::cuda::warpPerspective(this->imageGPU, this->ipmGPU, this->transformationMat, frame.size(), INTER_CUBIC | WARP_INVERSE_MAP);
-	cv::cuda::threshold(this->ipmGPU, this->imageGPU, 230, 255, 0);
-	cv::Mat test(this->imageGPU);
+	//cv::cuda::threshold(this->ipmGPU, this->imageGPU, 230, 255, 0);
+	this->imageGPU = ipmGPU;
+	cv::Mat test(ipmGPU);
 	imshow("tester", test);
 
 	auto warpEnd = std::chrono::high_resolution_clock::now();
@@ -437,7 +439,7 @@ void PointLaneDetector::prepareInterpolation(int i) {
 			vRes.lanePoints.at(2).push_back(laneMiddles.at(rightIndex));
 			calculateSolveMatrix(laneMiddles.at(rightIndex), rA, rB, numberOfRightPoints);
 			rightLaneStartPoint = laneMiddles.at(rightIndex);
-			this->rightDistances.at(i-1) = distancesRight.at(rightIndex);
+			//this->rightDistances.at(i-1) = distancesRight.at(rightIndex);
 			this->rightLineIndices.at(i) = numberOfRightPoints;
 			numberOfRightPoints++;
 		}
