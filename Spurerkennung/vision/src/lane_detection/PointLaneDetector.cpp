@@ -47,7 +47,7 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 	this->laneMiddles.reserve(25);
 
 	double camera_angle_pitch 	= 	config.count("camera_angle_pitch") 	? stod(config["camera_angle_pitch"]) 	: 17.77;
-	double camera_angle_roll 	= 	config.count("camera_angle_roll") 	? stod(config["camera_angle_roll"]) 		: 0.0;
+	double camera_angle_roll 	= 	config.count("camera_angle_roll") 	? stod(config["camera_angle_roll"]) 	: 0.0;
 	double camera_angle_yaw 	= 	config.count("camera_angle_yaw") 	? stod(config["camera_angle_yaw"])		: 0.0;
 	double camera_focallength 	= 	config.count("camera_focallength") 	? stod(config["camera_focallength"])	: 6.0;
 	double camera_height	 	= 	config.count("camera_height") 	 	? stod(config["camera_height"])			: 250.0;
@@ -78,26 +78,24 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 	double pixel_width 		= 7.2;
 	double pixel_height 	= 5.4;*/
 
-	double alpha_ = 42;
-	double beta_ = 90 - camera_angle_roll;
-	double gamma_ = 90 - camera_angle_yaw;
-	double f_ = 500;
+	double alpha_ = camera_angle_pitch;
+	double beta_ = camera_angle_roll;
+	double gamma_ = camera_angle_yaw;
+	double f_ = camera_focallength;
 	double height = camera_height;
 	double skew_ = 0;
-	double pixel_width = 7.2;
-	double pixel_height = 5.4;
 
 	double focalLength, dist, alpha, beta, gamma, skew;
 
-	alpha = ((double)alpha_ - 90) * M_PI / 180;
-	beta = ((double)beta_ - 90) * M_PI / 180;
-	gamma = ((double)gamma_ - 90) * M_PI / 180;
-	focalLength = (double)f_;
-	dist = 600;//-((double)height) / sin(alpha);
+	alpha = alpha_ * M_PI / 180;
+	beta = beta_ * M_PI / 180;
+	gamma = gamma_ * M_PI / 180;
+	focalLength = f_;
+	dist = height / sin(alpha);
 	skew = skew_;
 
 	Size image_size = Size(camera_res_wid, camera_res_hei);
-	double w = (double)image_size.width, h = (double)image_size.height;
+	double w = image_size.width, h = image_size.height;
 
 
 	// Projecion matrix 2D -> 3D
@@ -111,10 +109,10 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 	// Rotation matrices Rx, Ry, Rz
 
 	Mat RX = (Mat_<float>(4, 4) <<
-		1, 0, 0, 0,
-		0, cos(alpha), -sin(alpha), 0,
-		0, sin(alpha), cos(alpha), 0,
-		0, 0, 0, 1);
+		1,	0,			0,				0,
+		0, 	cos(alpha),	-sin(alpha),	0,
+		0, 	sin(alpha),	cos(alpha),		0,
+		0, 	0,			0,				1);
 
 	// Change for different y-rotation
 	Mat RY = (Mat_<float>(4, 4) <<
@@ -140,12 +138,12 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 		0, 0, 1, dist,
 		0, 0, 0, 1);
 
-	// K - camera matrix
+	// K - camera matrix, nach: https://en.wikipedia.org/wiki/Camera_resectioning
 	Mat K = (Mat_<float>(3, 4) <<
-		focalLength	,		skew,						w / 2,		0,
-		0							,		focalLength,	h / 6,		0,
-		0							,		0,							1,			0
-		);
+		focalLength*image_size.width	,		skew							,	w / 2	,		0,
+		0								,		focalLength*image_size.height	,	h / 2	,		0,
+		0								,		0								,	1		,		0);
+
 	this->transformationMat = K * (T * (R * A1));
 }
 
