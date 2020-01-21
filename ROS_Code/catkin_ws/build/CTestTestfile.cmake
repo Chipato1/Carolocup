@@ -5,6 +5,7 @@
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.
 subdirs("gtest")
+subdirs("ROS-Behavior-Tree/behavior_tree")
 subdirs("rosserial/rosserial")
 subdirs("rosserial/rosserial_arduino")
 subdirs("rosserial/rosserial_mbed")
@@ -16,7 +17,9 @@ subdirs("rosserial/rosserial_vex_v5")
 subdirs("rosserial/rosserial_xbee")
 subdirs("rosserial/rosserial_client")
 subdirs("regler")
+subdirs("ROS-Behavior-Tree/behavior_tree_core")
 subdirs("rosserial/rosserial_server")
+subdirs("ROS-Behavior-Tree/behavior_tree_leaves")
 subdirs("rosserial/rosserial_embeddedlinux")
 subdirs("rosserial/rosserial_test")
 subdirs("rosserial/rosserial_windows")
