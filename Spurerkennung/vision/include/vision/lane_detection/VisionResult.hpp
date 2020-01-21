@@ -1,5 +1,6 @@
 #include <array>
 #include <vector>
+#include <opencv2/core.hpp>
 
 enum ERROR_TYPES {
 	SUCCESS, ERROR
