@@ -7,4 +7,5 @@
 # new environment variables
 
 # modified environment variables
-export PWD="/home/chipato/Desktop/Test_git/Carolocup/ROS_Code/catkin_ws/build"
+export PWD="/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/build"
+export PYTHONPATH="/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/devel/lib/python2.7/dist-packages:$PYTHONPATH"
