@@ -87,9 +87,9 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 
 	double focalLength, dist, alpha, beta, gamma, skew;
 
-	alpha = (alpha_-90) * M_PI / 180;
-	beta = (beta_-90) * M_PI / 180;
-	gamma = (gamma_-90) * M_PI / 180;
+	alpha = (alpha_) * M_PI / 180;
+	beta = (beta_) * M_PI / 180;
+	gamma = (gamma_) * M_PI / 180;
 	focalLength = f_;
 	dist = height / cos(alpha);
 	skew = skew_;
