@@ -25,13 +25,13 @@ void drawResult(cv::Mat im, cv::Mat x1, cv::Mat x2, cv::Scalar color, int inters
 
 PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config) {
 	this->vRes = VisionResult();
-	this->leftLane1		= cv::Mat::zeros(this->grade, 1, CV_64F);
-	this->middleLane1		= cv::Mat::zeros(this->grade, 1, CV_64F);
-	this->rightLane1		= cv::Mat::zeros(this->grade, 1, CV_64F);
+	this->leftLane1				= cv::Mat::zeros(this->grade, 1, CV_64F);
+	this->middleLane1			= cv::Mat::zeros(this->grade, 1, CV_64F);
+	this->rightLane1			= cv::Mat::zeros(this->grade, 1, CV_64F);
 
-	this->leftLane2		= cv::Mat::zeros(this->grade, 1, CV_64F);
-	this->middleLane2		= cv::Mat::zeros(this->grade, 1, CV_64F);
-	this->rightLane2		= cv::Mat::zeros(this->grade, 1, CV_64F);
+	this->leftLane2				= cv::Mat::zeros(this->grade, 1, CV_64F);
+	this->middleLane2			= cv::Mat::zeros(this->grade, 1, CV_64F);
+	this->rightLane2			= cv::Mat::zeros(this->grade, 1, CV_64F);
 
 	this->lA					= cv::Mat::zeros(numberOfLines, grade, CV_64F);
 	this->lB					= cv::Mat::zeros(numberOfLines, 1, CV_64F);
@@ -252,7 +252,6 @@ bool PointLaneDetector::calculateAlgorithm() {
 	this->clear();
 	stepSize = (this->edge.rows - edgeOffset) / (numberOfLines - 1);
 	int lineY = this->edge.rows - 2;											//1: Offset wegen Canny (letzte Zeile schwarz)
-
 	
 	this->foundLL = false;
 	this->foundML = false;
@@ -305,7 +304,7 @@ void PointLaneDetector::classifyPoints(int line) {
 					vRes.lanePoints.at(0).push_back(analysisPoint);
 					calculateSolveMatrix(analysisPoint, lA, lB, numberOfLeftPoints);
 					laneMiddles.erase(laneMiddles.begin() + pointI);
-					pointI--;
+					//pointI--;
 					this->leftDistances[line] = 1;
 					numberOfLeftPoints++;
 				}
@@ -317,7 +316,7 @@ void PointLaneDetector::classifyPoints(int line) {
 					vRes.lanePoints.at(1).push_back(analysisPoint);
 					calculateSolveMatrix(analysisPoint, mA, mB, numberOfMiddlePoints);
 					laneMiddles.erase(laneMiddles.begin() + pointI);
-					pointI--;
+					//pointI--;
 					this->middleDistances[line] = 1;
 					numberOfMiddlePoints++;
 				}
@@ -329,7 +328,7 @@ void PointLaneDetector::classifyPoints(int line) {
 					vRes.lanePoints.at(2).push_back(analysisPoint);
 					calculateSolveMatrix(analysisPoint, rA, rB, numberOfRightPoints);
 					laneMiddles.erase(laneMiddles.begin() + pointI);
-					pointI--;
+					//pointI--;
 					this->rightDistances[line] = 1;
 					numberOfRightPoints++;
 				}
@@ -338,26 +337,7 @@ void PointLaneDetector::classifyPoints(int line) {
 	}
 }
 
-void PointLaneDetector::doMean(std::array<double, numberOfLines>& arr) {
-	int counter = 0;
-	std::for_each(arr.begin(), arr.end(), [this, &counter, &arr](double element) -> void {
-		if (element == 0) {
-			int i = 1;
-			double itElement = 0;
-			do {
-				if (i + counter >= numberOfLines) {
-					return;
-				}
-				itElement = arr.at(counter + i);
-				if (itElement != 0) {
-					std::fill(arr.begin() + counter, arr.begin() + counter + i + 1, itElement / (i+1));
-				}
-				i++;
-			} while (itElement == 0);
-		}
-		counter++;
-	});
-}
+
 
 void PointLaneDetector::prepareInterpolation(int i) {
 	if (!laneMiddles.empty() && (foundLL || foundML || foundRL)) {
@@ -414,110 +394,64 @@ void PointLaneDetector::prepareInterpolation(int i) {
 
 
 
-		if (foundLL ) {
-			if (leftIndex != -1 && distancesLeft.at(leftIndex) < 100) {
-				vRes.lanePoints.at(0).push_back(laneMiddles.at(leftIndex));
-				calculateSolveMatrix(laneMiddles.at(leftIndex), lA, lB, numberOfLeftPoints);
-				leftLaneStartPoint = laneMiddles.at(leftIndex);
-				this->leftDistances.at(i - 1) = distancesLeft.at(leftIndex);
-				this->leftLineIndices.at(i) = numberOfLeftPoints;
-				numberOfLeftPoints++;
-			}
-			else {
-				
-			}
+		if (foundLL && leftIndex != -1 && distancesLeft.at(leftIndex) < 100) {
+			vRes.lanePoints.at(0).push_back(laneMiddles.at(leftIndex));
+			calculateSolveMatrix(laneMiddles.at(leftIndex), lA, lB, numberOfLeftPoints);
+			leftLaneStartPoint = laneMiddles.at(leftIndex);
+			numberOfLeftPoints++;
+			
 		}
 		if (foundML && middleIndex != -1) {
 			vRes.lanePoints.at(1).push_back(laneMiddles.at(middleIndex));
 			calculateSolveMatrix(laneMiddles.at(middleIndex), mA, mB, numberOfMiddlePoints);
 			middleLaneStartPoint = laneMiddles.at(middleIndex);
-			this->middleDistances.at(i-1) = distancesMiddle.at(middleIndex);
-			this->middleLineIndices.at(i) = numberOfMiddlePoints;
 			numberOfMiddlePoints++;
 		}
 		if (foundRL && rightIndex != -1 && distancesRight.at(rightIndex) < 100) {
 			vRes.lanePoints.at(2).push_back(laneMiddles.at(rightIndex));
 			calculateSolveMatrix(laneMiddles.at(rightIndex), rA, rB, numberOfRightPoints);
 			rightLaneStartPoint = laneMiddles.at(rightIndex);
-			//this->rightDistances.at(i-1) = distancesRight.at(rightIndex);
-			this->rightLineIndices.at(i) = numberOfRightPoints;
 			numberOfRightPoints++;
 		}
 	}
 }
 
-void PointLaneDetector::removeFalse(std::array<double, numberOfLines>& arr) {
-	double summe = std::accumulate(arr.begin(), arr.end(), 0.0);
-	double mittelwert = summe / numberOfLines;
 
-	std::array<double, numberOfLines> result;
-	std::transform(arr.begin(), arr.end(), result.begin(), [](double elem)->double {
-		return elem * elem;
-		});
-	
-
-	double stdDev = sqrt(std::accumulate(result.begin(), result.end(), 0.0) / numberOfLines - mittelwert * mittelwert);
-	std::transform(arr.begin(), arr.end(), arr.begin(), [stdDev](double elem)->double {
-		if (elem > stdDev || elem < -stdDev) {
-			return 0;
-		}
-		else {
-			return elem;
-		}
-		});
+bool PointLaneDetector::solveSingleLane(cv::Mat& lane, cv::Mat A, cv::Mat B, int start, int end) {
+	Range rowRange = Range(start, end);
+	Range colRange = Range(0, this->grade);
+	Range zeroOneRange = Range(0, 1);
+	bool success = cv::solve(A(rowRange, colRange), B(rowRange, zeroOneRange),lane, DECOMP_QR);
+	lane.at<double>(0) = lane.at<double>(0) * 6;
+	lane.at<double>(1) = lane.at<double>(1) * 2;
+	makeClothoide(lane);
+	return success;
 }
 
-void makeClothoide(cv::Mat& res) {
-	res.at<double>(0) = res.at<double>(0) * 6;
-	res.at<double>(1) = res.at<double>(1) * 2;
+double calculateVariance(cv::Mat& lane,  std::vector<cv::Point> pts) {
+	std::vector<double> res(pts.size(), 0);
+	std::transform(pts.begin(), pts.end(), res.begin(), [](cv::Point pt)->double{
+		return calcX(lane, pt.y) - pt.x;
+	});
+	double mean = 0;
+	double m2 = 0;
+	std::for_each(res.begin(), res.end(), [](double elem)->{
+		mean+=elem;
+		m2+=elem*elem;
+	});
+	return m2-mean*mean;
+	
 }
 
 bool PointLaneDetector::solveClothoide() {
-	/*doMean(leftDistances);
-	doMean(middleDistances);
-	doMean(rightDistances);
-	std::transform(leftDistances.begin(), leftDistances.end(), leftDistances.begin(), [this](double elem) -> double {
-		return (acos(20 / elem));
-		});
-	std::adjacent_difference(leftDistances.begin(), leftDistances.end(), leftDistances.begin());
-	leftDistances.at(0) = 0;
 
-	leftDistances.at(numberOfLines - 2) = 0;
-	leftDistances.at(numberOfLines - 1) = 0;
-	//removeFalse(this->leftDistances);
-
-	std::array<double, numberOfLines>::iterator posL = std::find_if(leftDistances.begin(), leftDistances.end(), [](double val) ->bool {
-		return abs(val) >= 0.05;
-		});
-	
-	int leftIndex = this->leftLineIndices.at(posL - leftDistances.begin());
-	int leftTempI = posL - leftDistances.begin();
-	while (leftIndex == 0) {
-		leftTempI++;
-		leftIndex =  this->leftLineIndices.at(leftTempI);
-		
+	for(int i = 4; i < numberOfLines; i+=5) {
+		if (solveSingleLane(this->leftLane1, this->lA; this->lB; 0, i)) {
+			for (int i = 0; i < ; i < ) {
+				double variance = calculateVariance(this->leftLane1, this->vRes.lanePoints(0));
+			}
+		}
 	}
-
-	std::adjacent_difference(rightDistances.begin(), rightDistances.end(), rightDistances.begin());
-	rightDistances.at(0) = 0;
-	std::array<double, numberOfLines>::iterator posR = std::find_if(rightDistances.begin(), rightDistances.end(), [](double val) ->bool {
-		return abs(val) >= 0.05;
-		});
-	int rightIndex = this->rightLineIndices.at(posR - rightDistances.begin());
-	int rightTempI = posR - rightDistances.begin();
-	while (rightIndex == 0) {
-		rightTempI++;
-		rightIndex = this->leftLineIndices.at(rightTempI);
-		
-	}
-
-	int middleTempI = ((posL - leftDistances.begin()) + (posR - rightDistances.begin())) / 2;
-	int middleIndex = this->middleLineIndices.at(middleTempI);
-	while (middleIndex == 0) {
-		middleTempI++;
-		middleIndex = this->middleLineIndices.at(middleTempI);
-		
-	}*/
 
 	int leftIndex = 0;
 	int leftTempI = 0;
