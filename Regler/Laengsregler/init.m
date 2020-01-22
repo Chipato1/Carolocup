@@ -1,8 +1,8 @@
 %Dieses Sktipt initialisiert einen Zustandsvariablenfilter zur Ableitung
 %der Ticks die durch die raddrehzahlsensoren geliefert werden.
-%Diese entsprechen der gefahrenen Stecke un müssen durch differentiation in
+%Diese entsprechen der gefahrenen Stecke un mï¿½ssen durch differentiation in
 %eine Geschwindigkeit umgerechnet werden.
-%Da die erste ableitung benötigt wird muss der zvf 2 einträge enthalten,
+%Da die erste ableitung benï¿½tigt wird muss der zvf 2 eintrï¿½ge enthalten,
 %also auch die zweite ableitung berechnen. n = 2!!!
 %der zvf liegt in
 %regelungsnormalform vor:
@@ -15,11 +15,11 @@ b = [0; 1];
 pr=1.3;%5%0.45*25;%p anteil des reglers
 ir=1.7;%1.1%0.5422*25/2.3;%i anteil des reglers
 dr=-0.5;%nur ein test
-u = 7;%getriebeübersetzug
+u = 7;%getriebeï¿½bersetzug
 %d=10
 Ur = pi*0.056%Umfang der Reifen bei 5cm durchmesser
 nt = 9;%Anzahl der Ticks pro Umfang
-%bestimmung der Filterübertragungsfunktion
+%bestimmung der Filterï¿½bertragungsfunktion
 v=2%geschwindigkeit in m/s
 f = 1;
 for k = 1:n
@@ -31,7 +31,7 @@ for i = 0:n-1
     %diese muss glaube ich der Abtastrate entprechen
 end
 A = [0, 1;-f(1), -f(2)];
-cT=[0,f(1)]%ct muss kompensieren, damit der ZVF eine gesamst Verstärkung von 1 hat!!!
+cT=[f(1), 0]%ct muss kompensieren, damit der ZVF eine gesamst Verstï¿½rkung von 1 hat!!!
 s=tf('s');
 Gf = tf(ss(A,b,cT,0))
 

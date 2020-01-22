@@ -7,6 +7,7 @@
 v=2;%geschwindigkeit
 l=0.25;%Achsenabstand
 lh=l/2;%Abstand zuwischen Schwerpunkt und Hinterachse, noch auszumessen!!!
+u = 7;
 %%%%%%%%%%%%%%%%%%%%%%%%Zustandsraum
 systemMatrix_A = [0,v;0,0];%maximale Kurvengeschwindigkeit von 2.63m/s
 ausgangsVektor_cT = [0,1];%wegen vorder und hinterache gilt: Kurswinkel ist 0.5 des vorderachseinschlags (ungewichtetes mittel aus vorder und hinterachse)

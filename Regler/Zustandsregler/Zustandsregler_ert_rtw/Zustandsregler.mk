@@ -2,7 +2,7 @@
 ## Makefile generated for Simulink model 'Zustandsregler'. 
 ## 
 ## Makefile     : Zustandsregler.mk
-## Generated on : Mon Jan 20 02:13:26 2020
+## Generated on : Wed Jan 22 15:31:15 2020
 ## MATLAB Coder version: 4.3 (R2019b)
 ## 
 ## Build Info:
@@ -216,7 +216,7 @@ SYSTEM_LIBS =
 # C Compiler
 #---------------
 
-CFLAGS_SKIPFORSIL =   -fpermissive -fpermissive -fpermissive -fpermissive
+CFLAGS_SKIPFORSIL =   -fpermissive
 CFLAGS_BASIC = $(DEFINES) $(INCLUDES)
 
 CFLAGS += $(CFLAGS_SKIPFORSIL) $(CFLAGS_BASIC)
@@ -225,7 +225,7 @@ CFLAGS += $(CFLAGS_SKIPFORSIL) $(CFLAGS_BASIC)
 # C++ Compiler
 #-----------------
 
-CPPFLAGS_SKIPFORSIL =   -fpermissive -fpermissive -fpermissive -fpermissive
+CPPFLAGS_SKIPFORSIL =   -fpermissive
 CPPFLAGS_BASIC = $(DEFINES) $(INCLUDES)
 
 CPPFLAGS += $(CPPFLAGS_SKIPFORSIL) $(CPPFLAGS_BASIC)

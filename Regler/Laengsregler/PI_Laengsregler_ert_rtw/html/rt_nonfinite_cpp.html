@@ -29,11 +29,11 @@
 <tr name="9" id="9">
 <td><a id="l9" class='ln'>9</a></td><td><span class="ct"> *</span></td></tr>
 <tr name="10" id="10">
-<td><a id="l10" class='ln'>10</a></td><td><span class="ct"> * Model version              : 1.11</span></td></tr>
+<td><a id="l10" class='ln'>10</a></td><td><span class="ct"> * Model version              : 1.17</span></td></tr>
 <tr name="11" id="11">
 <td><a id="l11" class='ln'>11</a></td><td><span class="ct"> * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019</span></td></tr>
 <tr name="12" id="12">
-<td><a id="l12" class='ln'>12</a></td><td><span class="ct"> * C++ source code generated on : Fri Jan 17 18:21:14 2020</span></td></tr>
+<td><a id="l12" class='ln'>12</a></td><td><span class="ct"> * C++ source code generated on : Wed Jan 22 14:00:45 2020</span></td></tr>
 <tr name="13" id="13">
 <td><a id="l13" class='ln'>13</a></td><td><span class="ct"> *</span></td></tr>
 <tr name="14" id="14">
@@ -41,7 +41,7 @@
 <tr name="15" id="15">
 <td><a id="l15" class='ln'>15</a></td><td><span class="ct"> * Note: GRT includes extra infrastructure and instrumentation for prototyping</span></td></tr>
 <tr name="16" id="16">
-<td><a id="l16" class='ln'>16</a></td><td><span class="ct"> * Embedded hardware selection: Generic-&gt;Unspecified (assume 32-bit Generic)</span></td></tr>
+<td><a id="l16" class='ln'>16</a></td><td><span class="ct"> * Embedded hardware selection: Intel-&gt;x86-64 (Linux 64)</span></td></tr>
 <tr name="17" id="17">
 <td><a id="l17" class='ln'>17</a></td><td><span class="ct"> * Code generation objectives: Unspecified</span></td></tr>
 <tr name="18" id="18">
@@ -161,107 +161,55 @@
 <tr name="75" id="75">
 <td><a id="l75" class='ln'>75</a></td><td>    <span class="br">}</span> <span class="kw">else</span> <span class="br">{</span></td></tr>
 <tr name="76" id="76">
-<td><a id="l76" class='ln'>76</a></td><td>      <a id="76c7" class="tk">uint16_T</a> <a id="76c16" class="tk">one</a> = 1U;</td></tr>
+<td><a id="l76" class='ln'>76</a></td><td>      <span class="kw">union</span> <span class="br">{</span></td></tr>
 <tr name="77" id="77">
-<td><a id="l77" class='ln'>77</a></td><td>      <span class="kw">enum</span> <span class="br">{</span></td></tr>
+<td><a id="l77" class='ln'>77</a></td><td>        <a id="77c9" class="tk">LittleEndianIEEEDouble</a> <a id="77c32" class="tk">bitVal</a>;</td></tr>
 <tr name="78" id="78">
-<td><a id="l78" class='ln'>78</a></td><td>        <a id="78c9" class="tk">LittleEndian</a>,</td></tr>
+<td><a id="l78" class='ln'>78</a></td><td>        <a id="78c9" class="tk">real_T</a> <a id="78c16" class="tk">fltVal</a>;</td></tr>
 <tr name="79" id="79">
-<td><a id="l79" class='ln'>79</a></td><td>        <a id="79c9" class="tk">BigEndian</a></td></tr>
+<td><a id="l79" class='ln'>79</a></td><td>      <span class="br">}</span> <a id="79c9" class="tk">tmpVal</a>;</td></tr>
 <tr name="80" id="80">
-<td><a id="l80" class='ln'>80</a></td><td>      <span class="br">}</span> <a id="80c9" class="tk">machByteOrder</a> = (<a id="80c26" class="tk">*</a>((<a id="80c29" class="tk">uint8_T</a> <a id="80c37" class="tk">*</a>) <a id="80c40" class="tk">&amp;</a><a id="80c41" class="tk">one</a>) <a id="80c46" class="tk">==</a> 1U) <a id="80c53" class="tk">?</a> <a id="80c55" class="tk">LittleEndian</a> <a id="80c68" class="tk">:</a> <a id="80c70" class="tk">BigEndian</a>;</td></tr>
+<td><a id="l80" class='ln'>80</a></td><td></td></tr>
 <tr name="81" id="81">
-<td><a id="l81" class='ln'>81</a></td><td>      <span class="kw">switch</span> (<a id="81c15" class="tk">machByteOrder</a>) <span class="br">{</span></td></tr>
+<td><a id="l81" class='ln'>81</a></td><td>      <a id="81c7" class="tk">tmpVal</a>.<a id="81c14" class="tk">fltVal</a> = <a id="81c23" class="tk">value</a>;</td></tr>
 <tr name="82" id="82">
-<td><a id="l82" class='ln'>82</a></td><td>       <span class="kw">case</span> <a id="82c13" class="tk">LittleEndian</a><a id="82c25" class="tk">:</a></td></tr>
+<td><a id="l82" class='ln'>82</a></td><td>      <a id="82c7" class="tk">result</a> = (<a id="82c17" class="tk">boolean_T</a>)((<a id="82c29" class="tk">tmpVal</a>.<a id="82c36" class="tk">bitVal</a>.<a id="82c43" class="tk">words</a>.<a id="82c49" class="tk">wordH</a> <a id="82c55" class="tk">&amp;</a> 0x7FF00000) <a id="82c69" class="tk">==</a></td></tr>
 <tr name="83" id="83">
-<td><a id="l83" class='ln'>83</a></td><td>        <span class="br">{</span></td></tr>
+<td><a id="l83" class='ln'>83</a></td><td>                           0x7FF00000 <a id="83c39" class="tk">&amp;&amp;</a></td></tr>
 <tr name="84" id="84">
-<td><a id="l84" class='ln'>84</a></td><td>          <span class="kw">union</span> <span class="br">{</span></td></tr>
+<td><a id="l84" class='ln'>84</a></td><td>                           ( (<a id="84c31" class="tk">tmpVal</a>.<a id="84c38" class="tk">bitVal</a>.<a id="84c45" class="tk">words</a>.<a id="84c51" class="tk">wordH</a> <a id="84c57" class="tk">&amp;</a> 0x000FFFFF) <a id="84c71" class="tk">!=</a> 0 <a id="84c76" class="tk">||</a></td></tr>
 <tr name="85" id="85">
-<td><a id="l85" class='ln'>85</a></td><td>            <a id="85c13" class="tk">LittleEndianIEEEDouble</a> <a id="85c36" class="tk">bitVal</a>;</td></tr>
+<td><a id="l85" class='ln'>85</a></td><td>                            (<a id="85c30" class="tk">tmpVal</a>.<a id="85c37" class="tk">bitVal</a>.<a id="85c44" class="tk">words</a>.<a id="85c50" class="tk">wordL</a> <a id="85c56" class="tk">!=</a> 0) ));</td></tr>
 <tr name="86" id="86">
-<td><a id="l86" class='ln'>86</a></td><td>            <a id="86c13" class="tk">real_T</a> <a id="86c20" class="tk">fltVal</a>;</td></tr>
+<td><a id="l86" class='ln'>86</a></td><td>    <span class="br">}</span></td></tr>
 <tr name="87" id="87">
-<td><a id="l87" class='ln'>87</a></td><td>          <span class="br">}</span> <a id="87c13" class="tk">tmpVal</a>;</td></tr>
+<td><a id="l87" class='ln'>87</a></td><td></td></tr>
 <tr name="88" id="88">
-<td><a id="l88" class='ln'>88</a></td><td></td></tr>
+<td><a id="l88" class='ln'>88</a></td><td>    <span class="kw">return</span> <a id="88c12" class="tk">result</a>;</td></tr>
 <tr name="89" id="89">
-<td><a id="l89" class='ln'>89</a></td><td>          <a id="89c11" class="tk">tmpVal</a>.<a id="89c18" class="tk">fltVal</a> = <a id="89c27" class="tk">value</a>;</td></tr>
+<td><a id="l89" class='ln'>89</a></td><td>  <span class="br">}</span></td></tr>
 <tr name="90" id="90">
-<td><a id="l90" class='ln'>90</a></td><td>          <a id="90c11" class="tk">result</a> = (<a id="90c21" class="tk">boolean_T</a>)((<a id="90c33" class="tk">tmpVal</a>.<a id="90c40" class="tk">bitVal</a>.<a id="90c47" class="tk">words</a>.<a id="90c53" class="tk">wordH</a> <a id="90c59" class="tk">&amp;</a> 0x7FF00000) <a id="90c73" class="tk">==</a></td></tr>
+<td><a id="l90" class='ln'>90</a></td><td></td></tr>
 <tr name="91" id="91">
-<td><a id="l91" class='ln'>91</a></td><td>                               0x7FF00000 <a id="91c43" class="tk">&amp;&amp;</a></td></tr>
+<td><a id="l91" class='ln'>91</a></td><td>  <span class="ct">/* Test if single-precision value is not a number */</span></td></tr>
 <tr name="92" id="92">
-<td><a id="l92" class='ln'>92</a></td><td>                               ( (<a id="92c35" class="tk">tmpVal</a>.<a id="92c42" class="tk">bitVal</a>.<a id="92c49" class="tk">words</a>.<a id="92c55" class="tk">wordH</a> <a id="92c61" class="tk">&amp;</a> 0x000FFFFF) <a id="92c75" class="tk">!=</a> 0 <a id="92c80" class="tk">||</a></td></tr>
+<td><a id="l92" class='ln'>92</a></td><td>  <a id="92c3" class="tk">boolean_T</a> <a id="92c13" class="tk">rtIsNaNF</a>(<a id="92c22" class="tk">real32_T</a> <a id="92c31" class="tk">value</a>)</td></tr>
 <tr name="93" id="93">
-<td><a id="l93" class='ln'>93</a></td><td>                                (<a id="93c34" class="tk">tmpVal</a>.<a id="93c41" class="tk">bitVal</a>.<a id="93c48" class="tk">words</a>.<a id="93c54" class="tk">wordL</a> <a id="93c60" class="tk">!=</a> 0) ));</td></tr>
+<td><a id="l93" class='ln'>93</a></td><td>  <span class="br">{</span></td></tr>
 <tr name="94" id="94">
-<td><a id="l94" class='ln'>94</a></td><td>          <span class="kw">break</span>;</td></tr>
+<td><a id="l94" class='ln'>94</a></td><td>    <a id="94c5" class="tk">IEEESingle</a> <a id="94c16" class="tk">tmp</a>;</td></tr>
 <tr name="95" id="95">
-<td><a id="l95" class='ln'>95</a></td><td>        <span class="br">}</span></td></tr>
+<td><a id="l95" class='ln'>95</a></td><td>    <a id="95c5" class="tk">tmp</a>.<a id="95c9" class="tk">wordL</a>.<a id="95c15" class="tk">wordLreal</a> = <a id="95c27" class="tk">value</a>;</td></tr>
 <tr name="96" id="96">
-<td><a id="l96" class='ln'>96</a></td><td></td></tr>
+<td><a id="l96" class='ln'>96</a></td><td>    <span class="kw">return</span> (<a id="96c13" class="tk">boolean_T</a>)( (<a id="96c26" class="tk">tmp</a>.<a id="96c30" class="tk">wordL</a>.<a id="96c36" class="tk">wordLuint</a> <a id="96c46" class="tk">&amp;</a> 0x7F800000) <a id="96c60" class="tk">==</a> 0x7F800000 <a id="96c74" class="tk">&amp;&amp;</a></td></tr>
 <tr name="97" id="97">
-<td><a id="l97" class='ln'>97</a></td><td>       <span class="kw">case</span> <a id="97c13" class="tk">BigEndian</a><a id="97c22" class="tk">:</a></td></tr>
+<td><a id="l97" class='ln'>97</a></td><td>                       (<a id="97c25" class="tk">tmp</a>.<a id="97c29" class="tk">wordL</a>.<a id="97c35" class="tk">wordLuint</a> <a id="97c45" class="tk">&amp;</a> 0x007FFFFF) <a id="97c59" class="tk">!=</a> 0 );</td></tr>
 <tr name="98" id="98">
-<td><a id="l98" class='ln'>98</a></td><td>        <span class="br">{</span></td></tr>
+<td><a id="l98" class='ln'>98</a></td><td>  <span class="br">}</span></td></tr>
 <tr name="99" id="99">
-<td><a id="l99" class='ln'>99</a></td><td>          <span class="kw">union</span> <span class="br">{</span></td></tr>
+<td><a id="l99" class='ln'>99</a></td><td><span class="br">}</span></td></tr>
 <tr name="100" id="100">
-<td><a id="l100" class='ln'>100</a></td><td>            <a id="100c13" class="tk">BigEndianIEEEDouble</a> <a id="100c33" class="tk">bitVal</a>;</td></tr>
-<tr name="101" id="101">
-<td><a id="l101" class='ln'>101</a></td><td>            <a id="101c13" class="tk">real_T</a> <a id="101c20" class="tk">fltVal</a>;</td></tr>
-<tr name="102" id="102">
-<td><a id="l102" class='ln'>102</a></td><td>          <span class="br">}</span> <a id="102c13" class="tk">tmpVal</a>;</td></tr>
-<tr name="103" id="103">
-<td><a id="l103" class='ln'>103</a></td><td></td></tr>
-<tr name="104" id="104">
-<td><a id="l104" class='ln'>104</a></td><td>          <a id="104c11" class="tk">tmpVal</a>.<a id="104c18" class="tk">fltVal</a> = <a id="104c27" class="tk">value</a>;</td></tr>
-<tr name="105" id="105">
-<td><a id="l105" class='ln'>105</a></td><td>          <a id="105c11" class="tk">result</a> = (<a id="105c21" class="tk">boolean_T</a>)((<a id="105c33" class="tk">tmpVal</a>.<a id="105c40" class="tk">bitVal</a>.<a id="105c47" class="tk">words</a>.<a id="105c53" class="tk">wordH</a> <a id="105c59" class="tk">&amp;</a> 0x7FF00000) <a id="105c73" class="tk">==</a></td></tr>
-<tr name="106" id="106">
-<td><a id="l106" class='ln'>106</a></td><td>                               0x7FF00000 <a id="106c43" class="tk">&amp;&amp;</a></td></tr>
-<tr name="107" id="107">
-<td><a id="l107" class='ln'>107</a></td><td>                               ( (<a id="107c35" class="tk">tmpVal</a>.<a id="107c42" class="tk">bitVal</a>.<a id="107c49" class="tk">words</a>.<a id="107c55" class="tk">wordH</a> <a id="107c61" class="tk">&amp;</a> 0x000FFFFF) <a id="107c75" class="tk">!=</a> 0 <a id="107c80" class="tk">||</a></td></tr>
-<tr name="108" id="108">
-<td><a id="l108" class='ln'>108</a></td><td>                                (<a id="108c34" class="tk">tmpVal</a>.<a id="108c41" class="tk">bitVal</a>.<a id="108c48" class="tk">words</a>.<a id="108c54" class="tk">wordL</a> <a id="108c60" class="tk">!=</a> 0) ));</td></tr>
-<tr name="109" id="109">
-<td><a id="l109" class='ln'>109</a></td><td>          <span class="kw">break</span>;</td></tr>
-<tr name="110" id="110">
-<td><a id="l110" class='ln'>110</a></td><td>        <span class="br">}</span></td></tr>
-<tr name="111" id="111">
-<td><a id="l111" class='ln'>111</a></td><td>      <span class="br">}</span></td></tr>
-<tr name="112" id="112">
-<td><a id="l112" class='ln'>112</a></td><td>    <span class="br">}</span></td></tr>
-<tr name="113" id="113">
-<td><a id="l113" class='ln'>113</a></td><td></td></tr>
-<tr name="114" id="114">
-<td><a id="l114" class='ln'>114</a></td><td>    <span class="kw">return</span> <a id="114c12" class="tk">result</a>;</td></tr>
-<tr name="115" id="115">
-<td><a id="l115" class='ln'>115</a></td><td>  <span class="br">}</span></td></tr>
-<tr name="116" id="116">
-<td><a id="l116" class='ln'>116</a></td><td></td></tr>
-<tr name="117" id="117">
-<td><a id="l117" class='ln'>117</a></td><td>  <span class="ct">/* Test if single-precision value is not a number */</span></td></tr>
-<tr name="118" id="118">
-<td><a id="l118" class='ln'>118</a></td><td>  <a id="118c3" class="tk">boolean_T</a> <a id="118c13" class="tk">rtIsNaNF</a>(<a id="118c22" class="tk">real32_T</a> <a id="118c31" class="tk">value</a>)</td></tr>
-<tr name="119" id="119">
-<td><a id="l119" class='ln'>119</a></td><td>  <span class="br">{</span></td></tr>
-<tr name="120" id="120">
-<td><a id="l120" class='ln'>120</a></td><td>    <a id="120c5" class="tk">IEEESingle</a> <a id="120c16" class="tk">tmp</a>;</td></tr>
-<tr name="121" id="121">
-<td><a id="l121" class='ln'>121</a></td><td>    <a id="121c5" class="tk">tmp</a>.<a id="121c9" class="tk">wordL</a>.<a id="121c15" class="tk">wordLreal</a> = <a id="121c27" class="tk">value</a>;</td></tr>
-<tr name="122" id="122">
-<td><a id="l122" class='ln'>122</a></td><td>    <span class="kw">return</span> (<a id="122c13" class="tk">boolean_T</a>)( (<a id="122c26" class="tk">tmp</a>.<a id="122c30" class="tk">wordL</a>.<a id="122c36" class="tk">wordLuint</a> <a id="122c46" class="tk">&amp;</a> 0x7F800000) <a id="122c60" class="tk">==</a> 0x7F800000 <a id="122c74" class="tk">&amp;&amp;</a></td></tr>
-<tr name="123" id="123">
-<td><a id="l123" class='ln'>123</a></td><td>                       (<a id="123c25" class="tk">tmp</a>.<a id="123c29" class="tk">wordL</a>.<a id="123c35" class="tk">wordLuint</a> <a id="123c45" class="tk">&amp;</a> 0x007FFFFF) <a id="123c59" class="tk">!=</a> 0 );</td></tr>
-<tr name="124" id="124">
-<td><a id="l124" class='ln'>124</a></td><td>  <span class="br">}</span></td></tr>
-<tr name="125" id="125">
-<td><a id="l125" class='ln'>125</a></td><td><span class="br">}</span></td></tr>
-<tr name="126" id="126">
-<td><a id="l126" class='ln'>126</a></td><td></td></tr>
+<td><a id="l100" class='ln'>100</a></td><td></td></tr>
 </table>
 </pre>
 </body>
