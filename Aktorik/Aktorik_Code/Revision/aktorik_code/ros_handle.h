@@ -1,6 +1,6 @@
 #include "akt_servo.h"
-#include "Motor.h"
-#include "Lights.h"
+#include "akt_motor.h"
+#include "akt_lights.h"
 
 #include <ros.h>
 #include <std_msgs/UInt16.h>
