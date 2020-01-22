@@ -2,7 +2,7 @@
 
 void motor_init()
 {
-  motor.attach(10);
+  servo_motor.attach(10);
 }
 
 void motor_bewegung(byte motor_drehzahl)
@@ -18,7 +18,7 @@ void motor_bewegung(byte motor_drehzahl)
   /* 
    * Übergangsbereich von 91 bis 95 wird nicht betrachtet
    */
- motor.write(motor_uebertragung);
+ servo_motor.write(motor_uebertragung);
 }
 
 void motor_bewegung_RC_mode(byte voltage_1)
@@ -35,6 +35,6 @@ void motor_bewegung_RC_mode(byte voltage_1)
     {
         motor_uebertragung_RC_mode = 93;
     }
-    motor.write(motor_uebertragung_RC_mode);
+    servo_motor.write(motor_uebertragung_RC_mode);
     
 }

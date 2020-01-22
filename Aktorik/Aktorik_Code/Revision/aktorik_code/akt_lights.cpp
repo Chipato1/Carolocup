@@ -2,59 +2,50 @@
 
 void lights_init()
 {
-  pinMode(head_lights, OUTPUT);              //Setzen der Lichter als Ausgang
-  pinMode(flash_light_left, OUTPUT);         
-  pinMode(flash_light_right, OUTPUT);        
-  pinMode(brake_light, OUTPUT);              
-  pinMode(reversing_light, OUTPUT);          
-  pinMode(blue_light, OUTPUT);
+  pinMode(frontlicht, OUTPUT);              //Setzen der Lichter als Ausgang
+  pinMode(blinker_links, OUTPUT);         
+  pinMode(blinker_rechts, OUTPUT);        
+  pinMode(bremslicht, OUTPUT);              
+  pinMode(rueckfahrlicht, OUTPUT);          
+  pinMode(blaues_licht, OUTPUT);
 
   //Sind Scheinwerfer immer an?
-  digitalWrite(flasher_left,LOW);            //Alle Lichter ausschalten
-  digitalWrite(flasher_right,LOW); 
-  digitalWrite(brake_light,LOW); 
-  digitalWrite(reversing_light,LOW);
-  digitalWrite(blue_light, LOW)
+  digitalWrite(blinker_links,LOW);            //Alle Lichter ausschalten
+  digitalWrite(blinker_rechts,LOW); 
+  digitalWrite(bremslicht,LOW); 
+  digitalWrite(rueckfahrlicht,LOW);
+  digitalWrite(blaues_licht, LOW);
 }
 
 void licht_leuchti(byte led_signal)
 {
   switch (led_signal)
   {
-    case 0x00: digitalWrite(brake_light,ON);
+    case 0x00: digitalWrite(bremslicht,HIGH);
       break;
     
-    case 0x01: digitalWrite(brake_light,Off);
+    case 0x01: digitalWrite(bremslicht,LOW);
       break;
       
-    case 0x02: digitalWrite(flasher_right,ON);
+    case 0x02: digitalWrite(blinker_rechts,HIGH);
       break;
       
-    case 0x03: digitalWrite(flasher_right,Off);
+    case 0x03: digitalWrite(blinker_rechts,LOW);
       break;
                  
-    case 0x04: digitalWrite(flasher_left,ON);
+    case 0x04: digitalWrite(blinker_links,HIGH);
        break;
               
-    case 0x05: digitalWrite(flasher_left,Off);
+    case 0x05: digitalWrite(blinker_links,LOW);
        break; 
     
-    case 0x06: digitalWrite(reversing_light,ON);
+    case 0x06: digitalWrite(rueckfahrlicht,HIGH);
       break;
     
-    case 0x07: digitalWrite(reversing_light,Off);
+    case 0x07: digitalWrite(rueckfahrlicht,LOW);
       break;
             
-    default:  
+    default: //nix mache
        break;
   }
-
- /*
- if (millis() - previousMillis > interval)
- {
-    previousMillis = millis();
-    timing_flasher = !timing_flasher;
- 
-    digitalWrite(flasher, timing_flasher);
 }
-*/

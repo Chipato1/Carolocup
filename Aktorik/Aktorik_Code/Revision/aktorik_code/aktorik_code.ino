@@ -1,14 +1,16 @@
 //Präprozessor Anweisungen
 
-#define byte uint8_t
-
+//#define byte uint8_t
+//#define unsigned char byte
 
 //Includes
+#include <Arduino.h>
 #include "ros_handle.h"
 #include "akt_lights.h"
 #include "akt_motor.h"
 #include "akt_servo.h"
 #include <Servo.h>
+
 
 #define referenzvolatage 0.0021259765
 #include <ros.h>
@@ -21,24 +23,26 @@ void setup()
   ros_init();
 }
 
+
 void loop() 
 {
- /* analogvalue_1 = analogRead(xxxx);//Einlesen des Pins vom Tiefpass
+  byte voltage_1;
+  byte analogvalue_1;
+  //analogvalue_1 = analogRead(xxxx);//Einlesen des Pins vom Tiefpass
   voltage_1 = referenzvolatage * analogvalue_1; // 5V/1024 = 0.0048V pro Schritt
   if (voltage_1 < 0.3)//Autonom betrieb
   {
-     digitalWrite(blue_light,Off); //blaue LED auschalten
-     digitalWrite(xxxxx,On);//Multiplexer Select Pin
+     digitalWrite(blaues_licht,LOW); //blaue LED auschalten
+     //digitalWrite(xxxxx,On);//Multiplexer Select Pin
      aktorik_knoten.spinOnce();
      
   }
   else  //RC
   {
-      digitalWrite(blue_light,ON); //blaue LED anschalten
-      digitalWrite(xxxxx,Off);//Multiplexer Select Pin 
-      motor_bewegung_RC_mode();
+      digitalWrite(blaues_licht,HIGH); //blaue LED anschalten
+      //digitalWrite(xxxxx,Off);//Multiplexer Select Pin 
+      motor_bewegung_RC_mode(voltage_1);
       
   }
-  */
-  aktorik_knoten.spinOnce();
+
 }

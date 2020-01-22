@@ -3,7 +3,7 @@
 #define pi 3.141592653589
 void servo_init()
 {
-  servo.attach(9);
+  servo_servo.attach(9);
   //pinMode(xxxx, OUTPUT);//Pin vom Multiplexer Select einschreiben
 }
 
@@ -18,5 +18,5 @@ void servo_bewegung(float lenkwinkel_bogenmass)
   {
     lenkwinkel_servosize = lenkwinkel_grad + 96;
   } 
-  servo.write(lenkwinkel_servosize); //Servo fährt in die ensprechende Stellung
+  servo_servo.write(lenkwinkel_servosize); //Servo fährt in die ensprechende Stellung
 }

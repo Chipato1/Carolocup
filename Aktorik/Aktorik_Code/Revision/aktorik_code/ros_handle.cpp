@@ -1,4 +1,7 @@
 #include "ros_handle.h"
+#include "akt_servo.h"
+#include "akt_motor.h"
+#include "akt_lights.h"
 
 void ros_init()
 {
@@ -22,19 +25,3 @@ void licht_cb(const std_msgs::UInt8& cmd_msg)
 {
   licht_leuchti(cmd_msg.data); 
 }
-
-
-
-   /*
-  union prot
-  {
-    int arr[3];
-
-    struct protocol
-    {
-      int id;
-      int value;
-      int value2;
-    }
-  }
-  */
