@@ -133,7 +133,7 @@ void motor_bewegung(byte motor_drehzahl)
 {
   if(motor_drehzahl < 0)                                    //rückwärts
   {
-    motor_uebertragung = 90 -(0.234 * motor_drehzahl);
+    motor_uebertragung = 90 +(0.234 * motor_drehzahl);
   }
   else                                                      //vorwärts
   {
