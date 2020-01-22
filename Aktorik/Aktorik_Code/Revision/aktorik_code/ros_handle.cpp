@@ -1,15 +1,11 @@
 #include "ros_handle.h"
 
-void usb_init()
+void ros_init()
 {
-  servo_init();
-  ligths_init();
-  motor_init();
   aktorik_knoten.initNode();
   aktorik_knoten.subscribe(sub_servo);
   aktorik_knoten.subscribe(sub_motor);
   aktorik_knoten.subscribe(sub_licht);
- 
 }
 
 void servo_cb(const std_msgs::Float32& cmd_msg)

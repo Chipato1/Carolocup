@@ -1,6 +1,6 @@
 #define byte uint8_t
 
-static const byte head_lights = 53;                       //Den Lichter den Pins zuordnen
+static const byte head_lights = 53;                       //Den Lichter die Pins zuordnen
 static const byte flasher_left = 51;
 static const byte flasher_right = 49;
 static const byte brake_light = 47;
@@ -13,10 +13,7 @@ unsigned long previousMillis = 0;
 unsigned long interval = 100;
 */
 void lights_init();
+
 byte led_signal;
+
 void licht_leuchti(byte led_signal);
-
-
-
-
-

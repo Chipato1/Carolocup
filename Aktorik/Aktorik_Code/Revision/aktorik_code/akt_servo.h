@@ -1,3 +1,4 @@
+
 #include <Servo.h>
 #define pi 3.141592653589
 
@@ -10,6 +11,3 @@ float lenkwinkel_grad;
 void servo_init();
 
 void servo_bewegung(float lenkwinkel_bogenmass);
-
-
-

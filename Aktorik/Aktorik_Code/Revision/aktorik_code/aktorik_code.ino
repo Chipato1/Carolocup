@@ -5,17 +5,20 @@
 
 //Includes
 #include "ros_handle.h"
+#include "akt_lights.h"
+#include "akt_motor.h"
+#include "akt_servo.h"
+#include <Servo.h>
+
 #define referenzvolatage 0.0021259765
 #include <ros.h>
 
 void setup() 
 {
-  usb_init();
-  /*
   lights_init();
-  servo_init();
   motor_init();
-  ;*/
+  servo_init();
+  ros_init();
 }
 
 void loop() 
