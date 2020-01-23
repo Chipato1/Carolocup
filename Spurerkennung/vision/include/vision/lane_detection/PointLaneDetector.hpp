@@ -14,6 +14,10 @@ public:
 	VisionResult vRes;
 	//Alle erkannten Punkte auf den Linien
 	
+	cv::Mat ipm;
+	cv::Mat threshold;
+	cv::Mat edge;
+	cv::Mat debugImage;
 
 private:
 	bool calculateAlgorithm();
@@ -64,9 +68,10 @@ private:
 
 	cv::cuda::GpuMat imageGPU;
 	cv::cuda::GpuMat ipmGPU;
+	cv::cuda::GpuMat thresholdGPU;
 	cv::cuda::GpuMat edgeGPU;
 
-	cv::Mat edge;
+	
 
 	//Temporaere Variablen
 	cv::Mat linePoints;

@@ -36,20 +36,32 @@ std::map<std::string, std::string> readConfigFile() {
 }
 
 PointLaneDetector* detector;
-ros::Publisher pub;
+ros::Publisher visionResultPublisher;
+ros::Publisher ipmPublisher;
+ros::Publisher thresholdPublisher;
+ros::Publisher edgePublisher;
+ros::Publisher debugImagePublisher;
+cv_bridge::CvImage ipmPublish = new cv_bridge::CvImage();
+cv_bridge::CvImage thresholdPublish = new cv_bridge::CvImage();
+cv_bridge::CvImage edgePublish = new cv_bridge::CvImage();
+cv_bridge::CvImage resultImage = new cv_bridge::CvImage();
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 	auto timeStart = std::chrono::high_resolution_clock::now();
 	cv::Mat image = cv_bridge::toCvShare(msg, "mono8")->image;
+	cv_bridge::CvImage image = new cv_bridge::CvImage
 	detector->calculateFrame(image);
+	
 	auto timeEnd = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
 	std::cout <<"Dauer Gesamt: " << duration << std::endl;
-	pub.publish(detector->vRes);
+	visionResultPublisher.publish(detector->vRes);
+	ipmPublisher.publish(detector->ipm);
+	thresholdPublisher.publish(detector->threshold);
+	edgePublisher.publish(detector->edge);
+	debugImagePublisher.publish(detector->debugImage);
 	ros::spinOnce();
 }
-
-
 
 int main(int argc, char** argv) {
 	std::cout << "Launching ROS Lane Detection node..." << std::endl;
@@ -67,8 +79,11 @@ int main(int argc, char** argv) {
 	//
 	image_transport::Subscriber sub = it.subscribe(config["cam_im_topic_name"] , 1, imageCallback);
 	
-	pub = nh.advertise<VisionResult>(config["vision_result_topic_name"], 5);
-
+	visionResultPublisher = nh.advertise<VisionResult>(config["vision_result_topic_name"], 5);
+	ipmPublisher = nh.advertise<VisionResult>(config["ipm_result_topic_name"], 1);
+	thresholdPublisher = nh.advertise<VisionResult>(config["threshold_topic_name"], 1);
+	edgePublisher = nh.advertise<VisionResult>(config["edge_topic_name"], 1);
+	debugImagePublisher = nh.advertise<VisionResult>(config["debug_image_topic_name"], 1);
 
 	ros::spin();
 	return 0;

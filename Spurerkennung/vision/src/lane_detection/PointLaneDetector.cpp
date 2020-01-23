@@ -148,18 +148,16 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 }
 
 void PointLaneDetector::debugDraw(cv::Mat& frame) {
-	cv::cvtColor(frame, frame, COLOR_GRAY2BGR);
-	drawResult(frame, this->leftLane1, this->leftLane2, Scalar(255, 0, 0), this->intersectionPosL);
-	drawResult(frame, this->middleLane1, this->middleLane2, Scalar(255, 255, 255), this->intersectionPosM);
-	drawResult(frame, this->rightLane1, this->rightLane2, Scalar(0, 0, 255),this->intersectionPosR);
+	cv::cvtColor(frame, this->debugImage, COLOR_GRAY2BGR);
+	drawResult(this->debugImage, this->leftLane1, this->leftLane2, Scalar(255, 0, 0), this->intersectionPosL);
+	drawResult(this->debugImage, this->middleLane1, this->middleLane2, Scalar(255, 255, 255), this->intersectionPosM);
+	drawResult(this->debugImage, this->rightLane1, this->rightLane2, Scalar(0, 0, 255),this->intersectionPosR);
 
 	for (int x = 0; x < this->vRes.lanePoints.size(); x++) {
 		for (int y = 0; y < this->vRes.lanePoints.at(x).size(); y++) {
-			circle(frame, this->vRes.lanePoints.at(x).at(y), 5, Scalar(x * 128, 255, 255));
+			circle(this->debugImage, this->vRes.lanePoints.at(x).at(y), 5, Scalar(x * 128, 255, 255));
 		}
 	}
-	imshow("Result image", frame);
-
 }
 
 double calcX(cv::Mat func, float y) {
@@ -192,7 +190,6 @@ void PointLaneDetector::calculateFrame(cv::Mat& frame) {
 	//auto timeGPU = std::chrono::high_resolution_clock::now();
 	this->calculateAlgorithm();
 	//auto timeEnd = std::chrono::high_resolution_clock::now();
-	imshow("edge", this->edge);
 	//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
 	//std::cout << "\033[2J\033[1;1H";
 	/*std::cout <<"Dauer Gesamt: " << duration << std::endl;
@@ -201,10 +198,6 @@ void PointLaneDetector::calculateFrame(cv::Mat& frame) {
 	duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeGPU).count();
 	std::cout << "Dauer CPU: " << duration << std::endl;*/
 	this->debugDraw(this->edge);
-	std::cout << this->leftLane2;
-	std::cout << this->middleLane2;
-	std::cout << this->rightLane2;
-	waitKey(1);
 }
 
 
@@ -212,21 +205,20 @@ void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 	auto timeStart = std::chrono::high_resolution_clock::now();
 	this->imageGPU.release();
 	this->ipmGPU.release();
+	this->thresholdGPU.release();
 	this->imageGPU.upload(frame);
-	cv::Mat down(this->imageGPU);
-	imshow("T", down);
+	
 
 	auto uploadEnd = std::chrono::high_resolution_clock::now();
 	cv::cuda::warpPerspective(this->imageGPU, this->ipmGPU, this->transformationMat, cv::Size(950,2400),  WARP_INVERSE_MAP);
+	this->ipmGPU.download(this->ipm);
 
 	double min, max;
 	cv::minMaxLoc(frame, &min, &max);
 
-	cv::cuda::threshold(this->ipmGPU, this->imageGPU, min+(max-min)*7/8, 255, 0);
-	this->ipmGPU = GpuMat(this->imageGPU, Range(0, 2399), Range(600, 949));
-	cv::Mat test(ipmGPU);
-	cv::resize(test, test, Size(475, 1200));
-	imshow("tester", test);
+	cv::cuda::threshold(this->ipmGPU, this->thresholdGPU, 230, 255, 0);
+	this->thresholdGPU = GpuMat(this->thresholdGPU, Range(0, 2399), Range(600, 949));
+	this->thresholdGPU.download(this->threshold);
 
 	auto warpEnd = std::chrono::high_resolution_clock::now();
 	this->canny->detect(this->ipmGPU, this->edgeGPU);
@@ -466,13 +458,13 @@ bool PointLaneDetector::solveClothoide() {
 	}
 
 	if (foundML && foundRL && numberOfLeftPoints < numberOfRightPoints && numberOfMiddlePoints < numberOfRightPoints) {
-		vRes.oppositeTraffic = false;
+		vRes.oppositeLane = false;
 	}
 
 	if (foundML && foundRL && !foundLL && numberOfMiddlePoints > numberOfRightPoints) {
-		vRes.oppositeTraffic = true;
+		vRes.oppositeLane = true;
 	} else {
-		vRes.oppositeTraffic = false;
+		vRes.oppositeLane = false;
 	}
 
 	bool solveResultL1 = solveSingleLane(this->leftLane1, this->lA, this->lB, 0, numberOfLines - 1, foundLL);
