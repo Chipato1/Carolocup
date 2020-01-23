@@ -16,7 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   roscpp
   std_msgs
-  ros_comm_msg-kinetic-devel
+  std_srvs
 )
 
 ## System dependencies are found with CMake's conventions
