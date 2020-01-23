@@ -8,22 +8,24 @@
 #include <std_msgs/UInt8.h>
 #include <std_msgs/Float32.h>
 
-#define referenzvolatage 0.0021259765
+#define referenzvolatage 0.0021259765       //Referenzspannung zur Berechnung der Tiefpassspannung vom Motor - PWM
 #define pi 3.141592653589
+#define tiefpass_untere_spannung XXX        //Schwellwert Spannung am Tiefpass zum rückwertsfahren
+#define tiefpass_obere_spannung XXX         //Schwellwert Spannung am Tiefpass zum vorwärtsfahren
 
-float voltage_1;
-int analogvalue_1;
+float voltage_1;                            //Spannung Tiefpass vom Motor - PWM
+int analogvalue_1;                          //eingelesener Pin - Wert am Tiefpass
+  
+float lenkwinkel_bogenmass;                 //
+float wert_servo;                           //
+float lenkwinkel_servosize;                 //
+float lenkwinkel_grad;                      //
 
-float lenkwinkel_bogenmass;
-float wert_servo;
-float lenkwinkel_servosize;
-float lenkwinkel_grad;
+byte motor_drehzahl;                        //
+byte motor_uebertragung;                    //
+byte motor_uebertragung_RC_mode;            //
 
-byte motor_drehzahl;
-byte motor_uebertragung;
-byte motor_uebertragung_RC_mode;
-
-const byte frontlicht = 53;
+const byte frontlicht = 53;                 //Pinbelegung der LEDs
 const byte blinker_links = 51;
 const byte blinker_rechts = 49;
 const byte bremslicht = 47;
@@ -31,51 +33,51 @@ const byte rueckfahrlicht = 45;
 const byte blaues_licht = 43;
 
 
-void servo_bewegung(float lenkwinkel_bogenmass);
+void servo_bewegung(float lenkwinkel_bogenmass);  //Funktion Servosteuerung im autonomen Betrieb
 
-void motor_bewegung(byte motor_drehzahl);
-void motor_bewegung_RC_mode (byte voltage_1);
+void motor_bewegung(byte motor_drehzahl);         //Funktion Motorsteuerung im autonomen Betrieb
+void motor_bewegung_RC_mode (byte voltage_1);     //Funktion Motorsteuerung im RC - Mode
 
-void licht_leuchti(byte led_signal);
+void licht_leuchti(byte led_signal);              //Funktion Lichtanlage steuern
 
 
-ros::NodeHandle aktorik_knoten;
+ros::NodeHandle aktorik_knoten;                   //Initialisierung des ROS - Knoten
 
-Servo servo;
-Servo motor;
+Servo servo;                                      //
+Servo motor;                                      //
 
-void servo_cb(const std_msgs::Float32& cmd_msg)
+void servo_cb(const std_msgs::Float32& cmd_msg)   //Callback - Funktion für Servoaufruf
 {
   servo_bewegung(cmd_msg.data);
 }
 
-void motor_cb(const std_msgs::UInt8& cmd_msg)
+void motor_cb(const std_msgs::UInt8& cmd_msg)     //Callback - Funktion für Motoraufruf
 {
   motor_bewegung(cmd_msg.data);
 }
 
-void licht_cb(const std_msgs::UInt8& cmd_msg)
+void licht_cb(const std_msgs::UInt8& cmd_msg)     //Callback - Funktion für Lichtaufruf
 {
   licht_leuchti(cmd_msg.data); 
 }
 
-ros::Subscriber<std_msgs::Float32> sub_servo("servo", servo_cb);
-ros::Subscriber<std_msgs::UInt8> sub_motor("motor", motor_cb);
-ros::Subscriber<std_msgs::UInt8> sub_licht("licht", licht_cb);
+ros::Subscriber<std_msgs::Float32> sub_servo("servo", servo_cb);  //Deklaration von Servo - Topic
+ros::Subscriber<std_msgs::UInt8> sub_motor("motor", motor_cb);    //Deklaration von Motor - Topic
+ros::Subscriber<std_msgs::UInt8> sub_licht("licht", licht_cb);    //Deklaration von Licht - Topic
 
 
 
-void setup() 
+void setup()  //Setup - Funktion
 {
-  aktorik_knoten.initNode();
+  aktorik_knoten.initNode();  //Initialisierung des ROS - Knoten
   
-  aktorik_knoten.subscribe(sub_servo);
-  aktorik_knoten.subscribe(sub_motor);
-  aktorik_knoten.subscribe(sub_licht);
+  aktorik_knoten.subscribe(sub_servo);  //Zuweisung Servo Subscriber zum Aktorik - Knoten
+  aktorik_knoten.subscribe(sub_motor);  //Zuweisung Motor Subscriber zum Aktorik - Knoten
+  aktorik_knoten.subscribe(sub_licht);  //Zuweisung Licht Subscriber zum Aktorik - Knoten
 
-  motor.attach(12);
+  motor.attach(12); //Motor an Pin zuweisen
 
-  servo.attach(11);
+  servo.attach(11); //Servo an Pin zuweisen
 
   pinMode(frontlicht, OUTPUT);              //Setzen der Lichter als Ausgang
   pinMode(blinker_links, OUTPUT);         
@@ -93,7 +95,7 @@ void setup()
 }
 
 
-void loop() 
+void loop() //Funktionsschleife
 {
   
   //analogvalue_1 = analogRead(xxxx);//Einlesen des Pins vom Tiefpass
@@ -102,7 +104,7 @@ void loop()
   //{
      //digitalWrite(blaues_licht,LOW); //blaue LED auschalten
      //digitalWrite(xxxxx,On);//Multiplexer Select Pin
-     aktorik_knoten.spinOnce();
+     aktorik_knoten.spinOnce();                                                       //Überprüfung, ob neuer für Knoten neuer Wert vorliegt
      
   //}
   //else  //RC
@@ -147,13 +149,13 @@ void motor_bewegung(byte motor_drehzahl)
 
 void motor_bewegung_RC_mode(float voltage_1)
 {
-    if (voltage_1 < 2.5 )                                     //rückwarts
+    if (voltage_1 < tiefpass_untere_spannung)                                     //rückwarts
     {
         motor_uebertragung_RC_mode = (voltage_1 * 8.33) + 70;
     }
-    else if (voltage_1 > 2.5)                                 //vorwärts
+    else if (voltage_1 > tiefpass_obere_spannung)                                 //vorwärts
     {
-        motor_uebertragung_RC_mode = (voltage_1 * 8.33) + 64.35;
+        motor_uebertragung_RC_mode = (voltage_1 * 8.33) + 74.432;
     }
     else
     {
