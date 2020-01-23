@@ -639,14 +639,14 @@ rostime_DIR:PATH=/opt/ros/melodic/share/rostime/cmake
 //The directory containing a CMake configuration file for sensor_msgs.
 sensor_msgs_DIR:PATH=/opt/ros/melodic/share/sensor_msgs/cmake
 
-//Value Computed by CMake
-state_machine_BINARY_DIR:STATIC=/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/build/state_machine
-
-//Value Computed by CMake
-state_machine_SOURCE_DIR:STATIC=/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/src/state_machine
-
 //The directory containing a CMake configuration file for std_msgs.
 std_msgs_DIR:PATH=/opt/ros/melodic/share/std_msgs/cmake
+
+//Value Computed by CMake
+test_nodes_BINARY_DIR:STATIC=/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/build/test_nodes
+
+//Value Computed by CMake
+test_nodes_SOURCE_DIR:STATIC=/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/src/test_nodes
 
 //The directory containing a CMake configuration file for topic_tools.
 topic_tools_DIR:PATH=/opt/ros/melodic/share/topic_tools/cmake
@@ -689,7 +689,7 @@ Boost_THREAD_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
 Boost_THREAD_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
 //catkin environment
 CATKIN_ENV:INTERNAL=/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/build/catkin_generated/env_cached.sh
-CATKIN_TEST_RESULTS_DIR:INTERNAL=/home/chipato/Desktop/Test_git/Carolocup/ROS_Code/catkin_ws/build/test_results
+CATKIN_TEST_RESULTS_DIR:INTERNAL=/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/build/test_results
 //ADVANCED property for variable: CMAKE_AR
 CMAKE_AR-ADVANCED:INTERNAL=1
 //This is the directory where this CMakeCache.txt was created
@@ -772,7 +772,7 @@ CMAKE_HAVE_PTHREAD_CREATE:INTERNAL=1
 CMAKE_HAVE_PTHREAD_H:INTERNAL=1
 //Source directory with the top level CMakeLists.txt file for this
 // project
-CMAKE_HOME_DIRECTORY:INTERNAL=/home/chipato/Desktop/Test_git/Carolocup/ROS_Code/catkin_ws/src
+CMAKE_HOME_DIRECTORY:INTERNAL=/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/src
 //Install .so files without execute permission.
 CMAKE_INSTALL_SO_NO_EXE:INTERNAL=1
 //ADVANCED property for variable: CMAKE_LINKER
@@ -792,7 +792,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=22
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=23
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

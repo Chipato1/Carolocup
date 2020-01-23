@@ -1156,6 +1156,19 @@ std_msgs_generate_messages_py/fast:
 .PHONY : std_msgs_generate_messages_py/fast
 
 #=============================================================================
+# Target rules for targets named test_nodes_node
+
+# Build rule for target.
+test_nodes_node: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test_nodes_node
+.PHONY : test_nodes_node
+
+# fast build rule for target.
+test_nodes_node/fast:
+	$(MAKE) -f test_nodes/CMakeFiles/test_nodes_node.dir/build.make test_nodes/CMakeFiles/test_nodes_node.dir/build
+.PHONY : test_nodes_node/fast
+
+#=============================================================================
 # Target rules for targets named _behavior_tree_core_generate_messages_check_deps_BTActionResult
 
 # Build rule for target.
@@ -2297,6 +2310,7 @@ help:
 	@echo "... std_msgs_generate_messages_nodejs"
 	@echo "... roscpp_generate_messages_nodejs"
 	@echo "... std_msgs_generate_messages_py"
+	@echo "... test_nodes_node"
 	@echo "... _behavior_tree_core_generate_messages_check_deps_BTActionResult"
 	@echo "... actionlib_generate_messages_py"
 	@echo "... behavior_tree_core_generate_messages_py"

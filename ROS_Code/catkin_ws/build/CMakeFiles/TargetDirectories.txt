@@ -186,6 +186,14 @@
 /home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/build/regler/CMakeFiles/roscpp_generate_messages_nodejs.dir
 /home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/build/regler/CMakeFiles/std_msgs_generate_messages_py.dir
 /home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/build/regler/CMakeFiles/test.dir
+/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/build/test_nodes/CMakeFiles/install/strip.dir
+/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/build/test_nodes/CMakeFiles/install/local.dir
+/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/build/test_nodes/CMakeFiles/test.dir
+/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/build/test_nodes/CMakeFiles/list_install_components.dir
+/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/build/test_nodes/CMakeFiles/test_nodes_node.dir
+/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/build/test_nodes/CMakeFiles/edit_cache.dir
+/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/build/test_nodes/CMakeFiles/rebuild_cache.dir
+/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/build/test_nodes/CMakeFiles/install.dir
 /home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/build/ROS-Behavior-Tree/behavior_tree_core/CMakeFiles/install/strip.dir
 /home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/build/ROS-Behavior-Tree/behavior_tree_core/CMakeFiles/install/local.dir
 /home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/build/ROS-Behavior-Tree/behavior_tree_core/CMakeFiles/install.dir
