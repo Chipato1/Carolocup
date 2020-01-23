@@ -49,17 +49,23 @@ cv_bridge::CvImage resultImage();
 void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 	auto timeStart = std::chrono::high_resolution_clock::now();
 	cv::Mat image = cv_bridge::toCvShare(msg, "mono8")->image;
-	cv_bridge::CvImage image = new cv_bridge::CvImage
+
 	detector->calculateFrame(image);
 	
 	auto timeEnd = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
 	std::cout <<"Dauer Gesamt: " << duration << std::endl;
+
+	ipmPublish->image = detector->ipm;
+	thresholdPublish->image = detector->threshold;
+	edgePublish->image = detector->edge;
+	resultImage->image = detector->debugImage;
+
 	visionResultPublisher.publish(detector->vRes);
-	ipmPublisher.publish(detector->ipm);
-	thresholdPublisher.publish(detector->threshold);
-	edgePublisher.publish(detector->edge);
-	debugImagePublisher.publish(detector->debugImage);
+	ipmPublisher.publish(ipmPublish->toImgMsg());
+	thresholdPublisher.publish(thresholdPublish->toImgMsg());
+	edgePublisher.publish(edgePublish->toImgMsg());
+	debugImagePublisher.publish(resultImage->toImgMsg());
 	ros::spinOnce();
 }
 
