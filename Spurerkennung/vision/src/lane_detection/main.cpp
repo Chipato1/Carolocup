@@ -37,14 +37,11 @@ std::map<std::string, std::string> readConfigFile() {
 
 PointLaneDetector* detector;
 ros::Publisher visionResultPublisher;
-ros::Publisher ipmPublisher;
-ros::Publisher thresholdPublisher;
-ros::Publisher edgePublisher;
-ros::Publisher debugImagePublisher;
-cv_bridge::CvImage ipmPublish();
-cv_bridge::CvImage thresholdPublish();
-cv_bridge::CvImage edgePublish();
-cv_bridge::CvImage resultImage();
+image_transport::Publisher  ipmPublisher;
+image_transport::Publisher  thresholdPublisher;
+image_transport::Publisher  edgePublisher;
+image_transport::Publisher  debugImagePublisher;
+
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 	auto timeStart = std::chrono::high_resolution_clock::now();
@@ -56,16 +53,18 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
 	std::cout <<"Dauer Gesamt: " << duration << std::endl;
 
-	ipmPublish->image = detector->ipm;
-	thresholdPublish->image = detector->threshold;
-	edgePublish->image = detector->edge;
-	resultImage->image = detector->debugImage;
+	sensor_msgs::ImagePtr ipmMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->ipm).toImageMsg();
+	sensor_msgs::ImagePtr thresholdMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->threshold).toImageMsg();
+	sensor_msgs::ImagePtr edgeMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->edge).toImageMsg();
+	sensor_msgs::ImagePtr debugMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->debugImage).toImageMsg();
 
-	visionResultPublisher.publish(detector->vRes);
-	ipmPublisher.publish(ipmPublish->toImgMsg());
-	thresholdPublisher.publish(thresholdPublish->toImgMsg());
-	edgePublisher.publish(edgePublish->toImgMsg());
-	debugImagePublisher.publish(resultImage->toImgMsg());
+
+
+	//visionResultPublisher.publish(detector->vRes);
+	ipmPublisher.publish(ipmMsg);
+	thresholdPublisher.publish(thresholdMsg);
+	edgePublisher.publish(edgeMsg);
+	debugImagePublisher.publish(debugMsg);
 	ros::spinOnce();
 }
 
@@ -85,11 +84,12 @@ int main(int argc, char** argv) {
 	//
 	image_transport::Subscriber sub = it.subscribe(config["cam_im_topic_name"] , 1, imageCallback);
 	
-	visionResultPublisher = nh.advertise<VisionResult>(config["vision_result_topic_name"], 5);
-	ipmPublisher = nh.advertise<VisionResult>(config["ipm_result_topic_name"], 1);
-	thresholdPublisher = nh.advertise<VisionResult>(config["threshold_topic_name"], 1);
-	edgePublisher = nh.advertise<VisionResult>(config["edge_topic_name"], 1);
-	debugImagePublisher = nh.advertise<VisionResult>(config["debug_image_topic_name"], 1);
+	//visionResultPublisher = nh.advertise<VisionResult>(config["vision_result_topic_name"], 5);
+	
+	ipmPublisher = it.advertise(config["ipm_result_topic_name"], 1);
+	thresholdPublisher = it.advertise(config["threshold_topic_name"], 1);
+	edgePublisher = it.advertise(config["edge_topic_name"], 1);
+	debugImagePublisher = it.advertise(config["debug_image_topic_name"], 1);
 
 	ros::spin();
 	return 0;
