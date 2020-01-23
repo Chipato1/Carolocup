@@ -41,10 +41,10 @@ ros::Publisher ipmPublisher;
 ros::Publisher thresholdPublisher;
 ros::Publisher edgePublisher;
 ros::Publisher debugImagePublisher;
-cv_bridge::CvImage ipmPublish = new cv_bridge::CvImage();
-cv_bridge::CvImage thresholdPublish = new cv_bridge::CvImage();
-cv_bridge::CvImage edgePublish = new cv_bridge::CvImage();
-cv_bridge::CvImage resultImage = new cv_bridge::CvImage();
+cv_bridge::CvImage ipmPublish();
+cv_bridge::CvImage thresholdPublish();
+cv_bridge::CvImage edgePublish();
+cv_bridge::CvImage resultImage();
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 	auto timeStart = std::chrono::high_resolution_clock::now();
