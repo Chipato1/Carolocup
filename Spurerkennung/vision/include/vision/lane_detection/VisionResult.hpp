@@ -6,7 +6,6 @@ enum ERROR_TYPES {
 	SUCCESS, ERROR
 };
 
-//std::array<double, 4>
 
 class VisionResult {
 public:
@@ -20,6 +19,12 @@ public:
 	std::array<double, 4> leftLane2;
 	std::array<double, 4> middleLane2;
 	std::array<double, 4> rightLane2;
+
+	bool foundLL = false;
+	bool foundML = false;
+	bool foundRL = false;
+	
+	bool oppositeLane = false;
 
 	double clothoideCutDistance_mm;
 

@@ -218,7 +218,11 @@ void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 
 	auto uploadEnd = std::chrono::high_resolution_clock::now();
 	cv::cuda::warpPerspective(this->imageGPU, this->ipmGPU, this->transformationMat, cv::Size(950,2400),  WARP_INVERSE_MAP);
-	cv::cuda::threshold(this->ipmGPU, this->imageGPU, 226, 255, 0);
+
+	double min, max;
+	cv::minMaxLoc(frame, &min, &max);
+
+	cv::cuda::threshold(this->ipmGPU, this->imageGPU, min+(max-min)*7/8, 255, 0);
 	this->ipmGPU = GpuMat(this->imageGPU, Range(0, 2399), Range(600, 949));
 	cv::Mat test(ipmGPU);
 	cv::resize(test, test, Size(475, 1200));
@@ -267,12 +271,15 @@ bool PointLaneDetector::calculateAlgorithm() {
 		this->laneMiddlePoints(this->laneMiddles, this->linePoints, lineY);
 		this->vRes.detectedPoints.push_back(this->laneMiddles);
 
-		this->classifyPoints(i);
 		this->prepareInterpolation(i);
+		this->classifyPoints(i);
 
 		lineY -= stepSize;
 	}
 	bool solveRes = this->solveClothoide();
+	if (solveRes) {
+		
+	}
 	return solveRes;
 }
 
@@ -458,26 +465,22 @@ bool PointLaneDetector::solveClothoide() {
 		}
 	}
 
-	int leftIndex = 0;
-	int leftTempI = 0;
-	int rightIndex = 0;
-	int rightTempI = 0;
-	int middleTempI = 0;
-	int middleIndex = 0;
+	if (foundML && foundRL && numberOfLeftPoints < numberOfRightPoints && numberOfMiddlePoints < numberOfRightPoints) {
+		vRes.oppositeTraffic = false;
+	}
 
-	intersectionPosL = leftTempI * stepSize;
-	intersectionPosM = middleTempI * stepSize;
-	intersectionPosR = rightTempI * stepSize;
+	if (foundML && foundRL && !foundLL && numberOfMiddlePoints > numberOfRightPoints) {
+		vRes.oppositeTraffic = true;
+	} else {
+		vRes.oppositeTraffic = false;
+	}
 
-	Range rowRange = Range(0, numberOfLeftPoints - leftIndex - 1);
-	Range colRange = Range(0, this->grade);
-	Range zeroOneRange = Range(0, 1);
 	bool solveResultL1 = solveSingleLane(this->leftLane1, this->lA, this->lB, 0, numberOfLines - 1, foundLL);
 	bool solveResultM1 = solveSingleLane(this->middleLane1, this->mA, this->mB, 0, numberOfLines - 1, foundML);
 	bool solveResultR1 = solveSingleLane(this->rightLane1, this->rA, this->rB, 0, numberOfLines - 1, foundRL);
 
 	bool solveResultL2 = solveSingleLane(this->leftLane2, this->lA, this->lB, 0, numberOfLines - 1, foundLL);
-	bool solveResultM2= solveSingleLane(this->middleLane2, this->mA, this->mB, 0, numberOfLines - 1, foundML);
+	bool solveResultM2 = solveSingleLane(this->middleLane2, this->mA, this->mB, 0, numberOfLines - 1, foundML);
 	bool solveResultR2 = solveSingleLane(this->rightLane2, this->rA, this->rB, 0, numberOfLines - 1, foundRL);
 
 	copyResult();
@@ -498,6 +501,9 @@ void PointLaneDetector::copyResult() {
 	mat2Arr(this->leftLane2, this->vRes.leftLane2);
 	mat2Arr(this->middleLane2, this->vRes.middleLane2);
 	mat2Arr(this->rightLane2, this->vRes.rightLane2);
+	vRes.foundLL = foundLL;
+	vRes.foundML = foundML;
+	vRes.foundRL = foundRL;
 }
 
 void PointLaneDetector::laneMiddlePoints(std::vector<cv::Point>& laneMiddles, Mat linePoints, int yPos) {
