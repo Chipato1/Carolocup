@@ -1,11 +1,10 @@
 #include "BMI088.h"
 
-
 Bmi088Accel accel(SPI,10);
 Bmi088Gyro gyro(SPI,9);
 
-float* imu_array;
-
+float imu_array[3];
+  
 /* Macros to get and set register fields */
 #define GET_FIELD(regname,value) ((value & regname##_MASK) >> regname##_POS)
 #define  SET_FIELD(regval,regname,value) ((regval & ~regname##_MASK) | ((value << regname##_POS) & regname##_MASK))
@@ -1792,37 +1791,27 @@ void Bmi088::updateFeatureConfig(uint8_t addr, uint8_t count, const uint16_t *da
 
 void init_imu(){
   int status;
-  while(!Serial){}
-  
+   
   status = accel.begin();
   if(status<0){
     Serial.print("accel init error");
-    Serial.print(status);
     while(1){}
   }
-  
   status = gyro.begin();
   if(status<0){
     Serial.print("gyro init error");
-    Serial.print(status);
     while(1){}
   }
 }
 
 float* read_IMU(){
+
   accel.readSensor();
   gyro.readSensor();
 
   imu_array[0] = accel.getAccelX_mss();
   imu_array[1] = accel.getAccelY_mss();
   imu_array[2] = gyro.getGyroZ_rads();
-  Serial.print("imu\t");
-  Serial.print(imu_array[0]);
-  Serial.print("\t");
-  Serial.print(imu_array[1]);
-  Serial.print("\t");
-  Serial.print(imu_array[2]);
-  Serial.print("\t");
   
   return imu_array;
 }
