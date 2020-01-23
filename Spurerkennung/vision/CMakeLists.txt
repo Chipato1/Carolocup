@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   roscpp
   std_msgs
+  ros_comm_msg-kinetic-devel
 )
 
 ## System dependencies are found with CMake's conventions
@@ -139,7 +140,11 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-## set(CMAKE_CXX_FLAGS "-O3")
+
+
+set(CMAKE_CXX_FLAGS "-Ofast -march=native -fopenmp -D_GLIBCXX_PARALLEL")
+
+
 add_executable(${PROJECT_NAME}_lanedetectionnode src/lane_detection/main.cpp src/lane_detection/PointLaneDetector.cpp src/lane_detection/VisionResult.cpp)
 target_link_libraries( ${PROJECT_NAME}_lanedetectionnode ${catkin_LIBRARIES} ${OpenCV_LIBS} )
 
