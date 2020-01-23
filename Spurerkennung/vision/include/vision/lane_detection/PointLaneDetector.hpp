@@ -25,6 +25,7 @@ private:
 	void debugDraw(cv::Mat&);
 	bool solveClothoide();
 	void copyResult();
+	bool solveSingleLane(cv::Mat& lane, cv::Mat A, cv::Mat B, int start, int end, bool foundLane);
 	
 
 	void clear();
