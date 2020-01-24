@@ -489,6 +489,12 @@ gtest_main_LIB_DEPENDS:STATIC=general;-lpthread;general;gtest;
 //Path to a library.
 lib:FILEPATH=/opt/ros/melodic/lib/librostime.so
 
+//Value Computed by CMake
+light_control_BINARY_DIR:STATIC=/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/build/light_control
+
+//Value Computed by CMake
+light_control_SOURCE_DIR:STATIC=/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/src/light_control
+
 //The directory containing a CMake configuration file for message_generation.
 message_generation_DIR:PATH=/opt/ros/melodic/share/message_generation/cmake
 
@@ -792,7 +798,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=23
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=24
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

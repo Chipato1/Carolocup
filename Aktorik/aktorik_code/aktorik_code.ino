@@ -14,6 +14,15 @@
 float voltage_1;
 int analogvalue_1;
 
+unsigned long previousMillis = 0;
+const long interval = 1000; 
+boolean blinkstate = true;
+
+byte state_light_r = 0;
+byte state_light_l = 0;
+byte state_light_b = 0;
+byte state_light_rem = 0;
+
 float lenkwinkel_bogenmass;
 float wert_servo;
 float lenkwinkel_servosize;
@@ -54,16 +63,28 @@ void motor_cb(const std_msgs::UInt8& cmd_msg)
   motor_bewegung(cmd_msg.data);
 }
 
-void licht_cb(const std_msgs::UInt8& cmd_msg)
-{
-  licht_leuchti(cmd_msg.data); 
+
+void light_l_cb(const std_msgs::UInt8& light_state){
+  state_light_r = light_state.data;
+}
+void light_r_cb(const std_msgs::UInt8& light_state){
+  state_light_l = light_state.data;
+}
+void light_b_cb(const std_msgs::UInt8& light_state){
+  state_light_b = light_state.data;
+}
+void light_rem_cb(const std_msgs::UInt8& light_state){
+  state_light_rem = light_state.data;
 }
 
 ros::Subscriber<std_msgs::Float32> sub_servo("servo", servo_cb);
 ros::Subscriber<std_msgs::UInt8> sub_motor("motor", motor_cb);
-ros::Subscriber<std_msgs::UInt8> sub_licht("licht", licht_cb);
 
-
+//one topic for one light(group)
+ros::Subscriber<std_msgs::UInt8> sub_light_l("light_l_mod", light_l_cb);
+ros::Subscriber<std_msgs::UInt8> sub_light_r("light_r_mod", light_r_cb);
+ros::Subscriber<std_msgs::UInt8> sub_light_b("light_b_mod", light_b_cb);
+ros::Subscriber<std_msgs::UInt8> sub_light_rem("light_rem_mod", light_rem_cb);
 
 void setup() 
 {
@@ -72,7 +93,12 @@ void setup()
   aktorik_knoten.subscribe(sub_servo);
   aktorik_knoten.subscribe(sub_motor);
   aktorik_knoten.subscribe(sub_licht);
-
+  
+  aktorik_knoten.subscribe(sub_light_l);
+  aktorik_knoten.subscribe(sub_light_r);
+  aktorik_knoten.subscribe(sub_light_b);
+  aktorik_knoten.subscribe(sub_light_rem);
+  
   motor.attach(12);
 
   servo.attach(11);
@@ -95,24 +121,13 @@ void setup()
 
 void loop() 
 {
-  
-  //analogvalue_1 = analogRead(xxxx);//Einlesen des Pins vom Tiefpass
-  //voltage_1 = referenzvolatage * analogvalue_1; // 5V/1024 = 0.0048V pro Schritt
-  //if (voltage_1 < 0.3)//Autonom betrieb
-  //{
-     //digitalWrite(blaues_licht,LOW); //blaue LED auschalten
-     //digitalWrite(xxxxx,On);//Multiplexer Select Pin
-     aktorik_knoten.spinOnce();
-     
-  //}
-  //else  //RC
-  /*{
-      digitalWrite(blaues_licht,HIGH); //blaue LED anschalten
-      //digitalWrite(xxxxx,Off);//Multiplexer Select Pin 
-      motor_bewegung_RC_mode(voltage_1);
-      
-  }*/
-
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis;
+    set_led_states();
+    blinkstate = !blinkstate;
+  }
+  aktorik_knoten.spinOnce();
 }
 
 void servo_bewegung(float lenkwinkel_bogenmass)
@@ -164,35 +179,33 @@ void motor_bewegung_RC_mode(float voltage_1)
 }
 
 
-void licht_leuchti(byte led_signal)
-{
-  switch (led_signal)
-  {
-    case 0x00: digitalWrite(bremslicht,HIGH);
+
+/*
+const byte blinker_links = 51;
+const byte blinker_rechts = 49;
+const byte bremslicht = 47;
+const byte blaues_licht = 43;
+
+byte state_light_r = 0;
+byte state_light_l = 0;
+byte state_light_b = 0;
+byte state_light_rem = 0;
+
+*/
+void set_led_states(){
+  set_output(state_light_l, blinker_links);
+  set_output(state_light_r, blinker_rechts);
+  set_output(state_light_b, bremslicht);
+  set_output(state_light_rem, blaues_licht);
+  
+}
+void set_output(int state, int port){
+  switch(state){
+    case 0: digitalWrite(port, LOW);
       break;
-    
-    case 0x01: digitalWrite(bremslicht,LOW);
+    case 1: digitalWrite(port, HIGH);
       break;
-      
-    case 0x02: digitalWrite(blinker_rechts,HIGH);
-      break;
-      
-    case 0x03: digitalWrite(blinker_rechts,LOW);
-      break;
-                 
-    case 0x04: digitalWrite(blinker_links,HIGH);
-       break;
-              
-    case 0x05: digitalWrite(blinker_links,LOW);
-       break; 
-    
-    case 0x06: digitalWrite(rueckfahrlicht,HIGH);
-      break;
-    
-    case 0x07: digitalWrite(rueckfahrlicht,LOW);
-      break;
-            
-    default: //nix mache
-       break;
+    case 2: 
+      digitalWrite(port, blinkstate);
   }
 }
