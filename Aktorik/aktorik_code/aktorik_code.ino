@@ -92,7 +92,6 @@ void setup()
   
   aktorik_knoten.subscribe(sub_servo);
   aktorik_knoten.subscribe(sub_motor);
-  aktorik_knoten.subscribe(sub_licht);
   
   aktorik_knoten.subscribe(sub_light_l);
   aktorik_knoten.subscribe(sub_light_r);
