@@ -1,22 +1,15 @@
 #include "BMI088.h"
-#include "Arduino.h"
-#include "Wire.h"  
-#include "SPI.h"   
-
-/* Macros to get and set register fields */
-#define GET_FIELD(regname,value) ((value & regname##_MASK) >> regname##_POS)
-#define	SET_FIELD(regval,regname,value) ((regval & ~regname##_MASK) | ((value << regname##_POS) & regname##_MASK))
-
 
 Bmi088Accel accel(SPI,10);
-Bmi088Gyro gyro(SPI,9); 
+Bmi088Gyro gyro(SPI,9);
 
-
-int status;
-
+float imu_array[3];
+  
+/* Macros to get and set register fields */
+#define GET_FIELD(regname,value) ((value & regname##_MASK) >> regname##_POS)
+#define  SET_FIELD(regval,regname,value) ((regval & ~regname##_MASK) | ((value << regname##_POS) & regname##_MASK))
 
 static const uint8_t bmi_feature_config[] = {
-/*
 0xC8, 0x2E, 0x00, 0x2E, 0x80, 0x2E, 0x47, 0x01, 0xC8, 0x2E, 0x00,
 0x2E, 0xC8, 0x2E, 0x00, 0x2E, 0xC8, 0x2E, 0x00, 0x2E, 0x80, 0x2E,
 0xA0, 0x00, 0x80, 0x2E, 0x7C, 0x00, 0x80, 0x2E, 0x11, 0x01, 0x50,
@@ -576,7 +569,6 @@ static const uint8_t bmi_feature_config[] = {
 0x18, 0x00, 0x80, 0x2E, 0x18, 0x00, 0x80, 0x2E, 0x18, 0x00, 0x80,
 0x2E, 0x18, 0x00, 0x80, 0x2E, 0x18, 0x00, 0x80, 0x2E, 0x18, 0x00,
 0x80, 0x2E, 0x18, 0x00, 0xFD, 0x2D
-*/
 };
 
 /* BMI088 object, input the I2C bus and address */
@@ -638,7 +630,7 @@ int Bmi088Accel::begin()
   if (!setMode(true)) {
     return -6;
   } 
-  //delay(50);
+  delay(50);
   /* set default range */
   if (!setRange(RANGE_24G)) {
     return -7;
@@ -766,7 +758,7 @@ bool Bmi088Accel::setOdr(Odr odr)
   }
   writeReg = SET_FIELD(writeReg,ACC_ODR,value);
   writeRegister(ACC_ODR_ADDR,writeReg);
-  //delay(1);
+  delay(1);
   readRegisters(ACC_ODR_ADDR,1,&readReg);
   return (readReg == writeReg) ? true : false;
 }
@@ -778,7 +770,7 @@ bool Bmi088Accel::setRange(Range range)
   readRegisters(ACC_RANGE_ADDR,1,&readReg);
   writeReg = SET_FIELD(readReg,ACC_RANGE,range);
   writeRegister(ACC_RANGE_ADDR,writeReg);
-  //delay(1);
+  delay(1);
   readRegisters(ACC_RANGE_ADDR,1,&readReg);
   if (readReg == writeReg) {
     switch (range) {
@@ -824,7 +816,7 @@ bool Bmi088Accel::mapDrdyInt1(bool enable)
   readRegisters(ACC_INT1_DRDY_ADDR,1,&readReg);
   writeReg = SET_FIELD(readReg,ACC_INT1_DRDY,enable);
   writeRegister(ACC_INT1_DRDY_ADDR,writeReg);
-  //delay(1);
+  delay(1);
   readRegisters(ACC_INT1_DRDY_ADDR,1,&readReg);
   return (readReg == writeReg) ? true : false;  
 }
@@ -836,7 +828,7 @@ bool Bmi088Accel::mapDrdyInt2(bool enable)
   readRegisters(ACC_INT2_DRDY_ADDR,1,&readReg);
   writeReg = SET_FIELD(readReg,ACC_INT2_DRDY,enable);
   writeRegister(ACC_INT2_DRDY_ADDR,writeReg);
-  //delay(1);
+  delay(1);
   readRegisters(ACC_INT2_DRDY_ADDR,1,&readReg);
   return (readReg == writeReg) ? true : false;
 }
@@ -957,7 +949,7 @@ bool Bmi088Accel::pinModeInt1(PinIO io, PinMode mode, PinLevel level)
   }
   writeReg = SET_FIELD(readReg,ACC_INT1_IO_CTRL,(pin_io | pin_mode | active_lvl));
   writeRegister(ACC_INT1_IO_CTRL_ADDR,writeReg);
-  //delay(1);
+  delay(1);
   readRegisters(ACC_INT1_IO_CTRL_ADDR,1,&readReg);
   return (readReg == writeReg) ? true : false;  
 }
@@ -1012,7 +1004,7 @@ bool Bmi088Accel::pinModeInt2(PinIO io, PinMode mode, PinLevel level)
   }
   writeReg = SET_FIELD(readReg,ACC_INT2_IO_CTRL,(pin_io | pin_mode | active_lvl));
   writeRegister(ACC_INT2_IO_CTRL_ADDR,writeReg);
-  //delay(1);
+  delay(1);
   readRegisters(ACC_INT2_IO_CTRL_ADDR,1,&readReg);
   return (readReg == writeReg) ? true : false;  
 }
@@ -1027,12 +1019,12 @@ bool Bmi088Accel::selfTest()
   /* set 1.6 kHz ODR, 4x oversampling */
   setOdr(ODR_1600HZ_BW_145HZ);
   /* wait >2 ms */
-  //delay(3);
+  delay(3);
   /* enable self test, positive polarity */
   writeReg = SET_FIELD(writeReg,ACC_SELF_TEST,ACC_POS_SELF_TEST);
   writeRegister(ACC_SELF_TEST_ADDR,writeReg);
   /* wait >50 ms */
-  //delay(51);
+  delay(51);
   /* read self test values */
   readSensor();
   for (uint8_t i = 0; i < 3; i++) {
@@ -1042,7 +1034,7 @@ bool Bmi088Accel::selfTest()
   writeReg = SET_FIELD(writeReg,ACC_SELF_TEST,ACC_NEG_SELF_TEST);
   writeRegister(ACC_SELF_TEST_ADDR,writeReg);
   /* wait >50 ms */
-  //delay(51);
+  delay(51);
   /* read self test values */
   readSensor();
   for (uint8_t i = 0; i < 3; i++) {
@@ -1052,7 +1044,7 @@ bool Bmi088Accel::selfTest()
   writeReg = SET_FIELD(writeReg,ACC_SELF_TEST,ACC_DIS_SELF_TEST);
   writeRegister(ACC_SELF_TEST_ADDR,writeReg);
   /* wait >50 ms */
-  //delay(51); 
+  delay(51); 
   /* check self test results */
   if ((fabs(accel_pos_mg[0] - accel_neg_mg[0]) >= 1000) && (fabs(accel_pos_mg[1] - accel_neg_mg[1]) >= 1000) && (fabs(accel_pos_mg[2] - accel_neg_mg[2]) >= 500)) {
     return true;
@@ -1068,7 +1060,7 @@ bool Bmi088Accel::setMode(bool active)
   uint8_t value = (active) ? ACC_ACTIVE_MODE_CMD : ACC_SUSPEND_MODE_CMD;
   writeReg = SET_FIELD(writeReg,ACC_PWR_CONF,value);
   writeRegister(ACC_PWR_CONF_ADDR,writeReg);
-  //delay(5); // 5 ms wait after power mode changes
+  delay(5); // 5 ms wait after power mode changes
   readRegisters(ACC_PWR_CONF_ADDR,1,&readReg);
   return (readReg == writeReg) ? true : false;
 }
@@ -1080,12 +1072,8 @@ bool Bmi088Accel::setPower(bool enable)
   uint8_t value = (enable) ? ACC_ENABLE_CMD : ACC_DISABLE_CMD;
   writeReg = SET_FIELD(writeReg,ACC_PWR_CNTRL,value);
   writeRegister(ACC_PWR_CNTRL_ADDR,writeReg);
-  //delay(5); // 5 ms wait after power mode changes
+  delay(5); // 5 ms wait after power mode changes
   readRegisters(ACC_PWR_CNTRL_ADDR,1,&readReg);
-  Serial.print("write");
-  Serial.println(writeReg);
-  Serial.print("read");
-  Serial.println(readReg);
   return (readReg == writeReg) ? true : false;
 }
 
@@ -1095,7 +1083,7 @@ void Bmi088Accel::softReset()
   uint8_t reg = 0;
   reg = SET_FIELD(reg,ACC_SOFT_RESET,ACC_RESET_CMD);
   writeRegister(ACC_SOFT_RESET_ADDR,reg);
-  //delay(50);
+  delay(50);
   if (_useSPI) {
     digitalWrite(_csPin,LOW);
     digitalWrite(_csPin,HIGH);
@@ -1121,9 +1109,8 @@ bool Bmi088Accel::isFatalErr()
 /* checks the BMI088 accelerometer ID */
 bool Bmi088Accel::isCorrectId()
 {
-  uint8_t readReg = 8;
+  uint8_t readReg = 0;
   readRegisters(ACC_CHIP_ID_ADDR,1,&readReg);
-  Serial.println(readReg);
   return (GET_FIELD(ACC_CHIP_ID,readReg) == ACC_CHIP_ID) ? true : false;
 }
 
@@ -1176,12 +1163,11 @@ void Bmi088Accel::readRegisters(uint8_t subAddress, uint8_t count, uint8_t* dest
     _spi->transfer(subAddress | SPI_READ); // specify the starting register address
     dest[0] = _spi->transfer(0x00); // discard the first byte read
     // Serial.print("DE: ");
-     //Serial.println(dest[0]);
+    // Serial.println(dest[0]);
     for (uint8_t i = 0; i < count; i++) {
       dest[i] = _spi->transfer(0x00); // read the data
     //       Serial.print("DE: ");
-     //Serial.println(dest[i]+"readReg");
-	 
+    // Serial.println(dest[i]);
     }
     digitalWrite(_csPin,HIGH); // deselect the chip
     _spi->endTransaction(); // end the transaction
@@ -1234,7 +1220,7 @@ int Bmi088Gyro::begin()
   }
   /* soft reset */
   softReset();
-  //delay(50);
+  delay(50);
   /* set default range */
   if (!setRange(RANGE_2000DPS)) {
     return -2;
@@ -1256,7 +1242,7 @@ bool Bmi088Gyro::setOdr(Odr odr)
   uint8_t writeReg = 0, readReg = 0;
   writeReg = SET_FIELD(writeReg,GYRO_ODR,odr);
   writeRegister(GYRO_ODR_ADDR,writeReg);
-  //delay(1);
+  delay(1);
   readRegisters(GYRO_ODR_ADDR,1,&readReg);
   return (readReg == writeReg) ? true : false;
 }
@@ -1267,7 +1253,7 @@ bool Bmi088Gyro::setRange(Range range)
   uint8_t writeReg = 0, readReg = 0;
   writeReg = SET_FIELD(writeReg,GYRO_RANGE,range);
   writeRegister(GYRO_RANGE_ADDR,writeReg);
-  //delay(1);
+  delay(1);
   readRegisters(GYRO_RANGE_ADDR,1,&readReg);
   if (readReg == writeReg) {
     switch (range) {
@@ -1334,7 +1320,7 @@ bool Bmi088Gyro::pinModeInt3(PinMode mode, PinLevel level)
   }
   writeReg = SET_FIELD(readReg,GYRO_INT3_IO_CTRL,(pin_mode | active_lvl));
   writeRegister(GYRO_INT3_IO_CTRL_ADDR,writeReg);
-  //delay(1);
+  delay(1);
   readRegisters(GYRO_INT3_IO_CTRL_ADDR,1,&readReg);
   return (readReg == writeReg) ? true : false;
 }
@@ -1375,7 +1361,7 @@ bool Bmi088Gyro::pinModeInt4(PinMode mode, PinLevel level)
   }
   writeReg = SET_FIELD(readReg,GYRO_INT4_IO_CTRL,(pin_mode | active_lvl));
   writeRegister(GYRO_INT4_IO_CTRL_ADDR,writeReg);
-  //delay(1);
+  delay(1);
   readRegisters(GYRO_INT4_IO_CTRL_ADDR,1,&readReg);
   return (readReg == writeReg) ? true : false;
 }
@@ -1387,7 +1373,7 @@ bool Bmi088Gyro::mapDrdyInt3(bool enable)
   readRegisters(GYRO_INT3_DRDY_ADDR,1,&readReg);
   writeReg = SET_FIELD(readReg,GYRO_INT3_DRDY,enable);
   writeRegister(GYRO_INT3_DRDY_ADDR,writeReg);
-  //delay(1);
+  delay(1);
   readRegisters(GYRO_INT3_DRDY_ADDR,1,&readReg);
   return (readReg == writeReg) ? true : false;
 }
@@ -1399,7 +1385,7 @@ bool Bmi088Gyro::mapDrdyInt4(bool enable)
   readRegisters(GYRO_INT4_DRDY_ADDR,1,&readReg);
   writeReg = SET_FIELD(readReg,GYRO_INT4_DRDY,enable);
   writeRegister(GYRO_INT4_DRDY_ADDR,writeReg);
-  //delay(1);
+  delay(1);
   readRegisters(GYRO_INT4_DRDY_ADDR,1,&readReg);
   return (readReg == writeReg) ? true : false;
 }
@@ -1456,7 +1442,7 @@ bool Bmi088Gyro::setDrdyInt(bool enable)
   uint8_t value = (enable) ? GYRO_ENABLE_DRDY_INT : GYRO_DIS_DRDY_INT;
   writeReg = SET_FIELD(writeReg,GYRO_INT_CNTRL,value);
   writeRegister(GYRO_INT_CNTRL_ADDR,writeReg);
-  //delay(1); 
+  delay(1); 
   readRegisters(GYRO_INT_CNTRL_ADDR,1,&readReg);
   return (readReg == writeReg) ? true : false;  
 }
@@ -1467,7 +1453,7 @@ void Bmi088Gyro::softReset()
   uint8_t reg = 0;
   reg = SET_FIELD(reg,GYRO_SOFT_RESET,GYRO_RESET_CMD);
   writeRegister(GYRO_SOFT_RESET_ADDR,reg);
-  //delay(50);
+  delay(50);
 }
 
 /* checks the BMI088 gyro ID */
@@ -1768,10 +1754,10 @@ bool Bmi088::writeFeatureConfig()
   unsigned int index_step = 16;
   // deactivate accel
   accel->setPower(false);
-  //delay(100);
+  delay(100);
   // disable config loading
   accel->writeRegister(ACC_INIT_CTRL_ADDR,ACC_DISABLE);
-  //delay(10);
+  delay(10);
   // write config file
   for (index = 0; index < sizeof(bmi_feature_config); index+=index_step) {
     msb = (uint8_t)((index / 2) >> 4);
@@ -1782,7 +1768,7 @@ bool Bmi088::writeFeatureConfig()
   }
   // enable config loading
   accel->writeRegister(ACC_INIT_CTRL_ADDR,1);
-  //delay(1500);
+  delay(1500);
   // check config initialization status
   accel->readRegisters(ACC_INTERNAL_STATUS_ADDR,1,&status);
   // reactivate accel
@@ -1793,7 +1779,7 @@ bool Bmi088::writeFeatureConfig()
 void Bmi088::updateFeatureConfig(uint8_t addr, uint8_t count, const uint16_t *data)
 {
   uint16_t read_length = (addr * 2) + (count * 2);
-	uint8_t feature_data[read_length];
+  uint8_t feature_data[read_length];
   accel->readRegisters(ACC_FEATURE_CFG_ADDR,read_length,feature_data);
   for (unsigned int i = 0; i < count; i++) {
     feature_data[(addr * 2) + (i * 2)] = data[i] & 0xFF;
@@ -1802,34 +1788,30 @@ void Bmi088::updateFeatureConfig(uint8_t addr, uint8_t count, const uint16_t *da
   accel->writeRegisters(ACC_FEATURE_CFG_ADDR,read_length,feature_data);
 }
 
+
 void init_imu(){
   int status;
-  while(!Serial){}
-  
+   
   status = accel.begin();
   if(status<0){
     Serial.print("accel init error");
-    Serial.print(status);
     while(1){}
   }
-  
   status = gyro.begin();
   if(status<0){
     Serial.print("gyro init error");
-    Serial.print(status);
     while(1){}
   }
 }
 
 float* read_IMU(){
-  float* imu;
-  
+
   accel.readSensor();
   gyro.readSensor();
 
-  imu[0] = accel.getAccelX_mss();
-  imu[1] = accel.getAccelY_mss();
-  imu[2] = gyro.getGyroZ_rads();
+  imu_array[0] = accel.getAccelX_mss();
+  imu_array[1] = accel.getAccelY_mss();
+  imu_array[2] = gyro.getGyroZ_rads();
   
-  return imu;
+  return imu_array;
 }

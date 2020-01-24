@@ -6,7 +6,6 @@ QTRSensors qtr_front_left;
 QTRSensors qtr_front_right;
 QTRSensors qtr_back_left;
 QTRSensors qtr_back_right;
-int** reflective_value;
 
 void init_qtr()
 {
@@ -24,19 +23,13 @@ void init_qtr()
 
 int** read_QTR()
 {
+  int** qtr_array = new int* [4];
   int sensorValues[3];
 
-  int** values = new int* [4];
   for (int i=0; i<4; i++){
-    values[i] = new int [3];
+    qtr_array[i] = new int [3];
   }
 
-  /*
-  for (int i=0; i<4; i++){
-    delete[] values[i];
-  }
-  delete[] values;
-  */
   const int threshold = 500;
   int sensor_count = 0;
   
@@ -45,10 +38,10 @@ int** read_QTR()
   for (int i = 0; i < 3; i++)
   {
     if (sensorValues[i] > threshold){
-      values[i][sensor_count] = 1; // 1 = white
+      qtr_array[i][sensor_count] = 1; // 1 = white
     }
     else{
-      values[i][sensor_count] = 0; // 0 = black
+      qtr_array[i][sensor_count] = 0; // 0 = black
     }
   }
   sensor_count ++;
@@ -58,10 +51,10 @@ int** read_QTR()
   for (int i = 0; i < 3; i++)
   {
     if (sensorValues[i] > threshold){
-      values[i][sensor_count] = 1; // 1 = white
+      qtr_array[i][sensor_count] = 1; // 1 = white
     }
     else{
-      values[i][sensor_count] = 0; // 0 = black
+      qtr_array[i][sensor_count] = 0; // 0 = black
     }
   }
   sensor_count ++;
@@ -71,10 +64,10 @@ int** read_QTR()
   for (int i = 0; i < 3; i++)
   {
     if (sensorValues[i] > threshold){
-      values[i][sensor_count] = 1; // 1 = white
+      qtr_array[i][sensor_count] = 1; // 1 = white
     }
     else{
-      values[i][sensor_count] = 0; // 0 = black
+      qtr_array[i][sensor_count] = 0; // 0 = black
     }
   }
   sensor_count ++;
@@ -84,20 +77,13 @@ int** read_QTR()
   for (int i = 0; i < 3; i++)
   {
     if (sensorValues[i] > threshold){
-      values[i][sensor_count] = 1; // 1 = white
+      qtr_array[i][sensor_count] = 1; // 1 = white
     }
     else{
-      values[i][sensor_count] = 0; // 0 = black
+      qtr_array[i][sensor_count] = 0; // 0 = black
     }
   }
   sensor_count ++;
-  /*
-  for (int c=0; c<4; c++){
-    for (int j=0; j<3; j++){
-      Serial.print(values[j][c]);
-    }
-    Serial.print("\t");
-  }
-  */
-  return values;
+  
+  return qtr_array;
 }

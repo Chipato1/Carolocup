@@ -1,9 +1,11 @@
 #include "tof.h"
+
 VL53L0X_RangingMeasurementData_t measure_front;
 VL53L0X_RangingMeasurementData_t measure_left;
 VL53L0X_RangingMeasurementData_t measure_right;
 VL53L0X_RangingMeasurementData_t measure_cross;
-int* distance_tof;
+
+static int tof_array[5];
 
 void init_tof()
 {  
@@ -78,8 +80,7 @@ int* read_TOF()
   const int threshold_right = 1000;
   const int threshold_cross = 1000;
   const int threshold_back  = 200;
-
-  static int distance[5];
+  
   int distance_ToF_front;
   int distance_ToF_left;
   int distance_ToF_right;
@@ -139,11 +140,11 @@ int* read_TOF()
     }
   }
   
-  distance[0] = distance_ToF_front;
-  distance[1] = distance_ToF_left;
-  distance[2] = distance_ToF_right;
-  distance[3] = distance_ToF_cross;
-  distance[4] = distance_ToF_back;
+  tof_array[0] = distance_ToF_front;
+  tof_array[1] = distance_ToF_left;
+  tof_array[2] = distance_ToF_right;
+  tof_array[3] = distance_ToF_cross;
+  tof_array[4] = distance_ToF_back;
 
-  return distance;
+  return tof_array;
 }
