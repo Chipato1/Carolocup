@@ -4,27 +4,33 @@
 %als Eingangsgr��e dient die Kurvenkr�mmung c0 die aus dem Kamerasystem
 %kommt. Evtl besser: kamera liefert soll Kurswinkel delta_psi -> c0 =
 %f(delta_psi)
-v=2;%geschwindigkeit
-l=0.25;%Achsenabstand
-lh=l/2;%Abstand zuwischen Schwerpunkt und Hinterachse, noch auszumessen!!!
-u = 7;
+
+v = 2;    %Geschwindigkeit
+l = 0.25; %Achsenabstand
+lh = l/2; %Abstand zuwischen Schwerpunkt und Hinterachse, noch auszumessen!!!
+
 %%%%%%%%%%%%%%%%%%%%%%%%Zustandsraum
-systemMatrix_A = [0,v;0,0];%maximale Kurvengeschwindigkeit von 2.63m/s
-ausgangsVektor_cT = [0,1];%wegen vorder und hinterache gilt: Kurswinkel ist 0.5 des vorderachseinschlags (ungewichtetes mittel aus vorder und hinterachse)
-eingangsVektor_b = [0,0;v, -1];%delta_psi' = -+psi' +- c0*v (letzteres ist der eingang, ersterees wird zus�tlich in simulink addiert)
-d = [l,-lh/v];
+systemMatrix_A = [0 , v ; 0 , 0];
+ausgangsVektor_cT = [0 , 1];
+eingangsMatrix_B = [0 , 0 ; v, -1];
+durchgriffsVektor_d = [l , -lh/v];
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%Eigenschaften
-system_s = ss(systemMatrix_A, eingangsVektor_b, ausgangsVektor_cT, d);
-steuer = rank(ctrb(system_s))%�berpr�fung auf steuerbarkeit
-beobacht = rank(obsv(system_s))%beobachtbarkeit
+system_s = ss(systemMatrix_A, eingangsMatrix_B, ausgangsVektor_cT, durchgriffsVektor_d);
+steuer = rank(ctrb(system_s));
+beobacht = rank(obsv(system_s));
+pole_s = pole(system_s);
 
 %%%%%%%%%%%%%%%%%%%%%%%%Regler
-K = lqr(system_s, [1,0;0,1], 0.05)%tbd was sind Q, N, R? es handelt sich um Gewichtungsmatrixen in Diagonalform Q:Gewichtung des Zustandsvektors, R: Gewichtung der Eingangsvariable, N:Gewichtung beider gr��en???
-reglerMatrix_Ar = systemMatrix_A-eingangsVektor_b*K;
-system_r = ss(reglerMatrix_Ar, eingangsVektor_b, ausgangsVektor_cT, d);
-pole(system_r)
-%pole(tf(system_r)*tf('s'))
-%rlocus(system_r);%ergibt die Ortskurve hier noch Sinn?
+%regelMatrix_K = lqr(system_s, [10,0;0,1], 0.03)
+p=10;   %doppelte Polstelle bei -10
+a=2*p;
+b = p*p/2;
+regelMatrix_K=[b a ; b a];
+geregelteSystemMatrix_Ar = systemMatrix_A-eingangsMatrix_B*regelMatrix_K;
+system_r = ss(geregelteSystemMatrix_Ar, eingangsMatrix_B, ausgangsVektor_cT, durchgriffsVektor_d);
+pole_r = pole(system_r);
 
 %%%%%%%%%%%%%%%%%%%%%%%%Simulation
 %sim('zustandsRegler.slx');
