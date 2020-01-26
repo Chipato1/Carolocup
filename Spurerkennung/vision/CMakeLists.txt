@@ -16,7 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   roscpp
   std_msgs
-  std_srvs
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -73,10 +73,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs
-# )
+ generate_messages(
+   DEPENDENCIES
+   std_msgs
+ )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -142,6 +142,7 @@ include_directories(
 
 
 set(CMAKE_CXX_FLAGS "-Ofast -march=native -fopenmp -D_GLIBCXX_PARALLEL")
+
 
 
 add_executable(${PROJECT_NAME}_lanedetectionnode src/lane_detection/main.cpp src/lane_detection/PointLaneDetector.cpp src/lane_detection/VisionResult.cpp)
