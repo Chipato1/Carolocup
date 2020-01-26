@@ -1,4 +1,5 @@
 #include <vision/startbox_detection/StartboxDetector.hpp>
+#include <vision/SetBool.h>
 
 #include <iostream>
 #include <map>
@@ -35,9 +36,17 @@ std::map<std::string, std::string> readConfigFile() {
 	return my_map;
 }
 
+cv::Mat image
+StartboxDetector detector;
+
+bool detectQRCode(vision::SetBool::Request  &req,
+             vision::SetBool::Response &res) {
+	res.success = detector.checkQRCode(image);
+	return true;
+}
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
-	cv::Mat image = cv_bridge::toCvShare(msg, "mono8")->image;
+	image = cv_bridge::toCvShare(msg, "mono8")->image;
 	//---------------CODE HIER EINFÜGEN---------------------
 }
 
@@ -55,6 +64,10 @@ int main(int argc, char** argv) {
 	ros::NodeHandle nh;
 	image_transport::ImageTransport it(nh);
 	image_transport::Subscriber sub = it.subscribe(config["cam_im_topic_name"] , 1, imageCallback);
+
+
+	ros::ServiceServer service = n.advertiseService("qr_detected", detectQRCode);
+
 	ros::spin();
 	return 0;
 }
