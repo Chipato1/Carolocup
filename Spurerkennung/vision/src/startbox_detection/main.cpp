@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
 	image_transport::Subscriber sub = it.subscribe(config["cam_im_topic_name"] , 1, imageCallback);
 
 
-	ros::ServiceServer service = n.advertiseService("qr_detected", detectQRCode);
+	ros::ServiceServer service = nh.advertiseService("qr_detected", detectQRCode);
 
 	ros::spin();
 	return 0;
