@@ -7,13 +7,13 @@
  *
  * Code generation for model "Stanley_Querregler".
  *
- * Model version              : 1.9
+ * Model version              : 1.11
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Fri Jan 17 18:23:05 2020
+ * C++ source code generated on : Wed Jan 22 14:25:49 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
- * Embedded hardware selection: Generic->Unspecified (assume 32-bit Generic)
+ * Embedded hardware selection: Intel->x86-64 (Linux 64)
  * Code generation objectives: Unspecified
  * Validation result: Not run
  */
@@ -31,43 +31,7 @@ typedef long int long_T;
  * MultiWord types
  */
 typedef struct {
-  uint32_T chunks[2];
-} int64m_T;
-
-typedef struct {
-  int64m_T re;
-  int64m_T im;
-} cint64m_T;
-
-typedef struct {
-  uint32_T chunks[2];
-} uint64m_T;
-
-typedef struct {
-  uint64m_T re;
-  uint64m_T im;
-} cuint64m_T;
-
-typedef struct {
-  uint32_T chunks[3];
-} int96m_T;
-
-typedef struct {
-  int96m_T re;
-  int96m_T im;
-} cint96m_T;
-
-typedef struct {
-  uint32_T chunks[3];
-} uint96m_T;
-
-typedef struct {
-  uint96m_T re;
-  uint96m_T im;
-} cuint96m_T;
-
-typedef struct {
-  uint32_T chunks[4];
+  uint64_T chunks[2];
 } int128m_T;
 
 typedef struct {
@@ -76,7 +40,7 @@ typedef struct {
 } cint128m_T;
 
 typedef struct {
-  uint32_T chunks[4];
+  uint64_T chunks[2];
 } uint128m_T;
 
 typedef struct {
@@ -85,25 +49,7 @@ typedef struct {
 } cuint128m_T;
 
 typedef struct {
-  uint32_T chunks[5];
-} int160m_T;
-
-typedef struct {
-  int160m_T re;
-  int160m_T im;
-} cint160m_T;
-
-typedef struct {
-  uint32_T chunks[5];
-} uint160m_T;
-
-typedef struct {
-  uint160m_T re;
-  uint160m_T im;
-} cuint160m_T;
-
-typedef struct {
-  uint32_T chunks[6];
+  uint64_T chunks[3];
 } int192m_T;
 
 typedef struct {
@@ -112,7 +58,7 @@ typedef struct {
 } cint192m_T;
 
 typedef struct {
-  uint32_T chunks[6];
+  uint64_T chunks[3];
 } uint192m_T;
 
 typedef struct {
@@ -121,25 +67,7 @@ typedef struct {
 } cuint192m_T;
 
 typedef struct {
-  uint32_T chunks[7];
-} int224m_T;
-
-typedef struct {
-  int224m_T re;
-  int224m_T im;
-} cint224m_T;
-
-typedef struct {
-  uint32_T chunks[7];
-} uint224m_T;
-
-typedef struct {
-  uint224m_T re;
-  uint224m_T im;
-} cuint224m_T;
-
-typedef struct {
-  uint32_T chunks[8];
+  uint64_T chunks[4];
 } int256m_T;
 
 typedef struct {
@@ -148,7 +76,7 @@ typedef struct {
 } cint256m_T;
 
 typedef struct {
-  uint32_T chunks[8];
+  uint64_T chunks[4];
 } uint256m_T;
 
 typedef struct {

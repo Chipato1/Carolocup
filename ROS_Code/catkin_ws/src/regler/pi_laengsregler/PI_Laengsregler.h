@@ -7,9 +7,9 @@
  *
  * Code generation for model "PI_Laengsregler".
  *
- * Model version              : 1.11
+ * Model version              : 1.13
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Fri Jan 17 18:21:14 2020
+ * C++ source code generated on : Wed Jan 22 20:18:13 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -155,57 +155,67 @@
 # define rtmGetTPtr(rtm)               ((rtm)->Timing.t)
 #endif
 
+/* Block signals for system '<S4>/Enabled Subsystem' */
+typedef struct {
+  SL_Bus_PI_Laengsregler_std_msgs_Float32 In1;/* '<S52>/In1' */
+} B_EnabledSubsystem_PI_Laengsr_T;
+
 /* Block signals (default storage) */
 typedef struct {
-  real_T Bu[2];                        /* '<S6>/Product' */
-  real_T dx[2];                        /* '<S6>/Sum' */
-  real_T Du;                           /* '<S6>/Product2' */
-  real_T Sum1;                         /* '<S6>/Sum1' */
-  real_T Motordrehzahl;                /* '<S2>/Multiply' */
-  real_T Add;                          /* '<S2>/Add' */
+  real_T Bu[2];                        /* '<S7>/Product' */
+  real_T dx[2];                        /* '<S7>/Sum' */
+  real_T Du;                           /* '<S7>/Product2' */
+  real_T Sum1;                         /* '<S7>/Sum1' */
+  real_T ProportionalGain;             /* '<S42>/Proportional Gain' */
+  real_T DerivativeGain;               /* '<S31>/Derivative Gain' */
+  real_T FilterCoefficient;            /* '<S40>/Filter Coefficient' */
   real_T Add1;                         /* '<S2>/Add1' */
-  SL_Bus_PI_Laengsregler_std_msgs_Int32 In1;/* '<S8>/In1' */
-  SL_Bus_PI_Laengsregler_std_msgs_Float32 In1_f;/* '<S7>/In1' */
+  real_T IntegralGain;                 /* '<S34>/Integral Gain' */
+  B_EnabledSubsystem_PI_Laengsr_T EnabledSubsystem_l;/* '<S5>/Enabled Subsystem' */
+  B_EnabledSubsystem_PI_Laengsr_T EnabledSubsystem;/* '<S4>/Enabled Subsystem' */
 } B_PI_Laengsregler_T;
 
 /* Block states (default storage) for system '<Root>' */
 typedef struct {
   ros_slros_internal_block_Publ_T obj; /* '<S3>/SinkBlock' */
-  ros_slros_internal_block_Subs_T obj_o;/* '<S5>/SourceBlock' */
-  ros_slros_internal_block_Subs_T obj_j;/* '<S4>/SourceBlock' */
+  ros_slros_internal_block_Subs_T obj_i;/* '<S5>/SourceBlock' */
+  ros_slros_internal_block_Subs_T obj_iz;/* '<S4>/SourceBlock' */
   struct {
     void *LoggedData[2];
   } Scope2_PWORK;                      /* '<S2>/Scope2' */
 
   struct {
-    void *LoggedData;
-  } Scope1_PWORK;                      /* '<S2>/Scope1' */
-
-  struct {
     void *LoggedData[2];
   } Scope_PWORK;                       /* '<S2>/Scope' */
 
+  struct {
+    void *LoggedData;
+  } Scope1_PWORK;                      /* '<S2>/Scope1' */
+
   boolean_T objisempty;                /* '<S5>/SourceBlock' */
   boolean_T objisempty_c;              /* '<S4>/SourceBlock' */
-  boolean_T objisempty_f;              /* '<S3>/SinkBlock' */
+  boolean_T objisempty_i;              /* '<S3>/SinkBlock' */
 } DW_PI_Laengsregler_T;
 
 /* Continuous states (default storage) */
 typedef struct {
-  real_T Integrator_CSTATE[2];         /* '<S6>/Integrator' */
-  real_T Integrator_CSTATE_l;          /* '<S2>/Integrator' */
+  real_T Integrator_CSTATE[2];         /* '<S7>/Integrator' */
+  real_T Integrator_CSTATE_k;          /* '<S37>/Integrator' */
+  real_T Filter_CSTATE;                /* '<S32>/Filter' */
 } X_PI_Laengsregler_T;
 
 /* State derivatives (default storage) */
 typedef struct {
-  real_T Integrator_CSTATE[2];         /* '<S6>/Integrator' */
-  real_T Integrator_CSTATE_l;          /* '<S2>/Integrator' */
+  real_T Integrator_CSTATE[2];         /* '<S7>/Integrator' */
+  real_T Integrator_CSTATE_k;          /* '<S37>/Integrator' */
+  real_T Filter_CSTATE;                /* '<S32>/Filter' */
 } XDot_PI_Laengsregler_T;
 
 /* State disabled  */
 typedef struct {
-  boolean_T Integrator_CSTATE[2];      /* '<S6>/Integrator' */
-  boolean_T Integrator_CSTATE_l;       /* '<S2>/Integrator' */
+  boolean_T Integrator_CSTATE[2];      /* '<S7>/Integrator' */
+  boolean_T Integrator_CSTATE_k;       /* '<S37>/Integrator' */
+  boolean_T Filter_CSTATE;             /* '<S32>/Filter' */
 } XDis_PI_Laengsregler_T;
 
 #ifndef ODE3_INTG
@@ -219,6 +229,13 @@ typedef struct {
 
 #endif
 
+/* Parameters for system: '<S4>/Enabled Subsystem' */
+struct P_EnabledSubsystem_PI_Laengsr_T_ {
+  SL_Bus_PI_Laengsregler_std_msgs_Float32 Out1_Y0;/* Computed Parameter: Out1_Y0
+                                                   * Referenced by: '<S52>/Out1'
+                                                   */
+};
+
 /* Parameters (default storage) */
 struct P_PI_Laengsregler_T_ {
   real_T A[4];                         /* Variable: A
@@ -231,38 +248,45 @@ struct P_PI_Laengsregler_T_ {
                                         * Referenced by: '<S2>/Constant2'
                                         */
   real_T ir;                           /* Variable: ir
-                                        * Referenced by: '<S2>/Gain1'
+                                        * Referenced by: '<S34>/Integral Gain'
                                         */
   real_T pr;                           /* Variable: pr
-                                        * Referenced by: '<S2>/Gain'
+                                        * Referenced by: '<S42>/Proportional Gain'
                                         */
   real_T u;                            /* Variable: u
                                         * Referenced by: '<S2>/Multiply'
                                         */
-  SL_Bus_PI_Laengsregler_std_msgs_Float32 Out1_Y0;/* Computed Parameter: Out1_Y0
-                                                   * Referenced by: '<S7>/Out1'
-                                                   */
+  real_T PIDController1_D;             /* Mask Parameter: PIDController1_D
+                                        * Referenced by: '<S31>/Derivative Gain'
+                                        */
+  real_T PIDController1_InitialCondition;
+                              /* Mask Parameter: PIDController1_InitialCondition
+                               * Referenced by: '<S32>/Filter'
+                               */
+  real_T PIDController1_InitialConditi_b;
+                              /* Mask Parameter: PIDController1_InitialConditi_b
+                               * Referenced by: '<S37>/Integrator'
+                               */
+  real_T PIDController1_N;             /* Mask Parameter: PIDController1_N
+                                        * Referenced by: '<S40>/Filter Coefficient'
+                                        */
   SL_Bus_PI_Laengsregler_std_msgs_Float32 Constant_Value;/* Computed Parameter: Constant_Value
                                                           * Referenced by: '<S4>/Constant'
                                                           */
-  SL_Bus_PI_Laengsregler_std_msgs_Int32 Out1_Y0_m;/* Computed Parameter: Out1_Y0_m
-                                                   * Referenced by: '<S8>/Out1'
-                                                   */
-  SL_Bus_PI_Laengsregler_std_msgs_Int32 Constant_Value_l;/* Computed Parameter: Constant_Value_l
-                                                          * Referenced by: '<S5>/Constant'
+  SL_Bus_PI_Laengsregler_std_msgs_Float32 Constant_Value_b;/* Computed Parameter: Constant_Value_b
+                                                            * Referenced by: '<S5>/Constant'
+                                                            */
+  SL_Bus_PI_Laengsregler_std_msgs_Int32 Constant_Value_j;/* Computed Parameter: Constant_Value_j
+                                                          * Referenced by: '<S1>/Constant'
                                                           */
-  SL_Bus_PI_Laengsregler_std_msgs_Int8 Constant_Value_j;/* Computed Parameter: Constant_Value_j
-                                                         * Referenced by: '<S1>/Constant'
-                                                         */
   real_T Integrator_IC;                /* Expression: x0
-                                        * Referenced by: '<S6>/Integrator'
+                                        * Referenced by: '<S7>/Integrator'
                                         */
   real_T Constant3_Value;              /* Expression: 0
                                         * Referenced by: '<S2>/Constant3'
                                         */
-  real_T Integrator_IC_m;              /* Expression: 0
-                                        * Referenced by: '<S2>/Integrator'
-                                        */
+  P_EnabledSubsystem_PI_Laengsr_T EnabledSubsystem_l;/* '<S5>/Enabled Subsystem' */
+  P_EnabledSubsystem_PI_Laengsr_T EnabledSubsystem;/* '<S4>/Enabled Subsystem' */
 };
 
 /* Real-time Model Data Structure */
@@ -277,8 +301,8 @@ struct tag_RTM_PI_Laengsregler_T {
   boolean_T zCCacheNeedsReset;
   boolean_T derivCacheNeedsReset;
   boolean_T CTOutputIncnstWithState;
-  real_T odeY[3];
-  real_T odeF[3][3];
+  real_T odeY[4];
+  real_T odeF[3][4];
   ODE3_IntgData intgData;
 
   /*
@@ -395,8 +419,53 @@ extern "C" {
  * '<S3>'   : 'PI_Laengsregler/Publish'
  * '<S4>'   : 'PI_Laengsregler/Subscribe'
  * '<S5>'   : 'PI_Laengsregler/Subscribe1'
- * '<S6>'   : 'PI_Laengsregler/Geschwindigkeitsregler 1/Varying State Space'
- * '<S7>'   : 'PI_Laengsregler/Subscribe/Enabled Subsystem'
- * '<S8>'   : 'PI_Laengsregler/Subscribe1/Enabled Subsystem'
+ * '<S6>'   : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1'
+ * '<S7>'   : 'PI_Laengsregler/Geschwindigkeitsregler 1/Varying State Space'
+ * '<S8>'   : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Anti-windup'
+ * '<S9>'   : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/D Gain'
+ * '<S10>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Filter'
+ * '<S11>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Filter ICs'
+ * '<S12>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/I Gain'
+ * '<S13>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Ideal P Gain'
+ * '<S14>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Ideal P Gain Fdbk'
+ * '<S15>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Integrator'
+ * '<S16>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Integrator ICs'
+ * '<S17>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/N Copy'
+ * '<S18>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/N Gain'
+ * '<S19>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/P Copy'
+ * '<S20>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Parallel P Gain'
+ * '<S21>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Reset Signal'
+ * '<S22>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Saturation'
+ * '<S23>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Saturation Fdbk'
+ * '<S24>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Sum'
+ * '<S25>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Sum Fdbk'
+ * '<S26>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Tracking Mode'
+ * '<S27>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Tracking Mode Sum'
+ * '<S28>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/postSat Signal'
+ * '<S29>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/preSat Signal'
+ * '<S30>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Anti-windup/Passthrough'
+ * '<S31>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/D Gain/Internal Parameters'
+ * '<S32>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Filter/Cont. Filter'
+ * '<S33>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Filter ICs/Internal IC - Filter'
+ * '<S34>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/I Gain/Internal Parameters'
+ * '<S35>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Ideal P Gain/Passthrough'
+ * '<S36>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Ideal P Gain Fdbk/Disabled'
+ * '<S37>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Integrator/Continuous'
+ * '<S38>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Integrator ICs/Internal IC'
+ * '<S39>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/N Copy/Disabled'
+ * '<S40>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/N Gain/Internal Parameters'
+ * '<S41>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/P Copy/Disabled'
+ * '<S42>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Parallel P Gain/Internal Parameters'
+ * '<S43>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Reset Signal/Disabled'
+ * '<S44>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Saturation/Passthrough'
+ * '<S45>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Saturation Fdbk/Disabled'
+ * '<S46>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Sum/Sum_PID'
+ * '<S47>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Sum Fdbk/Disabled'
+ * '<S48>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Tracking Mode/Disabled'
+ * '<S49>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/Tracking Mode Sum/Passthrough'
+ * '<S50>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/postSat Signal/Forward_Path'
+ * '<S51>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller1/preSat Signal/Forward_Path'
+ * '<S52>'  : 'PI_Laengsregler/Subscribe/Enabled Subsystem'
+ * '<S53>'  : 'PI_Laengsregler/Subscribe1/Enabled Subsystem'
  */
 #endif                                 /* RTW_HEADER_PI_Laengsregler_h_ */
