@@ -40,6 +40,8 @@ public:
 
 	cv::cuda::Stream stream;
 	std::condition_variable condition;
+
+	cv::Size ipmSize;
 	
 private:
 	void calculateAlgorithm();
@@ -65,7 +67,7 @@ private:
 	double thresh_target_percentage = 0.05;
 	double thresh_target_acc_percentage = 0.005;
 
-	cv::Size ipmSize;
+	
 
 	int LANE_THRES_MIN = 5;
 	int LANE_THRES_MAX = 60;
