@@ -36,7 +36,7 @@ std::map<std::string, std::string> readConfigFile() {
 	return my_map;
 }
 
-cv::Mat image
+cv::Mat image;
 StartboxDetector detector = StartboxDetector();
 
 bool detectQRCode(vision::SetBool::Request  &req, vision::SetBool::Response &res) {
