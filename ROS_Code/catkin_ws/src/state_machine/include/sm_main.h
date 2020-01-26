@@ -15,6 +15,7 @@
 #include "ros/ros.h"
 
 #include "std_msgs/UInt8.h"
+#include "std_msgs/Int16.h"
 #include "std_msgs/Float32.h"
 #include "std_msgs/Bool.h"
 
@@ -183,7 +184,7 @@ void se_cb_sub_tof_l(const std_msgs::Float32::ConstPtr& msg);
 void se_cb_sub_tof_b(const std_msgs::Float32::ConstPtr& msg);
 
 void se_cb_sub_rc_mode(const std_msgs::Bool::ConstPtr& msg);
-void se_cb_sub_autoDriveMode(const std_msgs::UInt8::ConstPtr& msg);
+void se_cb_sub_autoDriveMode(const std_msgs::Int16::ConstPtr& msg);
 
 /* Publisher functions */
 void se_setDeltaY(float deltaY);
