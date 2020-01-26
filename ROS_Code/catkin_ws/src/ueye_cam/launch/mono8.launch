@@ -53,11 +53,11 @@
     <param name="flash_duration" type="int" value="1000" /> 
     
     <param name="auto_frame_rate" type="bool" value="False" />
-    <param name="frame_rate" type="double" value="60.34" />
+    <param name="frame_rate" type="double" value="20" />
     <param name="output_rate" type="double" value="0.0" /> 
     <param name="pixel_clock" type="int" value="128" />
 
     <param name="flip_upd" type="bool" value="False" />
-    <param name="flip_lr"  type="bool" value="False" /> -->
+    <param name="flip_lr"  type="bool" value="False" />-->
   </node>
 </launch>
