@@ -37,10 +37,9 @@ std::map<std::string, std::string> readConfigFile() {
 }
 
 cv::Mat image
-StartboxDetector detector;
+StartboxDetector detector = StartboxDetector();
 
-bool detectQRCode(vision::SetBool::Request  &req,
-             vision::SetBool::Response &res) {
+bool detectQRCode(vision::SetBool::Request  &req, vision::SetBool::Response &res) {
 	res.success = detector.checkQRCode(image);
 	return true;
 }
