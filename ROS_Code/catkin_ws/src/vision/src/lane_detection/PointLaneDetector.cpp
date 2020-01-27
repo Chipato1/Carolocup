@@ -69,6 +69,8 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 
 	this->canny = cuda::createCannyEdgeDetector(low_thresh, high_thresh, aperture_size, false);
 
+	this->ipmSize = Size(1200, 2400);
+
 	/*double alpha_ 			= 90 - camera_angle_pitch;
 	double beta_ 			= 90 - camera_angle_roll;
 	double gamma_ 			= 90 - camera_angle_yaw;
@@ -100,8 +102,8 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 
 	// Projecion matrix 2D -> 3D
 	Mat A1 = (Mat_<float>(4, 3) <<
-		1, 0, -w / 2,
-		0, 1, -h * 1.7,
+		1, 0, -this->ipmSize.width / 2,
+		0, 1, -this->ipmSize.height + 410,
 		0, 0, 0,
 		0, 0, 1);
 
@@ -143,6 +145,12 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 		focalLength*image_size.width	,		skew							,	w / 2	,		0,
 		0								,		focalLength*image_size.height	,	h / 2	,		0,
 		0								,		0								,	1		,		0);
+
+	K = (Mat_<float>(3, 4) <<
+		1786.874566, 0.000000, 707.636847, 0,
+		0.000000, 1796.353286, 559.682000, 0,
+		0.000000, 0.000000, 1.000000, 0
+		);
 
 	this->transformationMat = K * (T * (R * A1));
 }
@@ -210,14 +218,13 @@ void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 	
 
 	auto uploadEnd = std::chrono::high_resolution_clock::now();
-	cv::cuda::warpPerspective(this->imageGPU, this->ipmGPU, this->transformationMat, cv::Size(950,2400),  WARP_INVERSE_MAP);
+	cv::cuda::warpPerspective(this->imageGPU, this->ipmGPU, this->transformationMat, this->ipmSize, INTER_CUBIC | WARP_INVERSE_MAP);
 	this->ipmGPU.download(this->ipm);
 
 	double min, max;
 	cv::minMaxLoc(frame, &min, &max);
 
 	cv::cuda::threshold(this->ipmGPU, this->thresholdGPU, 230, 255, 0);
-	this->thresholdGPU = GpuMat(this->thresholdGPU, Range(0, 2399), Range(600, 949));
 	this->thresholdGPU.download(this->threshold);
 
 	auto warpEnd = std::chrono::high_resolution_clock::now();
@@ -228,7 +235,7 @@ void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 	auto timeEnd = std::chrono::high_resolution_clock::now();
 
 
-	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
+	/*auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
 	std::cout <<"Dauer GPU Gesamt: " << duration << std::endl;
 
 	duration = std::chrono::duration_cast<std::chrono::microseconds>(uploadEnd - timeStart).count();
@@ -241,7 +248,7 @@ void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 	std::cout <<"Dauer Canny: " << duration << std::endl;
 
 	duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - cannyEnd).count();
-	std::cout <<"Dauer Download: " << duration << std::endl;
+	std::cout <<"Dauer Download: " << duration << std::endl;*/
 }
 
 
@@ -452,7 +459,7 @@ bool PointLaneDetector::solveClothoide() {
 		if (solveSingleLane(this->rightLane1, this->rA, this->rB, 0, i, foundRL)) {
 			for (int i = 0; i < this->vRes.lanePoints[0].size(); i++) {
 				double variance = calculateVariance(this->rightLane1, this->vRes.lanePoints[2]);
-				std::cout << variance << std::endl;
+				
 			}
 		}
 	}

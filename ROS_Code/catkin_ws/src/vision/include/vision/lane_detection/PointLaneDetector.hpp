@@ -19,6 +19,8 @@ public:
 	cv::Mat edge;
 	cv::Mat debugImage;
 
+	
+
 private:
 	bool calculateAlgorithm();
 	void laneMiddlePoints(std::vector<cv::Point>&, cv::Mat, int);
@@ -33,6 +35,8 @@ private:
 	
 
 	void clear();
+
+	cv::Size ipmSize;
 
 	int LANE_THRES_MIN = 5;
 	int LANE_THRES_MAX = 60;
