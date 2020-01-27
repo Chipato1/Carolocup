@@ -1,9 +1,9 @@
 test1 = timeseries()
-test1.Time = 1:size(DATA008.Time,1)
-test1.Data = DATA008.AccX
-sim = size(DATA008.Time,1)
-sim2 = round(DATA008.Time(end))
-backup = DATA008.Time;
+test1.Time = 1:size(DATA011.Time,1)
+test1.Data = DATA011.AccX
+sim = 130%size(DATA011.Time,1)
+sim2 = round(DATA011.Time(end))
+backup = DATA011.Time;
 
 % sim Kalman_gefiltert.slx
 % simout.Time(3:end) = DATA008.Time(1:end)
