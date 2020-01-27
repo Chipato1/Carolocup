@@ -121,11 +121,11 @@ void motor_bewegung_RC_mode(float voltage_1)
 {
     if (voltage_1 < tiefpass_untere_spannung)                                     //rückwarts
     {
-        motor_uebertragung_RC_mode = (voltage_1 * 8.33) + 70;
+        motor_uebertragung_RC_mode = (voltage_1 * 135.23) + 56.47;
     }
     else if (voltage_1 > tiefpass_obere_spannung)                                 //vorwärts
     {
-        motor_uebertragung_RC_mode = (voltage_1 * 8.33) + 74.432;
+        motor_uebertragung_RC_mode = (voltage_1 * 135.23) + 58.94;
     }
     else
     {

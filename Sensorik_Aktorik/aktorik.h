@@ -10,8 +10,8 @@
 
 #define referenzvoltage 0.0021259765       //Referenzspannung zur Berechnung der Tiefpassspannung vom Motor - PWM
 #define pi 3.141592653589
-#define tiefpass_untere_spannung  1.5       //Schwellwert Spannung am Tiefpass zum rückwertsfahren
-#define tiefpass_obere_spannung   2         //Schwellwert Spannung am Tiefpass zum vorwärtsfahren
+#define tiefpass_untere_spannung  0.24795       //Schwellwert Spannung am Tiefpass zum rückwertsfahren
+#define tiefpass_obere_spannung   0.27405       //Schwellwert Spannung am Tiefpass zum vorwärtsfahren
 
 void init_aktorik();
 int aktorik();
