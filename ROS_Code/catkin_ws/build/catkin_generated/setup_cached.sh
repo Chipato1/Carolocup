@@ -7,10 +7,4 @@
 # new environment variables
 
 # modified environment variables
-export CMAKE_PREFIX_PATH="/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/devel:$CMAKE_PREFIX_PATH"
-export LD_LIBRARY_PATH="/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/devel/lib:$LD_LIBRARY_PATH"
-export PKG_CONFIG_PATH="/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/devel/lib/pkgconfig:$PKG_CONFIG_PATH"
-export PWD="/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/build"
-export PYTHONPATH="/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/devel/lib/python2.7/dist-packages:$PYTHONPATH"
-export ROSLISP_PACKAGE_DIRECTORIES="/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/devel/share/common-lisp"
-export ROS_PACKAGE_PATH="/home/chipato/Desktop/Test_git/Carolocup/ROS_Code/catkin_ws/src:/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/src:$ROS_PACKAGE_PATH"
+export PWD="/home/chipato/Desktop/SM_GIT/Carolocup/ROS_Code/catkin_ws/build"
