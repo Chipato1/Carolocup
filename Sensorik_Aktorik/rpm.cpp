@@ -2,7 +2,7 @@
 #include "Encoder.h"
 
 static int ticks_per_cycle = 9;
-int rpm_array[2];
+int rpm_value;
 
 int RPM_left, RPM_timer_left;
 int old_left;
@@ -45,8 +45,9 @@ int* read_RPM()
     old_right = new_right; 
   }
   
-  rpm_array[0] = RPM_left;
-  rpm_array[1] = RPM_right;
+
+  //Mittelwert berechnen
+  rpm_value = (RPM_left + RPM_right) / 2;
   
-  return rpm_array;
+  return rpm_value;
 }
