@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(vision)
 
 ##OPENCV ADDED HERE
-find_package( OpenCV REQUIRED )
+find_package( OpenCV REQUIRED sensor_msgs)
 
 
 ## Compile as C++11, supported in ROS Kinetic and newer
@@ -108,9 +108,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
+  
 #  INCLUDE_DIRS include
 #  LIBRARIES vision
-#  CATKIN_DEPENDS image_transport roscpp std_msgs
+  CATKIN_DEPENDS sensor_msgs image_transport roscpp std_msgs
 #  DEPENDS system_lib
 )
 

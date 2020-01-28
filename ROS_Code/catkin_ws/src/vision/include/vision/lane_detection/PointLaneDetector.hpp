@@ -4,8 +4,7 @@
 #include <opencv2/cudaimgproc.hpp>
 #include <map>
 #include <string>
-class PointLaneDetector
-{
+class PointLaneDetector {
 public:
 	PointLaneDetector(std::map<std::string, std::string>&);
 	void calculateFrame(cv::Mat&);
@@ -14,10 +13,17 @@ public:
 	VisionResult vRes;
 	//Alle erkannten Punkte auf den Linien
 	
+	cv::Mat undistort;
 	cv::Mat ipm;
 	cv::Mat threshold;
 	cv::Mat edge;
 	cv::Mat debugImage;
+
+	cv::Mat map1;
+	cv::Mat map2;
+
+	cv::cuda::GpuMat map1GPU;
+	cv::cuda::GpuMat map2GPU;
 
 	
 
@@ -31,6 +37,7 @@ private:
 	void debugDraw(cv::Mat&);
 	bool solveClothoide();
 	void copyResult();
+	void mat2Arr(cv::Mat&, std::array<double, 4>&);
 	bool solveSingleLane(cv::Mat& lane, cv::Mat A, cv::Mat B, int start, int end, bool foundLane);
 	
 
@@ -46,6 +53,8 @@ private:
 	int ML_MAX_X = 730;
 	int RL_MIN_X = 800;
 	int RL_MAX_X = 850;
+
+	double ipmScaling = 1; 
 
 	//MODELLPARAMETER
 	//Grad des Modells (Klothoide)
@@ -71,6 +80,7 @@ private:
 	cv::Mat rightLane2;
 
 	cv::cuda::GpuMat imageGPU;
+	cv::cuda::GpuMat undistortGPU;
 	cv::cuda::GpuMat ipmGPU;
 	cv::cuda::GpuMat thresholdGPU;
 	cv::cuda::GpuMat edgeGPU;

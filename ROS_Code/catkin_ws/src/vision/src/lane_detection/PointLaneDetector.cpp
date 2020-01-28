@@ -58,27 +58,31 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 	double high_thresh	 		= 	config.count("high_thresh") 	 	? stod(config["high_thresh"])			: 80;
 	double aperture_size	 	= 	config.count("aperture_size") 	 	? stod(config["aperture_size"])			: 3;
 
-	this->LANE_THRES_MIN 		= 	config.count("LANE_THRES_MIN") 		? stoi(config["LANE_THRES_MIN"]) 		: 17;
-	this->LANE_THRES_MAX 		= 	config.count("LANE_THRES_MAX") 		? stoi(config["LANE_THRES_MAX"]) 		: 0;
+	this->LANE_THRES_MIN 			= 	config.count("LANE_THRES_MIN") 			? stoi(config["LANE_THRES_MIN"]) 			: 17;
+	this->LANE_THRES_MAX 			= 	config.count("LANE_THRES_MAX") 			? stoi(config["LANE_THRES_MAX"]) 			: 0;
 	this->LL_MIN_X			 	= 	config.count("LL_MIN_X") 			? stoi(config["LL_MIN_X"])				: 250;
 	this->LL_MAX_X 				= 	config.count("LL_MAX_X") 			? stoi(config["LL_MAX_X"])				: 350;
 	this->ML_MIN_X	 			= 	config.count("ML_MIN_X") 	 		? stoi(config["ML_MIN_X"])				: 650;
 	this->ML_MAX_X	 			= 	config.count("ML_MAX_X") 	 		? stoi(config["ML_MAX_X"])				: 850;
 	this->RL_MIN_X	 			= 	config.count("RL_MIN_X") 	 		? stoi(config["RL_MIN_X"])				: 1100;
 	this->RL_MAX_X	 			= 	config.count("RL_MAX_X") 	 		? stoi(config["RL_MAX_X"])				: 1300;
+	this->ipmScaling			= 	config.count("ipm_scaling") 	 		? stod(config["ipm_scaling"])				: 1;	
+
+
+	this->LANE_THRES_MIN 			= 	this->LANE_THRES_MIN *  this->ipmScaling;
+	this->LANE_THRES_MAX 			= 	this->LANE_THRES_MAX *  this->ipmScaling;
+	this->LL_MIN_X			 	= 	this->LL_MIN_X *  this->ipmScaling;
+	this->LL_MAX_X 				= 	this->LL_MAX_X *  this->ipmScaling;
+	this->ML_MIN_X	 			= 	this->ML_MIN_X *  this->ipmScaling;
+	this->ML_MAX_X	 			= 	this->ML_MAX_X *  this->ipmScaling;
+	this->RL_MIN_X	 			= 	this->RL_MIN_X *  this->ipmScaling;
+	this->RL_MAX_X	 			= 	this->RL_MAX_X *  this->ipmScaling;
+	
+
 
 	this->canny = cuda::createCannyEdgeDetector(low_thresh, high_thresh, aperture_size, false);
 
-	this->ipmSize = Size(600, 1200);
-
-	/*double alpha_ 			= 90 - camera_angle_pitch;
-	double beta_ 			= 90 - camera_angle_roll;
-	double gamma_ 			= 90 - camera_angle_yaw;
-	double f_ 				= camera_focallength;
-	double height 			= camera_height;
-	double skew_ 			= 0;
-	double pixel_width 		= 7.2;
-	double pixel_height 	= 5.4;*/
+	this->ipmSize = Size(1200 * this->ipmScaling, 2400 * this->ipmScaling);
 
 	double alpha_ = camera_angle_pitch;
 	double beta_ = camera_angle_roll;
@@ -103,7 +107,7 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 	// Projecion matrix 2D -> 3D
 	Mat A1 = (Mat_<float>(4, 3) <<
 		1, 0, -this->ipmSize.width / 2,
-		0, 1, -this->ipmSize.height + 205,
+		0, 1, -this->ipmSize.height + 410 * this->ipmScaling,
 		0, 0, 0,
 		0, 0, 1);
 
@@ -137,22 +141,35 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 	Mat T = (Mat_<float>(4, 4) <<
 		1, 0, 0, 0,
 		0, 1, 0, 0,
-		0, 0, 1, dist,
+		0, 0, 1, dist * this->ipmScaling,
 		0, 0, 0, 1);
 
-	// K - camera matrix, nach: https://en.wikipedia.org/wiki/Camera_resectioning
-	Mat K = (Mat_<float>(3, 4) <<
-		focalLength*image_size.width	,		skew							,	w / 2	,		0,
-		0								,		focalLength*image_size.height	,	h / 2	,		0,
-		0								,		0								,	1		,		0);
-
-	K = (Mat_<float>(3, 4) <<
+	cv::Mat K = (Mat_<float>(3, 4) <<
 		1786.874566, 0.000000, 707.636847, 0,
 		0.000000, 1796.353286, 559.682000, 0,
 		0.000000, 0.000000, 1.000000, 0
 		);
 
 	this->transformationMat = K * (T * (R * A1));
+	
+	
+	cv::Mat R2 =  (Mat_<float>(3, 3) <<
+		1, 0.000000, 0, 
+		0.000000, 1, 0, 
+		0.000000, 0.000000, 1.000000
+		);
+
+	cv::Mat K2 = (Mat_<float>(3, 3) <<
+		1786.874566, 0.000000, 707.636847, 
+		0.000000, 1796.353286, 559.682000, 
+		0.000000, 0.000000, 1.000000
+		);
+
+	cv::Mat distortion = (Mat_<float>(1, 5) << -0.240380403251906, 0.1736768050189452, 0.002374331146303896, 0.001259448491836468, 0);
+	cv::initUndistortRectifyMap(K2, distortion, R2, K2, image_size, CV_32FC1, map1, map2);
+
+	this->map1GPU.upload(map1);
+	this->map2GPU.upload(map2);
 }
 
 void PointLaneDetector::debugDraw(cv::Mat& frame) {
@@ -194,14 +211,18 @@ void drawResult(cv::Mat im, cv::Mat x1, cv::Mat x2, cv::Scalar color, int inters
 void PointLaneDetector::calculateFrame(cv::Mat& frame) {
 	this->doGPUTransform(frame);
 	this->calculateAlgorithm();
-	//this->debugDraw(this->edge);
+	this->debugDraw(this->edge);
 }
 
 
 void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 	this->imageGPU.upload(frame);
 	
-	cv::cuda::warpPerspective(this->imageGPU, this->ipmGPU, this->transformationMat, this->ipmSize, INTER_CUBIC | WARP_INVERSE_MAP);
+	
+	cv::cuda::remap(this->imageGPU, this->undistortGPU, this->map1GPU, this->map2GPU, cv::INTER_LINEAR, cv::BORDER_CONSTANT, std::numeric_limits<float>::quiet_NaN());
+	this->undistortGPU.download(this->undistort);	
+
+	cv::cuda::warpPerspective(this->undistortGPU, this->ipmGPU, this->transformationMat, this->ipmSize, INTER_CUBIC | WARP_INVERSE_MAP);
 	this->ipmGPU.download(this->ipm);
 	
 
@@ -362,20 +383,20 @@ void PointLaneDetector::prepareInterpolation(int i) {
 
 
 
-		if (foundLL && leftIndex != -1 && distancesLeft.at(leftIndex) < 100) {
+		if (foundLL && leftIndex != -1 && distancesLeft.at(leftIndex) < 300) {
 			vRes.lanePoints.at(0).push_back(laneMiddles.at(leftIndex));
 			calculateSolveMatrix(laneMiddles.at(leftIndex), lA, lB, numberOfLeftPoints - 1);
 			leftLaneStartPoint = laneMiddles.at(leftIndex);
 			numberOfLeftPoints++;
 			
 		}
-		if (foundML && middleIndex != -1) {
+		if (foundML && middleIndex != -1 && distancesMiddle.at(middleIndex) < 300) {
 			vRes.lanePoints.at(1).push_back(laneMiddles.at(middleIndex));
 			calculateSolveMatrix(laneMiddles.at(middleIndex), mA, mB, numberOfMiddlePoints - 1);
 			middleLaneStartPoint = laneMiddles.at(middleIndex);
 			numberOfMiddlePoints++;
 		}
-		if (foundRL && rightIndex != -1 && distancesRight.at(rightIndex) < 100) {
+		if (foundRL && rightIndex != -1 && distancesRight.at(rightIndex) < 300) {
 			vRes.lanePoints.at(2).push_back(laneMiddles.at(rightIndex));
 			calculateSolveMatrix(laneMiddles.at(rightIndex), rA, rB, numberOfRightPoints - 1);
 			rightLaneStartPoint = laneMiddles.at(rightIndex);
@@ -410,21 +431,49 @@ double calculateVariance(cv::Mat& lane,  std::vector<cv::Point> pts) {
 		mean+=elem;
 		m2+=elem*elem;
 	});
-	return m2-mean*mean;
+	return m2 - mean * mean;
 	
 }
 
 bool PointLaneDetector::solveClothoide() {
+	
+	int separationIndexL = 0;
+	int separationIndexM = 0;
+	int separationIndexR = 0;
 
-	for(int i = 4; i < numberOfLines; i+=5) {
+	int separationDist = 0;
+	for(int i = 4; i < numberOfRightPoints && separationIndexR == 0; i+=5) {
 		if (solveSingleLane(this->rightLane1, this->rA, this->rB, 0, i, foundRL)) {
-			for (int i = 0; i < this->vRes.lanePoints[0].size(); i++) {
-				double variance = calculateVariance(this->rightLane1, this->vRes.lanePoints[2]);
-				
+			double variance = calculateVariance(this->rightLane1, this->vRes.lanePoints[2]);
+			if (variance > 10) {
+				separationIndexR = i;
+				separationDist = this->vRes.lanePoints[2].at(separationIndexR).y;
 			}
+			
 		}
 	}
 
+	if(separationIndexR == 0) {
+		separationIndexL = numberOfLeftPoints - 1;
+		separationIndexM = numberOfMiddlePoints - 1;
+		separationIndexR = numberOfRightPoints - 1;
+	} else {
+		if(foundLL) {
+			auto res = std::find_if(this->vRes.lanePoints[0].begin(), this->vRes.lanePoints[0].end(), [&separationDist](cv::Point& elem) -> bool {
+				return elem.y > separationDist;
+			});
+			separationIndexL = res - this->vRes.lanePoints[0].begin();
+		}
+		if(foundML) {
+			auto res = std::find_if(this->vRes.lanePoints[1].begin(), this->vRes.lanePoints[1].end(), [&separationDist](cv::Point& elem) -> bool {
+				return elem.y > separationDist;
+			});
+			separationIndexM = res - this->vRes.lanePoints[1].begin();
+		}
+	}
+
+	
+	
 	if (foundML && foundRL && numberOfLeftPoints < numberOfRightPoints && numberOfMiddlePoints < numberOfRightPoints) {
 		vRes.oppositeLane = false;
 	}
@@ -435,23 +484,23 @@ bool PointLaneDetector::solveClothoide() {
 		vRes.oppositeLane = false;
 	}
 
-	bool solveResultL1 = solveSingleLane(this->leftLane1, this->lA, this->lB, 0, numberOfLines - 1, foundLL);
-	bool solveResultM1 = solveSingleLane(this->middleLane1, this->mA, this->mB, 0, numberOfLines - 1, foundML);
-	bool solveResultR1 = solveSingleLane(this->rightLane1, this->rA, this->rB, 0, numberOfLines - 1, foundRL);
-
-	bool solveResultL2 = solveSingleLane(this->leftLane2, this->lA, this->lB, 0, numberOfLines - 1, foundLL);
-	bool solveResultM2 = solveSingleLane(this->middleLane2, this->mA, this->mB, 0, numberOfLines - 1, foundML);
-	bool solveResultR2 = solveSingleLane(this->rightLane2, this->rA, this->rB, 0, numberOfLines - 1, foundRL);
+	bool solveResultL1 = solveSingleLane(this->leftLane1, this->lA, this->lB, 0, 59, foundLL);
+	bool solveResultM1 = solveSingleLane(this->middleLane1, this->mA, this->mB, 0, 59, foundML);
+	bool solveResultR1 = solveSingleLane(this->rightLane1, this->rA, this->rB, 0, 59, foundRL);
+	
+	bool solveResultL2 = true;	//solveSingleLane(this->leftLane2, this->lA, this->lB, 0, numberOfLines - 1, foundLL);
+	bool solveResultM2 = true;	//solveSingleLane(this->middleLane2, this->mA, this->mB, 0, numberOfLines - 1, foundML);
+	bool solveResultR2 = true;	//solveSingleLane(this->rightLane2, this->rA, this->rB, 0, numberOfLines - 1, foundRL);
 
 	copyResult();
 	return solveResultL1 && solveResultM1 && solveResultR1 && solveResultL2 && solveResultM2 && solveResultR2;
 }
 
-void mat2Arr(cv::Mat mat, std::array<double, 4>& arr) {
-	arr.at(0) = mat.at<double>(0);
-	arr.at(1) = mat.at<double>(1);
+void PointLaneDetector::mat2Arr(cv::Mat& mat, std::array<double, 4>& arr) {
+	arr.at(0) = mat.at<double>(0) * ipmScaling * ipmScaling;
+	arr.at(1) = mat.at<double>(1) * ipmScaling;
 	arr.at(2) = mat.at<double>(2);
-	arr.at(3) = mat.at<double>(3);
+	arr.at(3) = mat.at<double>(3) / ipmScaling;
 }
 
 void PointLaneDetector::copyResult() {
@@ -488,14 +537,3 @@ void PointLaneDetector::calculateSolveMatrix(Point point, cv::Mat& A, cv::Mat& B
 	A.at<double>(i, 3) = 1;
 	B.at<double>(i, 0) = point.x;
 }
-
-Mat* halfImage(Mat image) {
-	Mat* result = new Mat[2];
-	Rect upperHalfSize = Rect(0, 0, image.cols, image.rows / 2);
-	result[0] = image(upperHalfSize);
-
-	Rect lowerHalfSize = Rect(0, image.rows / 2, image.cols, image.rows / 2);
-	result[1] = image(lowerHalfSize);
-	return result;
-}
-

@@ -37,6 +37,7 @@ std::map<std::string, std::string> readConfigFile() {
 
 PointLaneDetector* detector;
 ros::Publisher visionResultPublisher;
+image_transport::Publisher  undistortPublisher;
 image_transport::Publisher  ipmPublisher;
 image_transport::Publisher  thresholdPublisher;
 image_transport::Publisher  edgePublisher;
@@ -48,12 +49,14 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 	detector->calculateFrame(image);
 	image.release();
 
+	sensor_msgs::ImagePtr undistortMsg= cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->undistort).toImageMsg();
 	sensor_msgs::ImagePtr ipmMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->ipm).toImageMsg();
 	sensor_msgs::ImagePtr thresholdMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->threshold).toImageMsg();
 	sensor_msgs::ImagePtr edgeMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->edge).toImageMsg();
 	sensor_msgs::ImagePtr debugMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->debugImage).toImageMsg();
 	
 	//visionResultPublisher.publish(detector->vRes);
+	undistortPublisher.publish(undistort);
 	ipmPublisher.publish(ipmMsg);
 	thresholdPublisher.publish(thresholdMsg);
 	edgePublisher.publish(edgeMsg);
@@ -79,6 +82,7 @@ int main(int argc, char** argv) {
 	
 	//visionResultPublisher = nh.advertise<VisionResult>(config["vision_result_topic_name"], 5);
 	
+	undistortPublisher = it.advertise(config["undistort_result_topic_name"], 1);
 	ipmPublisher = it.advertise(config["ipm_result_topic_name"], 1);
 	thresholdPublisher = it.advertise(config["threshold_topic_name"], 1);
 	edgePublisher = it.advertise(config["edge_topic_name"], 1);
