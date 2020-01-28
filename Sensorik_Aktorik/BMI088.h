@@ -1,4 +1,3 @@
-
 #ifndef BMI088_h
 #define BMI088_h
 

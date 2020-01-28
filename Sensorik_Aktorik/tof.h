@@ -12,11 +12,11 @@
 
 
 //shutdown pins for ToF sensors
-#define ToF_front_SHT     26
+#define ToF_front_SHT     25
 #define ToF_left_SHT      27
-#define ToF_right_SHT     28
-#define ToF_cross_SHT     29
-#define ToF_back_SHT      30
+#define ToF_right_SHT     29
+#define ToF_cross_SHT     31
+#define ToF_back_SHT      33
 
 const Adafruit_VL53L0X ToF_front  = Adafruit_VL53L0X();
 const Adafruit_VL53L0X ToF_left   = Adafruit_VL53L0X();

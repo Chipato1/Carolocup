@@ -8,17 +8,20 @@
 #include <std_msgs/UInt8.h>
 #include <std_msgs/Float32.h>
 
-#define referenzvoltage 0.0021259765       //Referenzspannung zur Berechnung der Tiefpassspannung vom Motor - PWM
-#define pi 3.141592653589
-#define tiefpass_untere_spannung  0.24795       //Schwellwert Spannung am Tiefpass zum rückwertsfahren
-#define tiefpass_obere_spannung   0.27405       //Schwellwert Spannung am Tiefpass zum vorwärtsfahren
+#define referenzvoltage               0.0021259765       //Referenzspannung zur Berechnung der Tiefpassspannung vom Motor - PWM
+#define pi                            3.141592653589
+#define tiefpass_untere_spannung      1.5       //Schwellwert Spannung am Tiefpass zum rückwertsfahren
+#define tiefpass_obere_spannung       2         //Schwellwert Spannung am Tiefpass zum vorwärtsfahren
 
-const byte frontlicht = 53;
-const byte blinker_links = 51;
-const byte blinker_rechts = 49;
-const byte bremslicht = 47;
-const byte rueckfahrlicht = 45;
-const byte blaues_licht = 43;
+#define tiefpass_pwm_motor_voltage    A12
+#define tiefpass_pwm_motor_voltage_nr 12
+#define MUX_Select                    48
+#define frontlicht                    53
+#define blinker_links                 51
+#define blinker_rechts                49
+#define bremslicht                    47
+#define rueckfahrlicht                45
+#define blaues_licht                  43
 
 void init_aktorik();
 int aktorik();
