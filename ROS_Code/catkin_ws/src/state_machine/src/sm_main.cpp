@@ -1,13 +1,18 @@
 #include "sm_main.h"
-//Soll man das als void machen oder gibt es was schlaueres?
-//ich würde den state zurückgeben
-int handleStateINIT(int currentState)
+//Daten in struct
+//
+
+int handleStateINIT()
 {
+    //get Service client QR
     //Hier kommt eigentlich nur die Bedingung QR Detected rein über service
-	if (true)
+	if (true/*Service QR detected == true*/)
 	{
+        //0.5 Sekunden warten 
+        ros::Duration(0.5).sleep();
 		return QR_CODE_DETECTED;
 	}
+    return INIT;
 }
 
 int main(int argc, char **argv)
@@ -21,17 +26,16 @@ int main(int argc, char **argv)
   //Publisher .. brauchen wir bestimmt noch"
   //ros::Publisher servo_pub = n.advertise<std_msgs::UInt8>("motor", 1000);
   ros::Rate loop_rate(50);
-  
+  INIT_data.begin = ros::Time::now();
   //Initialition
   int currentState = INIT;
-  
+  //generate
   while (ros::ok())
   {
-    
 	switch (currentState)
 	{
 		case INIT:
-			currentState = handleStateINIT(currentState);
+			currentState = handleStateINIT();
 			break;
 		case QR_CODE_DETECTED:
 			//...

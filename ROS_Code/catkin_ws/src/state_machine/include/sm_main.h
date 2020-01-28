@@ -6,3 +6,7 @@ enum states_e {
 	QR_CODE_DETECTED,
 	DRIVE
 };
+
+struct INIT_data {
+   ros::Time begin;
+} INIT_data;
