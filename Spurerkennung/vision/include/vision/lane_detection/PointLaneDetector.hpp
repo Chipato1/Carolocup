@@ -14,6 +14,10 @@ public:
 	VisionResult vRes;
 	//Alle erkannten Punkte auf den Linien
 	
+	cv::Mat ipm;
+	cv::Mat threshold;
+	cv::Mat edge;
+	cv::Mat debugImage;
 
 private:
 	bool calculateAlgorithm();
@@ -24,7 +28,10 @@ private:
 	void prepareInterpolation(int);
 	void debugDraw(cv::Mat&);
 	bool solveClothoide();
+	void copyResult();
+	bool solveSingleLane(cv::Mat& lane, cv::Mat A, cv::Mat B, int start, int end, bool foundLane);
 	
+
 	void clear();
 
 	int LANE_THRES_MIN = 5;
@@ -61,9 +68,10 @@ private:
 
 	cv::cuda::GpuMat imageGPU;
 	cv::cuda::GpuMat ipmGPU;
+	cv::cuda::GpuMat thresholdGPU;
 	cv::cuda::GpuMat edgeGPU;
 
-	cv::Mat edge;
+	
 
 	//Temporaere Variablen
 	cv::Mat linePoints;

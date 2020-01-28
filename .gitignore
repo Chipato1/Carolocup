@@ -3,9 +3,9 @@
 # Edit at https://www.gitignore.io/?templates=c++,opencv,visualstudio,visualstudiocode
 
 ### ROS ###
-devel/
+ROS_Code/catkin_ws/devel/
 logs/
-build/
+ROS_Code/catkin_ws/build/
 bin/
 lib/
 msg_gen/
