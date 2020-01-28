@@ -7,10 +7,10 @@ ros::NodeHandle aktorik_node;
 
 ros::Subscriber<std_msgs::Float32> sub_servo("servolenkwinkel", servo_cb);
 ros::Subscriber<std_msgs::UInt8> sub_motor("motordrehzahl", motor_cb);      
-ros::Subscriber<std_msgs::UInt8> sub_light_l("light_l_mod", light_l_cb);
-ros::Subscriber<std_msgs::UInt8> sub_light_r("light_r_mod", light_r_cb);
-ros::Subscriber<std_msgs::UInt8> sub_light_b("light_b_mod", light_b_cb);
-ros::Subscriber<std_msgs::UInt8> sub_light_rem("light_rem_mod", light_rem_cb);
+ros::Subscriber<std_msgs::UInt8> sub_light_l("lichtLinks", lichtLinks_cb);
+ros::Subscriber<std_msgs::UInt8> sub_light_r("lichtRechts", lichtRechts_cb);
+ros::Subscriber<std_msgs::UInt8> sub_light_b("lichtBremse", lichtBremse_cb);
+ros::Subscriber<std_msgs::UInt8> sub_light_rem("lichtRemote", lichtRemote_cb);
 
 int rc_mode = 0;
 int analogvalue_1; //eingelesener Pin - Wert am Tiefpass
@@ -100,16 +100,16 @@ void motor_cb(const std_msgs::UInt8& cmd_msg){     //Callback - Funktion für Mo
   motor_bewegung(cmd_msg.data);
 }
 
-void light_l_cb(const std_msgs::UInt8& light_state){
+void lichtLinks_cb(const std_msgs::UInt8& light_state){
   state_light_r = light_state.data;
 }
-void light_r_cb(const std_msgs::UInt8& light_state){
+void lichtRechts_cb(const std_msgs::UInt8& light_state){
   state_light_l = light_state.data;
 }
-void light_b_cb(const std_msgs::UInt8& light_state){
+void lichtBremse_cb(const std_msgs::UInt8& light_state){
   state_light_b = light_state.data;
 }
-void light_rem_cb(const std_msgs::UInt8& light_state){
+void lichtRemote_cb(const std_msgs::UInt8& light_state){
   state_light_rem = light_state.data;
 }
 

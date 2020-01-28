@@ -28,10 +28,10 @@ int aktorik();
 
 void servo_cb(const std_msgs::Float32& cmd_msg);
 void motor_cb(const std_msgs::UInt8& cmd_msg);
-void light_l_cb(const std_msgs::UInt8& light_state);
-void light_r_cb(const std_msgs::UInt8& light_state);
-void light_b_cb(const std_msgs::UInt8& light_state);
-void light_rem_cb(const std_msgs::UInt8& light_state);
+void lichtLinks_cb(const std_msgs::UInt8& light_state);
+void lichtRechts_cb(const std_msgs::UInt8& light_state);
+void lichtBremse_cb(const std_msgs::UInt8& light_state);
+void lichtRemote_cb(const std_msgs::UInt8& light_state);
 
 void servo_bewegung(float lenkwinkel_bogenmass);  //Funktion Servosteuerung im autonomen Betrieb
 void motor_bewegung(byte motor_drehzahl);         //Funktion Motorsteuerung im autonomen Betrieb
