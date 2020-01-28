@@ -69,7 +69,7 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 
 	this->canny = cuda::createCannyEdgeDetector(low_thresh, high_thresh, aperture_size, false);
 
-	this->ipmSize = Size(1200, 2400);
+	this->ipmSize = Size(600, 1200);
 
 	/*double alpha_ 			= 90 - camera_angle_pitch;
 	double beta_ 			= 90 - camera_angle_roll;
@@ -103,7 +103,7 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 	// Projecion matrix 2D -> 3D
 	Mat A1 = (Mat_<float>(4, 3) <<
 		1, 0, -this->ipmSize.width / 2,
-		0, 1, -this->ipmSize.height + 410,
+		0, 1, -this->ipmSize.height + 205,
 		0, 0, 0,
 		0, 0, 1);
 
@@ -192,63 +192,24 @@ void drawResult(cv::Mat im, cv::Mat x1, cv::Mat x2, cv::Scalar color, int inters
 
 //Detectes the driving lanes for one frame
 void PointLaneDetector::calculateFrame(cv::Mat& frame) {
-	//imshow("~/Desktop/test.png", frame);
-	//auto timeStart = std::chrono::high_resolution_clock::now();
 	this->doGPUTransform(frame);
-	//auto timeGPU = std::chrono::high_resolution_clock::now();
 	this->calculateAlgorithm();
-	//auto timeEnd = std::chrono::high_resolution_clock::now();
-	//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
-	//std::cout << "\033[2J\033[1;1H";
-	/*std::cout <<"Dauer Gesamt: " << duration << std::endl;
-	duration = std::chrono::duration_cast<std::chrono::microseconds>(timeGPU - timeStart).count();
-	std::cout << "Dauer GPU: " << duration << std::endl;
-	duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeGPU).count();
-	std::cout << "Dauer CPU: " << duration << std::endl;*/
-	this->debugDraw(this->edge);
+	//this->debugDraw(this->edge);
 }
 
 
 void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
-	auto timeStart = std::chrono::high_resolution_clock::now();
-	this->imageGPU.release();
-	this->ipmGPU.release();
-	this->thresholdGPU.release();
 	this->imageGPU.upload(frame);
 	
-
-	auto uploadEnd = std::chrono::high_resolution_clock::now();
 	cv::cuda::warpPerspective(this->imageGPU, this->ipmGPU, this->transformationMat, this->ipmSize, INTER_CUBIC | WARP_INVERSE_MAP);
 	this->ipmGPU.download(this->ipm);
-
-	double min, max;
-	cv::minMaxLoc(frame, &min, &max);
+	
 
 	cv::cuda::threshold(this->ipmGPU, this->thresholdGPU, 230, 255, 0);
 	this->thresholdGPU.download(this->threshold);
 
-	auto warpEnd = std::chrono::high_resolution_clock::now();
 	this->canny->detect(this->ipmGPU, this->edgeGPU);
-
-	auto cannyEnd = std::chrono::high_resolution_clock::now();
 	this->edgeGPU.download(edge);
-	auto timeEnd = std::chrono::high_resolution_clock::now();
-
-
-	/*auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
-	std::cout <<"Dauer GPU Gesamt: " << duration << std::endl;
-
-	duration = std::chrono::duration_cast<std::chrono::microseconds>(uploadEnd - timeStart).count();
-	std::cout <<"Dauer Upload: " << duration << std::endl;
-
-	duration = std::chrono::duration_cast<std::chrono::microseconds>(warpEnd - uploadEnd).count();
-	std::cout <<"Dauer Warp: " << duration << std::endl;
-
-	duration = std::chrono::duration_cast<std::chrono::microseconds>(cannyEnd - warpEnd).count();
-	std::cout <<"Dauer Canny: " << duration << std::endl;
-
-	duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - cannyEnd).count();
-	std::cout <<"Dauer Download: " << duration << std::endl;*/
 }
 
 

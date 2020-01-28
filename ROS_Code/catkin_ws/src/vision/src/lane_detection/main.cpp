@@ -44,22 +44,15 @@ image_transport::Publisher  debugImagePublisher;
 
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
-	auto timeStart = std::chrono::high_resolution_clock::now();
 	cv::Mat image = cv_bridge::toCvShare(msg, "mono8")->image;
-
 	detector->calculateFrame(image);
-	
-	auto timeEnd = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(timeEnd - timeStart).count();
-	std::cout <<"Dauer Gesamt: " << duration << std::endl;
+	image.release();
 
 	sensor_msgs::ImagePtr ipmMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->ipm).toImageMsg();
 	sensor_msgs::ImagePtr thresholdMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->threshold).toImageMsg();
 	sensor_msgs::ImagePtr edgeMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->edge).toImageMsg();
 	sensor_msgs::ImagePtr debugMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->debugImage).toImageMsg();
-
-
-
+	
 	//visionResultPublisher.publish(detector->vRes);
 	ipmPublisher.publish(ipmMsg);
 	thresholdPublisher.publish(thresholdMsg);
