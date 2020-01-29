@@ -7,9 +7,9 @@
  *
  * Code generation for model "Zustandsregler".
  *
- * Model version              : 1.35
+ * Model version              : 1.39
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Wed Jan 22 23:34:49 2020
+ * C++ source code generated on : Wed Jan 29 19:01:07 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -28,15 +28,6 @@
 typedef struct {
   real32_T Data;
 } SL_Bus_Zustandsregler_std_msgs_Float32;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_SL_Bus_Zustandsregler_std_msgs_Float64_
-#define DEFINED_TYPEDEF_FOR_SL_Bus_Zustandsregler_std_msgs_Float64_
-
-typedef struct {
-  real_T Data;
-} SL_Bus_Zustandsregler_std_msgs_Float64;
 
 #endif
 

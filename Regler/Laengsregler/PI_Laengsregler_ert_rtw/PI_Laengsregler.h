@@ -7,9 +7,9 @@
  *
  * Code generation for model "PI_Laengsregler".
  *
- * Model version              : 1.17
+ * Model version              : 1.21
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Wed Jan 22 14:00:45 2020
+ * C++ source code generated on : Wed Jan 29 19:17:21 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -155,14 +155,20 @@
 # define rtmGetTPtr(rtm)               ((rtm)->Timing.t)
 #endif
 
+/* Block signals for system '<S4>/Enabled Subsystem' */
+typedef struct {
+  SL_Bus_PI_Laengsregler_std_msgs_Float32 In1;/* '<S51>/In1' */
+} B_EnabledSubsystem_PI_Laengsr_T;
+
 /* Block signals (default storage) */
 typedef struct {
+  char_T cv[19];
   real_T IntegralGain;                 /* '<S33>/Integral Gain' */
   real_T ProportionalGain;             /* '<S41>/Proportional Gain' */
   real_T Sum;                          /* '<S45>/Sum' */
-  SL_Bus_PI_Laengsregler_std_msgs_Int32 In1;/* '<S52>/In1' */
-  SL_Bus_PI_Laengsregler_std_msgs_Float32 In1_f;/* '<S51>/In1' */
   boolean_T OR;                        /* '<Root>/OR' */
+  B_EnabledSubsystem_PI_Laengsr_T EnabledSubsystem_n;/* '<S5>/Enabled Subsystem' */
+  B_EnabledSubsystem_PI_Laengsr_T EnabledSubsystem;/* '<S4>/Enabled Subsystem' */
 } B_PI_Laengsregler_T;
 
 /* Block states (default storage) for system '<Root>' */
@@ -185,7 +191,7 @@ typedef struct {
   boolean_T objisempty;                /* '<S5>/SourceBlock' */
   boolean_T objisempty_c;              /* '<S4>/SourceBlock' */
   boolean_T objisempty_f;              /* '<S3>/SinkBlock' */
-  boolean_T Geschwindigkeitsregler1_MODE;/* '<Root>/Geschwindigkeitsregler 1' */
+  boolean_T Geschwindigkeitsregler_MODE;/* '<Root>/Geschwindigkeitsregler' */
 } DW_PI_Laengsregler_T;
 
 /* Continuous states (default storage) */
@@ -214,6 +220,13 @@ typedef struct {
 
 #endif
 
+/* Parameters for system: '<S4>/Enabled Subsystem' */
+struct P_EnabledSubsystem_PI_Laengsr_T_ {
+  SL_Bus_PI_Laengsregler_std_msgs_Float32 Out1_Y0;/* Computed Parameter: Out1_Y0
+                                                   * Referenced by: '<S51>/Out1'
+                                                   */
+};
+
 /* Parameters (default storage) */
 struct P_PI_Laengsregler_T_ {
   real_T ir;                           /* Variable: ir
@@ -222,27 +235,21 @@ struct P_PI_Laengsregler_T_ {
   real_T pr;                           /* Variable: pr
                                         * Referenced by: '<S41>/Proportional Gain'
                                         */
-  int32_T u;                           /* Variable: u
+  real32_T u;                          /* Variable: u
                                         * Referenced by: '<S2>/Multiply'
                                         */
   real_T PIDController_InitialConditionF;
                               /* Mask Parameter: PIDController_InitialConditionF
                                * Referenced by: '<S36>/Integrator'
                                */
-  SL_Bus_PI_Laengsregler_std_msgs_Float32 Out1_Y0;/* Computed Parameter: Out1_Y0
-                                                   * Referenced by: '<S51>/Out1'
-                                                   */
   SL_Bus_PI_Laengsregler_std_msgs_Float32 Constant_Value;/* Computed Parameter: Constant_Value
                                                           * Referenced by: '<S4>/Constant'
                                                           */
+  SL_Bus_PI_Laengsregler_std_msgs_Float32 Constant_Value_l;/* Computed Parameter: Constant_Value_l
+                                                            * Referenced by: '<S5>/Constant'
+                                                            */
   SL_Bus_PI_Laengsregler_std_msgs_Int16 Constant_Value_j;/* Computed Parameter: Constant_Value_j
                                                           * Referenced by: '<S1>/Constant'
-                                                          */
-  SL_Bus_PI_Laengsregler_std_msgs_Int32 Out1_Y0_m;/* Computed Parameter: Out1_Y0_m
-                                                   * Referenced by: '<S52>/Out1'
-                                                   */
-  SL_Bus_PI_Laengsregler_std_msgs_Int32 Constant_Value_l;/* Computed Parameter: Constant_Value_l
-                                                          * Referenced by: '<S5>/Constant'
                                                           */
   real_T Reglermotordrehzahl_Y0;   /* Computed Parameter: Reglermotordrehzahl_Y0
                                     * Referenced by: '<S2>/Reglermotordrehzahl'
@@ -250,6 +257,8 @@ struct P_PI_Laengsregler_T_ {
   real_T Constant_Value_k;             /* Expression: 1
                                         * Referenced by: '<Root>/Constant'
                                         */
+  P_EnabledSubsystem_PI_Laengsr_T EnabledSubsystem_n;/* '<S5>/Enabled Subsystem' */
+  P_EnabledSubsystem_PI_Laengsr_T EnabledSubsystem;/* '<S4>/Enabled Subsystem' */
 };
 
 /* Real-time Model Data Structure */
@@ -384,55 +393,55 @@ extern "C" {
  *
  * '<Root>' : 'PI_Laengsregler'
  * '<S1>'   : 'PI_Laengsregler/Blank Message'
- * '<S2>'   : 'PI_Laengsregler/Geschwindigkeitsregler 1'
+ * '<S2>'   : 'PI_Laengsregler/Geschwindigkeitsregler'
  * '<S3>'   : 'PI_Laengsregler/Publish'
  * '<S4>'   : 'PI_Laengsregler/Subscribe'
  * '<S5>'   : 'PI_Laengsregler/Subscribe1'
- * '<S6>'   : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller'
- * '<S7>'   : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Anti-windup'
- * '<S8>'   : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/D Gain'
- * '<S9>'   : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Filter'
- * '<S10>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Filter ICs'
- * '<S11>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/I Gain'
- * '<S12>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Ideal P Gain'
- * '<S13>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Ideal P Gain Fdbk'
- * '<S14>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Integrator'
- * '<S15>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Integrator ICs'
- * '<S16>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/N Copy'
- * '<S17>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/N Gain'
- * '<S18>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/P Copy'
- * '<S19>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Parallel P Gain'
- * '<S20>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Reset Signal'
- * '<S21>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Saturation'
- * '<S22>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Saturation Fdbk'
- * '<S23>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Sum'
- * '<S24>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Sum Fdbk'
- * '<S25>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Tracking Mode'
- * '<S26>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Tracking Mode Sum'
- * '<S27>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/postSat Signal'
- * '<S28>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/preSat Signal'
- * '<S29>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Anti-windup/Passthrough'
- * '<S30>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/D Gain/Disabled'
- * '<S31>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Filter/Disabled'
- * '<S32>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Filter ICs/Disabled'
- * '<S33>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/I Gain/Internal Parameters'
- * '<S34>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Ideal P Gain/Passthrough'
- * '<S35>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Ideal P Gain Fdbk/Disabled'
- * '<S36>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Integrator/Continuous'
- * '<S37>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Integrator ICs/Internal IC'
- * '<S38>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/N Copy/Disabled wSignal Specification'
- * '<S39>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/N Gain/Disabled'
- * '<S40>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/P Copy/Disabled'
- * '<S41>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Parallel P Gain/Internal Parameters'
- * '<S42>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Reset Signal/Disabled'
- * '<S43>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Saturation/Passthrough'
- * '<S44>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Saturation Fdbk/Disabled'
- * '<S45>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Sum/Sum_PI'
- * '<S46>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Sum Fdbk/Disabled'
- * '<S47>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Tracking Mode/Disabled'
- * '<S48>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/Tracking Mode Sum/Passthrough'
- * '<S49>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/postSat Signal/Forward_Path'
- * '<S50>'  : 'PI_Laengsregler/Geschwindigkeitsregler 1/PID Controller/preSat Signal/Forward_Path'
+ * '<S6>'   : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller'
+ * '<S7>'   : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Anti-windup'
+ * '<S8>'   : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/D Gain'
+ * '<S9>'   : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Filter'
+ * '<S10>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Filter ICs'
+ * '<S11>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/I Gain'
+ * '<S12>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Ideal P Gain'
+ * '<S13>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Ideal P Gain Fdbk'
+ * '<S14>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Integrator'
+ * '<S15>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Integrator ICs'
+ * '<S16>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/N Copy'
+ * '<S17>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/N Gain'
+ * '<S18>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/P Copy'
+ * '<S19>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Parallel P Gain'
+ * '<S20>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Reset Signal'
+ * '<S21>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Saturation'
+ * '<S22>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Saturation Fdbk'
+ * '<S23>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Sum'
+ * '<S24>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Sum Fdbk'
+ * '<S25>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Tracking Mode'
+ * '<S26>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Tracking Mode Sum'
+ * '<S27>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/postSat Signal'
+ * '<S28>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/preSat Signal'
+ * '<S29>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Anti-windup/Passthrough'
+ * '<S30>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/D Gain/Disabled'
+ * '<S31>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Filter/Disabled'
+ * '<S32>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Filter ICs/Disabled'
+ * '<S33>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/I Gain/Internal Parameters'
+ * '<S34>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Ideal P Gain/Passthrough'
+ * '<S35>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Ideal P Gain Fdbk/Disabled'
+ * '<S36>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Integrator/Continuous'
+ * '<S37>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Integrator ICs/Internal IC'
+ * '<S38>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/N Copy/Disabled wSignal Specification'
+ * '<S39>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/N Gain/Disabled'
+ * '<S40>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/P Copy/Disabled'
+ * '<S41>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Parallel P Gain/Internal Parameters'
+ * '<S42>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Reset Signal/Disabled'
+ * '<S43>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Saturation/Passthrough'
+ * '<S44>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Saturation Fdbk/Disabled'
+ * '<S45>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Sum/Sum_PI'
+ * '<S46>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Sum Fdbk/Disabled'
+ * '<S47>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Tracking Mode/Disabled'
+ * '<S48>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/Tracking Mode Sum/Passthrough'
+ * '<S49>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/postSat Signal/Forward_Path'
+ * '<S50>'  : 'PI_Laengsregler/Geschwindigkeitsregler/PID Controller/preSat Signal/Forward_Path'
  * '<S51>'  : 'PI_Laengsregler/Subscribe/Enabled Subsystem'
  * '<S52>'  : 'PI_Laengsregler/Subscribe1/Enabled Subsystem'
  */

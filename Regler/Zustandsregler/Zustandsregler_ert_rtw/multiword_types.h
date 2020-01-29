@@ -7,9 +7,9 @@
  *
  * Code generation for model "Zustandsregler".
  *
- * Model version              : 1.35
+ * Model version              : 1.39
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Wed Jan 22 23:34:49 2020
+ * C++ source code generated on : Wed Jan 29 19:01:07 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping

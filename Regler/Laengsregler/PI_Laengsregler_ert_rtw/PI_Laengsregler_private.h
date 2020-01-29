@@ -7,9 +7,9 @@
  *
  * Code generation for model "PI_Laengsregler".
  *
- * Model version              : 1.17
+ * Model version              : 1.21
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Wed Jan 22 14:00:45 2020
+ * C++ source code generated on : Wed Jan 29 19:17:21 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -22,6 +22,7 @@
 #define RTW_HEADER_PI_Laengsregler_private_h_
 #include "rtwtypes.h"
 #include "multiword_types.h"
+#include "PI_Laengsregler.h"
 
 /* Private macros used by the generated code to access rtModel */
 #ifndef rtmIsMajorTimeStep
@@ -36,44 +37,11 @@
 # define rtmSetTPtr(rtm, val)          ((rtm)->Timing.t = (val))
 #endif
 
-#ifndef UCHAR_MAX
-#include <limits.h>
-#endif
-
-#if ( UCHAR_MAX != (0xFFU) ) || ( SCHAR_MAX != (0x7F) )
-#error Code was generated for compiler with different sized uchar/char. \
-Consider adjusting Test hardware word size settings on the \
-Hardware Implementation pane to match your compiler word sizes as \
-defined in limits.h of the compiler. Alternatively, you can \
-select the Test hardware is the same as production hardware option and \
-select the Enable portable word sizes option on the Code Generation > \
-Verification pane for ERT based targets, which will disable the \
-preprocessor word size checks.
-#endif
-
-#if ( USHRT_MAX != (0xFFFFU) ) || ( SHRT_MAX != (0x7FFF) )
-#error Code was generated for compiler with different sized ushort/short. \
-Consider adjusting Test hardware word size settings on the \
-Hardware Implementation pane to match your compiler word sizes as \
-defined in limits.h of the compiler. Alternatively, you can \
-select the Test hardware is the same as production hardware option and \
-select the Enable portable word sizes option on the Code Generation > \
-Verification pane for ERT based targets, which will disable the \
-preprocessor word size checks.
-#endif
-
-#if ( UINT_MAX != (0xFFFFFFFFU) ) || ( INT_MAX != (0x7FFFFFFF) )
-#error Code was generated for compiler with different sized uint/int. \
-Consider adjusting Test hardware word size settings on the \
-Hardware Implementation pane to match your compiler word sizes as \
-defined in limits.h of the compiler. Alternatively, you can \
-select the Test hardware is the same as production hardware option and \
-select the Enable portable word sizes option on the Code Generation > \
-Verification pane for ERT based targets, which will disable the \
-preprocessor word size checks.
-#endif
-
-/* Skipping ulong/long check: insufficient preprocessor integer range. */
+extern void PI_Laengs_EnabledSubsystem_Init(B_EnabledSubsystem_PI_Laengsr_T
+  *localB, P_EnabledSubsystem_PI_Laengsr_T *localP);
+extern void PI_Laengsregle_EnabledSubsystem(boolean_T rtu_Enable, const
+  SL_Bus_PI_Laengsregler_std_msgs_Float32 *rtu_In1,
+  B_EnabledSubsystem_PI_Laengsr_T *localB);
 
 /* private model entry point functions */
 extern void PI_Laengsregler_derivatives(void);

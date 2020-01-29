@@ -7,9 +7,9 @@
  *
  * Code generation for model "Zustandsregler".
  *
- * Model version              : 1.35
+ * Model version              : 1.39
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Wed Jan 22 23:34:49 2020
+ * C++ source code generated on : Wed Jan 29 19:01:07 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -154,16 +154,13 @@
 
 /* Block signals for system '<S3>/Enabled Subsystem' */
 typedef struct {
-  SL_Bus_Zustandsregler_std_msgs_Float64 In1;/* '<S8>/In1' */
+  SL_Bus_Zustandsregler_std_msgs_Float32 In1;/* '<S8>/In1' */
 } B_EnabledSubsystem_Zustandsre_T;
 
 /* Block signals (default storage) */
 typedef struct {
   real_T x[2];                         /* '<S7>/Add' */
   real_T Product4;                     /* '<S7>/Product4' */
-  real_T rtb_Add3_idx_0;
-  real_T rtb_Add3_idx_1;
-  real_T rtb_Add1_idx_0;
   B_EnabledSubsystem_Zustandsre_T EnabledSubsystem_a;/* '<S6>/Enabled Subsystem' */
   B_EnabledSubsystem_Zustandsre_T EnabledSubsystem_m;/* '<S5>/Enabled Subsystem' */
   B_EnabledSubsystem_Zustandsre_T EnabledSubsystem_p;/* '<S4>/Enabled Subsystem' */
@@ -212,55 +209,43 @@ typedef struct {
 
 /* Parameters for system: '<S3>/Enabled Subsystem' */
 struct P_EnabledSubsystem_Zustandsre_T_ {
-  SL_Bus_Zustandsregler_std_msgs_Float64 Out1_Y0;/* Computed Parameter: Out1_Y0
+  SL_Bus_Zustandsregler_std_msgs_Float32 Out1_Y0;/* Computed Parameter: Out1_Y0
                                                   * Referenced by: '<S8>/Out1'
                                                   */
 };
 
 /* Parameters (default storage) */
 struct P_Zustandsregler_T_ {
-  real_T K[4];                         /* Variable: K
-                                        * Referenced by: '<S7>/kT'
-                                        */
   real_T ausgangsVektor_cT[2];         /* Variable: ausgangsVektor_cT
                                         * Referenced by: '<S7>/cT'
                                         */
-  real_T d[2];                         /* Variable: d
+  real_T durchgriffsVektor_d[2];       /* Variable: durchgriffsVektor_d
                                         * Referenced by: '<S7>/d'
                                         */
-  real_T eingangsVektor_b[4];          /* Variable: eingangsVektor_b
+  real_T eingangsMatrix_B[4];          /* Variable: eingangsMatrix_B
                                         * Referenced by: '<S7>/b'
+                                        */
+  real_T regelMatrix_K[4];             /* Variable: regelMatrix_K
+                                        * Referenced by: '<S7>/kT'
                                         */
   real_T systemMatrix_A[4];            /* Variable: systemMatrix_A
                                         * Referenced by: '<S7>/A'
                                         */
   SL_Bus_Zustandsregler_std_msgs_Float32 Constant_Value;/* Computed Parameter: Constant_Value
-                                                         * Referenced by: '<S1>/Constant'
+                                                         * Referenced by: '<S3>/Constant'
                                                          */
-  SL_Bus_Zustandsregler_std_msgs_Float64 Constant_Value_p;/* Computed Parameter: Constant_Value_p
-                                                           * Referenced by: '<S3>/Constant'
-                                                           */
-  SL_Bus_Zustandsregler_std_msgs_Float64 Constant_Value_o;/* Computed Parameter: Constant_Value_o
+  SL_Bus_Zustandsregler_std_msgs_Float32 Constant_Value_o;/* Computed Parameter: Constant_Value_o
                                                            * Referenced by: '<S4>/Constant'
                                                            */
-  SL_Bus_Zustandsregler_std_msgs_Float64 Constant_Value_e;/* Computed Parameter: Constant_Value_e
+  SL_Bus_Zustandsregler_std_msgs_Float32 Constant_Value_e;/* Computed Parameter: Constant_Value_e
                                                            * Referenced by: '<S5>/Constant'
                                                            */
-  SL_Bus_Zustandsregler_std_msgs_Float64 Constant_Value_j;/* Computed Parameter: Constant_Value_j
+  SL_Bus_Zustandsregler_std_msgs_Float32 Constant_Value_j;/* Computed Parameter: Constant_Value_j
                                                            * Referenced by: '<S6>/Constant'
                                                            */
-  real_T Multiply2_Gain[2];            /* Expression: [1;0]
-                                        * Referenced by: '<S7>/Multiply2'
-                                        */
-  real_T Multiply3_Gain[2];            /* Expression: [0;1]
-                                        * Referenced by: '<S7>/Multiply3'
-                                        */
-  real_T Multiply_Gain[2];             /* Expression: [1;0]
-                                        * Referenced by: '<S7>/Multiply'
-                                        */
-  real_T Multiply1_Gain[2];            /* Expression: [0;1]
-                                        * Referenced by: '<S7>/Multiply1'
-                                        */
+  SL_Bus_Zustandsregler_std_msgs_Float32 Constant_Value_f;/* Computed Parameter: Constant_Value_f
+                                                           * Referenced by: '<S1>/Constant'
+                                                           */
   real_T Integrator_IC;                /* Expression: 0
                                         * Referenced by: '<S7>/Integrator'
                                         */
@@ -269,6 +254,18 @@ struct P_Zustandsregler_T_ {
                                         */
   real_T Saturation_LowerSat;          /* Expression: -0.349
                                         * Referenced by: '<S7>/Saturation'
+                                        */
+  real32_T Multiply2_Gain[2];          /* Computed Parameter: Multiply2_Gain
+                                        * Referenced by: '<S7>/Multiply2'
+                                        */
+  real32_T Multiply3_Gain[2];          /* Computed Parameter: Multiply3_Gain
+                                        * Referenced by: '<S7>/Multiply3'
+                                        */
+  real32_T Multiply_Gain[2];           /* Computed Parameter: Multiply_Gain
+                                        * Referenced by: '<S7>/Multiply'
+                                        */
+  real32_T Multiply1_Gain[2];          /* Computed Parameter: Multiply1_Gain
+                                        * Referenced by: '<S7>/Multiply1'
                                         */
   P_EnabledSubsystem_Zustandsre_T EnabledSubsystem_a;/* '<S6>/Enabled Subsystem' */
   P_EnabledSubsystem_Zustandsre_T EnabledSubsystem_m;/* '<S5>/Enabled Subsystem' */

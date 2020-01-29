@@ -294,21 +294,6 @@ Dimension
 </tr>
 <tr class="even">
 <td width="42%" align="left" valign="top">
-K
-</td>
-<td width="26%" align="left" valign="top">
-Zustandsregler_P.K
-</td>
-<td width="21%" align="left" valign="top">
-real_T
-</td>
-<td width="10%" align="right" valign="top">
-[2  2]
-</td>
-
-</tr>
-<tr class="odd">
-<td width="42%" align="left" valign="top">
 ausgangsVektor_cT
 </td>
 <td width="26%" align="left" valign="top">
@@ -322,12 +307,12 @@ real_T
 </td>
 
 </tr>
-<tr class="even">
+<tr class="odd">
 <td width="42%" align="left" valign="top">
-d
+durchgriffsVektor_d
 </td>
 <td width="26%" align="left" valign="top">
-Zustandsregler_P.d
+Zustandsregler_P.durchgriffsVektor_d
 </td>
 <td width="21%" align="left" valign="top">
 real_T
@@ -337,12 +322,27 @@ real_T
 </td>
 
 </tr>
-<tr class="odd">
+<tr class="even">
 <td width="42%" align="left" valign="top">
-eingangsVektor_b
+eingangsMatrix_B
 </td>
 <td width="26%" align="left" valign="top">
-Zustandsregler_P.eingangsVektor_b
+Zustandsregler_P.eingangsMatrix_B
+</td>
+<td width="21%" align="left" valign="top">
+real_T
+</td>
+<td width="10%" align="right" valign="top">
+[2  2]
+</td>
+
+</tr>
+<tr class="odd">
+<td width="42%" align="left" valign="top">
+regelMatrix_K
+</td>
+<td width="26%" align="left" valign="top">
+Zustandsregler_P.regelMatrix_K
 </td>
 <td width="21%" align="left" valign="top">
 real_T
@@ -369,7 +369,7 @@ real_T
 </tr>
 <tr class="odd">
 <td width="42%" align="left" valign="top">
-&lt;S1&gt;/Constant
+&lt;S3&gt;/Constant
 </td>
 <td width="26%" align="left" valign="top">
 Zustandsregler_P.Constant_Value
@@ -384,13 +384,13 @@ SL_Bus_Zustandsregler_std_msgs_Float32
 </tr>
 <tr class="even">
 <td width="42%" align="left" valign="top">
-&lt;S3&gt;/Constant
+&lt;S4&gt;/Constant
 </td>
 <td width="26%" align="left" valign="top">
-Zustandsregler_P.Constant_Value_p
+Zustandsregler_P.Constant_Value_o
 </td>
 <td width="21%" align="left" valign="top">
-SL_Bus_Zustandsregler_std_msgs_Float64
+SL_Bus_Zustandsregler_std_msgs_Float32
 </td>
 <td width="10%" align="right" valign="top">
 1
@@ -398,21 +398,6 @@ SL_Bus_Zustandsregler_std_msgs_Float64
 
 </tr>
 <tr class="odd">
-<td width="42%" align="left" valign="top">
-&lt;S4&gt;/Constant
-</td>
-<td width="26%" align="left" valign="top">
-Zustandsregler_P.Constant_Value_o
-</td>
-<td width="21%" align="left" valign="top">
-SL_Bus_Zustandsregler_std_msgs_Float64
-</td>
-<td width="10%" align="right" valign="top">
-1
-</td>
-
-</tr>
-<tr class="even">
 <td width="42%" align="left" valign="top">
 &lt;S5&gt;/Constant
 </td>
@@ -420,14 +405,14 @@ SL_Bus_Zustandsregler_std_msgs_Float64
 Zustandsregler_P.Constant_Value_e
 </td>
 <td width="21%" align="left" valign="top">
-SL_Bus_Zustandsregler_std_msgs_Float64
+SL_Bus_Zustandsregler_std_msgs_Float32
 </td>
 <td width="10%" align="right" valign="top">
 1
 </td>
 
 </tr>
-<tr class="odd">
+<tr class="even">
 <td width="42%" align="left" valign="top">
 &lt;S6&gt;/Constant
 </td>
@@ -435,70 +420,25 @@ SL_Bus_Zustandsregler_std_msgs_Float64
 Zustandsregler_P.Constant_Value_j
 </td>
 <td width="21%" align="left" valign="top">
-SL_Bus_Zustandsregler_std_msgs_Float64
+SL_Bus_Zustandsregler_std_msgs_Float32
 </td>
 <td width="10%" align="right" valign="top">
 1
 </td>
 
 </tr>
-<tr class="even">
-<td width="42%" align="left" valign="top">
-&lt;S7&gt;/Multiply2
-</td>
-<td width="26%" align="left" valign="top">
-Zustandsregler_P.Multiply2_Gain
-</td>
-<td width="21%" align="left" valign="top">
-real_T
-</td>
-<td width="10%" align="right" valign="top">
-[2  1]
-</td>
-
-</tr>
 <tr class="odd">
 <td width="42%" align="left" valign="top">
-&lt;S7&gt;/Multiply3
+&lt;S1&gt;/Constant
 </td>
 <td width="26%" align="left" valign="top">
-Zustandsregler_P.Multiply3_Gain
+Zustandsregler_P.Constant_Value_f
 </td>
 <td width="21%" align="left" valign="top">
-real_T
+SL_Bus_Zustandsregler_std_msgs_Float32
 </td>
 <td width="10%" align="right" valign="top">
-[2  1]
-</td>
-
-</tr>
-<tr class="even">
-<td width="42%" align="left" valign="top">
-&lt;S7&gt;/Multiply
-</td>
-<td width="26%" align="left" valign="top">
-Zustandsregler_P.Multiply_Gain
-</td>
-<td width="21%" align="left" valign="top">
-real_T
-</td>
-<td width="10%" align="right" valign="top">
-[2  1]
-</td>
-
-</tr>
-<tr class="odd">
-<td width="42%" align="left" valign="top">
-&lt;S7&gt;/Multiply1
-</td>
-<td width="26%" align="left" valign="top">
-Zustandsregler_P.Multiply1_Gain
-</td>
-<td width="21%" align="left" valign="top">
-real_T
-</td>
-<td width="10%" align="right" valign="top">
-[2  1]
+1
 </td>
 
 </tr>
@@ -549,13 +489,73 @@ real_T
 </tr>
 <tr class="odd">
 <td width="42%" align="left" valign="top">
+&lt;S7&gt;/Multiply2
+</td>
+<td width="26%" align="left" valign="top">
+Zustandsregler_P.Multiply2_Gain
+</td>
+<td width="21%" align="left" valign="top">
+real32_T
+</td>
+<td width="10%" align="right" valign="top">
+[2  1]
+</td>
+
+</tr>
+<tr class="even">
+<td width="42%" align="left" valign="top">
+&lt;S7&gt;/Multiply3
+</td>
+<td width="26%" align="left" valign="top">
+Zustandsregler_P.Multiply3_Gain
+</td>
+<td width="21%" align="left" valign="top">
+real32_T
+</td>
+<td width="10%" align="right" valign="top">
+[2  1]
+</td>
+
+</tr>
+<tr class="odd">
+<td width="42%" align="left" valign="top">
+&lt;S7&gt;/Multiply
+</td>
+<td width="26%" align="left" valign="top">
+Zustandsregler_P.Multiply_Gain
+</td>
+<td width="21%" align="left" valign="top">
+real32_T
+</td>
+<td width="10%" align="right" valign="top">
+[2  1]
+</td>
+
+</tr>
+<tr class="even">
+<td width="42%" align="left" valign="top">
+&lt;S7&gt;/Multiply1
+</td>
+<td width="26%" align="left" valign="top">
+Zustandsregler_P.Multiply1_Gain
+</td>
+<td width="21%" align="left" valign="top">
+real32_T
+</td>
+<td width="10%" align="right" valign="top">
+[2  1]
+</td>
+
+</tr>
+<tr class="odd">
+<td width="42%" align="left" valign="top">
 &lt;S8&gt;/Out1
 </td>
 <td width="26%" align="left" valign="top">
 Zustandsregler_P.EnabledSubsystem_a.Out1_Y0
 </td>
 <td width="21%" align="left" valign="top">
-SL_Bus_Zustandsregler_std_msgs_Float64
+SL_Bus_Zustandsregler_std_msgs_Float32
 </td>
 <td width="10%" align="right" valign="top">
 1
@@ -570,7 +570,7 @@ SL_Bus_Zustandsregler_std_msgs_Float64
 Zustandsregler_P.EnabledSubsystem_m.Out1_Y0
 </td>
 <td width="21%" align="left" valign="top">
-SL_Bus_Zustandsregler_std_msgs_Float64
+SL_Bus_Zustandsregler_std_msgs_Float32
 </td>
 <td width="10%" align="right" valign="top">
 1
@@ -585,7 +585,7 @@ SL_Bus_Zustandsregler_std_msgs_Float64
 Zustandsregler_P.EnabledSubsystem_p.Out1_Y0
 </td>
 <td width="21%" align="left" valign="top">
-SL_Bus_Zustandsregler_std_msgs_Float64
+SL_Bus_Zustandsregler_std_msgs_Float32
 </td>
 <td width="10%" align="right" valign="top">
 1
@@ -600,7 +600,7 @@ SL_Bus_Zustandsregler_std_msgs_Float64
 Zustandsregler_P.EnabledSubsystem.Out1_Y0
 </td>
 <td width="21%" align="left" valign="top">
-SL_Bus_Zustandsregler_std_msgs_Float64
+SL_Bus_Zustandsregler_std_msgs_Float32
 </td>
 <td width="10%" align="right" valign="top">
 1

@@ -7,9 +7,9 @@
  *
  * Code generation for model "Zustandsregler".
  *
- * Model version              : 1.35
+ * Model version              : 1.39
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Wed Jan 22 23:34:49 2020
+ * C++ source code generated on : Wed Jan 29 19:01:07 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -141,7 +141,7 @@ void Zustandsr_EnabledSubsystem_Init(B_EnabledSubsystem_Zustandsre_T *localB,
  *    '<S6>/Enabled Subsystem'
  */
 void Zustandsregler_EnabledSubsystem(boolean_T rtu_Enable, const
-  SL_Bus_Zustandsregler_std_msgs_Float64 *rtu_In1,
+  SL_Bus_Zustandsregler_std_msgs_Float32 *rtu_In1,
   B_EnabledSubsystem_Zustandsre_T *localB)
 {
   /* Outputs for Enabled SubSystem: '<S3>/Enabled Subsystem' incorporates:
@@ -173,18 +173,21 @@ static void matlabCodegenHandle_matlabCodeg(ros_slros_internal_block_Publ_T *obj
 void Zustandsregler_step(void)
 {
   /* local block i/o variables */
-  SL_Bus_Zustandsregler_std_msgs_Float64 rtb_SourceBlock_o2;
-  SL_Bus_Zustandsregler_std_msgs_Float64 rtb_SourceBlock_o2_e;
-  SL_Bus_Zustandsregler_std_msgs_Float64 rtb_SourceBlock_o2_e5;
-  SL_Bus_Zustandsregler_std_msgs_Float64 rtb_SourceBlock_o2_f;
+  SL_Bus_Zustandsregler_std_msgs_Float32 rtb_SourceBlock_o2;
+  SL_Bus_Zustandsregler_std_msgs_Float32 rtb_SourceBlock_o2_e;
+  SL_Bus_Zustandsregler_std_msgs_Float32 rtb_SourceBlock_o2_e5;
+  SL_Bus_Zustandsregler_std_msgs_Float32 rtb_SourceBlock_o2_f;
   boolean_T rtb_SourceBlock_o1;
   boolean_T rtb_SourceBlock_o1_i;
   boolean_T rtb_SourceBlock_o1_m;
   boolean_T rtb_SourceBlock_o1_o;
   SL_Bus_Zustandsregler_std_msgs_Float32 rtb_BusAssignment;
-  real_T rtb_Add1_idx_1;
-  real_T rtb_Add1_idx_0;
-  real_T rtb_Add1_idx_1_0;
+  real32_T rtb_Add3_idx_0;
+  real32_T rtb_Add3_idx_1;
+  real32_T rtb_w_idx_0;
+  real32_T rtb_w_idx_1;
+  real_T rtb_w_idx_0_0;
+  real_T rtb_w_idx_1_0;
   if (rtmIsMajorTimeStep(Zustandsregler_M)) {
     /* set solver stop time */
     if (!(Zustandsregler_M->Timing.clockTick0+1)) {
@@ -234,11 +237,11 @@ void Zustandsregler_step(void)
      *  Gain: '<S7>/Multiply2'
      *  Gain: '<S7>/Multiply3'
      */
-    Zustandsregler_B.rtb_Add3_idx_0 = Zustandsregler_P.Multiply2_Gain[0] *
+    rtb_Add3_idx_0 = Zustandsregler_P.Multiply2_Gain[0] *
       Zustandsregler_B.EnabledSubsystem_m.In1.Data +
       Zustandsregler_P.Multiply3_Gain[0] *
       Zustandsregler_B.EnabledSubsystem_a.In1.Data;
-    Zustandsregler_B.rtb_Add3_idx_1 = Zustandsregler_P.Multiply2_Gain[1] *
+    rtb_Add3_idx_1 = Zustandsregler_P.Multiply2_Gain[1] *
       Zustandsregler_B.EnabledSubsystem_m.In1.Data +
       Zustandsregler_P.Multiply3_Gain[1] *
       Zustandsregler_B.EnabledSubsystem_a.In1.Data;
@@ -271,66 +274,65 @@ void Zustandsregler_step(void)
      *  Gain: '<S7>/Multiply'
      *  Gain: '<S7>/Multiply1'
      */
-    Zustandsregler_B.rtb_Add1_idx_0 = Zustandsregler_P.Multiply_Gain[0] *
+    rtb_w_idx_0 = Zustandsregler_P.Multiply_Gain[0] *
       Zustandsregler_B.EnabledSubsystem.In1.Data +
       Zustandsregler_P.Multiply1_Gain[0] *
       Zustandsregler_B.EnabledSubsystem_p.In1.Data;
-    rtb_Add1_idx_1 = Zustandsregler_P.Multiply_Gain[1] *
+    rtb_w_idx_1 = Zustandsregler_P.Multiply_Gain[1] *
       Zustandsregler_B.EnabledSubsystem.In1.Data +
       Zustandsregler_P.Multiply1_Gain[1] *
       Zustandsregler_B.EnabledSubsystem_p.In1.Data;
 
     /* Sum: '<S7>/Subtract' incorporates:
      *  Constant: '<S7>/kT'
-     *  Product: '<S7>/Product'
+     *  Product: '<S7>/Product1'
      */
-    rtb_Add1_idx_0 = Zustandsregler_B.rtb_Add1_idx_0 - (Zustandsregler_P.K[0] *
-      Zustandsregler_B.rtb_Add3_idx_0 + Zustandsregler_P.K[2] *
-      Zustandsregler_B.rtb_Add3_idx_1);
-    rtb_Add1_idx_1_0 = rtb_Add1_idx_1 - (Zustandsregler_P.K[1] *
-      Zustandsregler_B.rtb_Add3_idx_0 + Zustandsregler_P.K[3] *
-      Zustandsregler_B.rtb_Add3_idx_1);
+    rtb_w_idx_0_0 = rtb_w_idx_0 - (Zustandsregler_P.regelMatrix_K[0] *
+      rtb_Add3_idx_0 + Zustandsregler_P.regelMatrix_K[2] * rtb_Add3_idx_1);
+    rtb_w_idx_1_0 = rtb_w_idx_1 - (Zustandsregler_P.regelMatrix_K[1] *
+      rtb_Add3_idx_0 + Zustandsregler_P.regelMatrix_K[3] * rtb_Add3_idx_1);
 
     /* Sum: '<S7>/Add' incorporates:
      *  Constant: '<S7>/A'
      *  Constant: '<S7>/b'
-     *  Product: '<S7>/Product1'
      *  Product: '<S7>/Product2'
+     *  Product: '<S7>/Product3'
      */
-    Zustandsregler_B.x[0] = (Zustandsregler_P.eingangsVektor_b[0] *
-      rtb_Add1_idx_0 + Zustandsregler_P.eingangsVektor_b[2] * rtb_Add1_idx_1_0)
-      + (Zustandsregler_P.systemMatrix_A[0] * Zustandsregler_B.rtb_Add3_idx_0 +
-         Zustandsregler_P.systemMatrix_A[2] * Zustandsregler_B.rtb_Add3_idx_1);
-    Zustandsregler_B.x[1] = (Zustandsregler_P.eingangsVektor_b[1] *
-      rtb_Add1_idx_0 + Zustandsregler_P.eingangsVektor_b[3] * rtb_Add1_idx_1_0)
-      + (Zustandsregler_P.systemMatrix_A[1] * Zustandsregler_B.rtb_Add3_idx_0 +
-         Zustandsregler_P.systemMatrix_A[3] * Zustandsregler_B.rtb_Add3_idx_1);
+    Zustandsregler_B.x[0] = (Zustandsregler_P.eingangsMatrix_B[0] *
+      rtb_w_idx_0_0 + Zustandsregler_P.eingangsMatrix_B[2] * rtb_w_idx_1_0) +
+      (Zustandsregler_P.systemMatrix_A[0] * rtb_Add3_idx_0 +
+       Zustandsregler_P.systemMatrix_A[2] * rtb_Add3_idx_1);
+    Zustandsregler_B.x[1] = (Zustandsregler_P.eingangsMatrix_B[1] *
+      rtb_w_idx_0_0 + Zustandsregler_P.eingangsMatrix_B[3] * rtb_w_idx_1_0) +
+      (Zustandsregler_P.systemMatrix_A[1] * rtb_Add3_idx_0 +
+       Zustandsregler_P.systemMatrix_A[3] * rtb_Add3_idx_1);
 
     /* Product: '<S7>/Product4' incorporates:
      *  Constant: '<S7>/d'
      */
-    Zustandsregler_B.Product4 = Zustandsregler_P.d[0] *
-      Zustandsregler_B.rtb_Add1_idx_0 + Zustandsregler_P.d[1] * rtb_Add1_idx_1;
+    Zustandsregler_B.Product4 = Zustandsregler_P.durchgriffsVektor_d[0] *
+      rtb_w_idx_0 + Zustandsregler_P.durchgriffsVektor_d[1] * rtb_w_idx_1;
   }
 
   /* Sum: '<S7>/Add2' incorporates:
    *  Constant: '<S7>/cT'
    *  Integrator: '<S7>/Integrator'
-   *  Product: '<S7>/Product3'
+   *  Product: '<S7>/Product5'
    */
-  Zustandsregler_B.rtb_Add3_idx_0 = (Zustandsregler_P.ausgangsVektor_cT[0] *
-    Zustandsregler_X.Integrator_CSTATE[0] + Zustandsregler_P.ausgangsVektor_cT[1]
-    * Zustandsregler_X.Integrator_CSTATE[1]) + Zustandsregler_B.Product4;
+  rtb_w_idx_0_0 = (Zustandsregler_P.ausgangsVektor_cT[0] *
+                   Zustandsregler_X.Integrator_CSTATE[0] +
+                   Zustandsregler_P.ausgangsVektor_cT[1] *
+                   Zustandsregler_X.Integrator_CSTATE[1]) +
+    Zustandsregler_B.Product4;
 
   /* Saturate: '<S7>/Saturation' */
-  if (Zustandsregler_B.rtb_Add3_idx_0 > Zustandsregler_P.Saturation_UpperSat) {
+  if (rtb_w_idx_0_0 > Zustandsregler_P.Saturation_UpperSat) {
     /* BusAssignment: '<Root>/Bus Assignment' incorporates:
      *  DataTypeConversion: '<Root>/Data Type Conversion'
      */
     rtb_BusAssignment.Data = static_cast<real32_T>
       (Zustandsregler_P.Saturation_UpperSat);
-  } else if (Zustandsregler_B.rtb_Add3_idx_0 <
-             Zustandsregler_P.Saturation_LowerSat) {
+  } else if (rtb_w_idx_0_0 < Zustandsregler_P.Saturation_LowerSat) {
     /* BusAssignment: '<Root>/Bus Assignment' incorporates:
      *  DataTypeConversion: '<Root>/Data Type Conversion'
      */
@@ -340,8 +342,7 @@ void Zustandsregler_step(void)
     /* BusAssignment: '<Root>/Bus Assignment' incorporates:
      *  DataTypeConversion: '<Root>/Data Type Conversion'
      */
-    rtb_BusAssignment.Data = static_cast<real32_T>
-      (Zustandsregler_B.rtb_Add3_idx_0);
+    rtb_BusAssignment.Data = static_cast<real32_T>(rtb_w_idx_0_0);
   }
 
   /* End of Saturate: '<S7>/Saturation' */
@@ -453,34 +454,36 @@ void Zustandsregler_initialize(void)
                 sizeof(DW_Zustandsregler_T));
 
   {
-    char_T tmp[12];
-    char_T tmp_0[21];
-    char_T tmp_1[8];
-    char_T tmp_2[9];
+    char_T tmp[21];
+    char_T tmp_0[17];
+    char_T tmp_1[19];
     int32_T i;
-    static const char_T tmp_3[8] = { '/', 'A', 'b', 's', 't', 'a', 'n', 'd' };
+    static const char_T tmp_2[18] = { '/', 's', 'p', 'u', 'r', 'm', 'i', 't',
+      't', 'e', 'n', 'a', 'b', 's', 't', 'a', 'n', 'd' };
 
-    static const char_T tmp_4[7] = { '/', 'W', 'i', 'n', 'k', 'e', 'l' };
+    static const char_T tmp_3[16] = { '/', 'd', 'i', 'f', 'f', 'e', 'r', 'e',
+      'n', 'z', 'w', 'i', 'n', 'k', 'e', 'l' };
 
-    static const char_T tmp_5[7] = { '/', 'K', 'a', 'm', 'e', 'r', 'a' };
+    static const char_T tmp_4[16] = { '/', 'k', 'u', 'r', 'v', 'e', 'n', 'k',
+      'r', 'u', 'e', 'm', 'm', 'u', 'n', 'g' };
 
-    static const char_T tmp_6[20] = { '/', 'G', 'i', 'e', 'r', 'g', 'e', 's',
+    static const char_T tmp_5[20] = { '/', 'g', 'i', 'e', 'r', 'g', 'e', 's',
       'c', 'h', 'w', 'i', 'n', 'd', 'i', 'g', 'k', 'e', 'i', 't' };
 
-    static const char_T tmp_7[11] = { '/', 'L', 'e', 'n', 'k', 'w', 'i', 'n',
-      'k', 'e', 'l' };
+    static const char_T tmp_6[16] = { '/', 's', 'e', 'r', 'v', 'o', 'l', 'e',
+      'n', 'k', 'w', 'i', 'n', 'k', 'e', 'l' };
 
     /* Start for Atomic SubSystem: '<Root>/Subscribe2' */
     /* Start for MATLABSystem: '<S5>/SourceBlock' */
     Zustandsregler_DW.obj_b.matlabCodegenIsDeleted = false;
     Zustandsregler_DW.objisempty_k = true;
     Zustandsregler_DW.obj_b.isInitialized = 1;
-    for (i = 0; i < 8; i++) {
-      tmp_2[i] = tmp_3[i];
+    for (i = 0; i < 18; i++) {
+      tmp_1[i] = tmp_2[i];
     }
 
-    tmp_2[8] = '\x00';
-    Sub_Zustandsregler_172.createSubscriber(tmp_2, 1);
+    tmp_1[18] = '\x00';
+    Sub_Zustandsregler_172.createSubscriber(tmp_1, 1);
     Zustandsregler_DW.obj_b.isSetupComplete = true;
 
     /* End of Start for MATLABSystem: '<S5>/SourceBlock' */
@@ -491,12 +494,12 @@ void Zustandsregler_initialize(void)
     Zustandsregler_DW.obj_a.matlabCodegenIsDeleted = false;
     Zustandsregler_DW.objisempty = true;
     Zustandsregler_DW.obj_a.isInitialized = 1;
-    for (i = 0; i < 7; i++) {
-      tmp_1[i] = tmp_4[i];
+    for (i = 0; i < 16; i++) {
+      tmp_0[i] = tmp_3[i];
     }
 
-    tmp_1[7] = '\x00';
-    Sub_Zustandsregler_174.createSubscriber(tmp_1, 1);
+    tmp_0[16] = '\x00';
+    Sub_Zustandsregler_174.createSubscriber(tmp_0, 1);
     Zustandsregler_DW.obj_a.isSetupComplete = true;
 
     /* End of Start for MATLABSystem: '<S6>/SourceBlock' */
@@ -507,12 +510,12 @@ void Zustandsregler_initialize(void)
     Zustandsregler_DW.obj_n.matlabCodegenIsDeleted = false;
     Zustandsregler_DW.objisempty_j = true;
     Zustandsregler_DW.obj_n.isInitialized = 1;
-    for (i = 0; i < 7; i++) {
-      tmp_1[i] = tmp_5[i];
+    for (i = 0; i < 16; i++) {
+      tmp_0[i] = tmp_4[i];
     }
 
-    tmp_1[7] = '\x00';
-    Sub_Zustandsregler_126.createSubscriber(tmp_1, 1);
+    tmp_0[16] = '\x00';
+    Sub_Zustandsregler_126.createSubscriber(tmp_0, 1);
     Zustandsregler_DW.obj_n.isSetupComplete = true;
 
     /* End of Start for MATLABSystem: '<S3>/SourceBlock' */
@@ -524,11 +527,11 @@ void Zustandsregler_initialize(void)
     Zustandsregler_DW.objisempty_d = true;
     Zustandsregler_DW.obj_k.isInitialized = 1;
     for (i = 0; i < 20; i++) {
-      tmp_0[i] = tmp_6[i];
+      tmp[i] = tmp_5[i];
     }
 
-    tmp_0[20] = '\x00';
-    Sub_Zustandsregler_170.createSubscriber(tmp_0, 1);
+    tmp[20] = '\x00';
+    Sub_Zustandsregler_170.createSubscriber(tmp, 1);
     Zustandsregler_DW.obj_k.isSetupComplete = true;
 
     /* End of Start for MATLABSystem: '<S4>/SourceBlock' */
@@ -539,12 +542,12 @@ void Zustandsregler_initialize(void)
     Zustandsregler_DW.obj.matlabCodegenIsDeleted = false;
     Zustandsregler_DW.objisempty_o = true;
     Zustandsregler_DW.obj.isInitialized = 1;
-    for (i = 0; i < 11; i++) {
-      tmp[i] = tmp_7[i];
+    for (i = 0; i < 16; i++) {
+      tmp_0[i] = tmp_6[i];
     }
 
-    tmp[11] = '\x00';
-    Pub_Zustandsregler_158.createPublisher(tmp, 1);
+    tmp_0[16] = '\x00';
+    Pub_Zustandsregler_158.createPublisher(tmp_0, 1);
     Zustandsregler_DW.obj.isSetupComplete = true;
 
     /* End of Start for MATLABSystem: '<S2>/SinkBlock' */
