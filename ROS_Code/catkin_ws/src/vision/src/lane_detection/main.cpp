@@ -129,7 +129,7 @@ int main(int argc, char** argv) {
 	
 	image_transport::Subscriber sub = it.subscribe(config["cam_im_topic_name"] , 1, imageCallback);
 	
-	visionResultPublisher = nh.advertise<VisionResult>(config["vision_result_topic_name"], 1);
+	visionResultPublisher = nh.advertise<vision::VisionResultMsg>(config["vision_result_topic_name"], 1);
 	
 	undistortPublisher = it.advertise(config["undistort_result_topic_name"], 1);
 	ipmPublisher = it.advertise(config["ipm_result_topic_name"], 1);
@@ -144,5 +144,6 @@ int main(int argc, char** argv) {
 		ros::spinOnce();
 		loop_rate.sleep();
 	}
+	
 	return 0;
 }
