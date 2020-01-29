@@ -1,4 +1,6 @@
 #include <vision/lane_detection/PointLaneDetector.hpp>
+#include <vision/lane_detection/VisionResult.hpp>
+#include <vision/VisionResultMsg.h>
 
 #include <iostream>
 #include <map>
@@ -8,6 +10,7 @@
 #include <ros/ros.h>
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
+
 #include <chrono>
 
 std::map<std::string, std::string> readConfigFile() {
@@ -43,44 +46,90 @@ image_transport::Publisher  thresholdPublisher;
 image_transport::Publisher  edgePublisher;
 image_transport::Publisher  debugImagePublisher;
 
+sensor_msgs::ImagePtr undistortMsg;
+sensor_msgs::ImagePtr ipmMsg;
+sensor_msgs::ImagePtr thresholdMsg;
+sensor_msgs::ImagePtr edgeMsg;
+sensor_msgs::ImagePtr debugMsg;
+
+
+vision::VisionResultMsg copyToMsg(VisionResult source) {
+	vision::VisionResultMsg result;
+
+	std::copy(std::begin(source.leftLane1), std::end(source.leftLane1), std::begin(result.leftLane1));
+	std::copy(std::begin(source.middleLane1), std::end(source.middleLane1), std::begin(result.middleLane1));
+	std::copy(std::begin(source.rightLane1), std::end(source.rightLane1), std::begin(result.rightLane1));
+	std::copy(std::begin(source.leftLane2), std::end(source.leftLane2), std::begin(result.leftLane2));
+	std::copy(std::begin(source.middleLane2), std::end(source.middleLane2), std::begin(result.middleLane2));
+	std::copy(std::begin(source.rightLane2), std::end(source.rightLane2), std::begin(result.rightLane2));
+
+
+	result.clothoideCutDistanceL_mm = source.clothoideCutDistanceL_mm;
+	result.clothoideCutDistanceM_mm = source.clothoideCutDistanceM_mm;
+	result.clothoideCutDistanceR_mm = source.clothoideCutDistanceR_mm;
+
+	result.foundLL   =  	source.foundLL;
+	result.foundML	 =		source.foundML;
+	result.foundRL	 =		source.foundRL;
+ 
+	result.solvedLL1 =  	source.solvedLL1;
+	result.solvedML1 =  	source.solvedML1 ;
+	result.solvedRL1 =		source.solvedRL1;
+ 
+	result.solvedLL2 =  	source.solvedLL2 ;
+	result.solvedML2 =		source.solvedML2;
+	result.solvedRL2 =		source.solvedRL2;
+
+	result.oppositeLane = source.oppositeLane;
+	return result;
+}
+
+bool firstImage = false;
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 	cv::Mat image = cv_bridge::toCvShare(msg, "mono8")->image;
+	if (!firstImage) {
+		std::cout << "Receiving images from camera" << std::endl;
+		firstImage = true;
+	}
 	detector->calculateFrame(image);
 	image.release();
 
-	sensor_msgs::ImagePtr undistortMsg= cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->undistort).toImageMsg();
-	sensor_msgs::ImagePtr ipmMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->ipm).toImageMsg();
-	sensor_msgs::ImagePtr thresholdMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->threshold).toImageMsg();
-	sensor_msgs::ImagePtr edgeMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->edge).toImageMsg();
-	sensor_msgs::ImagePtr debugMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->debugImage).toImageMsg();
+	undistortMsg= cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->undistort).toImageMsg();
+	ipmMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->ipm).toImageMsg();
+	thresholdMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->threshold).toImageMsg();
+	edgeMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->edge).toImageMsg();
+	debugMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->debugImage).toImageMsg();
 	
-	//visionResultPublisher.publish(detector->vRes);
+	visionResultPublisher.publish(copyToMsg(detector->vRes));
 	undistortPublisher.publish(undistort);
 	ipmPublisher.publish(ipmMsg);
 	thresholdPublisher.publish(thresholdMsg);
 	edgePublisher.publish(edgeMsg);
 	debugImagePublisher.publish(debugMsg);
-	ros::spinOnce();
+	
 }
 
 int main(int argc, char** argv) {
 	std::cout << "Launching ROS Lane Detection node..." << std::endl;
-	std::cout << "Initializing ROS features with parameters: " << std::endl;
+	std::cout << "Initializing ROS features with parameters... " << std::endl;
 	std::cout << "argc: " << argc << "; Node name: vision_lanedetectionnode" << std::endl;
 	ros::init(argc, argv, "vision_lanedetectionnode");
 	std::cout << "Success!" << std::endl;
-	std::cout << "Trying to load config file config.cfg" << std::endl;
-	//Config Datei lesen und DrivingVision-Klasse erstellen
+	std::cout << "Trying to load config file config.cfg... " << std::endl;
+	
 	std::map<std::string, std::string> config = readConfigFile();
 	std::cout << "Success!" << std::endl;
+	std::cout << "Creating detector... ";
 	detector = new PointLaneDetector(config);
+	std::cout << "Success!" << std::endl;
+	std::cout << "Subscribing and publishing topics... " << std::endl;
 	ros::NodeHandle nh;
 	image_transport::ImageTransport it(nh);
-	//
+	
 	image_transport::Subscriber sub = it.subscribe(config["cam_im_topic_name"] , 1, imageCallback);
 	
-	//visionResultPublisher = nh.advertise<VisionResult>(config["vision_result_topic_name"], 5);
+	visionResultPublisher = nh.advertise<VisionResult>(config["vision_result_topic_name"], 1);
 	
 	undistortPublisher = it.advertise(config["undistort_result_topic_name"], 1);
 	ipmPublisher = it.advertise(config["ipm_result_topic_name"], 1);
@@ -88,6 +137,12 @@ int main(int argc, char** argv) {
 	edgePublisher = it.advertise(config["edge_topic_name"], 1);
 	debugImagePublisher = it.advertise(config["debug_image_topic_name"], 1);
 
-	ros::spin();
+	std::cout << "Success! Entering ROS Loop" << std::endl;
+	std::cout << "Lane detection node launched!" << std::endl;
+	ros::Rate rate(60);
+	while(ros::ok()) {
+		ros::spinOnce();
+		loop_rate.sleep();
+	}
 	return 0;
 }

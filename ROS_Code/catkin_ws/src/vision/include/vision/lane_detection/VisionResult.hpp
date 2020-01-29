@@ -23,10 +23,20 @@ public:
 	bool foundLL = false;
 	bool foundML = false;
 	bool foundRL = false;
+
+	bool solvedLL1 = false;
+	bool solvedML1 = false;
+	bool solvedRL1 = false;
+
+	bool solvedLL2 = false;
+	bool solvedML2 = false;
+	bool solvedRL2 = false;
 	
 	bool oppositeLane = false;
 
-	double clothoideCutDistance_mm;
+	double clothoideCutDistanceL_mm;
+	double clothoideCutDistanceM_mm;
+	double clothoideCutDistanceR_mm;
 
 	ERROR_TYPES state;
 };
