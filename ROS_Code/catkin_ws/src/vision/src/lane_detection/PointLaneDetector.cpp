@@ -24,6 +24,8 @@ void drawResult(cv::Mat im, cv::Mat x1, cv::Mat x2, cv::Scalar color, int inters
 
 
 PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config) {
+	
+
 	this->vRes = VisionResult();
 	this->leftLane1				= cv::Mat::zeros(this->grade, 1, CV_64F);
 	this->middleLane1			= cv::Mat::zeros(this->grade, 1, CV_64F);
@@ -102,6 +104,12 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 
 	Size image_size = Size(camera_res_wid, camera_res_hei);
 	double w = image_size.width, h = image_size.height;
+
+	undistort = cv::Mat::zeros(image_size, CV_64F);
+	ipm = cv::Mat::zeros(this->ipmSize, CV_64F);
+	threshold = cv::Mat::zeros(this->ipmSize, CV_64F);
+	edge = cv::Mat::zeros(this->ipmSize, CV_64F);
+	debugImage = cv::Mat::zeros(this->ipmSize, CV_64F);
 
 
 	// Projecion matrix 2D -> 3D
@@ -217,7 +225,6 @@ void PointLaneDetector::calculateFrame(cv::Mat& frame) {
 
 void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 	this->imageGPU.upload(frame);
-	
 	
 	cv::cuda::remap(this->imageGPU, this->undistortGPU, this->map1GPU, this->map2GPU, cv::INTER_LINEAR, cv::BORDER_CONSTANT, std::numeric_limits<float>::quiet_NaN());
 	this->undistortGPU.download(this->undistort);	
