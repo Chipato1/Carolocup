@@ -1,9 +1,12 @@
 ﻿#include "aktorik.h"
+#include <std_msgs/Int16.h>
 
 Servo servo;
 Servo motor;  
 
 ros::NodeHandle aktorik_node;
+
+std_msgs::Int16 rcmodeerkennung_msg;
 
 ros::Subscriber<std_msgs::Float32> sub_servo("servolenkwinkel", servo_cb);
 ros::Subscriber<std_msgs::UInt8> sub_motor("motordrehzahl", motor_cb);      
@@ -11,6 +14,8 @@ ros::Subscriber<std_msgs::UInt8> sub_light_l("lichtLinks", lichtLinks_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_r("lichtRechts", lichtRechts_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_b("lichtBremse", lichtBremse_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_rem("lichtRemote", lichtRemote_cb);
+
+ros::Publisher pub_rcmode("rcmodeerkannt", &rcmodeerkennung_msg);
 
 int rc_mode = 0;
 int analogvalue_1; //eingelesener Pin - Wert am Tiefpass
@@ -40,6 +45,8 @@ void init_aktorik(){
   aktorik_node.subscribe(sub_light_r);
   aktorik_node.subscribe(sub_light_b);
   aktorik_node.subscribe(sub_light_rem);
+
+  aktorik_node.advertise(rcmode_pub);
   
   motor.attach(6); //Motor an Pin zuweisen
   servo.attach(5); //Servo an Pin zuweisen
@@ -88,6 +95,7 @@ int aktorik(){
       motor_bewegung_RC_mode(voltage_1);
       
   }*/
+  
   return rc_mode;
   
 }
@@ -168,4 +176,11 @@ void set_output(int state, int port){
     case 2: 
       digitalWrite(port, blinkstate);
   }
+}
+
+void rcmode_publish(int rcmode)
+{  
+  rcmodeerkennung_msg.data = rcmode;
+  rcmode_pub.publish(&rcmodeerkennung_msg);
+  aktorik_node.spinOnce();
 }
