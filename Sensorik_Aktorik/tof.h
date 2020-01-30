@@ -1,7 +1,7 @@
 #ifndef tof_h
 #define tof_h
-#include "Adafruit_VL6180X.h"
-#include "Adafruit_VL53L0X.h"
+#include "Adafruit_VL6180X/Adafruit_VL6180X.h"
+#include "Adafruit_VL53L0X/src/Adafruit_VL53L0X.h"
 
 
 //addresses for ToF sensors
