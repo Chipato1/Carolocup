@@ -1,5 +1,6 @@
 #pragma once
 #include <vision/lane_detection/VisionResult.hpp>
+#include <vision/lane_detection/pinhole_camera_model.h>
 #include <opencv2/core/cuda.hpp>
 #include <opencv2/cudaimgproc.hpp>
 #include <map>
@@ -24,9 +25,7 @@ public:
 
 	cv::cuda::GpuMat map1GPU;
 	cv::cuda::GpuMat map2GPU;
-
 	
-
 private:
 	void calculateAlgorithm();
 	void laneMiddlePoints(std::vector<cv::Point>&, cv::Mat, int);

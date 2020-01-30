@@ -1,4 +1,4 @@
-float64[4] leftLane1    #Erster Teil der linken Klothoide (Reihenfolge: c1, c0, phi, delta x)
+float64[4] leftLane1    #Erster Teil der linken Klothoide (Reihenfolge: c1, c0, phi, delta, x = 1/6 * c1 * y^3 + 1/2 * c0 * y^2 + phi * y + delta)
 float64[4] middleLane1  #Erster Teil der mittleren Klothoide
 float64[4] rightLane1   #Erster Teil der rechten Klothoide
 

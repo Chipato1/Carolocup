@@ -224,14 +224,13 @@ void PointLaneDetector::calculateFrame(cv::Mat& frame) {
 
 void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 	this->imageGPU.upload(frame);
-	
-	cv::cuda::remap(this->imageGPU, this->undistortGPU, this->map1GPU, this->map2GPU, cv::INTER_LINEAR, cv::BORDER_CONSTANT, std::numeric_limits<float>::quiet_NaN());
+
+	cv::cuda::remap(this->imageGPU, this->undistortGPU, this->map1GPU, this->map2GPU, cv::INTER_NEAREST, cv::BORDER_CONSTANT, std::numeric_limits<float>::quiet_NaN());
 	this->undistortGPU.download(this->undistort);	
 
 	cv::cuda::warpPerspective(this->undistortGPU, this->ipmGPU, this->transformationMat, this->ipmSize, INTER_CUBIC | WARP_INVERSE_MAP);
 	this->ipmGPU.download(this->ipm);
 	
-
 	cv::cuda::threshold(this->ipmGPU, this->thresholdGPU, 230, 255, 0);
 	this->thresholdGPU.download(this->threshold);
 
@@ -529,7 +528,7 @@ void PointLaneDetector::copyResult() {
 		vRes.foundLL = foundML;
 		vRes.foundML = foundRL;
 		vRes.foundRL = false;
-	
+
 		vRes.solvedLL1 = vRes.solvedML1;
 		vRes.solvedML1 = vRes.solvedRL1;
 		vRes.solvedRL1 = false;
