@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(vision)
 
 ##OPENCV ADDED HERE
-find_package( OpenCV REQUIRED sensor_msgs)
+find_package( OpenCV REQUIRED)
 
 
 ## Compile as C++11, supported in ROS Kinetic and newer
@@ -55,7 +55,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
  add_message_files(
    FILES
-   VisionResult.msg
+   VisionResultMsg.msg
  )
 
 ## Generate services in the 'srv' folder
@@ -110,7 +110,7 @@ catkin_package(
   
 #  INCLUDE_DIRS include
 #  LIBRARIES vision
-  CATKIN_DEPENDS sensor_msgs image_transport roscpp std_msgs
+#  CATKIN_DEPENDS  image_transport roscpp std_msgs
 #  DEPENDS system_lib
 )
 

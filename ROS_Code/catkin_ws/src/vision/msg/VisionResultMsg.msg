@@ -6,9 +6,9 @@ float64[4] leftLane2    #Erster Teil der linken Klothoide
 float64[4] middleLane2  #Erster Teil der mittleren Klothoide
 float64[4] rightLane2   #Erster Teil der rechten Klothoide
 
-float64 clothoideCutDistanceL_mm;    #Distanz, bei der beide linken Klothoiden getrennt sind.
-float64 clothoideCutDistanceM_mm;    #Distanz, bei der beide mittleren Klothoiden getrennt sind.
-float64 clothoideCutDistanceR_mm;    #Distanz, bei der beide rechten Klothoiden getrennt sind.
+float64 clothoideCutDistanceL_mm    #Distanz, bei der beide linken Klothoiden getrennt sind.
+float64 clothoideCutDistanceM_mm    #Distanz, bei der beide mittleren Klothoiden getrennt sind.
+float64 clothoideCutDistanceR_mm    #Distanz, bei der beide rechten Klothoiden getrennt sind.
 
 bool foundLL    #Linke Spur gefunden?
 bool foundML

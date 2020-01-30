@@ -1,5 +1,4 @@
 #include <vision/lane_detection/PointLaneDetector.hpp>
-#include <vision/lane_detection/VisionResult.hpp>
 #include <vision/VisionResultMsg.h>
 
 #include <iostream>
@@ -102,7 +101,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 	debugMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->debugImage).toImageMsg();
 	
 	visionResultPublisher.publish(copyToMsg(detector->vRes));
-	undistortPublisher.publish(undistort);
+	undistortPublisher.publish(undistortMsg);
 	ipmPublisher.publish(ipmMsg);
 	thresholdPublisher.publish(thresholdMsg);
 	edgePublisher.publish(edgeMsg);
@@ -139,10 +138,10 @@ int main(int argc, char** argv) {
 
 	std::cout << "Success! Entering ROS Loop" << std::endl;
 	std::cout << "Lane detection node launched!" << std::endl;
-	ros::Rate rate(60);
+	ros::Rate rate(60.);
 	while(ros::ok()) {
 		ros::spinOnce();
-		loop_rate.sleep();
+		rate.sleep();
 	}
 	
 	return 0;
