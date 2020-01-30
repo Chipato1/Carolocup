@@ -240,7 +240,7 @@ void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 }
 
 
-bool PointLaneDetector::calculateAlgorithm() {
+void PointLaneDetector::calculateAlgorithm() {
 	this->clear();
 	stepSize = (this->edge.rows - edgeOffset) / (numberOfLines - 1);
 	int lineY = this->edge.rows - 2;											//1: Offset wegen Canny (letzte Zeile schwarz)
@@ -263,11 +263,7 @@ bool PointLaneDetector::calculateAlgorithm() {
 
 		lineY -= stepSize;
 	}
-	bool solveRes = this->solveClothoide();
-	if (solveRes) {
-		
-	}
-	return solveRes;
+	this->solveClothoide();
 }
 
 void PointLaneDetector::clear() {
@@ -440,7 +436,7 @@ double calculateVariance(cv::Mat& lane,  std::vector<cv::Point> pts) {
 	
 }
 
-bool PointLaneDetector::solveClothoide() {
+void PointLaneDetector::solveClothoide() {
 	int separationIndexL = 0;
 	int separationIndexM = 0;
 	int separationIndexR = 0;
@@ -469,14 +465,14 @@ bool PointLaneDetector::solveClothoide() {
 			auto res = std::find_if(this->vRes.lanePoints[0].begin(), this->vRes.lanePoints[0].end(), [&separationDist](cv::Point& elem) -> bool {
 				return elem.y > separationDist;
 			});
-			this->vRes.clothoideCutDistanceL_mm = ((double) *res) * this->ipmScaling;
+			this->vRes.clothoideCutDistanceL_mm = ((double) (*res).y) * this->ipmScaling;
 			separationIndexL = res - this->vRes.lanePoints[0].begin();
 		}
 		if(foundML) {
 			auto res = std::find_if(this->vRes.lanePoints[1].begin(), this->vRes.lanePoints[1].end(), [&separationDist](cv::Point& elem) -> bool {
 				return elem.y > separationDist;
 			});
-			this->vRes.clothoideCutDistanceM_mm = ((double) *res) * this->ipmScaling;
+			this->vRes.clothoideCutDistanceM_mm = ((double) (*res).y) * this->ipmScaling;
 			separationIndexM = res - this->vRes.lanePoints[1].begin();
 		}
 	}
@@ -494,16 +490,15 @@ bool PointLaneDetector::solveClothoide() {
 	}
 
 	
-	this->solveResultL1 = solveSingleLane(this->leftLane1, this->lA, this->lB, 0, separationIndexL, foundLL);
-	this->solveResultM1 = solveSingleLane(this->middleLane1, this->mA, this->mB, 0, separationIndexM, foundML);
-	this->solveResultR1 = solveSingleLane(this->rightLane1, this->rA, this->rB, 0, separationIndexR, foundRL);
+	this->vRes.solvedLL1 = solveSingleLane(this->leftLane1, this->lA, this->lB, 0, separationIndexL, foundLL);
+	this->vRes.solvedML1 = solveSingleLane(this->middleLane1, this->mA, this->mB, 0, separationIndexM, foundML);
+	this->vRes.solvedRL1 = solveSingleLane(this->rightLane1, this->rA, this->rB, 0, separationIndexR, foundRL);
 
-	this->solveResultL2 = solveSingleLane(this->leftLane2, this->lA, this->lB, separationIndexL, numberOfLines, foundLL);
-	this->solveResultM2 = solveSingleLane(this->middleLane2, this->mA, this->mB, separationIndexM, numberOfLines, foundML);
-	this->solveResultR2 = solveSingleLane(this->rightLane2, this->rA, this->rB, separationIndexR, numberOfLines, foundRL);
+	this->vRes.solvedLL2 = solveSingleLane(this->leftLane2, this->lA, this->lB, separationIndexL, numberOfLines, foundLL);
+	this->vRes.solvedML2 = solveSingleLane(this->middleLane2, this->mA, this->mB, separationIndexM, numberOfLines, foundML);
+	this->vRes.solvedRL2 = solveSingleLane(this->rightLane2, this->rA, this->rB, separationIndexR, numberOfLines, foundRL);
 
 	copyResult();
-	return solveResultL1 && solveResultM1 && solveResultR1 && solveResultL2 && solveResultM2 && solveResultR2;
 }
 
 void PointLaneDetector::mat2Arr(cv::Mat& mat, std::array<double, 4>& arr) {
@@ -514,7 +509,7 @@ void PointLaneDetector::mat2Arr(cv::Mat& mat, std::array<double, 4>& arr) {
 }
 
 void PointLaneDetector::copyResult() {
-	if (!oppositeLane) {
+	if (!this->vRes.oppositeLane) {
 		mat2Arr(this->leftLane1, this->vRes.leftLane1);
 		mat2Arr(this->middleLane1, this->vRes.middleLane1);
 		mat2Arr(this->rightLane1, this->vRes.rightLane1);
@@ -524,14 +519,6 @@ void PointLaneDetector::copyResult() {
 		vRes.foundLL = foundLL;
 		vRes.foundML = foundML;
 		vRes.foundRL = foundRL;
-
-		vRes.solvedLL1 = solveResultL1;
-		vRes.solvedML1 = solveResultM1;
-		vRes.solvedRL1 = solveResultR1;
-
-		vRes.solvedLL2 = solveResultL2;
-		vRes.solvedML2 = solveResultM2;
-		vRes.solvedRL2 = solveResultR2;
 	} else {
 		mat2Arr(this->middleLane1, this->vRes.leftLane1);
 		mat2Arr(this->rightLane1, this->vRes.middleLane1);
@@ -543,12 +530,12 @@ void PointLaneDetector::copyResult() {
 		vRes.foundML = foundRL;
 		vRes.foundRL = false;
 	
-		vRes.solvedLL1 = solveResultM1;
-		vRes.solvedML1 = solveResultR1;
+		vRes.solvedLL1 = vRes.solvedML1;
+		vRes.solvedML1 = vRes.solvedRL1;
 		vRes.solvedRL1 = false;
 	
-		vRes.solvedLL2 = solveResultM2;
-		vRes.solvedML2 = solveResultM2;
+		vRes.solvedLL2 = vRes.solvedML2;
+		vRes.solvedML2 = vRes.solvedRL2;
 		vRes.solvedRL2 = false;
 	}
 	

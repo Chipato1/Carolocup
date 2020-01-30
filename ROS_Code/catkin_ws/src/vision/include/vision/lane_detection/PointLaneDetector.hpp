@@ -28,14 +28,14 @@ public:
 	
 
 private:
-	bool calculateAlgorithm();
+	void calculateAlgorithm();
 	void laneMiddlePoints(std::vector<cv::Point>&, cv::Mat, int);
 	void calculateSolveMatrix(cv::Point, cv::Mat& , cv::Mat& , int i);
 	void doGPUTransform(cv::Mat&);
 	void classifyPoints(int line);
 	void prepareInterpolation(int);
 	void debugDraw(cv::Mat&);
-	bool solveClothoide();
+	void solveClothoide();
 	void copyResult();
 	void mat2Arr(cv::Mat&, std::array<double, 4>&);
 	bool solveSingleLane(cv::Mat& lane, cv::Mat A, cv::Mat B, int start, int end, bool foundLane);
