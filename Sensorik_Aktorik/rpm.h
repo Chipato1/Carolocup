@@ -4,7 +4,7 @@
 #include <Encoder.h>
 extern int RPM, RPM_T1, RPM_T2;
 void init_rpm();
-int* read_RPM();
+float read_RPM();
 
 
 #endif

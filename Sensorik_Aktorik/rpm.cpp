@@ -1,8 +1,7 @@
 #include "rpm.h"
-#include "Encoder.h"
 
-static int ticks_per_cycle = 9;
-int rpm_value;
+#define ticks_per_cycle 9
+float rpm_value;
 
 int RPM_left, RPM_timer_left;
 int old_left;
@@ -19,7 +18,7 @@ void init_rpm(){
   old_right = 0;
 }
 
-int* read_RPM()
+float read_RPM()
 {
   //left sensor
   long new_left = left_back.read();

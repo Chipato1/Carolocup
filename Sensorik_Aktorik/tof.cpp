@@ -5,7 +5,7 @@ VL53L0X_RangingMeasurementData_t measure_left;
 VL53L0X_RangingMeasurementData_t measure_right;
 VL53L0X_RangingMeasurementData_t measure_cross;
 
-static int tof_array[5];
+static int8_t tof_array[5];
 
 void init_tof()
 {  
@@ -73,19 +73,13 @@ void init_tof()
   }
 }
 
-int* read_TOF()
+int8_t* read_TOF()
 {  
-  const int threshold_front = 1000;
-  const int threshold_left  = 1000;
-  const int threshold_right = 1000;
-  const int threshold_cross = 1000;
-  const int threshold_back  = 200;
-  
-  int distance_ToF_front;
-  int distance_ToF_left;
-  int distance_ToF_right;
-  int distance_ToF_cross;
-  int distance_ToF_back;
+  int8_t distance_ToF_front;
+  int8_t distance_ToF_left;
+  int8_t distance_ToF_right;
+  int8_t distance_ToF_cross;
+  int8_t distance_ToF_back;
 
   ToF_front.rangingTest(&measure_front, false); // pass in 'true' to get debug data printout!
   ToF_left.rangingTest(&measure_left, false); // pass in 'true' to get debug data printout!

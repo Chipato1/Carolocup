@@ -859,6 +859,7 @@ void Bmi088Accel::readSensor()
   time_counter = current_time_counter - prev_time_counter;
   prev_time_counter = current_time_counter;
   /* temperature data */
+  /*
   readRegisters(ACC_TEMP_DATA_ADDR,2,_buffer);
   temp_uint11 = (_buffer[0] * 8) + (_buffer[1] / 32);
   if (temp_uint11 > 1023) {
@@ -867,6 +868,7 @@ void Bmi088Accel::readSensor()
     temp_int11 = temp_uint11;
   }
   temp_c = (float) temp_int11 * 0.125f + 23.0f;
+  */
 }
 
 /* returns the x acceleration, m/s/s */
@@ -888,10 +890,12 @@ float Bmi088Accel::getAccelZ_mss()
 }
 
 /* returns the temperature, C */
+/*
 float Bmi088Accel::getTemperature_C()
 {
   return temp_c;
 }
+*/
 
 /* returns the sensor time, ps */
 uint64_t Bmi088Accel::getTime_ps()
@@ -1721,11 +1725,12 @@ float Bmi088::getAccelZ_mss()
 {
   return accel->getAccelZ_mss();
 }
-
+/*
 float Bmi088::getTemperature_C()
 {
   return accel->getTemperature_C();
 }
+*/
 
 uint64_t Bmi088::getTime_ps()
 {

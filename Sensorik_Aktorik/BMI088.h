@@ -64,7 +64,7 @@ class Bmi088Accel {
     float getAccelX_mss();
     float getAccelY_mss();
     float getAccelZ_mss();
-    float getTemperature_C();
+    //float getTemperature_C();
     uint64_t getTime_ps();
     void estimateBias();
   private:
@@ -147,7 +147,7 @@ class Bmi088Accel {
     static const uint8_t ACC_SOFT_RESET_MASK = 0xFF;
     static const uint8_t ACC_SOFT_RESET_POS = 0;
     static const uint8_t ACC_ACCEL_DATA_ADDR = 0x12;
-    static const uint8_t ACC_TEMP_DATA_ADDR = 0x22;
+    //static const uint8_t ACC_TEMP_DATA_ADDR = 0x22;
     // transformation from sensor frame to right hand coordinate system
     const int16_t tX[3] = {1, 0, 0};
     const int16_t tY[3] = {0, -1, 0};
@@ -159,7 +159,7 @@ class Bmi088Accel {
     // accel data
     float accel_mss[3];
     // temperature data
-    float temp_c;
+    //float temp_c;
     // sensor time
     uint32_t current_time_counter, prev_time_counter = 0;
     uint64_t time_counter;
@@ -358,7 +358,7 @@ class Bmi088 {
     float getAccelX_mss();
     float getAccelY_mss();
     float getAccelZ_mss();
-    float getTemperature_C();
+    //float getTemperature_C();
     uint64_t getTime_ps();
     float getGyroX_rads();
     float getGyroY_rads();

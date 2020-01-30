@@ -6,29 +6,28 @@ Servo motor;
 ros::NodeHandle aktorik_node;
 
 ros::Subscriber<std_msgs::Float32> sub_servo("servolenkwinkel", servo_cb);
-ros::Subscriber<std_msgs::UInt8> sub_motor("motordrehzahl", motor_cb);      
+ros::Subscriber<std_msgs::UInt16> sub_motor("motordrehzahl", motor_cb);      
 ros::Subscriber<std_msgs::UInt8> sub_light_l("lichtLinks", lichtLinks_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_r("lichtRechts", lichtRechts_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_b("lichtBremse", lichtBremse_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_rem("lichtRemote", lichtRemote_cb);
 
-int rc_mode = 0;
-int analogvalue_1; //eingelesener Pin - Wert am Tiefpass
+short rc_mode = 0;
+int8_t analogvalue_1; //eingelesener Pin - Wert am Tiefpass
   
 float wert_servo;
 float lenkwinkel_servosize;
 float lenkwinkel_grad;
 
-byte motor_uebertragung;
-byte motor_uebertragung_RC_mode;
+//int8_t motor_uebertragung;
+//int8_t motor_uebertragung_RC_mode;
 
-byte state_light_r = 0;
-byte state_light_l = 0;
-byte state_light_b = 0;
-byte state_light_rem = 0;
+short state_light_r = 0;
+short state_light_l = 0;
+short state_light_b = 0;
+short state_light_rem = 0;
 
-unsigned long previousMillis = 0;
-const long interval = 1000;
+uint16_t previousMillis = 0;
 boolean blinkstate = true;
 
 void init_aktorik(){
@@ -63,8 +62,8 @@ void init_aktorik(){
   digitalWrite(blaues_licht, LOW);
 }
 
-int aktorik(){
-  unsigned long currentMillis = millis();
+int aktorik(){  
+  uint16_t currentMillis = millis();
   if (currentMillis - previousMillis >= interval) {
     previousMillis = currentMillis;
     set_led_states();
@@ -96,7 +95,7 @@ void servo_cb(const std_msgs::Float32& cmd_msg){   //Callback - Funktion für Se
   servo_bewegung(cmd_msg.data);
 }
 
-void motor_cb(const std_msgs::UInt8& cmd_msg){     //Callback - Funktion für Motoraufruf
+void motor_cb(const std_msgs::UInt16& cmd_msg){     //Callback - Funktion für Motoraufruf
   motor_bewegung(cmd_msg.data);
 }
 
@@ -126,7 +125,8 @@ void servo_bewegung(float lenkwinkel_bogenmass){
   servo.write(lenkwinkel_servosize); //Servo fährt in die ensprechende Stellung
 }
 
-void motor_bewegung(byte motor_drehzahl){
+void motor_bewegung(int8_t motor_drehzahl){
+  int8_t motor_uebertragung;
   if(motor_drehzahl < 0){     //rückwärts
     motor_uebertragung = 90 +(0.234 * motor_drehzahl);
   }
@@ -139,7 +139,8 @@ void motor_bewegung(byte motor_drehzahl){
  motor.write(motor_uebertragung);
 }
 
-void motor_bewegung_RC_mode(float voltage_1){
+void motor_bewegung_RC_mode(int8_t voltage_1){
+  int8_t motor_uebertragung_RC_mode;
     if (voltage_1 < tiefpass_untere_spannung){        //rückwarts
         motor_uebertragung_RC_mode = (voltage_1 * 135.23) + 56.47;
     }
@@ -159,7 +160,7 @@ void set_led_states(){
   set_output(state_light_rem, blaues_licht);
 }
 
-void set_output(int state, int port){
+void set_output(short state, short port){
   switch(state){
     case 0: digitalWrite(port, LOW);
       break;

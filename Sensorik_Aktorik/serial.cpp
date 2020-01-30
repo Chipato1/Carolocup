@@ -1,22 +1,16 @@
 #include "serial.h"
-#include <ros.h>
-#include <std_msgs/Int16.h>
-#include <std_msgs/Int16MultiArray.h>
-#include <std_msgs/Float32.h>
-#include <std_msgs/Bool.h>
-#include <std_msgs/String.h>
 
 ros::NodeHandle sensorik_node;
 
-std_msgs::Int16 rpm_msg;
+std_msgs::Float32 rpm_msg;
 std_msgs::Float32 imu_accelX_msg, imu_accelY_msg, imu_gyroZ_msg;
-std_msgs::Int16 tof_front_msg, tof_left_msg, tof_right_msg, tof_cross_msg, tof_back_msg;
+std_msgs::Int8 tof_front_msg, tof_left_msg, tof_right_msg, tof_cross_msg, tof_back_msg;
 std_msgs::Int16MultiArray qtr_frontLeft_msg, qtr_frontRight_msg, qtr_backLeft_msg, qtr_backRight_msg;
-std_msgs::Int16 error_msg;
+std_msgs::Int8 error_msg;
 
 ros::Publisher rpm_pub("raddrehzahl", &rpm_msg);
 
-ros::Publisher imu_accelX_pub("längsbeschleunigung", &imu_accelX_msg);
+ros::Publisher imu_accelX_pub("laengsbeschleunigung", &imu_accelX_msg);
 ros::Publisher imu_accelY_pub("querbeschleunigung", &imu_accelY_msg);
 ros::Publisher imu_gyroZ_pub("giergeschwindigkeit", &imu_gyroZ_msg);
 
@@ -52,7 +46,7 @@ void init_ros(){
   sensorik_node.advertise(error_pub);
 }
 
-void rpm_publish(int rpm){  
+void rpm_publish(float rpm){  
   rpm_msg.data = rpm;
   rpm_pub.publish(&rpm_msg);
   sensorik_node.spinOnce();

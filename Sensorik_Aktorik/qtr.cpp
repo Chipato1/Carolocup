@@ -1,6 +1,4 @@
 #include "qtr.h"
-#include <QTRSensors.h>
-#include "DHT.h"
 
 QTRSensors qtr_front_left;
 QTRSensors qtr_front_right;

@@ -18,20 +18,20 @@
 #define ToF_cross_SHT     31
 #define ToF_back_SHT      33
 
+#define threshold_front   1000
+#define threshold_left    1000
+#define threshold_right   1000
+#define threshold_cross   1000
+#define threshold_back    200
+
 const Adafruit_VL53L0X ToF_front  = Adafruit_VL53L0X();
 const Adafruit_VL53L0X ToF_left   = Adafruit_VL53L0X();
 const Adafruit_VL53L0X ToF_right  = Adafruit_VL53L0X();
 const Adafruit_VL53L0X ToF_cross  = Adafruit_VL53L0X();
 const Adafruit_VL6180X ToF_back   = Adafruit_VL6180X();
 
-extern int* distance_tof;
-extern VL53L0X_RangingMeasurementData_t measure_front;
-extern VL53L0X_RangingMeasurementData_t measure_left;
-extern VL53L0X_RangingMeasurementData_t measure_right;
-extern VL53L0X_RangingMeasurementData_t measure_cross;
-
 void init_tof();
-int* read_TOF();
+int8_t* read_TOF();
 
 
 #endif
