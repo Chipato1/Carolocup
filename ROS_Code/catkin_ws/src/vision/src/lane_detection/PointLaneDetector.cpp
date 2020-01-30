@@ -514,23 +514,44 @@ void PointLaneDetector::mat2Arr(cv::Mat& mat, std::array<double, 4>& arr) {
 }
 
 void PointLaneDetector::copyResult() {
-	mat2Arr(this->leftLane1, this->vRes.leftLane1);
-	mat2Arr(this->middleLane1, this->vRes.middleLane1);
-	mat2Arr(this->rightLane1, this->vRes.rightLane1);
-	mat2Arr(this->leftLane2, this->vRes.leftLane2);
-	mat2Arr(this->middleLane2, this->vRes.middleLane2);
-	mat2Arr(this->rightLane2, this->vRes.rightLane2);
-	vRes.foundLL = foundLL;
-	vRes.foundML = foundML;
-	vRes.foundRL = foundRL;
+	if (!oppositeLane) {
+		mat2Arr(this->leftLane1, this->vRes.leftLane1);
+		mat2Arr(this->middleLane1, this->vRes.middleLane1);
+		mat2Arr(this->rightLane1, this->vRes.rightLane1);
+		mat2Arr(this->leftLane2, this->vRes.leftLane2);
+		mat2Arr(this->middleLane2, this->vRes.middleLane2);
+		mat2Arr(this->rightLane2, this->vRes.rightLane2);
+		vRes.foundLL = foundLL;
+		vRes.foundML = foundML;
+		vRes.foundRL = foundRL;
 
-	vRes.solvedLL1 = solveResultL1;
-	vRes.solvedML1 = solveResultM1;
-	vRes.solvedRL1 = solveResultR1;
+		vRes.solvedLL1 = solveResultL1;
+		vRes.solvedML1 = solveResultM1;
+		vRes.solvedRL1 = solveResultR1;
 
-	vRes.solvedLL2 = solveResultL2;
-	vRes.solvedML2 = solveResultM2;
-	vRes.solvedRL2 = solveResultR2;
+		vRes.solvedLL2 = solveResultL2;
+		vRes.solvedML2 = solveResultM2;
+		vRes.solvedRL2 = solveResultR2;
+	} else {
+		mat2Arr(this->middleLane1, this->vRes.leftLane1);
+		mat2Arr(this->rightLane1, this->vRes.middleLane1);
+
+		mat2Arr(this->middleLane1, this->vRes.leftLane1);
+		mat2Arr(this->rightLane1, this->vRes.middleLane1);
+
+		vRes.foundLL = foundML;
+		vRes.foundML = foundRL;
+		vRes.foundRL = false;
+	
+		vRes.solvedLL1 = solveResultM1;
+		vRes.solvedML1 = solveResultR1;
+		vRes.solvedRL1 = false;
+	
+		vRes.solvedLL2 = solveResultM2;
+		vRes.solvedML2 = solveResultM2;
+		vRes.solvedRL2 = false;
+	}
+	
 }
 
 void PointLaneDetector::laneMiddlePoints(std::vector<cv::Point>& laneMiddles, Mat linePoints, int yPos) {
