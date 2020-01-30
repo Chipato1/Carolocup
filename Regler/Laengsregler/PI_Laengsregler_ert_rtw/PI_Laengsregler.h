@@ -7,9 +7,9 @@
  *
  * Code generation for model "PI_Laengsregler".
  *
- * Model version              : 1.21
+ * Model version              : 1.25
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Wed Jan 29 19:17:21 2020
+ * C++ source code generated on : Thu Jan 30 22:12:11 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -162,11 +162,8 @@ typedef struct {
 
 /* Block signals (default storage) */
 typedef struct {
-  char_T cv[19];
-  real_T IntegralGain;                 /* '<S33>/Integral Gain' */
   real_T ProportionalGain;             /* '<S41>/Proportional Gain' */
-  real_T Sum;                          /* '<S45>/Sum' */
-  boolean_T OR;                        /* '<Root>/OR' */
+  real_T IntegralGain;                 /* '<S33>/Integral Gain' */
   B_EnabledSubsystem_PI_Laengsr_T EnabledSubsystem_n;/* '<S5>/Enabled Subsystem' */
   B_EnabledSubsystem_PI_Laengsr_T EnabledSubsystem;/* '<S4>/Enabled Subsystem' */
 } B_PI_Laengsregler_T;
@@ -176,22 +173,9 @@ typedef struct {
   ros_slros_internal_block_Publ_T obj; /* '<S3>/SinkBlock' */
   ros_slros_internal_block_Subs_T obj_o;/* '<S5>/SourceBlock' */
   ros_slros_internal_block_Subs_T obj_j;/* '<S4>/SourceBlock' */
-  struct {
-    void *LoggedData[2];
-  } Scope_PWORK;                       /* '<S2>/Scope' */
-
-  struct {
-    void *LoggedData;
-  } Scope1_PWORK;                      /* '<S2>/Scope1' */
-
-  struct {
-    void *LoggedData[2];
-  } Scope2_PWORK;                      /* '<S2>/Scope2' */
-
   boolean_T objisempty;                /* '<S5>/SourceBlock' */
   boolean_T objisempty_c;              /* '<S4>/SourceBlock' */
   boolean_T objisempty_f;              /* '<S3>/SinkBlock' */
-  boolean_T Geschwindigkeitsregler_MODE;/* '<Root>/Geschwindigkeitsregler' */
 } DW_PI_Laengsregler_T;
 
 /* Continuous states (default storage) */
@@ -235,9 +219,6 @@ struct P_PI_Laengsregler_T_ {
   real_T pr;                           /* Variable: pr
                                         * Referenced by: '<S41>/Proportional Gain'
                                         */
-  real32_T u;                          /* Variable: u
-                                        * Referenced by: '<S2>/Multiply'
-                                        */
   real_T PIDController_InitialConditionF;
                               /* Mask Parameter: PIDController_InitialConditionF
                                * Referenced by: '<S36>/Integrator'
@@ -251,11 +232,8 @@ struct P_PI_Laengsregler_T_ {
   SL_Bus_PI_Laengsregler_std_msgs_Int16 Constant_Value_j;/* Computed Parameter: Constant_Value_j
                                                           * Referenced by: '<S1>/Constant'
                                                           */
-  real_T Reglermotordrehzahl_Y0;   /* Computed Parameter: Reglermotordrehzahl_Y0
-                                    * Referenced by: '<S2>/Reglermotordrehzahl'
-                                    */
-  real_T Constant_Value_k;             /* Expression: 1
-                                        * Referenced by: '<Root>/Constant'
+  real_T Gain_Gain;                    /* Expression: 1/0.175896
+                                        * Referenced by: '<S2>/Gain'
                                         */
   P_EnabledSubsystem_PI_Laengsr_T EnabledSubsystem_n;/* '<S5>/Enabled Subsystem' */
   P_EnabledSubsystem_PI_Laengsr_T EnabledSubsystem;/* '<S4>/Enabled Subsystem' */

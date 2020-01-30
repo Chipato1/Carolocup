@@ -7,13 +7,13 @@
  *
  * Code generation for model "raddrehzahl_filter".
  *
- * Model version              : 1.1
+ * Model version              : 1.6
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Wed Jan 29 21:32:15 2020
+ * C++ source code generated on : Thu Jan 30 22:06:38 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
- * Embedded hardware selection: Generic->Unspecified (assume 32-bit Generic)
+ * Embedded hardware selection: Intel->x86-64 (Linux 64)
  * Code generation objectives: Unspecified
  * Validation result: Not run
  */
@@ -340,30 +340,28 @@ void raddrehzahl_filter_initialize(void)
                 sizeof(DW_raddrehzahl_filter_T));
 
   {
-    char_T tmp[12];
-    char_T tmp_0[20];
-    char_T tmp_1[13];
+    char_T tmp[14];
     int32_T i;
-    static const char_T tmp_2[12] = { '/', 'r', 'a', 'd', 'd', 'r', 'e', 'h',
-      'z', 'a', 'h', 'l' };
+    static const char_T tmp_0[13] = { '/', 's', 'n', 's', '_', 'w', 'h', 'e',
+      'e', 'l', 'R', 'p', 'm' };
 
-    static const char_T tmp_3[19] = { '/', 'i', 's', 't', 'g', 'e', 's', 'c',
-      'h', 'w', 'i', 'n', 'd', 'i', 'g', 'k', 'e', 'i', 't' };
+    static const char_T tmp_1[13] = { '/', 'c', 't', 'l', '_', 'v', 'e', 'l',
+      'o', 'c', 'i', 't', 'y' };
 
-    static const char_T tmp_4[11] = { '/', 'i', 's', 't', 's', 't', 'r', 'e',
-      'c', 'k', 'e' };
+    static const char_T tmp_2[13] = { '/', 'c', 't', 'l', '_', 'd', 'i', 's',
+      't', 'a', 'n', 'c', 'e' };
 
     /* Start for Atomic SubSystem: '<Root>/Subscribe1' */
     /* Start for MATLABSystem: '<S5>/SourceBlock' */
     raddrehzahl_filter_DW.obj_d.matlabCodegenIsDeleted = false;
     raddrehzahl_filter_DW.objisempty = true;
     raddrehzahl_filter_DW.obj_d.isInitialized = 1;
-    for (i = 0; i < 12; i++) {
-      tmp_1[i] = tmp_2[i];
+    for (i = 0; i < 13; i++) {
+      tmp[i] = tmp_0[i];
     }
 
-    tmp_1[12] = '\x00';
-    Sub_raddrehzahl_filter_3.createSubscriber(tmp_1, 1);
+    tmp[13] = '\x00';
+    Sub_raddrehzahl_filter_3.createSubscriber(tmp, 1);
     raddrehzahl_filter_DW.obj_d.isSetupComplete = true;
 
     /* End of Start for MATLABSystem: '<S5>/SourceBlock' */
@@ -374,12 +372,12 @@ void raddrehzahl_filter_initialize(void)
     raddrehzahl_filter_DW.obj_i.matlabCodegenIsDeleted = false;
     raddrehzahl_filter_DW.objisempty_k = true;
     raddrehzahl_filter_DW.obj_i.isInitialized = 1;
-    for (i = 0; i < 19; i++) {
-      tmp_0[i] = tmp_3[i];
+    for (i = 0; i < 13; i++) {
+      tmp[i] = tmp_1[i];
     }
 
-    tmp_0[19] = '\x00';
-    Pub_raddrehzahl_filter_7.createPublisher(tmp_0, 1);
+    tmp[13] = '\x00';
+    Pub_raddrehzahl_filter_7.createPublisher(tmp, 1);
     raddrehzahl_filter_DW.obj_i.isSetupComplete = true;
 
     /* End of Start for MATLABSystem: '<S3>/SinkBlock' */
@@ -390,11 +388,11 @@ void raddrehzahl_filter_initialize(void)
     raddrehzahl_filter_DW.obj.matlabCodegenIsDeleted = false;
     raddrehzahl_filter_DW.objisempty_j = true;
     raddrehzahl_filter_DW.obj.isInitialized = 1;
-    for (i = 0; i < 11; i++) {
-      tmp[i] = tmp_4[i];
+    for (i = 0; i < 13; i++) {
+      tmp[i] = tmp_2[i];
     }
 
-    tmp[11] = '\x00';
+    tmp[13] = '\x00';
     Pub_raddrehzahl_filter_12.createPublisher(tmp, 1);
     raddrehzahl_filter_DW.obj.isSetupComplete = true;
 

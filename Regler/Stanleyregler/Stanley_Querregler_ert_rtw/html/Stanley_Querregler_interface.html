@@ -294,7 +294,7 @@ Dimension
 </tr>
 <tr class="even">
 <td width="42%" align="left" valign="top">
-&lt;S5&gt;/Lateral Controller Stanley
+&lt;S7&gt;/Lateral Controller Stanley
 </td>
 <td width="26%" align="left" valign="top">
 Stanley_Querregler_P.LateralControllerStanley_Positi
@@ -309,7 +309,7 @@ real_T
 </tr>
 <tr class="odd">
 <td width="42%" align="left" valign="top">
-&lt;S5&gt;/Lateral Controller Stanley
+&lt;S7&gt;/Lateral Controller Stanley
 </td>
 <td width="26%" align="left" valign="top">
 Stanley_Querregler_P.LateralControllerStanley_Posi_p
@@ -324,10 +324,40 @@ real_T
 </tr>
 <tr class="even">
 <td width="42%" align="left" valign="top">
+&lt;S8&gt;/Out1
+</td>
+<td width="26%" align="left" valign="top">
+Stanley_Querregler_P.Out1_Y0
+</td>
+<td width="21%" align="left" valign="top">
+SL_Bus_Stanley_Querregler_std_msgs_Bool
+</td>
+<td width="10%" align="right" valign="top">
+1
+</td>
+
+</tr>
+<tr class="odd">
+<td width="42%" align="left" valign="top">
 &lt;S3&gt;/Constant
 </td>
 <td width="26%" align="left" valign="top">
 Stanley_Querregler_P.Constant_Value
+</td>
+<td width="21%" align="left" valign="top">
+SL_Bus_Stanley_Querregler_std_msgs_Bool
+</td>
+<td width="10%" align="right" valign="top">
+1
+</td>
+
+</tr>
+<tr class="even">
+<td width="42%" align="left" valign="top">
+&lt;S4&gt;/Constant
+</td>
+<td width="26%" align="left" valign="top">
+Stanley_Querregler_P.Constant_Value_d
 </td>
 <td width="21%" align="left" valign="top">
 SL_Bus_Stanley_Querregler_std_msgs_Float32
@@ -339,7 +369,7 @@ SL_Bus_Stanley_Querregler_std_msgs_Float32
 </tr>
 <tr class="odd">
 <td width="42%" align="left" valign="top">
-&lt;S4&gt;/Constant
+&lt;S5&gt;/Constant
 </td>
 <td width="26%" align="left" valign="top">
 Stanley_Querregler_P.Constant_Value_c
@@ -354,6 +384,21 @@ SL_Bus_Stanley_Querregler_std_msgs_Float32
 </tr>
 <tr class="even">
 <td width="42%" align="left" valign="top">
+&lt;S6&gt;/Constant
+</td>
+<td width="26%" align="left" valign="top">
+Stanley_Querregler_P.Constant_Value_i
+</td>
+<td width="21%" align="left" valign="top">
+SL_Bus_Stanley_Querregler_std_msgs_Float32
+</td>
+<td width="10%" align="right" valign="top">
+1
+</td>
+
+</tr>
+<tr class="odd">
+<td width="42%" align="left" valign="top">
 &lt;S1&gt;/Constant
 </td>
 <td width="26%" align="left" valign="top">
@@ -367,9 +412,9 @@ SL_Bus_Stanley_Querregler_std_msgs_Float32
 </td>
 
 </tr>
-<tr class="odd">
+<tr class="even">
 <td width="42%" align="left" valign="top">
-&lt;S5&gt;/Gain
+&lt;S7&gt;/Gain
 </td>
 <td width="26%" align="left" valign="top">
 Stanley_Querregler_P.Gain_Gain
@@ -382,9 +427,9 @@ real_T
 </td>
 
 </tr>
-<tr class="even">
+<tr class="odd">
 <td width="42%" align="left" valign="top">
-&lt;S5&gt;/Rückwärts
+&lt;S7&gt;/Rückwärts
 </td>
 <td width="26%" align="left" valign="top">
 Stanley_Querregler_P.Rckwrts_Value
@@ -397,9 +442,9 @@ real_T
 </td>
 
 </tr>
-<tr class="odd">
+<tr class="even">
 <td width="42%" align="left" valign="top">
-&lt;S5&gt;/Vorwärts
+&lt;S7&gt;/Vorwärts
 </td>
 <td width="26%" align="left" valign="top">
 Stanley_Querregler_P.Vorwrts_Value
@@ -412,9 +457,9 @@ real_T
 </td>
 
 </tr>
-<tr class="even">
+<tr class="odd">
 <td width="42%" align="left" valign="top">
-&lt;S11&gt;/ SFunction 
+&lt;S15&gt;/ SFunction 
 </td>
 <td width="26%" align="left" valign="top">
 Stanley_Querregler_P.Kinematic_MaxSteeringAngle
@@ -427,9 +472,9 @@ real_T
 </td>
 
 </tr>
-<tr class="odd">
+<tr class="even">
 <td width="42%" align="left" valign="top">
-&lt;S11&gt;/ SFunction 
+&lt;S15&gt;/ SFunction 
 </td>
 <td width="26%" align="left" valign="top">
 Stanley_Querregler_P.Kinematic_Wheelbase
@@ -442,9 +487,24 @@ real_T
 </td>
 
 </tr>
+<tr class="odd">
+<td width="42%" align="left" valign="top">
+&lt;S7&gt;/Lenkwinkel
+</td>
+<td width="26%" align="left" valign="top">
+Stanley_Querregler_P.Lenkwinkel_Y0
+</td>
+<td width="21%" align="left" valign="top">
+real_T
+</td>
+<td width="10%" align="right" valign="top">
+1
+</td>
+
+</tr>
 <tr class="even">
 <td width="42%" align="left" valign="top">
-&lt;S5&gt;/[x, y, theta]
+&lt;S7&gt;/[x, y, theta]
 </td>
 <td width="26%" align="left" valign="top">
 Stanley_Querregler_P.xytheta_Value
@@ -459,7 +519,7 @@ real_T
 </tr>
 <tr class="odd">
 <td width="42%" align="left" valign="top">
-&lt;S5&gt;/Constant1
+&lt;S7&gt;/Constant1
 </td>
 <td width="26%" align="left" valign="top">
 Stanley_Querregler_P.Constant1_Value
@@ -474,7 +534,7 @@ real_T
 </tr>
 <tr class="even">
 <td width="42%" align="left" valign="top">
-&lt;S5&gt;/Constant
+&lt;S7&gt;/Constant
 </td>
 <td width="26%" align="left" valign="top">
 Stanley_Querregler_P.Constant_Value_a
@@ -489,7 +549,7 @@ real_T
 </tr>
 <tr class="odd">
 <td width="42%" align="left" valign="top">
-&lt;S8&gt;/Constant
+&lt;S12&gt;/Constant
 </td>
 <td width="26%" align="left" valign="top">
 Stanley_Querregler_P.Constant_Value_ab
@@ -504,7 +564,7 @@ real_T
 </tr>
 <tr class="even">
 <td width="42%" align="left" valign="top">
-&lt;S8&gt;/Radius (cm)
+&lt;S12&gt;/Radius (cm)
 </td>
 <td width="26%" align="left" valign="top">
 Stanley_Querregler_P.Radiuscm_Value
@@ -519,7 +579,7 @@ real_T
 </tr>
 <tr class="odd">
 <td width="42%" align="left" valign="top">
-&lt;S8&gt;/cm in m
+&lt;S12&gt;/cm in m
 </td>
 <td width="26%" align="left" valign="top">
 Stanley_Querregler_P.cminm_Gain
@@ -534,7 +594,7 @@ real_T
 </tr>
 <tr class="even">
 <td width="42%" align="left" valign="top">
-&lt;S5&gt;/Switch1
+&lt;S7&gt;/Switch1
 </td>
 <td width="26%" align="left" valign="top">
 Stanley_Querregler_P.Switch1_Threshold
@@ -549,7 +609,7 @@ real_T
 </tr>
 <tr class="odd">
 <td width="42%" align="left" valign="top">
-&lt;S5&gt;/Switch
+&lt;S7&gt;/Switch
 </td>
 <td width="26%" align="left" valign="top">
 Stanley_Querregler_P.Switch_Threshold
@@ -564,7 +624,7 @@ real_T
 </tr>
 <tr class="even">
 <td width="42%" align="left" valign="top">
-&lt;S5&gt;/Saturation
+&lt;S7&gt;/Saturation
 </td>
 <td width="26%" align="left" valign="top">
 Stanley_Querregler_P.Saturation_UpperSat
@@ -579,7 +639,7 @@ real_T
 </tr>
 <tr class="odd">
 <td width="42%" align="left" valign="top">
-&lt;S5&gt;/Saturation
+&lt;S7&gt;/Saturation
 </td>
 <td width="26%" align="left" valign="top">
 Stanley_Querregler_P.Saturation_LowerSat
@@ -594,7 +654,7 @@ real_T
 </tr>
 <tr class="even">
 <td width="42%" align="left" valign="top">
-&lt;S5&gt;/Gain1
+&lt;S7&gt;/Gain1
 </td>
 <td width="26%" align="left" valign="top">
 Stanley_Querregler_P.Gain1_Gain
@@ -609,7 +669,22 @@ real_T
 </tr>
 <tr class="odd">
 <td width="42%" align="left" valign="top">
-&lt;S6&gt;/Out1
+&lt;S9&gt;/Out1
+</td>
+<td width="26%" align="left" valign="top">
+Stanley_Querregler_P.EnabledSubsystem_i.Out1_Y0
+</td>
+<td width="21%" align="left" valign="top">
+SL_Bus_Stanley_Querregler_std_msgs_Float32
+</td>
+<td width="10%" align="right" valign="top">
+1
+</td>
+
+</tr>
+<tr class="even">
+<td width="42%" align="left" valign="top">
+&lt;S9&gt;/Out1
 </td>
 <td width="26%" align="left" valign="top">
 Stanley_Querregler_P.EnabledSubsystem_p.Out1_Y0
@@ -622,12 +697,12 @@ SL_Bus_Stanley_Querregler_std_msgs_Float32
 </td>
 
 </tr>
-<tr class="even">
+<tr class="odd">
 <td width="42%" align="left" valign="top">
-&lt;S6&gt;/Out1
+&lt;S9&gt;/Out1
 </td>
 <td width="26%" align="left" valign="top">
-Stanley_Querregler_P.EnabledSubsystem.Out1_Y0
+Stanley_Querregler_P.EnabledSubsystem_g.Out1_Y0
 </td>
 <td width="21%" align="left" valign="top">
 SL_Bus_Stanley_Querregler_std_msgs_Float32

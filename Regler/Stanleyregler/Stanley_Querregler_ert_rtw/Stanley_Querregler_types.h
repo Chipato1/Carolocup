@@ -7,9 +7,9 @@
  *
  * Code generation for model "Stanley_Querregler".
  *
- * Model version              : 1.14
+ * Model version              : 1.16
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Wed Jan 29 22:15:15 2020
+ * C++ source code generated on : Thu Jan 30 22:16:52 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -28,6 +28,15 @@
 typedef struct {
   real32_T Data;
 } SL_Bus_Stanley_Querregler_std_msgs_Float32;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_SL_Bus_Stanley_Querregler_std_msgs_Bool_
+#define DEFINED_TYPEDEF_FOR_SL_Bus_Stanley_Querregler_std_msgs_Bool_
+
+typedef struct {
+  boolean_T Data;
+} SL_Bus_Stanley_Querregler_std_msgs_Bool;
 
 #endif
 
@@ -53,7 +62,7 @@ typedef struct {
 
 #endif                               /*typedef_ros_slros_internal_block_Subs_T*/
 
-/* Custom Type definition for MATLAB Function: '<S9>/Kinematic' */
+/* Custom Type definition for MATLAB Function: '<S13>/Kinematic' */
 #ifndef struct_tag_sOUC5r4zsFawyqfEUBdluaD
 #define struct_tag_sOUC5r4zsFawyqfEUBdluaD
 
@@ -113,7 +122,7 @@ typedef struct tag_s9s8BC13iTohZXRbLMSIDHE s9s8BC13iTohZXRbLMSIDHE_Stanl_T;
 
 #endif                               /*typedef_s9s8BC13iTohZXRbLMSIDHE_Stanl_T*/
 
-/* Parameters for system: '<S3>/Enabled Subsystem' */
+/* Parameters for system: '<S4>/Enabled Subsystem' */
 typedef struct P_EnabledSubsystem_Stanley_Qu_T_ P_EnabledSubsystem_Stanley_Qu_T;
 
 /* Parameters (default storage) */
