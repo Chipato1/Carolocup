@@ -5,10 +5,10 @@ VL53L0X_RangingMeasurementData_t measure_left;
 VL53L0X_RangingMeasurementData_t measure_right;
 VL53L0X_RangingMeasurementData_t measure_cross;
 
-static int8_t tof_array[5];
+static uint16_t tof_array[5];
 
 void init_tof()
-{  
+{
   pinMode(ToF_front_SHT,OUTPUT);
   pinMode(ToF_left_SHT,OUTPUT);
   pinMode(ToF_right_SHT,OUTPUT);
@@ -39,10 +39,10 @@ void init_tof()
   //init ToF_front
   digitalWrite(ToF_front_SHT,HIGH);
   if (!ToF_front.begin(ToF_front_ADDRESS)) {
-    Serial.println(F("Failed to boot ToF_front"));
+    //Serial.println(F("Failed to boot ToF_front"));
     while(1);
   }
-
+/*
   //init ToF_left
   digitalWrite(ToF_left_SHT,HIGH);
   if (!ToF_left.begin(ToF_left_ADDRESS)) {
@@ -71,20 +71,23 @@ void init_tof()
     Serial.println(F("Failed to boot ToF_back"));
     while(1);
   }
+  */
 }
 
-int8_t* read_TOF()
+uint16_t* read_TOF()
 {  
-  int8_t distance_ToF_front;
-  int8_t distance_ToF_left;
-  int8_t distance_ToF_right;
-  int8_t distance_ToF_cross;
-  int8_t distance_ToF_back;
+  uint16_t distance_ToF_front = threshold_front;
+  uint16_t distance_ToF_left = threshold_left;
+  uint16_t distance_ToF_right = threshold_right;
+  uint16_t distance_ToF_cross = threshold_cross;
+  uint16_t distance_ToF_back = threshold_back;
 
   ToF_front.rangingTest(&measure_front, false); // pass in 'true' to get debug data printout!
+  /*
   ToF_left.rangingTest(&measure_left, false); // pass in 'true' to get debug data printout!
   ToF_right.rangingTest(&measure_right, false); // pass in 'true' to get debug data printout!
   ToF_cross.rangingTest(&measure_cross, false); // pass in 'true' to get debug data printout!
+  */
 
   //read ToF_front
   if (measure_front.RangeStatus != 4) {  // phase failures have incorrect data
@@ -95,7 +98,7 @@ int8_t* read_TOF()
   } else {
     distance_ToF_front = threshold_front;
   }
-  
+  /*
   //read ToF_left
   if (measure_left.RangeStatus != 4) {  // phase failures have incorrect data
     distance_ToF_left = measure_left.RangeMilliMeter;
@@ -133,7 +136,7 @@ int8_t* read_TOF()
       distance_ToF_back = threshold_back;
     }
   }
-  
+  */
   tof_array[0] = distance_ToF_front;
   tof_array[1] = distance_ToF_left;
   tof_array[2] = distance_ToF_right;

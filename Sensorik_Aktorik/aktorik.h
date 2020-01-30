@@ -5,6 +5,7 @@
 #include <ros.h>
 #include <std_msgs/UInt8.h>
 #include <std_msgs/UInt16.h>
+#include <std_msgs/Int16.h>
 #include <std_msgs/Float32.h>
 
 #define referenzvoltage               0.0021259765       //Referenzspannung zur Berechnung der Tiefpassspannung vom Motor - PWM
@@ -28,15 +29,15 @@ void init_aktorik();
 int aktorik();
 
 void servo_cb(const std_msgs::Float32& cmd_msg);
-void motor_cb(const std_msgs::UInt16& cmd_msg);
+void motor_cb(const std_msgs::Int16& cmd_msg);
 void lichtLinks_cb(const std_msgs::UInt8& light_state);
 void lichtRechts_cb(const std_msgs::UInt8& light_state);
 void lichtBremse_cb(const std_msgs::UInt8& light_state);
 void lichtRemote_cb(const std_msgs::UInt8& light_state);
 
 void servo_bewegung(float lenkwinkel_bogenmass);  //Funktion Servosteuerung im autonomen Betrieb
-void motor_bewegung(int8_t motor_drehzahl);         //Funktion Motorsteuerung im autonomen Betrieb
-void motor_bewegung_RC_mode (int8_t voltage_1);     //Funktion Motorsteuerung im RC - Mode
+void motor_bewegung(int16_t motor_drehzahl);         //Funktion Motorsteuerung im autonomen Betrieb
+void motor_bewegung_RC_mode (int16_t voltage_1);     //Funktion Motorsteuerung im RC - Mode
 void set_led_states();
 void set_output(short state, short port);
 

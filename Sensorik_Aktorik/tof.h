@@ -1,7 +1,7 @@
 #ifndef tof_h
 #define tof_h
-#include "Adafruit_VL6180X/Adafruit_VL6180X.h"
-#include "Adafruit_VL53L0X/src/Adafruit_VL53L0X.h"
+#include "Adafruit_VL6180X.h"
+#include "Adafruit_VL53L0X.h"
 
 
 //addresses for ToF sensors
@@ -31,7 +31,7 @@ const Adafruit_VL53L0X ToF_cross  = Adafruit_VL53L0X();
 const Adafruit_VL6180X ToF_back   = Adafruit_VL6180X();
 
 void init_tof();
-int8_t* read_TOF();
+uint16_t* read_TOF();
 
 
 #endif
