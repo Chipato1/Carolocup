@@ -1,5 +1,7 @@
 #include <vision/lane_detection/PointLaneDetector.hpp>
 #include <vision/VisionResultMsg.h>
+#include <vision/HoughPoints.h>
+#include <vision/HoughPointsArray.h>
 #include <vision/lane_detection/pinhole_camera_model.h>
 
 #include <iostream>
@@ -45,6 +47,7 @@ std::map<std::string, std::string> readConfigFile()
 
 PointLaneDetector *detector;
 ros::Publisher visionResultPublisher;
+ros::Publisher houghPublisher;
 image_transport::Publisher undistortPublisher;
 image_transport::Publisher ipmPublisher;
 image_transport::Publisher thresholdPublisher;
@@ -56,6 +59,7 @@ sensor_msgs::ImagePtr ipmMsg;
 sensor_msgs::ImagePtr thresholdMsg;
 sensor_msgs::ImagePtr edgeMsg;
 sensor_msgs::ImagePtr debugMsg;
+vision::HoughPointsArray houghMsg;
 
 vision::VisionResultMsg copyToMsg(VisionResult source)
 {
@@ -137,6 +141,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr &msg,
 	debugMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->debugImage).toImageMsg();
 
 	visionResultPublisher.publish(copyToMsg(detector->vRes));
+	houghPublisher.publish(houghMsg);
 	undistortPublisher.publish(undistortMsg);
 	ipmPublisher.publish(ipmMsg);
 	thresholdPublisher.publish(thresholdMsg);
@@ -165,6 +170,7 @@ int main(int argc, char **argv)
 	image_transport::CameraSubscriber sub = it.subscribeCamera(config["cam_im_topic_name"], 1, imageCallback);
 
 	visionResultPublisher = nh.advertise<vision::VisionResultMsg>(config["vision_result_topic_name"], 1);
+	houghPublisher = nh.advertise<vision::VisionResultMsg>("HoughResult", 1);
 	undistortPublisher = it.advertise(config["undistort_result_topic_name"], 1);
 	ipmPublisher = it.advertise(config["ipm_result_topic_name"], 1);
 	thresholdPublisher = it.advertise(config["threshold_topic_name"], 1);

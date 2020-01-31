@@ -55,9 +55,12 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 	double camera_res_wid	 	= 	config.count("camera_res_wid") 	 	? stod(config["camera_res_wid"])		: 1600;
 	double camera_res_hei	 	= 	config.count("camera_res_hei") 	 	? stod(config["camera_res_hei"])		: 1200;
 
-	double low_thresh		 	= 	config.count("low_thresh") 	 		? stod(config["low_thresh"])			: 50;
-	double high_thresh	 		= 	config.count("high_thresh") 	 	? stod(config["high_thresh"])			: 80;
-	double aperture_size	 	= 	config.count("aperture_size") 	 	? stod(config["aperture_size"])			: 3;
+	this->thres_cut		 	= 	config.count("thres_cut") 			? stod(config["thres_cut"])				: 127;
+	double ipm_correction		 = 	config.count("ipm_correction") 		? stod(config["ipm_correction"])		: 420;
+
+	double low_thresh		 	= 	config.count("canny_low_thresh") 	? stod(config["canny_low_thresh"])			: 50;
+	double high_thresh	 		= 	config.count("canny_high_thresh") 	? stod(config["canny_high_thresh"])			: 80;
+	double aperture_size	 	= 	config.count("canny_aperture_size") ? stod(config["canny_aperture_size"])			: 3;
 
 	this->LANE_THRES_MIN 		= 	config.count("LANE_THRES_MIN") 		? stoi(config["LANE_THRES_MIN"]) 		: 17;
 	this->LANE_THRES_MAX 		= 	config.count("LANE_THRES_MAX") 		? stoi(config["LANE_THRES_MAX"]) 		: 0;
@@ -70,18 +73,21 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 	this->ipmScaling			= 	config.count("ipm_scaling") 	 	? stod(config["ipm_scaling"])			: 1;	
 
 
-	this->LANE_THRES_MIN 		= 	this->LANE_THRES_MIN *  this->ipmScaling;
-	this->LANE_THRES_MAX 		= 	this->LANE_THRES_MAX *  this->ipmScaling;
-	this->LL_MIN_X			 	= 	this->LL_MIN_X *  this->ipmScaling;
-	this->LL_MAX_X 				= 	this->LL_MAX_X *  this->ipmScaling;
-	this->ML_MIN_X	 			= 	this->ML_MIN_X *  this->ipmScaling;
-	this->ML_MAX_X	 			= 	this->ML_MAX_X *  this->ipmScaling;
-	this->RL_MIN_X	 			= 	this->RL_MIN_X *  this->ipmScaling;
-	this->RL_MAX_X	 			= 	this->RL_MAX_X *  this->ipmScaling;
+	this->LANE_THRES_MIN 		= 	this->LANE_THRES_MIN 	*  this->ipmScaling;
+	this->LANE_THRES_MAX 		= 	this->LANE_THRES_MAX 	*  this->ipmScaling;
+	this->LL_MIN_X			 	= 	this->LL_MIN_X 			*  this->ipmScaling;
+	this->LL_MAX_X 				= 	this->LL_MAX_X 			*  this->ipmScaling;
+	this->ML_MIN_X	 			= 	this->ML_MIN_X 			*  this->ipmScaling;
+	this->ML_MAX_X	 			= 	this->ML_MAX_X 			*  this->ipmScaling;
+	this->RL_MIN_X	 			= 	this->RL_MIN_X 			*  this->ipmScaling;
+	this->RL_MAX_X	 			= 	this->RL_MAX_X 			*  this->ipmScaling;
 	
 
 
 	this->canny = cuda::createCannyEdgeDetector(low_thresh, high_thresh, aperture_size, false);
+	this->hough = cuda::createHoughSegmentDetector(1.0f, (float) (CV_PI / 180.0f), 50, 5);
+
+	this->stream.enqueueHostCallback(&PointLaneDetector::houghStreamCb, this);
 
 	this->ipmSize = Size(1200 * this->ipmScaling, 2400 * this->ipmScaling);
 
@@ -114,7 +120,7 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 	// Projecion matrix 2D -> 3D
 	Mat A1 = (Mat_<float>(4, 3) <<
 		1, 0, -this->ipmSize.width / 2,
-		0, 1, -this->ipmSize.height + 410 * this->ipmScaling,
+		0, 1, -this->ipmSize.height + ipm_correction * this->ipmScaling,
 		0, 0, 0,
 		0, 0, 1);
 
@@ -231,13 +237,28 @@ void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 	cv::cuda::warpPerspective(this->undistortGPU, this->ipmGPU, this->transformationMat, this->ipmSize, INTER_CUBIC | WARP_INVERSE_MAP);
 	this->ipmGPU.download(this->ipm);
 	
-	cv::cuda::threshold(this->ipmGPU, this->thresholdGPU, 230, 255, 0);
+	cv::cuda::threshold(this->ipmGPU, this->thresholdGPU, this->thres_cut, 255, 0);
 	this->thresholdGPU.download(this->threshold);
 
-	this->canny->detect(this->ipmGPU, this->edgeGPU);
+	this->canny->detect(this->thresholdGPU, this->edgeGPU);
 	this->edgeGPU.download(edge);
+
+//Hough Transformation 
+	this->hough->detect(this->edgeGPU, this->houghLinesGPU, stream);
+
+	
 }
 
+void PointLaneDetector::houghStreamCb(int status, void *userData) {
+	/*PointLaneDetector *self = static_cast<PointLaneDetector *>(userData);
+	if (!self->houghLinesGPU.empty()){
+		self->houghPointsResult.resize(self->houghLinesGPU.cols);
+		self->houghLinesCPU(1, self->houghLinesGPU.cols, CV_32SC4, &self->houghPointsResult[0]);
+		self->houghLinesGPU.download(self->houghLinesCPU);
+	}
+
+	self->houghCallback(self->houghPointsResult);*/
+}
 
 void PointLaneDetector::calculateAlgorithm() {
 	this->clear();

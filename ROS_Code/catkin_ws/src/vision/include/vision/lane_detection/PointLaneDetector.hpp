@@ -18,9 +18,16 @@ public:
 	cv::Mat threshold;
 	cv::Mat edge;
 	cv::Mat debugImage;
+	cv::Mat houghLinesCPU;
+
+	std::vector<cv::Vec4i> houghPointsResult;
 
 	cv::Mat map1;
 	cv::Mat map2;
+
+	double thres_cut;
+
+	std::function <void (std::vector<cv::Vec4i>)> houghCallback;
 
 	cv::cuda::GpuMat map1GPU;
 	cv::cuda::GpuMat map2GPU;
@@ -37,7 +44,7 @@ private:
 	void copyResult();
 	void mat2Arr(cv::Mat&, std::array<double, 4>&);
 	bool solveSingleLane(cv::Mat& lane, cv::Mat A, cv::Mat B, int start, int end, bool foundLane);
-	
+	static void houghStreamCb(int status, void *userData);
 
 	void clear();
 
@@ -65,6 +72,9 @@ private:
 	int stepSize = 0;
 
 	cv::Ptr<cv::cuda::CannyEdgeDetector> canny;
+	cv::Ptr<cv::cuda::HoughSegmentDetector> hough;
+
+	cv::cuda::Stream stream;
 
 	cv::Mat transformationMat;
 
@@ -82,6 +92,7 @@ private:
 	cv::cuda::GpuMat ipmGPU;
 	cv::cuda::GpuMat thresholdGPU;
 	cv::cuda::GpuMat edgeGPU;
+	cv::cuda::GpuMat houghLinesGPU;
 
 	
 
