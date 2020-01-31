@@ -1,6 +1,6 @@
-#include "image_geometry/pinhole_camera_model.h"
+#include <vision/lane_detection/pinhole_camera_model.h>
 #include <sensor_msgs/distortion_models.h>
-#include <opencv2/core/cuda.hpp>
+
 #ifdef BOOST_SHARED_PTR_HPP_INCLUDED
 #include <boost/make_shared.hpp>
 #endif
@@ -8,12 +8,6 @@
 namespace image_geometry
 {
 
-enum DistortionState
-{
-  NONE,
-  CALIBRATED,
-  UNKNOWN
-};
 
 PinholeCameraModel::PinholeCameraModel()
 {
@@ -21,8 +15,7 @@ PinholeCameraModel::PinholeCameraModel()
 
 PinholeCameraModel::PinholeCameraModel(const PinholeCameraModel &other)
 {
-  if (other.initialized())
-    fromCameraInfo(other.cam_info_);
+  fromCameraInfo(other.cam_info_);
 }
 
 // For uint32_t, string, bool...
@@ -167,8 +160,12 @@ bool PinholeCameraModel::fromCameraInfo(const sensor_msgs::CameraInfoConstPtr &m
   return fromCameraInfo(*msg);
 }
 
+cv::Size PinholeCameraModel::fullResolution() const
+{
+  return cv::Size(cam_info_.width, cam_info_.height);
+}
 
-void PinholeCameraModel::initRectificationMaps() const
+void PinholeCameraModel::initRectificationMaps()
 {
 
   cv::Size binned_resolution = fullResolution();
@@ -209,8 +206,8 @@ void PinholeCameraModel::initRectificationMaps() const
   // Note: m1type=CV_16SC2 to use fast fixed-point maps (see cv::remap)
   cv::initUndistortRectifyMap(K_binned, D_, R_, P_binned, binned_resolution,
                               CV_16SC2, full_map1, full_map2);
-  full_map1GPU.upload(full_map1);
-  full_map2GPU.upload(full_map2);
+  full_map1GPU = cv::cuda::GpuMat(full_map1);
+  full_map2GPU = cv::cuda::GpuMat(full_map2);
 }
 
 } //namespace image_geometry

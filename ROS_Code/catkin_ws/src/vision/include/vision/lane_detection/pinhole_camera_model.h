@@ -5,16 +5,19 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/calib3d/calib3d.hpp>
+#include <opencv2/core/cuda.hpp>
 #include <stdexcept>
 #include <string>
 
 namespace image_geometry {
 
-class Exception : public std::runtime_error
+enum DistortionState
 {
-public:
-  Exception(const std::string& description) : std::runtime_error(description) {}
+  NONE,
+  CALIBRATED,
+  UNKNOWN
 };
+
 
 /**
  * \brief Simplifies interpreting images geometrically using the parameters from
@@ -175,8 +178,8 @@ public:
 
 
 
-  cv::cuda::GpuMat full_map1GPU = cv::cuda::GpuMat();
-  cv::cuda::GpuMat full_map2GPU = cv::cuda::GpuMat();
+  cv::cuda::GpuMat full_map1GPU;
+  cv::cuda::GpuMat full_map2GPU;
 
 protected:
   sensor_msgs::CameraInfo cam_info_;
@@ -187,7 +190,7 @@ protected:
   cv::Matx33d K_full_; // Describe full-res image, needed for full maps
   cv::Matx34d P_full_; // Describe full-res image, needed for full maps
 
-  void initRectificationMaps() const;
+  void initRectificationMaps();
 
 };
 
@@ -212,25 +215,21 @@ inline uint32_t PinholeCameraModel::binningY() const { return cam_info_.binning_
 
 inline double PinholeCameraModel::getDeltaU(double deltaX, double Z) const
 {
-  assert( initialized() );
   return fx() * deltaX / Z;
 }
 
 inline double PinholeCameraModel::getDeltaV(double deltaY, double Z) const
 {
-  assert( initialized() );
   return fy() * deltaY / Z;
 }
 
 inline double PinholeCameraModel::getDeltaX(double deltaU, double Z) const
 {
-  assert( initialized() );
   return Z * deltaU / fx();
 }
 
 inline double PinholeCameraModel::getDeltaY(double deltaV, double Z) const
 {
-  assert( initialized() );
   return Z * deltaV / fy();
 }
 

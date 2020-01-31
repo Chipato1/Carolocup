@@ -114,27 +114,15 @@ void imageCallback(const sensor_msgs::ImageConstPtr &msg,
 				break;
 			}
 		}
-		// This will be true if D is empty/zero sized
-		if (zero_distortion)
-		{
-			pub_rect_.publish(image_msg);
-			return;
-		}
-
-		PinholeCameraModel model_;
+	
+		image_geometry::PinholeCameraModel model_;
 		model_.fromCameraInfo(info_msg);
 		detector->map1GPU = model_.full_map1GPU;
 		detector->map2GPU = model_.full_map2GPU;
 	}
 	
 	// Create cv::Mat views onto both buffers
-	const cv::Mat image = cv_bridge::toCvShare(image_msg, "mono8")->image;
-	cv::Mat rect;
-
-	// Rectify and publish
-	int interpolation = config_.interpolation;
-	
-	model_.rectifyImage(image, rect, interpolation);
+	cv::Mat image = cv_bridge::toCvShare(msg, "mono8")->image;
 
 	// Allocate new rectified image message
 	
@@ -174,7 +162,7 @@ int main(int argc, char **argv)
 	ros::NodeHandle nh;
 	image_transport::ImageTransport it(nh);
 
-	image_transport::Subscriber sub = it.subscribe(config["cam_im_topic_name"], 1, imageCallback);
+	image_transport::CameraSubscriber sub = it.subscribeCamera(config["cam_im_topic_name"], 1, imageCallback);
 
 	visionResultPublisher = nh.advertise<vision::VisionResultMsg>(config["vision_result_topic_name"], 1);
 	undistortPublisher = it.advertise(config["undistort_result_topic_name"], 1);
