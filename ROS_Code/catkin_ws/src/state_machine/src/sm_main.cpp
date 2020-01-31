@@ -1,40 +1,42 @@
 #include "sm_main.h"
-//Daten in struct
-//
 
-int handleStateINIT()
+/*int handleStateINIT()
 {
 	//get Service client QR
     //Hier kommt eigentlich nur die Bedingung QR Detected rein über service
-	if (true/*Service QR detected == true*/)
+	if (true/*Service QR detected == true*//*)
 	{
         //0.5 Sekunden warten 
         ros::Duration(0.5).sleep();
 		return QR_CODE_DETECTED;
 	}
     return INIT;
-}
+}*/
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "talker");
-  ros::NodeHandle n;
+	ros::init(argc, argv, "state_machine_ext");
+	ros::NodeHandle n;
 
-  //hier brauchen wir den Service Client für maxis spurerkennung
-  //ros::ServiceClient client = n.serviceClient<beginner_tutorials::AddTwoInts>("QR_Detected");
-  
-  //Publisher .. brauchen wir bestimmt noch"
-  //ros::Publisher servo_pub = n.advertise<std_msgs::UInt8>("motor", 1000);
-  ros::Rate loop_rate(50);
-  INIT_data.begin = ros::Time::now();
-  //Initialition
-  //generate
-  while (ros::ok())
-  {
-    loop_rate.sleep();
-  }
+	//hier brauchen wir den Service Client für maxis spurerkennung
+	//ros::ServiceClient client = n.serviceClient<beginner_tutorials::AddTwoInts>("QR_Detected");
 
-  return 0;
+	//Publisher .. brauchen wir bestimmt noch"
+	//ros::Publisher servo_pub = n.advertise<std_msgs::UInt8>("motor", 1000);
+
+	ros::Rate loop_rate(50);
+	INIT_data.begin = ros::Time::now();
+
+	sm_init();
+
+	while (ros::ok())
+	{
+		sm_step();
+
+		loop_rate.sleep();
+	}
+
+	return 0;
 }
 
 void sm_init()
@@ -273,10 +275,10 @@ void sm_handle_LEAVE_BOX()
 	if (sm_isStateChanged())
 	{
 		// set controller setpoint
-		se_startLeavBoxTimer();
+		se_startLeaveBoxTimer();
 	}
 
-	if (se_isLeavBoxTimeout())
+	if (se_isLeaveBoxTimeout())
 	{
 		sm_switch_state(DRIVE_RIGHT);
 	}
