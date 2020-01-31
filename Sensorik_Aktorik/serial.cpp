@@ -31,30 +31,24 @@ void init_ros(){
 /*void rpm_publish(float rpm){  
   rpm_msg.data = rpm;
   rpm_pub.publish(&rpm_msg);
-  sensorik_node.spinOnce();
 }
 */
 
 void tof_publish(uint16_t front, uint16_t left, uint16_t right, uint16_t cross, uint16_t back){  
   tof_front_msg.data = front;
   tof_front_pub.publish(&tof_front_msg);
-  sensorik_node.spinOnce();
   
   tof_left_msg.data = left;
   tof_left_pub.publish(&tof_left_msg);
-  sensorik_node.spinOnce();
   
   tof_right_msg.data = right;
   tof_right_pub.publish(&tof_right_msg);
-  sensorik_node.spinOnce();
   
   tof_cross_msg.data = cross;
   tof_cross_pub.publish(&tof_cross_msg);
-  sensorik_node.spinOnce();
   
   tof_back_msg.data = back;
   tof_back_pub.publish(&tof_back_msg);
-  sensorik_node.spinOnce();
 }
 
 /*
@@ -62,5 +56,9 @@ void tof_publish(uint16_t front, uint16_t left, uint16_t right, uint16_t cross, 
 void error_publish(int err){  
   error_msg.data = err;
   error_pub.publish(&error_msg);
-  sensorik_node.spinOnce();
 }*/
+
+void spin(){
+  sensorik_node.spinOnce();
+  delay(20);
+}

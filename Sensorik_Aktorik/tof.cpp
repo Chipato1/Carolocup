@@ -42,7 +42,7 @@ void init_tof()
     //Serial.println(F("Failed to boot ToF_front"));
     while(1);
   }
-/*
+
   //init ToF_left
   digitalWrite(ToF_left_SHT,HIGH);
   if (!ToF_left.begin(ToF_left_ADDRESS)) {
@@ -71,7 +71,7 @@ void init_tof()
     Serial.println(F("Failed to boot ToF_back"));
     while(1);
   }
-  */
+  
 }
 
 uint16_t* read_TOF()
@@ -83,11 +83,9 @@ uint16_t* read_TOF()
   uint16_t distance_ToF_back = threshold_back;
 
   ToF_front.rangingTest(&measure_front, false); // pass in 'true' to get debug data printout!
-  /*
   ToF_left.rangingTest(&measure_left, false); // pass in 'true' to get debug data printout!
   ToF_right.rangingTest(&measure_right, false); // pass in 'true' to get debug data printout!
   ToF_cross.rangingTest(&measure_cross, false); // pass in 'true' to get debug data printout!
-  */
 
   //read ToF_front
   if (measure_front.RangeStatus != 4) {  // phase failures have incorrect data
@@ -98,7 +96,7 @@ uint16_t* read_TOF()
   } else {
     distance_ToF_front = threshold_front;
   }
-  /*
+  
   //read ToF_left
   if (measure_left.RangeStatus != 4) {  // phase failures have incorrect data
     distance_ToF_left = measure_left.RangeMilliMeter;
@@ -136,7 +134,7 @@ uint16_t* read_TOF()
       distance_ToF_back = threshold_back;
     }
   }
-  */
+  
   tof_array[0] = distance_ToF_front;
   tof_array[1] = distance_ToF_left;
   tof_array[2] = distance_ToF_right;
