@@ -175,8 +175,8 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 	cv::Mat distortion = (Mat_<float>(1, 5) << -0.240380403251906, 0.1736768050189452, 0.002374331146303896, 0.001259448491836468, 0);
 	cv::initUndistortRectifyMap(K2, distortion, R2, K2, image_size, CV_32FC1, map1, map2);
 
-	this->map1GPU.upload(map1);
-	this->map2GPU.upload(map2);
+	//this->map1GPU.upload(map1);
+	//this->map2GPU.upload(map2);
 }
 
 void PointLaneDetector::debugDraw(cv::Mat& frame) {

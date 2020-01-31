@@ -1,5 +1,6 @@
 #include <vision/lane_detection/pinhole_camera_model.h>
 #include <sensor_msgs/distortion_models.h>
+#include <iostream>
 
 #ifdef BOOST_SHARED_PTR_HPP_INCLUDED
 #include <boost/make_shared.hpp>
@@ -151,7 +152,7 @@ bool PinholeCameraModel::fromCameraInfo(const sensor_msgs::CameraInfo &msg)
       P_(1, 3) *= scale_y;
     }
   }
-
+  this->initRectificationMaps();
   return true;
 }
 
@@ -205,7 +206,8 @@ void PinholeCameraModel::initRectificationMaps()
 
   // Note: m1type=CV_16SC2 to use fast fixed-point maps (see cv::remap)
   cv::initUndistortRectifyMap(K_binned, D_, R_, P_binned, binned_resolution,
-                              CV_16SC2, full_map1, full_map2);
+                              CV_32FC1, full_map1, full_map2);
+  std::cout << "TEST";
   full_map1GPU = cv::cuda::GpuMat(full_map1);
   full_map2GPU = cv::cuda::GpuMat(full_map2);
 }

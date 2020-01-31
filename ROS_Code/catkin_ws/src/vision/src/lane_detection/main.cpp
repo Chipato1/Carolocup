@@ -96,7 +96,6 @@ void imageCallback(const sensor_msgs::ImageConstPtr &msg,
 	if (!firstImage)
 	{
 		std::cout << "Receiving images from camera" << std::endl;
-		firstImage = true;
 
 		if (info_msg->K[0] == 0.0)
 		{
@@ -114,11 +113,12 @@ void imageCallback(const sensor_msgs::ImageConstPtr &msg,
 				break;
 			}
 		}
-	
 		image_geometry::PinholeCameraModel model_;
 		model_.fromCameraInfo(info_msg);
 		detector->map1GPU = model_.full_map1GPU;
 		detector->map2GPU = model_.full_map2GPU;
+
+		firstImage = true;
 	}
 	
 	// Create cv::Mat views onto both buffers
