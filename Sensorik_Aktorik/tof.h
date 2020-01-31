@@ -30,8 +30,9 @@ const Adafruit_VL53L0X ToF_right  = Adafruit_VL53L0X();
 const Adafruit_VL53L0X ToF_cross  = Adafruit_VL53L0X();
 const Adafruit_VL6180X ToF_back   = Adafruit_VL6180X();
 
-void init_tof();
+bool init_tof();
 uint16_t* read_TOF();
-
+void write_signal(bool signal);
+bool init_tof(Adafruit_VL53L0X* ToF, int adress);
 
 #endif

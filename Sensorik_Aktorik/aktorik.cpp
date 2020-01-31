@@ -87,6 +87,7 @@ int aktorik(){
       motor_bewegung_RC_mode(voltage_1);
       
   }*/
+  aktorik_node.spinOnce();
   return rc_mode;
   
 }

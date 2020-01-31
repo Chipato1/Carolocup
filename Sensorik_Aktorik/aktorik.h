@@ -15,7 +15,7 @@
 
 #define interval 1000
 
-#define tiefpass_pwm_motor_voltage    A12
+#define tiefpass_pwm_motor_voltage    12
 #define tiefpass_pwm_motor_voltage_nr 12
 #define MUX_Select                    48
 #define frontlicht                    53
