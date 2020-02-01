@@ -27,7 +27,7 @@ public:
 
 	double thres_cut;
 
-	std::function <void (std::vector<cv::Vec4i>)> houghCallback;
+	void (*houghCallback)(std::vector<cv::Vec4i>);
 
 	cv::cuda::GpuMat map1GPU;
 	cv::cuda::GpuMat map2GPU;

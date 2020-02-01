@@ -216,15 +216,31 @@ void PointLaneDetector::debugDraw(cv::Mat& frame) {
 	}
 }
 
-double calcX(cv::Mat func, float y) {
-	double res = 1/6 * func.at<double>(0,0)*y*y*y + 1/2 * func.at<double>(1,0)*y*y + func.at<double>(2,0)*y + func.at<double>(3,0);
-	return res;
+double calcX(cv::Mat func, double y) {
+	double d1 = func.at<double>(0, 0) / 6;
+	double d2 = d1 * y;
+	double d3 = d2 * y;
+	double d4 = d3 * y;
+
+	double z1 = func.at<double>(1, 0) / 2;
+	double z2 = z1 * y;
+	double z3 = z2 * y;
+
+	double e1 = func.at<double>(2, 0);
+	double e2 = e1 * y;
+
+	double n1 = func.at<double>(3, 0);
+
+	double ergebnis = d4 + z3 + e2 + n1;
+
+	double res = 1/6 * (func.at<double>(0,0)*y)*y*y + 1/2 * func.at<double>(1,0)*y*y + func.at<double>(2,0)*y + func.at<double>(3,0);
+	return ergebnis;
 }
 
 void PointLaneDetector::drawResult(cv::Mat im, cv::Mat x1, cv::Mat x2, cv::Scalar color, double intersect) {
-	for (int row = 0; row < im.rows; row++) {
+	for (int row = im.rows - 1; row >= 0 ; row--) {
 		float val = 0;
-		int tY = imToReY(row);
+		int tY = imToReY(row + 1);
 		int tX = 0;
 		if (tY <= intersect) {
 			val = calcX(x1, tY);
@@ -235,14 +251,23 @@ void PointLaneDetector::drawResult(cv::Mat im, cv::Mat x1, cv::Mat x2, cv::Scala
 		tX = reToImX(val);
 		if (tX <= im.cols - 1 && tX >= 0) {
 			circle(im, (cv::Point(tX, row)), 1, color);
+			if ((tY - 302) % 40 == 0) {
+				std::cout << (int)val << std::endl;
+			}
 		}
 	}
 }
 
 //Detectes the driving lanes for one frame
 void PointLaneDetector::calculateFrame(cv::Mat& frame) {
+	houghStreamCb(0, this);
 	this->doGPUTransform(frame);
 	this->calculateAlgorithm();
+	std::cout << this->rightLane1;
+	std::cout << (int)calcX(this->rightLane1, 2662) << std::endl;
+	for (int i = 302; i <= 2662; i += 40) {
+		std::cout << (int)calcX(this->rightLane1, i) << std::endl;
+	}
 	this->debugDraw(this->edge);
 }
 
@@ -269,14 +294,8 @@ void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 }
 
 void PointLaneDetector::houghStreamCb(int status, void *userData) {
-	/*PointLaneDetector *self = static_cast<PointLaneDetector *>(userData);
-	if (!self->houghLinesGPU.empty()){
-		self->houghPointsResult.resize(self->houghLinesGPU.cols);
-		self->houghLinesCPU(1, self->houghLinesGPU.cols, CV_32SC4, &self->houghPointsResult[0]);
-		self->houghLinesGPU.download(self->houghLinesCPU);
-	}
-
-	self->houghCallback(self->houghPointsResult);*/
+	PointLaneDetector *self = static_cast<PointLaneDetector *>(userData);
+	//self->houghCallback(self->houghPointsResult);
 }
 
 void PointLaneDetector::calculateAlgorithm() {
@@ -444,20 +463,20 @@ void PointLaneDetector::prepareInterpolation(int i) {
 
 		if (foundLL && leftIndex != -1 && distancesLeft.at(leftIndex) < 300) {
 			vRes.lanePoints.at(0).push_back(laneMiddles.at(leftIndex));
-			calculateSolveMatrix(laneMiddles.at(leftIndex), lA, lB, numberOfLeftPoints - 1);
+			calculateSolveMatrix(laneMiddles.at(leftIndex), lA, lB, numberOfLeftPoints);
 			leftLaneStartPoint = laneMiddles.at(leftIndex);
 			numberOfLeftPoints++;
 			
 		}
 		if (foundML && middleIndex != -1 && distancesMiddle.at(middleIndex) < 300) {
 			vRes.lanePoints.at(1).push_back(laneMiddles.at(middleIndex));
-			calculateSolveMatrix(laneMiddles.at(middleIndex), mA, mB, numberOfMiddlePoints - 1);
+			calculateSolveMatrix(laneMiddles.at(middleIndex), mA, mB, numberOfMiddlePoints);
 			middleLaneStartPoint = laneMiddles.at(middleIndex);
 			numberOfMiddlePoints++;
 		}
 		if (foundRL && rightIndex != -1 && distancesRight.at(rightIndex) < 300) {
 			vRes.lanePoints.at(2).push_back(laneMiddles.at(rightIndex));
-			calculateSolveMatrix(laneMiddles.at(rightIndex), rA, rB, numberOfRightPoints - 1);
+			calculateSolveMatrix(laneMiddles.at(rightIndex), rA, rB, numberOfRightPoints);
 			rightLaneStartPoint = laneMiddles.at(rightIndex);
 			numberOfRightPoints++;
 		}
@@ -471,10 +490,8 @@ bool PointLaneDetector::solveSingleLane(cv::Mat& lane, cv::Mat A, cv::Mat B, int
 	Range rowRange = Range(start, end);
 	Range colRange = Range(0, this->grade);
 	Range zeroOneRange = Range(0, 1);
-	//std::cout << A(rowRange, colRange) << std::endl;
-	//std::cout << B(rowRange, zeroOneRange) << std::endl;
 	bool success = cv::solve(A(rowRange, colRange), B(rowRange, zeroOneRange),lane, DECOMP_QR);
-	//std::cout << this->rightLane1 << std::endl;
+	
 	lane.at<double>(0) = lane.at<double>(0) * 6;
 	lane.at<double>(1) = lane.at<double>(1) * 2;
 	return success;
@@ -503,7 +520,7 @@ void PointLaneDetector::solveClothoide() {
 	int separationIndexR = 0;
 
 	int separationDist = 0;
-	for(int i = 4; i < numberOfRightPoints && separationIndexR == 0; i+=5) {
+	/*for(int i = 4; i < numberOfRightPoints && separationIndexR == 0; i+=5) {
 		
 		if (solveSingleLane(this->rightLane1, this->rA, this->rB, 0, i, foundRL)) {
 			double variance = calculateVariance(this->rightLane1, this->vRes.lanePoints[2]);
@@ -515,7 +532,7 @@ void PointLaneDetector::solveClothoide() {
 			
 		}
 	}
-	this->vRes.clothoideCutDistanceR_mm = imToReY(separationDist);
+	this->vRes.clothoideCutDistanceR_mm = imToReY(separationDist);*/
 	
 
 	//Keine Trennung gefunden -> nur C1 ist valide
@@ -558,7 +575,6 @@ void PointLaneDetector::solveClothoide() {
 	}
 
 	
-
 	this->vRes.solvedLL1 = solveSingleLane(this->leftLane1, this->lA, this->lB, 0, separationIndexL, foundLL);
 	this->vRes.solvedML1 = solveSingleLane(this->middleLane1, this->mA, this->mB, 0, separationIndexM, foundML);
 	this->vRes.solvedRL1 = solveSingleLane(this->rightLane1, this->rA, this->rB, 0, separationIndexR, foundRL);
