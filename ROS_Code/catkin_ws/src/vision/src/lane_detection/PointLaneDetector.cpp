@@ -1,4 +1,5 @@
 #include <vision/lane_detection/PointLaneDetector.hpp>
+#define WINDOWS_DEBUG
 
 #include <opencv2/core/utility.hpp>
 #include <opencv2/imgproc.hpp>
@@ -120,7 +121,7 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 	// Projecion matrix 2D -> 3D
 	Mat A1 = (Mat_<float>(4, 3) <<
 		1, 0, -this->ipmSize.width / 2,
-		0, 1, -this->ipmSize.height + ipm_correction * this->ipmScaling,
+		0, 1, -this->ipmSize.height + ipm_correction*ipmScaling,
 		0, 0, 0,
 		0, 0, 1);
 
@@ -178,21 +179,38 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 		0.000000, 0.000000, 1.000000
 		);
 
-	cv::Mat distortion = (Mat_<float>(1, 5) << -0.240380403251906, 0.1736768050189452, 0.002374331146303896, 0.001259448491836468, 0);
-	cv::initUndistortRectifyMap(K2, distortion, R2, K2, image_size, CV_32FC1, map1, map2);
+	//cv::Mat distortion = (Mat_<float>(1, 5) << -0.240380403251906, 0.1736768050189452, 0.002374331146303896, 0.001259448491836468, 0);
+	//cv::initUndistortRectifyMap(K2, distortion, R2, K2, image_size, CV_32FC1, map1, map2);
+	
+	#ifdef WINDOWS_DEBUG
+	cv::FileStorage storage1("C:\\Users\\Maximilian\\Downloads\\mat1.ext", cv::FileStorage::READ);
 
-	//this->map1GPU.upload(map1);
-	//this->map2GPU.upload(map2);
+	cv::Mat map1;
+	storage1["matName1"] >> map1;
+	storage1.release();
+
+	cv::FileStorage storage("C:\\Users\\Maximilian\\Downloads\\mat2.ext", cv::FileStorage::READ);
+
+	cv::Mat map2;
+	storage["matName1"] >> map2;
+	storage.release();
+
+	this->map1GPU.upload(map1);
+	this->map2GPU.upload(map2);
+
+	#endif
+
 }
 
 void PointLaneDetector::debugDraw(cv::Mat& frame) {
 	cv::cvtColor(frame, this->debugImage, COLOR_GRAY2BGR);
-	drawResult(this->debugImage, this->leftLane1, this->leftLane2, Scalar(255, 0, 0), this->intersectionPosL);
-	drawResult(this->debugImage, this->middleLane1, this->middleLane2, Scalar(255, 255, 255), this->intersectionPosM);
-	drawResult(this->debugImage, this->rightLane1, this->rightLane2, Scalar(0, 0, 255),this->intersectionPosR);
+	drawResult(this->debugImage, this->leftLane1, this->leftLane2, Scalar(255, 0, 0), this->vRes.clothoideCutDistanceL_mm);
+	drawResult(this->debugImage, this->middleLane1, this->middleLane2, Scalar(255, 255, 255), this->vRes.clothoideCutDistanceM_mm);
+	drawResult(this->debugImage, this->rightLane1, this->rightLane2, Scalar(0, 0, 255), this->vRes.clothoideCutDistanceR_mm);
 
 	for (int x = 0; x < this->vRes.lanePoints.size(); x++) {
 		for (int y = 0; y < this->vRes.lanePoints.at(x).size(); y++) {
+			
 			circle(this->debugImage, this->vRes.lanePoints.at(x).at(y), 5, Scalar(x * 128, 255, 255));
 		}
 	}
@@ -203,19 +221,20 @@ double calcX(cv::Mat func, float y) {
 	return res;
 }
 
-void drawResult(cv::Mat im, cv::Mat x1, cv::Mat x2, cv::Scalar color, int intersect) {
+void PointLaneDetector::drawResult(cv::Mat im, cv::Mat x1, cv::Mat x2, cv::Scalar color, double intersect) {
 	for (int row = 0; row < im.rows; row++) {
-		cv::Mat column = im.row(row);
-		int type = column.type();
 		float val = 0;
-		if (row > (im.size().height - intersect)) {
-			val = calcX(x1, row);
+		int tY = imToReY(row);
+		int tX = 0;
+		if (tY <= intersect) {
+			val = calcX(x1, tY);
 		}
 		else {
-			val = calcX(x2, row);
+			val = calcX(x2, tY);
 		}
-		if (val <= im.cols - 1 && val >= 0) {
-			circle(im, (cv::Point((int)val, row)), 1, color);
+		tX = reToImX(val);
+		if (tX <= im.cols - 1 && tX >= 0) {
+			circle(im, (cv::Point(tX, row)), 1, color);
 		}
 	}
 }
@@ -303,6 +322,26 @@ void PointLaneDetector::clear() {
 	this->laneMiddles.reserve(25);
 }
 
+double PointLaneDetector::imToReX(int x)
+{
+	return ((double)x - ipmSize.width / 2);
+}
+
+int PointLaneDetector::reToImX(double x)
+{
+	return (int)(x + this->ipmSize.width / 2);
+}
+
+double PointLaneDetector::imToReY(int y)
+{
+	return (-(double)y + ipmSize.height + 300 * this->ipmScaling);
+}
+
+int PointLaneDetector::reToImY(double y)
+{
+	return (int)(-y + this->ipmSize.height + 300 * this->ipmScaling);;
+}
+
 void PointLaneDetector::classifyPoints(int line) {
 	if (!laneMiddles.empty() && (!foundLL || !foundML || !foundRL)) {
 		for (int pointI = 0; pointI < laneMiddles.size(); pointI++) {
@@ -347,8 +386,6 @@ void PointLaneDetector::classifyPoints(int line) {
 		}
 	}
 }
-
-
 
 void PointLaneDetector::prepareInterpolation(int i) {
 	if (!laneMiddles.empty() && (foundLL || foundML || foundRL)) {
@@ -403,7 +440,7 @@ void PointLaneDetector::prepareInterpolation(int i) {
 			}
 		}
 
-
+		
 
 		if (foundLL && leftIndex != -1 && distancesLeft.at(leftIndex) < 300) {
 			vRes.lanePoints.at(0).push_back(laneMiddles.at(leftIndex));
@@ -427,7 +464,6 @@ void PointLaneDetector::prepareInterpolation(int i) {
 	}
 }
 
-
 bool PointLaneDetector::solveSingleLane(cv::Mat& lane, cv::Mat A, cv::Mat B, int start, int end, bool foundLane) {
 	if (!foundLane || end - start < grade) {
 		return false;
@@ -435,16 +471,21 @@ bool PointLaneDetector::solveSingleLane(cv::Mat& lane, cv::Mat A, cv::Mat B, int
 	Range rowRange = Range(start, end);
 	Range colRange = Range(0, this->grade);
 	Range zeroOneRange = Range(0, 1);
+	//std::cout << A(rowRange, colRange) << std::endl;
+	//std::cout << B(rowRange, zeroOneRange) << std::endl;
 	bool success = cv::solve(A(rowRange, colRange), B(rowRange, zeroOneRange),lane, DECOMP_QR);
+	//std::cout << this->rightLane1 << std::endl;
 	lane.at<double>(0) = lane.at<double>(0) * 6;
 	lane.at<double>(1) = lane.at<double>(1) * 2;
 	return success;
 }
 
-double calculateVariance(cv::Mat& lane,  std::vector<cv::Point> pts) {
+double PointLaneDetector::calculateVariance(cv::Mat& lane,  std::vector<cv::Point> pts) {
 	std::vector<double> res(pts.size(), 0);
-	std::transform(pts.begin(), pts.end(), res.begin(), [lane](cv::Point pt)->double{
-		return calcX(lane, pt.y) - pt.x;
+	std::transform(pts.begin(), pts.end(), res.begin(), [this, lane](cv::Point point)->double{
+		point.y = imToReY(point.y);
+		point.x = imToReX(point.x);
+		return calcX(lane, point.y) - point.x;
 	});
 	double mean = 0;
 	double m2 = 0;
@@ -463,8 +504,10 @@ void PointLaneDetector::solveClothoide() {
 
 	int separationDist = 0;
 	for(int i = 4; i < numberOfRightPoints && separationIndexR == 0; i+=5) {
+		
 		if (solveSingleLane(this->rightLane1, this->rA, this->rB, 0, i, foundRL)) {
 			double variance = calculateVariance(this->rightLane1, this->vRes.lanePoints[2]);
+			//std::cout << variance;
 			if (variance > 10) {
 				separationIndexR = i;
 				separationDist = this->vRes.lanePoints[2].at(separationIndexR).y;
@@ -472,27 +515,32 @@ void PointLaneDetector::solveClothoide() {
 			
 		}
 	}
-	this->vRes.clothoideCutDistanceR_mm = ((double) separationDist) * this->ipmScaling;
+	this->vRes.clothoideCutDistanceR_mm = imToReY(separationDist);
 	
 
 	//Keine Trennung gefunden -> nur C1 ist valide
+	separationIndexR = 0;
 	if(separationIndexR == 0) {
 		separationIndexL = numberOfLeftPoints;
 		separationIndexM = numberOfMiddlePoints;
 		separationIndexR = numberOfRightPoints;
+
+		this->vRes.clothoideCutDistanceL_mm = imToReY(0);
+		this->vRes.clothoideCutDistanceM_mm = imToReY(0);
+		this->vRes.clothoideCutDistanceR_mm = imToReY(0);
 	} else {
 		if(foundLL) {
 			auto res = std::find_if(this->vRes.lanePoints[0].begin(), this->vRes.lanePoints[0].end(), [&separationDist](cv::Point& elem) -> bool {
 				return elem.y > separationDist;
 			});
-			this->vRes.clothoideCutDistanceL_mm = ((double) (*res).y) * this->ipmScaling;
+			this->vRes.clothoideCutDistanceL_mm = imToReY((*res).y);
 			separationIndexL = res - this->vRes.lanePoints[0].begin();
 		}
 		if(foundML) {
 			auto res = std::find_if(this->vRes.lanePoints[1].begin(), this->vRes.lanePoints[1].end(), [&separationDist](cv::Point& elem) -> bool {
 				return elem.y > separationDist;
 			});
-			this->vRes.clothoideCutDistanceM_mm = ((double) (*res).y) * this->ipmScaling;
+			this->vRes.clothoideCutDistanceM_mm = imToReY((*res).y);
 			separationIndexM = res - this->vRes.lanePoints[1].begin();
 		}
 	}
@@ -510,14 +558,19 @@ void PointLaneDetector::solveClothoide() {
 	}
 
 	
+
 	this->vRes.solvedLL1 = solveSingleLane(this->leftLane1, this->lA, this->lB, 0, separationIndexL, foundLL);
 	this->vRes.solvedML1 = solveSingleLane(this->middleLane1, this->mA, this->mB, 0, separationIndexM, foundML);
 	this->vRes.solvedRL1 = solveSingleLane(this->rightLane1, this->rA, this->rB, 0, separationIndexR, foundRL);
 
-	this->vRes.solvedLL2 = solveSingleLane(this->leftLane2, this->lA, this->lB, separationIndexL, numberOfLines, foundLL);
-	this->vRes.solvedML2 = solveSingleLane(this->middleLane2, this->mA, this->mB, separationIndexM, numberOfLines, foundML);
-	this->vRes.solvedRL2 = solveSingleLane(this->rightLane2, this->rA, this->rB, separationIndexR, numberOfLines, foundRL);
+	//std::cout << this->leftLane1;
 
+
+	//this->vRes.solvedLL2 = solveSingleLane(this->leftLane2, this->lA, this->lB, separationIndexL, numberOfLines, foundLL);
+	//this->vRes.solvedML2 = solveSingleLane(this->middleLane2, this->mA, this->mB, separationIndexM, numberOfLines, foundML);
+	//this->vRes.solvedRL2 = solveSingleLane(this->rightLane2, this->rA, this->rB, separationIndexR, numberOfLines, foundRL);
+	
+	//std::cout << this->leftLane2;
 	copyResult();
 }
 
@@ -577,8 +630,11 @@ void PointLaneDetector::laneMiddlePoints(std::vector<cv::Point>& laneMiddles, Ma
 }
 
 void PointLaneDetector::calculateSolveMatrix(Point point, cv::Mat& A, cv::Mat& B, int i) {
-	A.at<double>(i, 0) = point.y * point.y * point.y;
-	A.at<double>(i, 1) = point.y * point.y;
+	point.y = imToReY(point.y);
+	point.x = imToReX(point.x);
+
+	A.at<double>(i, 0) = (double)point.y * (double)point.y * (double)point.y;
+	A.at<double>(i, 1) = (double)point.y * (double)point.y;
 	A.at<double>(i, 2) = point.y;
 	A.at<double>(i, 3) = 1;
 	B.at<double>(i, 0) = point.x;

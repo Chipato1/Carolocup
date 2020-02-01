@@ -122,6 +122,13 @@ void imageCallback(const sensor_msgs::ImageConstPtr &msg,
 		detector->map1GPU = model_.full_map1GPU;
 		detector->map2GPU = model_.full_map2GPU;
 
+		detector->houghCallback = [&houghPublisher] (std::vector<cv::Vec4i> data) {
+			//Daten kopieren...
+			vision::HoughPointsArray msg;
+			//msg.point1 = 
+			houghPublisher.publish(msg);
+		};
+
 		firstImage = true;
 	}
 	
