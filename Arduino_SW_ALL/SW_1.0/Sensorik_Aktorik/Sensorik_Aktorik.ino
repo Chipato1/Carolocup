@@ -10,6 +10,7 @@ uint16_t* tof;
 ros::NodeHandle arduino_node;
 
 void setup() {
+  arduino_node.initNode();
   //Always Init ROS first
   init_sensorik(&arduino_node); 
   init_aktorik(&arduino_node);
