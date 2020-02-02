@@ -233,7 +233,6 @@ double calcX(cv::Mat func, double y) {
 
 	double ergebnis = d4 + z3 + e2 + n1;
 
-	double res = 1/6 * (func.at<double>(0,0)*y)*y*y + 1/2 * func.at<double>(1,0)*y*y + func.at<double>(2,0)*y + func.at<double>(3,0);
 	return ergebnis;
 }
 
@@ -461,24 +460,39 @@ void PointLaneDetector::prepareInterpolation(int i) {
 
 		
 
+
+
 		if (foundLL && leftIndex != -1 && distancesLeft.at(leftIndex) < 300) {
-			vRes.lanePoints.at(0).push_back(laneMiddles.at(leftIndex));
-			calculateSolveMatrix(laneMiddles.at(leftIndex), lA, lB, numberOfLeftPoints);
-			leftLaneStartPoint = laneMiddles.at(leftIndex);
-			numberOfLeftPoints++;
+			int dx = laneMiddles.at(leftIndex).x - this->leftLaneStartPoint.x;
+			int dy = laneMiddles.at(leftIndex).y - this->leftLaneStartPoint.y;
+			if (dx < 30) {
+				vRes.lanePoints.at(0).push_back(laneMiddles.at(leftIndex));
+				calculateSolveMatrix(laneMiddles.at(leftIndex), lA, lB, numberOfLeftPoints);
+				leftLaneStartPoint = laneMiddles.at(leftIndex);
+				numberOfLeftPoints++;
+			}
+			
 			
 		}
 		if (foundML && middleIndex != -1 && distancesMiddle.at(middleIndex) < 300) {
-			vRes.lanePoints.at(1).push_back(laneMiddles.at(middleIndex));
-			calculateSolveMatrix(laneMiddles.at(middleIndex), mA, mB, numberOfMiddlePoints);
-			middleLaneStartPoint = laneMiddles.at(middleIndex);
-			numberOfMiddlePoints++;
+			int dx = laneMiddles.at(middleIndex).x - this->middleLaneStartPoint.x;
+			int dy = laneMiddles.at(middleIndex).y - this->middleLaneStartPoint.y;
+			if (dx < 30) {
+				vRes.lanePoints.at(1).push_back(laneMiddles.at(middleIndex));
+				calculateSolveMatrix(laneMiddles.at(middleIndex), mA, mB, numberOfMiddlePoints);
+				middleLaneStartPoint = laneMiddles.at(middleIndex);
+				numberOfMiddlePoints++;
+			}
 		}
 		if (foundRL && rightIndex != -1 && distancesRight.at(rightIndex) < 300) {
-			vRes.lanePoints.at(2).push_back(laneMiddles.at(rightIndex));
-			calculateSolveMatrix(laneMiddles.at(rightIndex), rA, rB, numberOfRightPoints);
-			rightLaneStartPoint = laneMiddles.at(rightIndex);
-			numberOfRightPoints++;
+			int dx = laneMiddles.at(rightIndex).x - this->rightLaneStartPoint.x;
+			int dy = laneMiddles.at(rightIndex).y - this->rightLaneStartPoint.y;
+			if (dy < 30) {
+				vRes.lanePoints.at(2).push_back(laneMiddles.at(rightIndex));
+				calculateSolveMatrix(laneMiddles.at(rightIndex), rA, rB, numberOfRightPoints);
+				rightLaneStartPoint = laneMiddles.at(rightIndex);
+				numberOfRightPoints++;
+			}
 		}
 	}
 }
