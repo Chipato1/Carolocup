@@ -1,0 +1,8 @@
+roscore
+roslaunch src/ueye_cam/launch/mono8.launch
+//Spur
+rosrun vision vision_lanedetectionnode
+//QR
+rosrun vision vision_startboxdetectionnode
+//Stoplinie
+rosrun vision vision_stoplinedetectionnode
