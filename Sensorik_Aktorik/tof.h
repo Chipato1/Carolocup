@@ -3,13 +3,11 @@
 #include "Adafruit_VL6180X.h"
 #include "Adafruit_VL53L0X.h"
 
-
 //addresses for ToF sensors
 #define ToF_front_ADDRESS 0x30
 #define ToF_left_ADDRESS  0x31
 #define ToF_right_ADDRESS 0x32
 #define ToF_cross_ADDRESS 0x33
-
 
 //shutdown pins for ToF sensors
 #define ToF_front_SHT     25
@@ -30,9 +28,15 @@ const Adafruit_VL53L0X ToF_right  = Adafruit_VL53L0X();
 const Adafruit_VL53L0X ToF_cross  = Adafruit_VL53L0X();
 const Adafruit_VL6180X ToF_back   = Adafruit_VL6180X();
 
-bool init_tof();
+static VL53L0X_RangingMeasurementData_t measure_front;
+static VL53L0X_RangingMeasurementData_t measure_left;
+static VL53L0X_RangingMeasurementData_t measure_right;
+static VL53L0X_RangingMeasurementData_t measure_cross;
+
+static uint16_t tof_array[5];
+
+boolean init_tof();
 uint16_t* read_TOF();
-void write_signal(bool signal);
-bool init_tof(Adafruit_VL53L0X* ToF, int adress);
+
 
 #endif

@@ -1,45 +1,6 @@
 ﻿#include "aktorik.h"
 
-Servo servo;
-Servo motor;  
-
-ros::NodeHandle aktorik_node;
-
-ros::Subscriber<std_msgs::Float32> sub_servo("servolenkwinkel", servo_cb);
-ros::Subscriber<std_msgs::UInt16> sub_motor("motordrehzahl", motor_cb);      
-ros::Subscriber<std_msgs::UInt8> sub_light_l("lichtLinks", lichtLinks_cb);
-ros::Subscriber<std_msgs::UInt8> sub_light_r("lichtRechts", lichtRechts_cb);
-ros::Subscriber<std_msgs::UInt8> sub_light_b("lichtBremse", lichtBremse_cb);
-ros::Subscriber<std_msgs::UInt8> sub_light_rem("lichtRemote", lichtRemote_cb);
-
-short rc_mode = 0;
-int16_t analogvalue_1; //eingelesener Pin - Wert am Tiefpass
-  
-float wert_servo;
-float lenkwinkel_servosize;
-float lenkwinkel_grad;
-
-//int8_t motor_uebertragung;
-//int8_t motor_uebertragung_RC_mode;
-
-short state_light_r = 0;
-short state_light_l = 0;
-short state_light_b = 0;
-short state_light_rem = 0;
-
-uint16_t previousMillis = 0;
-boolean blinkstate = true;
-
-void init_aktorik(){
-  aktorik_node.initNode();  //Initialisierung des ROS - Knoten
-  
-  aktorik_node.subscribe(sub_servo);  //Zuweisung Servo Subscriber zum Aktorik - Knoten
-  aktorik_node.subscribe(sub_motor);  //Zuweisung Motor Subscriber zum Aktorik - Knoten
-  aktorik_node.subscribe(sub_light_l);
-  aktorik_node.subscribe(sub_light_r);
-  aktorik_node.subscribe(sub_light_b);
-  aktorik_node.subscribe(sub_light_rem);
-  
+void init_aktorik(){  
   motor.attach(6); //Motor an Pin zuweisen
   servo.attach(5); //Servo an Pin zuweisen
 
@@ -69,7 +30,6 @@ int aktorik(){
     set_led_states();
     blinkstate = !blinkstate;
   }
-  aktorik_node.spinOnce();
   
   //analogvalue_1 = analogRead(tiefpass_pwm_motor_voltage_nr);//Einlesen des Pins vom Tiefpass
   //voltage = referenzvoltage * analogvalue_1; // 5V/1024 = 0.0048V pro Schritt
@@ -87,31 +47,10 @@ int aktorik(){
       motor_bewegung_RC_mode(voltage_1);
       
   }*/
-  aktorik_node.spinOnce();
   return rc_mode;
-  
 }
 
-void servo_cb(const std_msgs::Float32& cmd_msg){   //Callback - Funktion für Servoaufruf
-  servo_bewegung(cmd_msg.data);
-}
 
-void motor_cb(const std_msgs::Int16& cmd_msg){     //Callback - Funktion für Motoraufruf
-  motor_bewegung(cmd_msg.data);
-}
-
-void lichtLinks_cb(const std_msgs::UInt8& light_state){
-  state_light_r = light_state.data;
-}
-void lichtRechts_cb(const std_msgs::UInt8& light_state){
-  state_light_l = light_state.data;
-}
-void lichtBremse_cb(const std_msgs::UInt8& light_state){
-  state_light_b = light_state.data;
-}
-void lichtRemote_cb(const std_msgs::UInt8& light_state){
-  state_light_rem = light_state.data;
-}
 
 void servo_bewegung(float lenkwinkel_bogenmass){
   lenkwinkel_grad = (lenkwinkel_bogenmass/pi)*180;
@@ -161,7 +100,7 @@ void set_led_states(){
   set_output(state_light_rem, blaues_licht);
 }
 
-void set_output(short state, short port){
+void set_output(int8_t state, int8_t port){
   switch(state){
     case 0: digitalWrite(port, LOW);
       break;

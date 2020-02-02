@@ -1,18 +1,5 @@
 #include "rpm.h"
 
-#define ticks_per_cycle 9
-float rpm_value;
-
-int RPM_left, RPM_timer_left;
-int old_left;
-
-int RPM_right, RPM_timer_right;
-int old_right;
-
-Encoder right_back(2, 3);
-Encoder left_back(18, 19);
-
-
 void init_rpm(){
   old_left = 0;
   old_right = 0;
@@ -21,7 +8,7 @@ void init_rpm(){
 float read_RPM()
 {
   //left sensor
-  long new_left = left_back.read();
+  long new_left = left_encoder.read();
   RPM_timer_left = millis();
   if((new_left == 0) || (new_left == old_left)){
     RPM_left = 0;
@@ -33,7 +20,7 @@ float read_RPM()
   }
 
   //right sensor
-  long new_right = right_back.read();
+  long new_right = right_encoder.read();
   RPM_timer_right = millis();
   if((new_right == 0) || (new_right == old_right)){
     RPM_right = 0;
