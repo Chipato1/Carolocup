@@ -202,8 +202,23 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 
 }
 
+void printLane(cv::Mat& frame, std::array <double, 4> lane, std::string prefix, cv::Point pos) {
+	std::string t1 = prefix + " Winkel: " + std::to_string(atan(lane[2]) * 180 / 3.1415) + " Grad";
+	std::string t2 = prefix + " Mitte Delta: " + std::to_string(lane[3]) + " mm";
+	//std::cout << t1 + t2 << std::endl;
+	cv::putText(frame, (t1), pos, cv::FONT_HERSHEY_PLAIN, 3, Scalar(255, 255, 255, 255));
+	cv::putText(frame, (t2), cv::Point(pos.x, pos.y + 100), cv::FONT_HERSHEY_PLAIN, 3, Scalar(255, 255, 255, 255));
+}
+
 void PointLaneDetector::debugDraw(cv::Mat& frame) {
 	cv::cvtColor(frame, this->debugImage, COLOR_GRAY2BGR);
+	
+	printLane(this->debugImage,this->vRes.leftLane1, "Links", cv::Point(100,100));
+	printLane(this->debugImage, this->vRes.middleLane1, "Mitte", cv::Point(100, 300));
+	printLane(this->debugImage, this->vRes.rightLane1, "Rechts", cv::Point(100, 500));
+
+
+	
 	drawResult(this->debugImage, this->leftLane1, this->leftLane2, Scalar(255, 0, 0), this->vRes.clothoideCutDistanceL_mm);
 	drawResult(this->debugImage, this->middleLane1, this->middleLane2, Scalar(255, 255, 255), this->vRes.clothoideCutDistanceM_mm);
 	drawResult(this->debugImage, this->rightLane1, this->rightLane2, Scalar(0, 0, 255), this->vRes.clothoideCutDistanceR_mm);
@@ -250,23 +265,14 @@ void PointLaneDetector::drawResult(cv::Mat im, cv::Mat x1, cv::Mat x2, cv::Scala
 		tX = reToImX(val);
 		if (tX <= im.cols - 1 && tX >= 0) {
 			circle(im, (cv::Point(tX, row)), 1, color);
-			if ((tY - 302) % 40 == 0) {
-				std::cout << (int)val << std::endl;
-			}
 		}
 	}
 }
 
 //Detectes the driving lanes for one frame
 void PointLaneDetector::calculateFrame(cv::Mat& frame) {
-	houghStreamCb(0, this);
 	this->doGPUTransform(frame);
 	this->calculateAlgorithm();
-	std::cout << this->rightLane1;
-	std::cout << (int)calcX(this->rightLane1, 2662) << std::endl;
-	for (int i = 302; i <= 2662; i += 40) {
-		std::cout << (int)calcX(this->rightLane1, i) << std::endl;
-	}
 	this->debugDraw(this->edge);
 }
 
