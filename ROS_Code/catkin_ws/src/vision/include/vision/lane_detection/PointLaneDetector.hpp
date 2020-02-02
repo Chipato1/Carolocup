@@ -20,14 +20,13 @@ public:
 	cv::Mat debugImage;
 	cv::Mat houghLinesCPU;
 
-	std::vector<cv::Vec4i> houghPointsResult;
 
 	cv::Mat map1;
 	cv::Mat map2;
 
 	double thres_cut;
 
-	void (*houghCallback)(std::vector<cv::Vec4i>);
+	std::function <void (std::vector<cv::Vec4i> data)> houghCallback;
 
 	cv::cuda::GpuMat map1GPU;
 	cv::cuda::GpuMat map2GPU;
@@ -45,8 +44,7 @@ private:
 	void mat2Arr(cv::Mat&, std::array<double, 4>&);
 	bool solveSingleLane(cv::Mat& lane, cv::Mat A, cv::Mat B, int start, int end, bool foundLane);
 	static void houghStreamCb(int status, void *userData);
-	double calculateVariance(cv::Mat& lane, std::vector<cv::Point> pts);
-	void drawResult(cv::Mat im, cv::Mat x1, cv::Mat x2, cv::Scalar color, double intersect);
+
 	void clear();
 
 	cv::Size ipmSize;
@@ -128,9 +126,9 @@ private:
 	std::array<int, numberOfLines> middleLineIndices;
 	std::array<int, numberOfLines> rightLineIndices;
 
-	double imToReX(int x);
-	int reToImX(double x);
-	double imToReY(int y);
-	int reToImY(double y);
+	int intersectionPosL, intersectionPosM, intersectionPosR;
+
+	void doMean(std::array<double, numberOfLines>&);
+	void removeFalse(std::array<double, numberOfLines>&);
 
 };
