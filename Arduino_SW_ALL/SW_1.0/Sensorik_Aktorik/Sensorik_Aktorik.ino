@@ -16,10 +16,7 @@ void setup() {
   init_aktorik(&arduino_node);
   
   init_tof();
-  
-  /* Parkplatz
   init_rpm();
-  */
 }
 
 void loop() {
@@ -28,5 +25,5 @@ void loop() {
   aktorik();
   tof = read_TOF();
   tof_publish(tof[0], tof[1], tof[2], tof[3], tof[4]); 
-  spin();
+  arduino_node.spinOnce();
 }

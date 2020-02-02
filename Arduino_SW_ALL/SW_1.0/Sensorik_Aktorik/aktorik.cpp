@@ -5,8 +5,8 @@ Servo motor;
 
 //ros::NodeHandle aktorik_node;
 
-ros::Subscriber<std_msgs::Float32> sub_servo("ctl_motorRpm", servo_cb);
-ros::Subscriber<std_msgs::UInt16> sub_motor("ctl_servoAngle", motor_cb);      
+ros::Subscriber<std_msgs::Float32> sub_servo("ctl_servoAngle", servo_cb);
+ros::Subscriber<std_msgs::Int16> sub_motor("ctl_motorRpm", motor_cb);      
 ros::Subscriber<std_msgs::UInt8> sub_light_l("trj_flashLeft", lichtLinks_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_r("trj_flashRight", lichtRechts_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_b("trj_breakLight", lichtBremse_cb);

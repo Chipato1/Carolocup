@@ -41,7 +41,7 @@ bool init_tof()
   delay(1);
   //init ToF_front
   
-  init_tof(ToF_front_SHT, ToF_front_ADDRESS);
+  init_tof_sensor(ToF_front_SHT, ToF_front_ADDRESS);
   /*
   digitalWrite(ToF_front_SHT,HIGH);
   ToF_front.begin(ToF_front_ADDRESS);
@@ -79,7 +79,7 @@ uint16_t* read_TOF()
   uint16_t distance_ToF_back = threshold_back;
 
   ToF_front.rangingTest(&measure_front, false); // pass in 'true' to get debug data printout!
-  ToF_left.rangingTest(&measure_left, false); // pass in 'true' to get debug data printout!
+  //ToF_left.rangingTest(&measure_left, false); // pass in 'true' to get debug data printout!
   //ToF_right.rangingTest(&measure_right, false); // pass in 'true' to get debug data printout!
   //ToF_cross.rangingTest(&measure_cross, false); // pass in 'true' to get debug data printout!
 
@@ -92,7 +92,7 @@ uint16_t* read_TOF()
   } else {
     distance_ToF_front = threshold_front;
   }
-  
+  /*
   //read ToF_left
   if (measure_left.RangeStatus != 4) {  // phase failures have incorrect data
     distance_ToF_left = measure_left.RangeMilliMeter;
