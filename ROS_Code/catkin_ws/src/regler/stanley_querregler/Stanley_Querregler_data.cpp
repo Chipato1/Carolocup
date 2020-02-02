@@ -7,13 +7,13 @@
  *
  * Code generation for model "Stanley_Querregler".
  *
- * Model version              : 1.9
+ * Model version              : 1.11
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Fri Jan 17 18:23:05 2020
+ * C++ source code generated on : Wed Jan 22 14:25:49 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
- * Embedded hardware selection: Generic->Unspecified (assume 32-bit Generic)
+ * Embedded hardware selection: Intel->x86-64 (Linux 64)
  * Code generation objectives: Unspecified
  * Validation result: Not run
  */
@@ -79,10 +79,15 @@ P_Stanley_Querregler_T Stanley_Querregler_P = {
    */
   2.8,
 
-  /* Expression: [0.3, 0, 0]
+  /* Computed Parameter: Lenkwinkel_Y0
+   * Referenced by: '<S5>/Lenkwinkel'
+   */
+  0.0,
+
+  /* Expression: [0.4, 0, 0]
    * Referenced by: '<S5>/[x, y, theta]'
    */
-  { 0.3, 0.0, 0.0 },
+  { 0.4, 0.0, 0.0 },
 
   /* Expression: [0 1 0]
    * Referenced by: '<S5>/Constant1'

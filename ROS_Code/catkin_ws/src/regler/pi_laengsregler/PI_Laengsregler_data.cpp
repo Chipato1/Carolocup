@@ -7,9 +7,9 @@
  *
  * Code generation for model "PI_Laengsregler".
  *
- * Model version              : 1.11
+ * Model version              : 1.13
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Fri Jan 17 18:21:14 2020
+ * C++ source code generated on : Wed Jan 22 20:18:13 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -36,15 +36,15 @@ P_PI_Laengsregler_T PI_Laengsregler_P = {
   /* Variable: cT
    * Referenced by: '<S2>/Constant2'
    */
-  { 0.0, 39.478417604357432 },
+  { 39.478417604357432, 0.0 },
 
   /* Variable: ir
-   * Referenced by: '<S2>/Gain1'
+   * Referenced by: '<S34>/Integral Gain'
    */
   1.7,
 
   /* Variable: pr
-   * Referenced by: '<S2>/Gain'
+   * Referenced by: '<S42>/Proportional Gain'
    */
   1.3,
 
@@ -53,12 +53,25 @@ P_PI_Laengsregler_T PI_Laengsregler_P = {
    */
   7.0,
 
-  /* Computed Parameter: Out1_Y0
-   * Referenced by: '<S7>/Out1'
+  /* Mask Parameter: PIDController1_D
+   * Referenced by: '<S31>/Derivative Gain'
    */
-  {
-    0.0F                               /* Data */
-  },
+  0.0,
+
+  /* Mask Parameter: PIDController1_InitialCondition
+   * Referenced by: '<S32>/Filter'
+   */
+  0.0,
+
+  /* Mask Parameter: PIDController1_InitialConditi_b
+   * Referenced by: '<S37>/Integrator'
+   */
+  0.0,
+
+  /* Mask Parameter: PIDController1_N
+   * Referenced by: '<S40>/Filter Coefficient'
+   */
+  100.0,
 
   /* Computed Parameter: Constant_Value
    * Referenced by: '<S4>/Constant'
@@ -67,18 +80,11 @@ P_PI_Laengsregler_T PI_Laengsregler_P = {
     0.0F                               /* Data */
   },
 
-  /* Computed Parameter: Out1_Y0_m
-   * Referenced by: '<S8>/Out1'
-   */
-  {
-    0                                  /* Data */
-  },
-
-  /* Computed Parameter: Constant_Value_l
+  /* Computed Parameter: Constant_Value_b
    * Referenced by: '<S5>/Constant'
    */
   {
-    0                                  /* Data */
+    0.0F                               /* Data */
   },
 
   /* Computed Parameter: Constant_Value_j
@@ -89,7 +95,7 @@ P_PI_Laengsregler_T PI_Laengsregler_P = {
   },
 
   /* Expression: x0
-   * Referenced by: '<S6>/Integrator'
+   * Referenced by: '<S7>/Integrator'
    */
   0.0,
 
@@ -98,8 +104,27 @@ P_PI_Laengsregler_T PI_Laengsregler_P = {
    */
   0.0,
 
-  /* Expression: 0
-   * Referenced by: '<S2>/Integrator'
-   */
-  0.0
+  /* Start of '<S5>/Enabled Subsystem' */
+  {
+    /* Computed Parameter: Out1_Y0
+     * Referenced by: '<S53>/Out1'
+     */
+    {
+      0.0F                             /* Data */
+    }
+  }
+  ,
+
+  /* End of '<S5>/Enabled Subsystem' */
+
+  /* Start of '<S4>/Enabled Subsystem' */
+  {
+    /* Computed Parameter: Out1_Y0
+     * Referenced by: '<S52>/Out1'
+     */
+    {
+      0.0F                             /* Data */
+    }
+  }
+  /* End of '<S4>/Enabled Subsystem' */
 };

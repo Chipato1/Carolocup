@@ -67,14 +67,14 @@ set(state_machine_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("TRUE" STREQUAL "TRUE")
-  set(state_machine_SOURCE_PREFIX /home/chipato/Desktop/Test_git/Carolocup/ROS_Code/catkin_ws/src/state_machine)
-  set(state_machine_DEVEL_PREFIX /home/chipato/Desktop/Test_git/Carolocup/ROS_Code/catkin_ws/devel)
+  set(state_machine_SOURCE_PREFIX /home/chipato/Desktop/GIT2143/Carolocup/ROS_Code/catkin_ws/src/state_machine)
+  set(state_machine_DEVEL_PREFIX /home/chipato/Desktop/GIT2143/Carolocup/ROS_Code/catkin_ws/devel)
   set(state_machine_INSTALL_PREFIX "")
   set(state_machine_PREFIX ${state_machine_DEVEL_PREFIX})
 else()
   set(state_machine_SOURCE_PREFIX "")
   set(state_machine_DEVEL_PREFIX "")
-  set(state_machine_INSTALL_PREFIX /home/chipato/Desktop/Test_git/Carolocup/ROS_Code/catkin_ws/install)
+  set(state_machine_INSTALL_PREFIX /home/chipato/Desktop/GIT2143/Carolocup/ROS_Code/catkin_ws/install)
   set(state_machine_PREFIX ${state_machine_INSTALL_PREFIX})
 endif()
 
@@ -91,9 +91,9 @@ endif()
 # flag project as catkin-based to distinguish if a find_package()-ed project is a catkin project
 set(state_machine_FOUND_CATKIN_PROJECT TRUE)
 
-if(NOT " " STREQUAL " ")
+if(NOT "/home/chipato/Desktop/GIT2143/Carolocup/ROS_Code/catkin_ws/src/state_machine/include " STREQUAL " ")
   set(state_machine_INCLUDE_DIRS "")
-  set(_include_dirs "")
+  set(_include_dirs "/home/chipato/Desktop/GIT2143/Carolocup/ROS_Code/catkin_ws/src/state_machine/include")
   if(NOT " " STREQUAL " ")
     set(_report "Check the issue tracker '' and consider creating a ticket if the problem has not been reported yet.")
   elseif(NOT " " STREQUAL " ")
@@ -110,13 +110,13 @@ if(NOT " " STREQUAL " ")
         message(FATAL_ERROR "Project 'state_machine' specifies '${idir}' as an include dir, which is not found.  It does not exist in '${include}'.  ${_report}")
       endif()
     else()
-      message(FATAL_ERROR "Project 'state_machine' specifies '${idir}' as an include dir, which is not found.  It does neither exist as an absolute directory nor in '/home/chipato/Desktop/Test_git/Carolocup/ROS_Code/catkin_ws/src/state_machine/${idir}'.  ${_report}")
+      message(FATAL_ERROR "Project 'state_machine' specifies '${idir}' as an include dir, which is not found.  It does neither exist as an absolute directory nor in '/home/chipato/Desktop/GIT2143/Carolocup/ROS_Code/catkin_ws/src/state_machine/${idir}'.  ${_report}")
     endif()
     _list_append_unique(state_machine_INCLUDE_DIRS ${include})
   endforeach()
 endif()
 
-set(libraries "")
+set(libraries "state_machine")
 foreach(library ${libraries})
   # keep build configuration keywords, target names and absolute libraries as-is
   if("${library}" MATCHES "^(debug|optimized|general)$")
@@ -154,7 +154,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /home/chipato/Desktop/Test_git/Carolocup/ROS_Code/catkin_ws/devel/lib;/home/chipato/Desktop/Test_git/Carolocup/ROS_Code/catkin_ws/devel/lib;/opt/ros/melodic/lib)
+    foreach(path /home/chipato/Desktop/GIT2143/Carolocup/ROS_Code/catkin_ws/devel/lib;/home/chipato/Desktop/GIT2143/Carolocup/ROS_Code/catkin_ws/devel/lib;/opt/ros/melodic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)
@@ -185,7 +185,7 @@ foreach(t ${state_machine_EXPORTED_TARGETS})
   endif()
 endforeach()
 
-set(depends "")
+set(depends "roscpp;rospy;std_msgs")
 foreach(depend ${depends})
   string(REPLACE " " ";" depend_list ${depend})
   # the package name of the dependency must be kept in a unique variable so that it is not overwritten in recursive calls

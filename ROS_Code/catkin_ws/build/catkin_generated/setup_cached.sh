@@ -7,4 +7,4 @@
 # new environment variables
 
 # modified environment variables
-export PWD="/home/chipato/Desktop/Test_git/Carolocup/ROS_Code/catkin_ws/build"
+export PWD="/home/chipato/Desktop/GIT2143/Carolocup/ROS_Code/catkin_ws/build"
