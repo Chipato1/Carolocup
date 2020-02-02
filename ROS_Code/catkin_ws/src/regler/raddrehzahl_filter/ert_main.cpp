@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "Zustandsregler.h"
-#include "Zustandsregler_private.h"
+#include "raddrehzahl_filter.h"
+#include "raddrehzahl_filter_private.h"
 #include "rtwtypes.h"
 #include "limits.h"
 #include "linuxinitialize.h"
@@ -23,15 +23,15 @@ void *threadJoinStatus;
 int terminatingmodel = 0;
 void *baseRateTask(void *arg)
 {
-  runModel = (rtmGetErrorStatus(Zustandsregler_M) == (NULL)) &&
-    !rtmGetStopRequested(Zustandsregler_M);
+  runModel = (rtmGetErrorStatus(raddrehzahl_filter_M) == (NULL)) &&
+    !rtmGetStopRequested(raddrehzahl_filter_M);
   while (runModel) {
     sem_wait(&baserateTaskSem);
-    Zustandsregler_step();
+    raddrehzahl_filter_step();
 
     /* Get model outputs here */
-    stopRequested = !((rtmGetErrorStatus(Zustandsregler_M) == (NULL)) &&
-                      !rtmGetStopRequested(Zustandsregler_M));
+    stopRequested = !((rtmGetErrorStatus(raddrehzahl_filter_M) == (NULL)) &&
+                      !rtmGetStopRequested(raddrehzahl_filter_M));
     runModel = !stopRequested;
   }
 
@@ -44,7 +44,7 @@ void *baseRateTask(void *arg)
 void exitFcn(int sig)
 {
   UNUSED(sig);
-  rtmSetErrorStatus(Zustandsregler_M, "stopping the model");
+  rtmSetErrorStatus(raddrehzahl_filter_M, "stopping the model");
 }
 
 void *terminateTask(void *arg)
@@ -59,7 +59,7 @@ void *terminateTask(void *arg)
   /* Disable rt_OneStep() here */
 
   /* Terminate model */
-  Zustandsregler_terminate();
+  raddrehzahl_filter_terminate();
   sem_post(&stopSem);
   return NULL;
 }
@@ -70,13 +70,13 @@ int main(int argc, char **argv)
   UNUSED(argv);
   void slros_node_init(int argc, char** argv);
   slros_node_init(argc, argv);
-  rtmSetErrorStatus(Zustandsregler_M, 0);
+  rtmSetErrorStatus(raddrehzahl_filter_M, 0);
 
   /* Initialize model */
-  Zustandsregler_initialize();
+  raddrehzahl_filter_initialize();
 
   /* Call RTOS Initialization function */
-  myRTOSInit(0.001, 0);
+  myRTOSInit(0.2, 0);
 
   /* Wait for stop semaphore */
   sem_wait(&stopSem);

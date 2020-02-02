@@ -1,15 +1,15 @@
 /*
- * Zustandsregler_private.h
+ * raddrehzahl_filter_private.h
  *
  * Academic License - for use in teaching, academic research, and meeting
  * course requirements at degree granting institutions only.  Not for
  * government, commercial, or other organizational use.
  *
- * Code generation for model "Zustandsregler".
+ * Code generation for model "raddrehzahl_filter".
  *
- * Model version              : 1.36
+ * Model version              : 1.7
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Wed Jan 22 23:54:59 2020
+ * C++ source code generated on : Sun Feb  2 22:42:49 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -18,11 +18,10 @@
  * Validation result: Not run
  */
 
-#ifndef RTW_HEADER_Zustandsregler_private_h_
-#define RTW_HEADER_Zustandsregler_private_h_
+#ifndef RTW_HEADER_raddrehzahl_filter_private_h_
+#define RTW_HEADER_raddrehzahl_filter_private_h_
 #include "rtwtypes.h"
 #include "multiword_types.h"
-#include "Zustandsregler.h"
 
 /* Private macros used by the generated code to access rtModel */
 #ifndef rtmIsMajorTimeStep
@@ -37,13 +36,7 @@
 # define rtmSetTPtr(rtm, val)          ((rtm)->Timing.t = (val))
 #endif
 
-extern void Zustandsr_EnabledSubsystem_Init(B_EnabledSubsystem_Zustandsre_T
-  *localB, P_EnabledSubsystem_Zustandsre_T *localP);
-extern void Zustandsregler_EnabledSubsystem(boolean_T rtu_Enable, const
-  SL_Bus_Zustandsregler_std_msgs_Float64 *rtu_In1,
-  B_EnabledSubsystem_Zustandsre_T *localB);
-
 /* private model entry point functions */
-extern void Zustandsregler_derivatives(void);
+extern void raddrehzahl_filter_derivatives(void);
 
-#endif                                /* RTW_HEADER_Zustandsregler_private_h_ */
+#endif                            /* RTW_HEADER_raddrehzahl_filter_private_h_ */

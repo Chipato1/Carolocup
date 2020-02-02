@@ -1,15 +1,15 @@
 /*
- * Zustandsregler_types.h
+ * raddrehzahl_filter_types.h
  *
  * Academic License - for use in teaching, academic research, and meeting
  * course requirements at degree granting institutions only.  Not for
  * government, commercial, or other organizational use.
  *
- * Code generation for model "Zustandsregler".
+ * Code generation for model "raddrehzahl_filter".
  *
- * Model version              : 1.36
+ * Model version              : 1.7
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Wed Jan 22 23:54:59 2020
+ * C++ source code generated on : Sun Feb  2 22:42:49 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -18,25 +18,16 @@
  * Validation result: Not run
  */
 
-#ifndef RTW_HEADER_Zustandsregler_types_h_
-#define RTW_HEADER_Zustandsregler_types_h_
+#ifndef RTW_HEADER_raddrehzahl_filter_types_h_
+#define RTW_HEADER_raddrehzahl_filter_types_h_
 #include "rtwtypes.h"
 #include "multiword_types.h"
-#ifndef DEFINED_TYPEDEF_FOR_SL_Bus_Zustandsregler_std_msgs_Float32_
-#define DEFINED_TYPEDEF_FOR_SL_Bus_Zustandsregler_std_msgs_Float32_
+#ifndef DEFINED_TYPEDEF_FOR_SL_Bus_raddrehzahl_filter_std_msgs_Float32_
+#define DEFINED_TYPEDEF_FOR_SL_Bus_raddrehzahl_filter_std_msgs_Float32_
 
 typedef struct {
   real32_T Data;
-} SL_Bus_Zustandsregler_std_msgs_Float32;
-
-#endif
-
-#ifndef DEFINED_TYPEDEF_FOR_SL_Bus_Zustandsregler_std_msgs_Float64_
-#define DEFINED_TYPEDEF_FOR_SL_Bus_Zustandsregler_std_msgs_Float64_
-
-typedef struct {
-  real_T Data;
-} SL_Bus_Zustandsregler_std_msgs_Float64;
+} SL_Bus_raddrehzahl_filter_std_msgs_Float32;
 
 #endif
 
@@ -62,13 +53,10 @@ typedef struct {
 
 #endif                               /*typedef_ros_slros_internal_block_Subs_T*/
 
-/* Parameters for system: '<S3>/Enabled Subsystem' */
-typedef struct P_EnabledSubsystem_Zustandsre_T_ P_EnabledSubsystem_Zustandsre_T;
-
 /* Parameters (default storage) */
-typedef struct P_Zustandsregler_T_ P_Zustandsregler_T;
+typedef struct P_raddrehzahl_filter_T_ P_raddrehzahl_filter_T;
 
 /* Forward declaration for rtModel */
-typedef struct tag_RTM_Zustandsregler_T RT_MODEL_Zustandsregler_T;
+typedef struct tag_RTM_raddrehzahl_filter_T RT_MODEL_raddrehzahl_filter_T;
 
-#endif                                 /* RTW_HEADER_Zustandsregler_types_h_ */
+#endif                              /* RTW_HEADER_raddrehzahl_filter_types_h_ */

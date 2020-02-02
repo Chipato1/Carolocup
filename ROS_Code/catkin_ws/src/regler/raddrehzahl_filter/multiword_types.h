@@ -5,11 +5,11 @@
  * course requirements at degree granting institutions only.  Not for
  * government, commercial, or other organizational use.
  *
- * Code generation for model "Zustandsregler".
+ * Code generation for model "raddrehzahl_filter".
  *
- * Model version              : 1.36
+ * Model version              : 1.7
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Wed Jan 22 23:54:59 2020
+ * C++ source code generated on : Sun Feb  2 22:42:49 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping

@@ -1,8 +1,8 @@
 <package>
-  <name>zustandsregler</name>
+  <name>raddrehzahl_filter</name>
   <version>1.0.0</version>
   <description>
-  This package is generated from Zustandsregler Simulink model.
+  This package is generated from raddrehzahl_filter Simulink model.
   </description>
   <maintainer email="rosuser@test.com">ROS User</maintainer>
   <license>BSD</license>
