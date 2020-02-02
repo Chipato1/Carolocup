@@ -35,11 +35,13 @@ std::map<std::string, std::string> readConfigFile() {
 	return my_map;
 }
 
-
-void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
-	cv::Mat image = cv_bridge::toCvShare(msg, "mono8")->image;
-	//---------------------------CODE HIER EINFÜGEN----------------------
+StoplineDetector stoplineDetector;
+void imageCallback(const vision::HoughPointsArray::ConstPtr& msg){
+	//vision::HoughPointsArray &msgPoints = msg->points;
 	
+    //cv::Mat image = cv::imread("/Users/beni/Desktop/Studium/Studienarbeit/OpenCV/OpenCVTest/OpenCVTest/images");
+    	stoplineDetector.detect(msg, msg->points.size());
+	//---------------------------CODE HIER EINFÜGEN----------------------
 }
 
 int main(int argc, char** argv) {
@@ -54,9 +56,9 @@ int main(int argc, char** argv) {
 	std::cout << "Success!" << std::endl;
 
 	ros::NodeHandle nh;
-	image_transport::ImageTransport it(nh);
-	//
-	image_transport::Subscriber sub = it.subscribe(config["cam_im_topic_name"] , 1, imageCallback);
+	//image_transport::ImageTransport it(nh);
+	
+	ros::Subscriber sub = nh.subscribe("HoughResult" , 1, imageCallback);
 	ros::spin();
 	return 0;
 }

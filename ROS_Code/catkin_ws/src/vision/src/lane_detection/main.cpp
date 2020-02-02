@@ -123,9 +123,19 @@ void imageCallback(const sensor_msgs::ImageConstPtr &msg,
 		detector->map2GPU = model_.full_map2GPU;
 
 		detector->houghCallback = [&houghPublisher] (std::vector<cv::Vec4i> data) {
-			//Daten kopieren...
+			cv::Vec4i l;
 			vision::HoughPointsArray msg;
-			//msg.point1 = 
+			vision::HoughPoints houghData;
+			
+			for (size_t i = 0; i < data.size(); i++) {
+				l = data[i];
+				houghData.x1 = l[0]; 
+				houghData.y1 = l[1]; 
+				houghData.x2 = l[2];
+				houghData.y2 = l[3];
+			}
+
+			msg.points.push_back(houghData); 
 			houghPublisher.publish(msg);
 		};
 
@@ -145,7 +155,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr &msg,
 	ipmMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->ipm).toImageMsg();
 	thresholdMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->threshold).toImageMsg();
 	edgeMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->edge).toImageMsg();
-	debugMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->debugImage).toImageMsg();
+	debugMsg = cv_bridge::CvImage(std_msgs::Header(), "rgb8", detector->debugImage).toImageMsg();
 
 	visionResultPublisher.publish(copyToMsg(detector->vRes));
 	houghPublisher.publish(houghMsg);
@@ -177,7 +187,7 @@ int main(int argc, char **argv)
 	image_transport::CameraSubscriber sub = it.subscribeCamera(config["cam_im_topic_name"], 1, imageCallback);
 
 	visionResultPublisher = nh.advertise<vision::VisionResultMsg>(config["vision_result_topic_name"], 1);
-	houghPublisher = nh.advertise<vision::VisionResultMsg>("HoughResult", 1);
+	houghPublisher = nh.advertise<vision::HoughPointsArray>("HoughResult", 1);
 	undistortPublisher = it.advertise(config["undistort_result_topic_name"], 1);
 	ipmPublisher = it.advertise(config["ipm_result_topic_name"], 1);
 	thresholdPublisher = it.advertise(config["threshold_topic_name"], 1);

@@ -299,8 +299,16 @@ void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 }
 
 void PointLaneDetector::houghStreamCb(int status, void *userData) {
+	std::vector<cv::Vec4i> houghPointsResult;
 	PointLaneDetector *self = static_cast<PointLaneDetector *>(userData);
-	//self->houghCallback(self->houghPointsResult);
+
+	if (!self->houghLinesGPU.empty()){
+		houghPointsResult.resize(self->houghLinesGPU.cols);
+		self->houghLinesCPU = cv::Mat(1, self->houghLinesGPU.cols, CV_32SC4, &houghPointsResult[0]);
+		self->houghLinesGPU.download(self->houghLinesCPU);
+	}
+
+	//self->houghCallback(houghPointsResult);
 }
 
 void PointLaneDetector::calculateAlgorithm() {

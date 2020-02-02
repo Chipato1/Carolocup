@@ -20,14 +20,13 @@ public:
 	cv::Mat debugImage;
 	cv::Mat houghLinesCPU;
 
-	std::vector<cv::Vec4i> houghPointsResult;
-
+	
 	cv::Mat map1;
 	cv::Mat map2;
 
 	double thres_cut;
 
-	void (*houghCallback)(std::vector<cv::Vec4i>);
+	std::function <void (std::vector<cv::Vec4i> data)> houghCallback;
 
 	cv::cuda::GpuMat map1GPU;
 	cv::cuda::GpuMat map2GPU;
