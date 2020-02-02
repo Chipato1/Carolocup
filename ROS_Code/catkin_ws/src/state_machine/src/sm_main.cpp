@@ -304,7 +304,7 @@ void sm_handle_DRIVE_RIGHT()
 	}
 }
 
-void sm_handle_KEEP_TRACK_RIGHT();
+void sm_handle_KEEP_TRACK_RIGHT()
 {
 	// preserve setpoints for controller
 

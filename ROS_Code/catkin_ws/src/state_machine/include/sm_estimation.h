@@ -8,7 +8,13 @@
  * date: 28.01.2020
  **/
 
+#ifndef SM_ESTIMATION_H
+#define SM_ESTIMATION_H
+
 #include "ros/ros.h"
+#include "std_msgs/Float32.h"
+
+#include <state_machine/VisionResultMsg.h>
 
 #include "trajectory.h"
 
@@ -45,7 +51,7 @@ ros::Publisher se_pub_enableLateralController;
 ros::Publisher se_pub_steeringAngle;
 
 /* Topic Callbacks */
-void se_cb_sub_camerashit(const vision:::VisionResultMsg msg);
+void se_cb_sub_camerashit(const state_machine::VisionResultMsg msg);
 
 void se_cb_sub_currentSpeed(const std_msgs::Float32::ConstPtr& msg);
 void se_cb_sub_currentDistance(const std_msgs::Float32::ConstPtr& msg);
@@ -57,7 +63,7 @@ void se_cb_sub_tof_l(const std_msgs::Float32::ConstPtr& msg);
 void se_cb_sub_tof_b(const std_msgs::Float32::ConstPtr& msg);
 
 /* Sensor variables */
-vision:::VisionResultMsg visionResult;
+state_machine:::VisionResultMsg visionResult;
 
 float se_currentSpeed;
 float se_currentDistance;
@@ -74,7 +80,7 @@ se_sensorBuffer_t se_buffer_tof_r;
 se_sensorBuffer_t se_buffer_tof_l;
 se_sensorBuffer_t se_buffer_tof_b;
 
-void se_sensorBuffer_append(se_sensorBuffer* buffer, float value);
+void se_sensorBuffer_append(se_sensorBuffer_t* buffer, float value);
 
 /* Timer variables */
 typedef ros::Time se_timervar_t;
@@ -126,6 +132,8 @@ int se_isJunctionWaitTimeout();
 
 void se_startJunctionObstacleWaitTimer();
 int se_isJunctionObstacleWaitTimeout();
+
+#endif
 
 void se_startJunctionDriveOverTimeout();
 int se_isJunctionDriveOverTimeout();

@@ -7,7 +7,8 @@
  * date: 28.01.2020
  **/
 
-#include "ros/ros.h"
+#ifndef TRAJECTORY_H
+#define TRAJECTORY_H
 
 #include <math.h>
 
@@ -54,6 +55,8 @@ int trj_park_getParkOutLongSteeringAngleAtDistance(float distance);
 
 int trj_park_getParkInSteeringAngleAtDistance(float distance);
 int trj_park_getParkOutSteeringAngleAtDistance(float distance);
+
+#endif
 
 int trj_park_getParkInDirectionAtDistance(float distance);
 int trj_park_getParkOutDirectionAtDistance(float distance);
