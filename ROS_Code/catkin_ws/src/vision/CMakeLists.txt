@@ -1,16 +1,22 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(light_control)
+project(vision)
+
+##OPENCV ADDED HERE
+find_package( OpenCV REQUIRED)
+
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  image_transport
+  cv_bridge
   roscpp
-  rospy
   std_msgs
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -50,14 +56,15 @@ find_package(catkin REQUIRED COMPONENTS
  add_message_files(
    FILES
    VisionResultMsg.msg
+   HoughPoints.msg
+   HoughPointsArray.msg
  )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+ add_service_files(
+   FILES
+   SetBool.srv
+ )
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -67,10 +74,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs
-# )
+ generate_messages(
+   DEPENDENCIES
+   std_msgs
+ )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -104,8 +111,8 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   
 #  INCLUDE_DIRS include
-#  LIBRARIES light_control
-#  CATKIN_DEPENDS roscpp rospy std_msgs
+#  LIBRARIES vision
+#  CATKIN_DEPENDS  image_transport roscpp std_msgs
 #  DEPENDS system_lib
 )
 
@@ -116,13 +123,14 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
+
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/light_control.cpp
+#   src/${PROJECT_NAME}/vision.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -133,7 +141,29 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(${PROJECT_NAME}_node src/light_control_node.cpp)
+
+
+set(CMAKE_CXX_FLAGS "-Ofast -march=native -fopenmp -D_GLIBCXX_PARALLEL")
+
+
+
+add_executable(${PROJECT_NAME}_lanedetectionnode src/lane_detection/main.cpp src/lane_detection/PointLaneDetector.cpp src/lane_detection/VisionResult.cpp src/lane_detection/pinhole_camera_model.cpp)
+target_link_libraries( ${PROJECT_NAME}_lanedetectionnode ${catkin_LIBRARIES} ${OpenCV_LIBS} )
+
+add_executable(${PROJECT_NAME}_startboxdetectionnode src/startbox_detection/main.cpp src/startbox_detection/StartboxDetector.cpp)
+target_link_libraries( ${PROJECT_NAME}_startboxdetectionnode ${catkin_LIBRARIES} ${OpenCV_LIBS} )
+
+add_executable(${PROJECT_NAME}_parkinglotdetectionnode src/parkinglot_detection/main.cpp src/parkinglot_detection/ParkinglotDetector.cpp)
+target_link_libraries( ${PROJECT_NAME}_parkinglotdetectionnode ${catkin_LIBRARIES} ${OpenCV_LIBS} )
+
+add_executable(${PROJECT_NAME}_stoplinedetectionnode src/stopline_detection/main.cpp src/stopline_detection/StoplineDetector.cpp)
+target_link_libraries( ${PROJECT_NAME}_stoplinedetectionnode ${catkin_LIBRARIES} ${OpenCV_LIBS} )
+
+## Copy the config.cfg file
+#add_custom_command(TARGET ${PROJECT_NAME}_lanedetectionnode POST_BUILD        # Adds a post-build event to MyTest
+#    COMMAND ${CMAKE_COMMAND} -E copy_if_different  # which executes "cmake - E copy_if_different..."
+#        "${PROJECT_SOURCE_DIR}/src/lane_detection/config.cfg"      # <--this is in-file
+#        $<TARGET_FILE_DIR:${PROJECT_NAME}_lanedetectionnode>)                 # <--this is out-file path
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -146,9 +176,9 @@ add_executable(${PROJECT_NAME}_node src/light_control_node.cpp)
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(${PROJECT_NAME}_node
-   ${catkin_LIBRARIES}
-)
+# target_link_libraries(${PROJECT_NAME}_node
+#   ${catkin_LIBRARIES}
+# )
 
 #############
 ## Install ##
@@ -197,7 +227,7 @@ target_link_libraries(${PROJECT_NAME}_node
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_light_control.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_vision.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
