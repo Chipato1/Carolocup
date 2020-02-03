@@ -1,0 +1,8 @@
+prefix=/home/chipato/Desktop/GIT2143/Carolocup/ROS_Code/catkin_ws/devel
+
+Name: state_machine
+Description: Description of state_machine
+Version: 0.0.0
+Cflags: -I/home/chipato/Desktop/GIT2143/Carolocup/ROS_Code/catkin_ws/src/state_machine/include
+Libs: -L/home/chipato/Desktop/GIT2143/Carolocup/ROS_Code/catkin_ws/devel/lib -lstate_machine
+Requires: roscpp rospy std_msgs
