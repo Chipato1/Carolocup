@@ -180,11 +180,13 @@ void motor_bewegung_RC_mode()
   
     if (analogvalue_motor_rcmode < tiefpass_untere_spannung) //rückwarts
     {       
-        motor_uebertragung_RC_mode = (analogvalue_motor_rcmode * 3.3333) - 9.99;
+        //motor_uebertragung_RC_mode = (analogvalue_motor_rcmode * 3.3333) - 9.99;
+        motor_uebertragung_RC_mode = 70;
     }
     else if (analogvalue_motor_rcmode > tiefpass_obere_spannung)//vorwärts
     {   
-        motor_uebertragung_RC_mode = (analogvalue_motor_rcmode * 2.222) - 23.888;
+        //motor_uebertragung_RC_mode = (analogvalue_motor_rcmode * 2.222) + 36.06;
+        motor_uebertragung_RC_mode = 120;
     }
     else
     {
