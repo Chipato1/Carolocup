@@ -12,10 +12,11 @@ void setup()
   //Serial.begin (57600);
   //while (! Serial) {}
 
+  init_ros();
+  
   //init_aktorik();
   //init_rpm();
   error = init_tof();
-  init_ros();
 }
 
 void loop() 
@@ -39,7 +40,6 @@ void loop()
   }*/  
     
   node.spinOnce();
-  delay(20);
   
   /*
   Serial.print("\nrpm: \n");

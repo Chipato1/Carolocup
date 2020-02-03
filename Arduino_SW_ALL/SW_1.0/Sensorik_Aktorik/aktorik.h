@@ -19,7 +19,7 @@
 #define interval 1000
 
 #define tiefpass_pwm_motor_voltage    A12
-#define tiefpass_rcmode               A13
+#define tiefpass_rcmode_voltage       A13
 #define tiefpass_pwm_motor_voltage_nr 12
 #define tiefpass_rcmode_voltage_nr    13
 #define MUX_Select                    48

@@ -46,7 +46,7 @@ void init_aktorik(ros::NodeHandle *aktorik_node)
   aktorik_node->subscribe(sub_light_b);
   aktorik_node->subscribe(sub_light_rem);
 
-  arduino_node->advertise(rc_pub);
+  aktorik_node->advertise(rc_pub);
   
   motor.attach(6); //Motor an Pin zuweisen
   servo.attach(5); //Servo an Pin zuweisen
@@ -73,7 +73,7 @@ void init_aktorik(ros::NodeHandle *aktorik_node)
 
 int aktorik()
 {  
-  
+  int voltage_rcmode;
   
   analogvalue_rcmode = analogRead(tiefpass_rcmode_voltage_nr);    //Einlesen des Pins vom Tiefpass vom channel 4
   voltage_rcmode = referenzvoltage * analogvalue_rcmode;
@@ -155,7 +155,7 @@ void servo_bewegung(float lenkwinkel_bogenmass)
   servo.write(lenkwinkel_servosize); //Servo fährt in die ensprechende Stellung
 }
 
-void motor_bewegung(int16_t motor_drehzahl)
+void motor_bewegung(int16_t motor_drehzahl){
 
   int8_t motor_uebertragung;
   
@@ -178,7 +178,7 @@ void motor_bewegung_RC_mode()
   int8_t motor_uebertragung_RC_mode;
 
   analogvalue_motor_rcmode = analogRead(tiefpass_pwm_motor_voltage_nr);
-  voltage_motor_rcmode = referenzvoltage * analogvalue_motor_rcmode;
+  int voltage_motor_rcmode = referenzvoltage * analogvalue_motor_rcmode;
   
     if (voltage_motor_rcmode < tiefpass_untere_spannung) //rückwarts
     {       

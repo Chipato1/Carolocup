@@ -16,7 +16,7 @@ bool init_tof()
   pinMode(ToF_left_SHT,OUTPUT);
   pinMode(ToF_right_SHT,OUTPUT);
   pinMode(ToF_cross_SHT,OUTPUT);
-  //pinMode(ToF_back_SHT,OUTPUT); //seems to be useless :D
+  pinMode(ToF_back_SHT,OUTPUT);
   delay(1);
   //reset all
   digitalWrite(ToF_front_SHT,LOW);
@@ -39,10 +39,8 @@ bool init_tof()
   digitalWrite(ToF_cross_SHT,LOW);
   digitalWrite(ToF_back_SHT,LOW);
   delay(1);
-  //init ToF_front
   
-  init_tof_sensor(ToF_front_SHT, ToF_front_ADDRESS);
-  /*
+  //init ToF_front
   digitalWrite(ToF_front_SHT,HIGH);
   ToF_front.begin(ToF_front_ADDRESS);
   /*
@@ -61,7 +59,7 @@ bool init_tof()
   //init ToF_back
   digitalWrite(ToF_back_SHT,HIGH);
   return_value = return_value && ToF_back.begin();
-*/
+  */
   return return_value;
 }
 
@@ -80,7 +78,7 @@ uint16_t* read_TOF()
 
   ToF_front.rangingTest(&measure_front, false); // pass in 'true' to get debug data printout!
   //ToF_left.rangingTest(&measure_left, false); // pass in 'true' to get debug data printout!
-  //ToF_right.rangingTest(&measure_right, false); // pass in 'true' to get debug data printout!
+  ToF_right.rangingTest(&measure_right, false); // pass in 'true' to get debug data printout!
   //ToF_cross.rangingTest(&measure_cross, false); // pass in 'true' to get debug data printout!
 
   //read ToF_front
@@ -102,7 +100,7 @@ uint16_t* read_TOF()
   } else {
     distance_ToF_left = threshold_left;
   }
-  /*
+  */
   //read ToF_right
   if (measure_right.RangeStatus != 4) {  // phase failures have incorrect data
     distance_ToF_right = measure_right.RangeMilliMeter;
@@ -112,7 +110,7 @@ uint16_t* read_TOF()
   } else {
     distance_ToF_right = threshold_right;
   }
-
+/*
   //read ToF_cross
   if (measure_cross.RangeStatus != 4) {  // phase failures have incorrect data
     distance_ToF_cross = measure_cross.RangeMilliMeter;
@@ -129,14 +127,13 @@ uint16_t* read_TOF()
     if(distance_ToF_back > threshold_back){
       distance_ToF_back = threshold_back;
     }
-  }*/
-  
+  }
+  */
   tof_array[0] = distance_ToF_front;
-  /*
   tof_array[1] = distance_ToF_left;
   tof_array[2] = distance_ToF_right;
   tof_array[3] = distance_ToF_cross;
-  tof_array[4] = distance_ToF_back;*/
+  tof_array[4] = distance_ToF_back;
 
   return tof_array;
 }
