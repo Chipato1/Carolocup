@@ -28,11 +28,11 @@ if(NOT PYTHON_NUMPY_INCLUDE_DIR)
 
 include_directories(${PYTHON_INCLUDE_PATH} ${Boost_INCLUDE_DIRS} ${PYTHON_NUMPY_INCLUDE_DIR})
 
-if (PYTHON_VERSION_MAJOR VERSION_EQUAL 4)
+if (PYTHON_VERSION_MAJOR VERSION_EQUAL 3)
   add_definitions(-DPYTHON3)
 endif()
 
-if (OpenCV_VERSION_MAJOR VERSION_EQUAL 4)
+if (OpenCV_VERSION_MAJOR VERSION_EQUAL 3)
 add_library(${PROJECT_NAME}_boost module.cpp module_opencv3.cpp)
 else()
 add_library(${PROJECT_NAME}_boost module.cpp module_opencv2.cpp)
