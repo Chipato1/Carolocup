@@ -379,8 +379,7 @@ void PointLaneDetector::classifyPoints(int line) {
 		for (int pointI = 0; pointI < laneMiddles.size(); pointI++) {
 			cv::Point analysisPoint = laneMiddles.at(pointI);
 
-			if (analysisPoint.x > LL_MIN_X&& analysisPoint.x < LL_MAX_X) {
-				if (false) {
+			if (analysisPoint.x > LL_MIN_X&& analysisPoint.x < LL_MAX_X && analysisPoint.y >= LL_MIN_Y && analysisPoint.y < LL_MAX_Y) {
 					if (!foundLL) {
 						foundLL = true;
 						leftLaneStartPoint = analysisPoint;
@@ -391,9 +390,8 @@ void PointLaneDetector::classifyPoints(int line) {
 						this->leftDistances[line] = 1;
 						numberOfLeftPoints++;
 					}
-				}
 			}
-			else if (analysisPoint.x > ML_MIN_X&& analysisPoint.x < ML_MAX_X) {
+			else if (analysisPoint.x > ML_MIN_X&& analysisPoint.x < ML_MAX_X && analysisPoint.y >= ML_MIN_Y && analysisPoint.y < ML_MAX_Y) {
 				if (!foundML) {
 					foundML = true;
 					middleLaneStartPoint = analysisPoint;
@@ -405,7 +403,7 @@ void PointLaneDetector::classifyPoints(int line) {
 					numberOfMiddlePoints++;
 				}
 			}
-			else if (analysisPoint.x > RL_MIN_X&& analysisPoint.x < RL_MAX_X) {
+			else if (analysisPoint.x > RL_MIN_X&& analysisPoint.x < RL_MAX_X && analysisPoint.y >= RL_MIN_Y && analysisPoint.y < RL_MAX_Y) {
 				if (!foundRL) {
 					foundRL = true;
 					rightLaneStartPoint = analysisPoint;
@@ -631,7 +629,7 @@ void PointLaneDetector::mat2Arr(cv::Mat& mat, std::array<double, 4>& arr) {
 }
 
 void PointLaneDetector::copyResult() {
-	if (!this->vRes.oppositeLane) {
+	//if (!this->vRes.oppositeLane) {
 		mat2Arr(this->leftLane1, this->vRes.leftLane1);
 		mat2Arr(this->middleLane1, this->vRes.middleLane1);
 		mat2Arr(this->rightLane1, this->vRes.rightLane1);
@@ -641,7 +639,7 @@ void PointLaneDetector::copyResult() {
 		vRes.foundLL = foundLL;
 		vRes.foundML = foundML;
 		vRes.foundRL = foundRL;
-	} else {
+	/*} else {
 		mat2Arr(this->middleLane1, this->vRes.leftLane1);
 		mat2Arr(this->rightLane1, this->vRes.middleLane1);
 
@@ -659,7 +657,7 @@ void PointLaneDetector::copyResult() {
 		vRes.solvedLL2 = vRes.solvedML2;
 		vRes.solvedML2 = vRes.solvedRL2;
 		vRes.solvedRL2 = false;
-	}
+	}*/
 	
 }
 
