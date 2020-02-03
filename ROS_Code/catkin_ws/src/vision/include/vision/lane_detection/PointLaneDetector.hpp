@@ -59,6 +59,10 @@ private:
 	int RL_MIN_X = 800;
 	int RL_MAX_X = 850;
 
+	int lastLeftIterator = 0;
+	int lastMiddleIterator = 0;
+	int lastRightIterator = 0;
+
 	double ipmScaling = 1; 
 
 	//MODELLPARAMETER

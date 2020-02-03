@@ -481,7 +481,8 @@ void PointLaneDetector::prepareInterpolation(int i) {
 		if (foundLL && leftIndex != -1 && distancesLeft.at(leftIndex) < 300) {
 			int dx = laneMiddles.at(leftIndex).x - this->leftLaneStartPoint.x;
 			int dy = laneMiddles.at(leftIndex).y - this->leftLaneStartPoint.y;
-			if (dx < 30) {
+			if (dx < 60 && i - lastLeftIterator < 3) {
+				lastLeftIterator = i;
 				vRes.lanePoints.at(0).push_back(laneMiddles.at(leftIndex));
 				calculateSolveMatrix(laneMiddles.at(leftIndex), lA, lB, numberOfLeftPoints);
 				leftLaneStartPoint = laneMiddles.at(leftIndex);
@@ -493,7 +494,8 @@ void PointLaneDetector::prepareInterpolation(int i) {
 		if (foundML && middleIndex != -1 && distancesMiddle.at(middleIndex) < 300) {
 			int dx = laneMiddles.at(middleIndex).x - this->middleLaneStartPoint.x;
 			int dy = laneMiddles.at(middleIndex).y - this->middleLaneStartPoint.y;
-			if (dx < 30) {
+			if (dy < 60 && i - lastMiddleIterator < 3) {
+				lastMiddleIterator = i;
 				vRes.lanePoints.at(1).push_back(laneMiddles.at(middleIndex));
 				calculateSolveMatrix(laneMiddles.at(middleIndex), mA, mB, numberOfMiddlePoints);
 				middleLaneStartPoint = laneMiddles.at(middleIndex);
@@ -503,7 +505,8 @@ void PointLaneDetector::prepareInterpolation(int i) {
 		if (foundRL && rightIndex != -1 && distancesRight.at(rightIndex) < 300) {
 			int dx = laneMiddles.at(rightIndex).x - this->rightLaneStartPoint.x;
 			int dy = laneMiddles.at(rightIndex).y - this->rightLaneStartPoint.y;
-			if (dy < 30) {
+			if (dy < 60 && i - lastRightIterator < 3) {
+				lastRightIterator = i;
 				vRes.lanePoints.at(2).push_back(laneMiddles.at(rightIndex));
 				calculateSolveMatrix(laneMiddles.at(rightIndex), rA, rB, numberOfRightPoints);
 				rightLaneStartPoint = laneMiddles.at(rightIndex);
