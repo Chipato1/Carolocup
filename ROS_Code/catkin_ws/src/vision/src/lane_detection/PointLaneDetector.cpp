@@ -388,6 +388,7 @@ void PointLaneDetector::classifyPoints(int line) {
 						laneMiddles.erase(laneMiddles.begin() + pointI);
 						//pointI--;
 						this->leftDistances[line] = 1;
+						lastLeftIterator = line;
 						numberOfLeftPoints++;
 					}
 			}
@@ -400,6 +401,7 @@ void PointLaneDetector::classifyPoints(int line) {
 					laneMiddles.erase(laneMiddles.begin() + pointI);
 					//pointI--;
 					this->middleDistances[line] = 1;
+					lastMiddleIterator = line;
 					numberOfMiddlePoints++;
 				}
 			}
@@ -412,6 +414,7 @@ void PointLaneDetector::classifyPoints(int line) {
 					laneMiddles.erase(laneMiddles.begin() + pointI);
 					//pointI--;
 					this->rightDistances[line] = 1;
+					lastRightIterator = line;
 					numberOfRightPoints++;
 				}
 			}

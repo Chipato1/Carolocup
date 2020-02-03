@@ -59,12 +59,12 @@ private:
 	int RL_MIN_X = 800;
 	int RL_MAX_X = 850;
 
-	int LL_MIN_Y = 200;
-	int LL_MAX_Y = 600;
-	int ML_MIN_Y = 0;
-	int ML_MAX_Y = 400;
-	int RL_MIN_Y = 0;
-	int RL_MAX_Y = 400;
+	int LL_MIN_Y = 1500;
+	int LL_MAX_Y = 2000;
+	int ML_MIN_Y = 2000;
+	int ML_MAX_Y = 2400;
+	int RL_MIN_Y = 2000;
+	int RL_MAX_Y = 2400;
 
 	int lastLeftIterator = 0;
 	int lastMiddleIterator = 0;
