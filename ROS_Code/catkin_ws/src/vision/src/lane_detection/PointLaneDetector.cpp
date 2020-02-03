@@ -380,15 +380,17 @@ void PointLaneDetector::classifyPoints(int line) {
 			cv::Point analysisPoint = laneMiddles.at(pointI);
 
 			if (analysisPoint.x > LL_MIN_X&& analysisPoint.x < LL_MAX_X) {
-				if (!foundLL) {
-					foundLL = true;
-					leftLaneStartPoint = analysisPoint;
-					vRes.lanePoints.at(0).push_back(analysisPoint);
-					calculateSolveMatrix(analysisPoint, lA, lB, numberOfLeftPoints);
-					laneMiddles.erase(laneMiddles.begin() + pointI);
-					//pointI--;
-					this->leftDistances[line] = 1;
-					numberOfLeftPoints++;
+				if (false) {
+					if (!foundLL) {
+						foundLL = true;
+						leftLaneStartPoint = analysisPoint;
+						vRes.lanePoints.at(0).push_back(analysisPoint);
+						calculateSolveMatrix(analysisPoint, lA, lB, numberOfLeftPoints);
+						laneMiddles.erase(laneMiddles.begin() + pointI);
+						//pointI--;
+						this->leftDistances[line] = 1;
+						numberOfLeftPoints++;
+					}
 				}
 			}
 			else if (analysisPoint.x > ML_MIN_X&& analysisPoint.x < ML_MAX_X) {
