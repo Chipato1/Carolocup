@@ -7,7 +7,8 @@ float rpm;
 uint16_t* tof;
 boolean error = false;
 
-void setup() {
+void setup() 
+{
   //Serial.begin (57600);
   //while (! Serial) {}
 
@@ -17,7 +18,8 @@ void setup() {
   init_ros();
 }
 
-void loop() {
+void loop() 
+{
   //aktorik();
   //if(!aktorik()){
     //rpm = read_RPM();
