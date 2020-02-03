@@ -37,11 +37,11 @@ int aktorik()
   }
   
   analogvalue_rcmode = analogRead(tiefpass_rcmode_voltage_nr);    //Einlesen des Pins vom Tiefpass vom channel 4
-  voltage_rcmode = referenzvoltage * analogvalue_rcmode;
+  int voltage_rcmode = referenzvoltage * analogvalue_rcmode;
   
   if (voltage_rcmode > rcmode_schwellenwert)
   {
-    digitalWrite(blaues_licht, HIGH);   //balue LED einschlaten
+    digitalWrite(blaues_licht, HIGH);   //balue LED einschalten
     digitalWrite(MUX_Select, HIGH);     //Multiplexer auf RCmode umschalten
     rc_mode = 1;
     motor_bewegung_RC_mode();
@@ -52,7 +52,6 @@ int aktorik()
     digitalWrite(blaues_licht, LOW);   //balue LED ausschalten
     digitalWrite(MUX_Select, LOW);     //Multiplexer auf autonomen Betrieb umschalten
     rc_mode = 0;
-    aktorik_node.spinOnce();
   }
   
   return rc_mode;  
@@ -99,7 +98,7 @@ void motor_bewegung_RC_mode()
   int8_t motor_uebertragung_RC_mode;
   
   analogvalue_motor_rcmode = analogRead(tiefpass_pwm_motor_voltage_nr);
-  voltage_motor_rcmode = referenzvoltage * analogvalue_motor_rcmode;
+  int voltage_motor_rcmode = referenzvoltage * analogvalue_motor_rcmode;
   
     if (voltage_motor_rcmode < tiefpass_untere_spannung)    //rückwarts
     {        

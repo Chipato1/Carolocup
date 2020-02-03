@@ -5,5 +5,4 @@
 void init_rpm();
 float read_RPM();
 
-
 #endif

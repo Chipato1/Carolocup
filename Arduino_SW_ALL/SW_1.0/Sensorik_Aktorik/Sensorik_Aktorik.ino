@@ -6,11 +6,12 @@
 
 float rpm;
 uint16_t* tof;
+
 /*All data should be sent with ONLY this nodehandle*/
 ros::NodeHandle arduino_node;
 
 void setup() 
-{
+{  
   arduino_node.initNode();
   //Always Init ROS first
   
@@ -18,7 +19,7 @@ void setup()
   init_sensorik(&arduino_node); 
   
   init_tof();
-  //init_rpm();
+  init_rpm();
 }
 
 void loop() 
@@ -27,7 +28,11 @@ void loop()
   //Der Wert sagt ob der RC mode aktiviert ist 
   aktorik();
   tof = read_TOF();
+  rpm = read_RPM();
   tof_publish(tof[0], tof[1], tof[2], tof[3], tof[4]);
+  rpm_publish(rpm);
   rc_publish(); 
+  test_publish();
+  
   arduino_node.spinOnce();
 }

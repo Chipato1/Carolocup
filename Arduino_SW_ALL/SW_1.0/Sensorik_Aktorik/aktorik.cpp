@@ -3,9 +3,8 @@
 Servo servo;
 Servo motor;  
 
-//ros::NodeHandle aktorik_node;
-
 std_msgs::Bool rc_msg;
+std_msgs::Int16 test_msg;
 
 ros::Subscriber<std_msgs::Float32> sub_servo("ctl_servoAngle", servo_cb);
 ros::Subscriber<std_msgs::Int16> sub_motor("ctl_motorRpm", motor_cb);      
@@ -15,17 +14,17 @@ ros::Subscriber<std_msgs::UInt8> sub_light_b("trj_breakLight", lichtBremse_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_rem("trj_remoteLight", lichtRemote_cb);
 
 ros::Publisher rc_pub("akt_rc", &rc_msg);
+ros::Publisher test_pub("akt_test", &test_msg);
 
-short rc_mode = 0;
+int16_t voltage_rcmode; //remove
+
+bool rc_mode = 0;
 int16_t analogvalue_motor_rcmode; //eingelesener Pin - Wert am Tiefpass vom Motor
 int16_t analogvalue_rcmode;   //eingelesener Pin an Channel 4, um zu schauen ob im RC-Mode
   
 float wert_servo;
 float lenkwinkel_servosize;
 float lenkwinkel_grad;
-
-//int8_t motor_uebertragung;
-//int8_t motor_uebertragung_RC_mode;
 
 short state_light_r = 0;
 short state_light_l = 0;
@@ -36,9 +35,7 @@ uint16_t previousMillis = 0;
 boolean blinkstate = true;
 
 void init_aktorik(ros::NodeHandle *aktorik_node)
-{
-  //aktorik_node.initNode();  //Initialisierung des ROS - Knoten
-  
+{  
   aktorik_node->subscribe(sub_servo);  //Zuweisung Servo Subscriber zum Aktorik - Knoten
   aktorik_node->subscribe(sub_motor);  //Zuweisung Motor Subscriber zum Aktorik - Knoten
   aktorik_node->subscribe(sub_light_l);
@@ -47,6 +44,7 @@ void init_aktorik(ros::NodeHandle *aktorik_node)
   aktorik_node->subscribe(sub_light_rem);
 
   aktorik_node->advertise(rc_pub);
+  aktorik_node->advertise(test_pub);
   
   motor.attach(6); //Motor an Pin zuweisen
   servo.attach(5); //Servo an Pin zuweisen
@@ -71,18 +69,18 @@ void init_aktorik(ros::NodeHandle *aktorik_node)
   digitalWrite(blaues_licht, LOW);
 }
 
-int aktorik()
+bool aktorik()
 {  
-  int voltage_rcmode;
+  //int voltage_rcmode;
   
   analogvalue_rcmode = analogRead(tiefpass_rcmode_voltage_nr);    //Einlesen des Pins vom Tiefpass vom channel 4
   voltage_rcmode = referenzvoltage * analogvalue_rcmode;
   
-  if (voltage_rcmode > rcmode_schwellenwert)
+  if (analogvalue_rcmode > rcmode_schwellenwert)
   {
     state_light_rem = 2;
     digitalWrite(MUX_Select, HIGH);     //Multiplexer auf RCmode umschalten
-    rc_mode = 1;
+    rc_mode = true;
     motor_bewegung_RC_mode();
   }
   
@@ -90,7 +88,7 @@ int aktorik()
   {
     state_light_rem = 0;  //balue LED ausschalten
     digitalWrite(MUX_Select, LOW);     //Multiplexer auf autonomen Betrieb umschalten
-    rc_mode = 0;
+    rc_mode = false;
   }
 
   uint16_t currentMillis = millis();
@@ -107,7 +105,7 @@ int aktorik()
 
 void servo_cb(const std_msgs::Float32& cmd_msg)//Callback - Funktion für Servoaufruf
 {
-  if (rc_mode == 0)
+  if (rc_mode == false)
   {   
     servo_bewegung(cmd_msg.data);
   }
@@ -115,7 +113,7 @@ void servo_cb(const std_msgs::Float32& cmd_msg)//Callback - Funktion für Servoa
 
 void motor_cb(const std_msgs::Int16& cmd_msg)//Callback - Funktion für Motoraufruf
 { 
-  if (rc_mode == 0)
+  if (rc_mode == false)
   {    
     motor_bewegung(cmd_msg.data);
   }
@@ -176,21 +174,22 @@ void motor_bewegung(int16_t motor_drehzahl){
 void motor_bewegung_RC_mode()
 {
   int8_t motor_uebertragung_RC_mode;
-
+  //motor.attach(6);
   analogvalue_motor_rcmode = analogRead(tiefpass_pwm_motor_voltage_nr);
-  int voltage_motor_rcmode = referenzvoltage * analogvalue_motor_rcmode;
+  //int voltage_motor_rcmode = referenzvoltage * analogvalue_motor_rcmode;
   
-    if (voltage_motor_rcmode < tiefpass_untere_spannung) //rückwarts
+    if (analogvalue_motor_rcmode < tiefpass_untere_spannung) //rückwarts
     {       
-        motor_uebertragung_RC_mode = (voltage_motor_rcmode * 135.23) + 56.47;
+        motor_uebertragung_RC_mode = (analogvalue_motor_rcmode * 3.3333) - 9.99;
     }
-    else if (voltage_motor_rcmode > tiefpass_obere_spannung)//vorwärts
+    else if (analogvalue_motor_rcmode > tiefpass_obere_spannung)//vorwärts
     {   
-        motor_uebertragung_RC_mode = (voltage_motor_rcmode * 135.23) + 58.94;
+        motor_uebertragung_RC_mode = (analogvalue_motor_rcmode * 2.222) - 23.888;
     }
     else
     {
-        motor_uebertragung_RC_mode = 93;
+      //motor.detach(6);
+      motor_uebertragung_RC_mode = 93;
     }
     motor.write(motor_uebertragung_RC_mode); 
 }
@@ -217,7 +216,13 @@ void set_output(short state, short port)
 }
 
 void rc_publish ()
-{
+{ 
   rc_msg.data = rc_mode;
   rc_pub.publish(&rc_msg);
+}
+
+void test_publish ()
+{ 
+  test_msg.data = analogvalue_motor_rcmode;
+  test_pub.publish(&test_msg);
 }
