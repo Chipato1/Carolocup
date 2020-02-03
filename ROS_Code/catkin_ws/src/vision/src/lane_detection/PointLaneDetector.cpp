@@ -352,6 +352,10 @@ void PointLaneDetector::clear() {
 
 	this->laneMiddles.clear();
 	this->laneMiddles.reserve(25);
+
+	leftIndex = -1;
+	middleIndex = -1;
+	rightIndex = -1;
 }
 
 double PointLaneDetector::imToReX(int x)
@@ -366,32 +370,36 @@ int PointLaneDetector::reToImX(double x)
 
 double PointLaneDetector::imToReY(int y)
 {
-	return (-(double)y + ipmSize.height + 300 * this->ipmScaling);
+	return (-(double)y + ipmSize.height);
 }
 
 int PointLaneDetector::reToImY(double y)
 {
-	return (int)(-y + this->ipmSize.height + 300 * this->ipmScaling);;
+	return (int)(-y + this->ipmSize.height);
 }
 
 void PointLaneDetector::classifyPoints(int line) {
 	if (!laneMiddles.empty() && (!foundLL || !foundML || !foundRL)) {
 		for (int pointI = 0; pointI < laneMiddles.size(); pointI++) {
 			cv::Point analysisPoint = laneMiddles.at(pointI);
-
-			if (analysisPoint.x > LL_MIN_X&& analysisPoint.x < LL_MAX_X) {
-				if (!foundLL) {
-					foundLL = true;
-					leftLaneStartPoint = analysisPoint;
-					vRes.lanePoints.at(0).push_back(analysisPoint);
-					calculateSolveMatrix(analysisPoint, lA, lB, numberOfLeftPoints);
-					laneMiddles.erase(laneMiddles.begin() + pointI);
-					//pointI--;
-					this->leftDistances[line] = 1;
-					numberOfLeftPoints++;
-				}
+			if (pointI == leftIndex || pointI == middleIndex || pointI == rightIndex) {
+				continue;
 			}
-			else if (analysisPoint.x > ML_MIN_X&& analysisPoint.x < ML_MAX_X) {
+
+			if (analysisPoint.x > LL_MIN_X&& analysisPoint.x < LL_MAX_X && analysisPoint.y >= LL_MIN_Y && analysisPoint.y < LL_MAX_Y) {
+					if (!foundLL) {
+						foundLL = true;
+						leftLaneStartPoint = analysisPoint;
+						vRes.lanePoints.at(0).push_back(analysisPoint);
+						calculateSolveMatrix(analysisPoint, lA, lB, numberOfLeftPoints);
+						laneMiddles.erase(laneMiddles.begin() + pointI);
+						//pointI--;
+						this->leftDistances[line] = 1;
+						lastLeftIterator = line;
+						numberOfLeftPoints++;
+					}
+			}
+			else if (analysisPoint.x > ML_MIN_X&& analysisPoint.x < ML_MAX_X && analysisPoint.y >= ML_MIN_Y && analysisPoint.y < ML_MAX_Y) {
 				if (!foundML) {
 					foundML = true;
 					middleLaneStartPoint = analysisPoint;
@@ -400,10 +408,11 @@ void PointLaneDetector::classifyPoints(int line) {
 					laneMiddles.erase(laneMiddles.begin() + pointI);
 					//pointI--;
 					this->middleDistances[line] = 1;
+					lastMiddleIterator = line;
 					numberOfMiddlePoints++;
 				}
 			}
-			else if (analysisPoint.x > RL_MIN_X&& analysisPoint.x < RL_MAX_X) {
+			else if (analysisPoint.x > RL_MIN_X&& analysisPoint.x < RL_MAX_X && analysisPoint.y >= RL_MIN_Y && analysisPoint.y < RL_MAX_Y) {
 				if (!foundRL) {
 					foundRL = true;
 					rightLaneStartPoint = analysisPoint;
@@ -412,6 +421,7 @@ void PointLaneDetector::classifyPoints(int line) {
 					laneMiddles.erase(laneMiddles.begin() + pointI);
 					//pointI--;
 					this->rightDistances[line] = 1;
+					lastRightIterator = line;
 					numberOfRightPoints++;
 				}
 			}
@@ -438,11 +448,11 @@ void PointLaneDetector::prepareInterpolation(int i) {
 			}
 		);
 		std::vector<double>::iterator iteratorLeft = std::min_element(distancesLeft.begin(), distancesLeft.end());
-		int leftIndex = iteratorLeft - distancesLeft.begin();
+		this->leftIndex = iteratorLeft - distancesLeft.begin();
 		std::vector<double>::iterator iteratorMiddle = std::min_element(distancesMiddle.begin(), distancesMiddle.end());
-		int middleIndex = iteratorMiddle - distancesMiddle.begin();
+		this->middleIndex = iteratorMiddle - distancesMiddle.begin();
 		std::vector<double>::iterator iteratorRight = std::min_element(distancesRight.begin(), distancesRight.end());
-		int rightIndex = iteratorRight - distancesRight.begin();
+		this->rightIndex = iteratorRight - distancesRight.begin();
 
 
 
@@ -476,10 +486,11 @@ void PointLaneDetector::prepareInterpolation(int i) {
 
 
 
-		if (foundLL && leftIndex != -1 && distancesLeft.at(leftIndex) < 300) {
+		if (foundLL && leftIndex >= 0 && distancesLeft.at(leftIndex) < 350) {
 			int dx = laneMiddles.at(leftIndex).x - this->leftLaneStartPoint.x;
 			int dy = laneMiddles.at(leftIndex).y - this->leftLaneStartPoint.y;
-			if (dx < 30) {
+			if ((dx < 60 && i - lastLeftIterator < 3) || lastLeftIterator >= 3) {
+				lastLeftIterator = i;
 				vRes.lanePoints.at(0).push_back(laneMiddles.at(leftIndex));
 				calculateSolveMatrix(laneMiddles.at(leftIndex), lA, lB, numberOfLeftPoints);
 				leftLaneStartPoint = laneMiddles.at(leftIndex);
@@ -488,25 +499,37 @@ void PointLaneDetector::prepareInterpolation(int i) {
 			
 			
 		}
-		if (foundML && middleIndex != -1 && distancesMiddle.at(middleIndex) < 300) {
+		else {
+			leftIndex = -1;
+		}
+
+		if (foundML && middleIndex >= 0 && distancesMiddle.at(middleIndex) < 350) {
 			int dx = laneMiddles.at(middleIndex).x - this->middleLaneStartPoint.x;
 			int dy = laneMiddles.at(middleIndex).y - this->middleLaneStartPoint.y;
-			if (dx < 30) {
+			if ((dy < 60 && i - lastMiddleIterator < 3) || lastMiddleIterator >= 3) {
+				lastMiddleIterator = i;
 				vRes.lanePoints.at(1).push_back(laneMiddles.at(middleIndex));
 				calculateSolveMatrix(laneMiddles.at(middleIndex), mA, mB, numberOfMiddlePoints);
 				middleLaneStartPoint = laneMiddles.at(middleIndex);
 				numberOfMiddlePoints++;
 			}
 		}
-		if (foundRL && rightIndex != -1 && distancesRight.at(rightIndex) < 300) {
+		else {
+			middleIndex = -1;
+		}
+		if (foundRL && rightIndex >= 0 && distancesRight.at(rightIndex) < 350) {
 			int dx = laneMiddles.at(rightIndex).x - this->rightLaneStartPoint.x;
 			int dy = laneMiddles.at(rightIndex).y - this->rightLaneStartPoint.y;
-			if (dy < 30) {
+			if ((dy < 60 && i - lastRightIterator < 3) || lastRightIterator >= 3) {
+				lastRightIterator = i;
 				vRes.lanePoints.at(2).push_back(laneMiddles.at(rightIndex));
 				calculateSolveMatrix(laneMiddles.at(rightIndex), rA, rB, numberOfRightPoints);
 				rightLaneStartPoint = laneMiddles.at(rightIndex);
 				numberOfRightPoints++;
 			}
+		}
+		else {
+			rightIndex = -1;
 		}
 	}
 }
@@ -626,7 +649,7 @@ void PointLaneDetector::mat2Arr(cv::Mat& mat, std::array<double, 4>& arr) {
 }
 
 void PointLaneDetector::copyResult() {
-	if (!this->vRes.oppositeLane) {
+	//if (!this->vRes.oppositeLane) {
 		mat2Arr(this->leftLane1, this->vRes.leftLane1);
 		mat2Arr(this->middleLane1, this->vRes.middleLane1);
 		mat2Arr(this->rightLane1, this->vRes.rightLane1);
@@ -636,7 +659,7 @@ void PointLaneDetector::copyResult() {
 		vRes.foundLL = foundLL;
 		vRes.foundML = foundML;
 		vRes.foundRL = foundRL;
-	} else {
+	/*} else {
 		mat2Arr(this->middleLane1, this->vRes.leftLane1);
 		mat2Arr(this->rightLane1, this->vRes.middleLane1);
 
@@ -654,7 +677,7 @@ void PointLaneDetector::copyResult() {
 		vRes.solvedLL2 = vRes.solvedML2;
 		vRes.solvedML2 = vRes.solvedRL2;
 		vRes.solvedRL2 = false;
-	}
+	}*/
 	
 }
 
