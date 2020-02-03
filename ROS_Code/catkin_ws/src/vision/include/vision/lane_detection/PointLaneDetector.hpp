@@ -66,6 +66,10 @@ private:
 	int RL_MIN_Y = 2000;
 	int RL_MAX_Y = 2400;
 
+	int leftIndex = -1;
+	int middleIndex = -1;
+	int rightIndex = -1;
+
 	int lastLeftIterator = 0;
 	int lastMiddleIterator = 0;
 	int lastRightIterator = 0;
