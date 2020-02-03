@@ -7,13 +7,13 @@
  *
  * Code generation for model "Stanley_Querregler".
  *
- * Model version              : 1.11
+ * Model version              : 1.17
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Wed Jan 22 14:25:49 2020
+ * C++ source code generated on : Sun Feb  2 23:17:35 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
- * Embedded hardware selection: Intel->x86-64 (Linux 64)
+ * Embedded hardware selection: Generic->Unspecified (assume 32-bit Generic)
  * Code generation objectives: Unspecified
  * Validation result: Not run
  */

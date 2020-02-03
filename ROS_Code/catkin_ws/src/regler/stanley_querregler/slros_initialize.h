@@ -7,14 +7,20 @@
 extern ros::NodeHandle * SLROSNodePtr;
 extern const std::string SLROSNodeName;
 
-// For Block Stanley_Querregler/Subscribe
-extern SimulinkSubscriber<std_msgs::Float32, SL_Bus_Stanley_Querregler_std_msgs_Float32> Sub_Stanley_Querregler_53;
-
 // For Block Stanley_Querregler/Subscribe1
-extern SimulinkSubscriber<std_msgs::Float32, SL_Bus_Stanley_Querregler_std_msgs_Float32> Sub_Stanley_Querregler_57;
+extern SimulinkSubscriber<std_msgs::Bool, SL_Bus_Stanley_Querregler_std_msgs_Bool> Sub_Stanley_Querregler_75;
 
-// For Block Stanley_Querregler/Publish
-extern SimulinkPublisher<std_msgs::Float32, SL_Bus_Stanley_Querregler_std_msgs_Float32> Pub_Stanley_Querregler_54;
+// For Block Stanley_Querregler/Subscribe2
+extern SimulinkSubscriber<std_msgs::Float32, SL_Bus_Stanley_Querregler_std_msgs_Float32> Sub_Stanley_Querregler_65;
+
+// For Block Stanley_Querregler/Subscribe3
+extern SimulinkSubscriber<std_msgs::Float32, SL_Bus_Stanley_Querregler_std_msgs_Float32> Sub_Stanley_Querregler_66;
+
+// For Block Stanley_Querregler/Subscribe4
+extern SimulinkSubscriber<std_msgs::Float32, SL_Bus_Stanley_Querregler_std_msgs_Float32> Sub_Stanley_Querregler_78;
+
+// For Block Stanley_Querregler/Publish1
+extern SimulinkPublisher<std_msgs::Float32, SL_Bus_Stanley_Querregler_std_msgs_Float32> Pub_Stanley_Querregler_72;
 
 void slros_node_init(int argc, char** argv);
 
