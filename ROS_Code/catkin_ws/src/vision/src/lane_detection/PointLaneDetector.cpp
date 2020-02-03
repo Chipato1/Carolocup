@@ -370,12 +370,12 @@ int PointLaneDetector::reToImX(double x)
 
 double PointLaneDetector::imToReY(int y)
 {
-	return (-(double)y + ipmSize.height + 300 * this->ipmScaling);
+	return (-(double)y + ipmSize.height);
 }
 
 int PointLaneDetector::reToImY(double y)
 {
-	return (int)(-y + this->ipmSize.height + 300 * this->ipmScaling);;
+	return (int)(-y + this->ipmSize.height);
 }
 
 void PointLaneDetector::classifyPoints(int line) {
