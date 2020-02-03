@@ -12,7 +12,7 @@ bool StartboxDetector::checkQRCode(cv::Mat inputImage) {
        
     if(extractedData.length()>0)
      {
-         if (extractedData.compare(STOP_TEXT)) {
+         if (std::toupper(extractedData).compare(STOP_TEXT)) {
              return true;
          }
      }

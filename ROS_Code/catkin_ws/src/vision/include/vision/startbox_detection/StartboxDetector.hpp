@@ -18,6 +18,6 @@ private:
     cv::Mat bbox, rectifiedImage;
     std::string extractedData;
     
-    const std::string STOP_TEXT = "Stop";
+    const std::string STOP_TEXT = "STOP";
 };
 
