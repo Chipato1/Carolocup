@@ -7,13 +7,13 @@
  *
  * Code generation for model "Stanley_Querregler".
  *
- * Model version              : 1.11
+ * Model version              : 1.17
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Wed Jan 22 14:25:49 2020
+ * C++ source code generated on : Sun Feb  2 23:17:35 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
- * Embedded hardware selection: Intel->x86-64 (Linux 64)
+ * Embedded hardware selection: Generic->Unspecified (assume 32-bit Generic)
  * Code generation objectives: Unspecified
  * Validation result: Not run
  */
@@ -48,35 +48,43 @@
 # define rtmSetErrorStatus(rtm, val)   ((rtm)->errorStatus = (val))
 #endif
 
-/* Block signals for system '<S3>/Enabled Subsystem' */
+/* Block signals for system '<S4>/Enabled Subsystem' */
 typedef struct {
-  SL_Bus_Stanley_Querregler_std_msgs_Float32 In1;/* '<S6>/In1' */
+  SL_Bus_Stanley_Querregler_std_msgs_Float32 In1;/* '<S9>/In1' */
 } B_EnabledSubsystem_Stanley_Qu_T;
 
 /* Block signals (default storage) */
 typedef struct {
+  char_T cv[26];
   real_T refPose[3];
   real_T currPose[3];
-  real_T steerCmd;                     /* '<S9>/Kinematic' */
+  char_T cv1[19];
+  real_T Gain1;                        /* '<S7>/Gain1' */
   real_T b;
-  B_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem_m;/* '<S4>/Enabled Subsystem' */
-  B_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem;/* '<S3>/Enabled Subsystem' */
+  SL_Bus_Stanley_Querregler_std_msgs_Bool In1;/* '<S8>/In1' */
+  B_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem_i;/* '<S6>/Enabled Subsystem' */
+  B_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem_p;/* '<S5>/Enabled Subsystem' */
+  B_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem_g;/* '<S4>/Enabled Subsystem' */
 } B_Stanley_Querregler_T;
 
 /* Block states (default storage) for system '<Root>' */
 typedef struct {
   ros_slros_internal_block_Publ_T obj; /* '<S2>/SinkBlock' */
-  ros_slros_internal_block_Subs_T obj_f;/* '<S4>/SourceBlock' */
-  ros_slros_internal_block_Subs_T obj_p;/* '<S3>/SourceBlock' */
-  boolean_T objisempty;                /* '<S4>/SourceBlock' */
-  boolean_T objisempty_e;              /* '<S3>/SourceBlock' */
-  boolean_T objisempty_j;              /* '<S2>/SinkBlock' */
+  ros_slros_internal_block_Subs_T obj_c;/* '<S6>/SourceBlock' */
+  ros_slros_internal_block_Subs_T obj_o;/* '<S5>/SourceBlock' */
+  ros_slros_internal_block_Subs_T obj_e;/* '<S4>/SourceBlock' */
+  ros_slros_internal_block_Subs_T obj_l;/* '<S3>/SourceBlock' */
+  boolean_T objisempty;                /* '<S6>/SourceBlock' */
+  boolean_T objisempty_h;              /* '<S5>/SourceBlock' */
+  boolean_T objisempty_d;              /* '<S4>/SourceBlock' */
+  boolean_T objisempty_n;              /* '<S3>/SourceBlock' */
+  boolean_T objisempty_p;              /* '<S2>/SinkBlock' */
 } DW_Stanley_Querregler_T;
 
-/* Parameters for system: '<S3>/Enabled Subsystem' */
+/* Parameters for system: '<S4>/Enabled Subsystem' */
 struct P_EnabledSubsystem_Stanley_Qu_T_ {
   SL_Bus_Stanley_Querregler_std_msgs_Float32 Out1_Y0;/* Computed Parameter: Out1_Y0
-                                                      * Referenced by: '<S6>/Out1'
+                                                      * Referenced by: '<S9>/Out1'
                                                       */
 };
 
@@ -84,65 +92,84 @@ struct P_EnabledSubsystem_Stanley_Qu_T_ {
 struct P_Stanley_Querregler_T_ {
   real_T LateralControllerStanley_Positi;
                               /* Mask Parameter: LateralControllerStanley_Positi
-                               * Referenced by: '<S9>/Kinematic'
+                               * Referenced by: '<S13>/Kinematic'
                                */
   real_T LateralControllerStanley_Posi_p;
                               /* Mask Parameter: LateralControllerStanley_Posi_p
-                               * Referenced by: '<S9>/Kinematic'
+                               * Referenced by: '<S13>/Kinematic'
                                */
-  SL_Bus_Stanley_Querregler_std_msgs_Float32 Constant_Value;/* Computed Parameter: Constant_Value
-                                                             * Referenced by: '<S3>/Constant'
-                                                             */
-  SL_Bus_Stanley_Querregler_std_msgs_Float32 Constant_Value_c;/* Computed Parameter: Constant_Value_c
+  SL_Bus_Stanley_Querregler_std_msgs_Bool Out1_Y0;/* Computed Parameter: Out1_Y0
+                                                   * Referenced by: '<S8>/Out1'
+                                                   */
+  SL_Bus_Stanley_Querregler_std_msgs_Bool Constant_Value;/* Computed Parameter: Constant_Value
+                                                          * Referenced by: '<S3>/Constant'
+                                                          */
+  SL_Bus_Stanley_Querregler_std_msgs_Float32 Constant_Value_d;/* Computed Parameter: Constant_Value_d
                                                                * Referenced by: '<S4>/Constant'
                                                                */
-  SL_Bus_Stanley_Querregler_std_msgs_Float32 Constant_Value_g;/* Computed Parameter: Constant_Value_g
+  SL_Bus_Stanley_Querregler_std_msgs_Float32 Constant_Value_c;/* Computed Parameter: Constant_Value_c
+                                                               * Referenced by: '<S5>/Constant'
+                                                               */
+  SL_Bus_Stanley_Querregler_std_msgs_Float32 Constant_Value_i;/* Computed Parameter: Constant_Value_i
+                                                               * Referenced by: '<S6>/Constant'
+                                                               */
+  SL_Bus_Stanley_Querregler_std_msgs_Float32 Constant_Value_k;/* Computed Parameter: Constant_Value_k
                                                                * Referenced by: '<S1>/Constant'
                                                                */
   real_T Gain_Gain;                    /* Expression: -1
-                                        * Referenced by: '<S5>/Gain'
+                                        * Referenced by: '<S7>/Gain'
                                         */
   real_T Rckwrts_Value;                /* Expression: -1
-                                        * Referenced by: '<S5>/Rückwärts'
+                                        * Referenced by: '<S7>/Rückwärts'
                                         */
   real_T Vorwrts_Value;                /* Expression: 1
-                                        * Referenced by: '<S5>/Vorwärts'
+                                        * Referenced by: '<S7>/Vorwärts'
                                         */
   real_T Kinematic_MaxSteeringAngle;   /* Expression: MaxSteeringAngle
-                                        * Referenced by: '<S9>/Kinematic'
+                                        * Referenced by: '<S13>/Kinematic'
                                         */
   real_T Kinematic_Wheelbase;          /* Expression: Wheelbase
-                                        * Referenced by: '<S9>/Kinematic'
+                                        * Referenced by: '<S13>/Kinematic'
                                         */
   real_T Lenkwinkel_Y0;                /* Computed Parameter: Lenkwinkel_Y0
-                                        * Referenced by: '<S5>/Lenkwinkel'
+                                        * Referenced by: '<S7>/Lenkwinkel'
                                         */
   real_T xytheta_Value[3];             /* Expression: [0.4, 0, 0]
-                                        * Referenced by: '<S5>/[x, y, theta]'
+                                        * Referenced by: '<S7>/[x, y, theta]'
                                         */
   real_T Constant1_Value[3];           /* Expression: [0 1 0]
-                                        * Referenced by: '<S5>/Constant1'
+                                        * Referenced by: '<S7>/Constant1'
                                         */
   real_T Constant_Value_a[3];          /* Expression: [0 0 0]
-                                        * Referenced by: '<S5>/Constant'
+                                        * Referenced by: '<S7>/Constant'
                                         */
   real_T Constant_Value_ab;            /* Expression: 2*pi
-                                        * Referenced by: '<S8>/Constant'
+                                        * Referenced by: '<S12>/Constant'
                                         */
   real_T Radiuscm_Value;               /* Expression: 5.6/2
-                                        * Referenced by: '<S8>/Radius (cm)'
+                                        * Referenced by: '<S12>/Radius (cm)'
                                         */
   real_T cminm_Gain;                   /* Expression: 0.01
-                                        * Referenced by: '<S8>/cm in m'
+                                        * Referenced by: '<S12>/cm in m'
                                         */
   real_T Switch1_Threshold;            /* Expression: 0
-                                        * Referenced by: '<S5>/Switch1'
+                                        * Referenced by: '<S7>/Switch1'
                                         */
   real_T Switch_Threshold;             /* Expression: 0
-                                        * Referenced by: '<S5>/Switch'
+                                        * Referenced by: '<S7>/Switch'
                                         */
-  P_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem_m;/* '<S4>/Enabled Subsystem' */
-  P_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem;/* '<S3>/Enabled Subsystem' */
+  real_T Saturation_UpperSat;          /* Expression: 20
+                                        * Referenced by: '<S7>/Saturation'
+                                        */
+  real_T Saturation_LowerSat;          /* Expression: -20
+                                        * Referenced by: '<S7>/Saturation'
+                                        */
+  real_T Gain1_Gain;                   /* Expression: pi/180
+                                        * Referenced by: '<S7>/Gain1'
+                                        */
+  P_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem_i;/* '<S6>/Enabled Subsystem' */
+  P_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem_p;/* '<S5>/Enabled Subsystem' */
+  P_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem_g;/* '<S4>/Enabled Subsystem' */
 };
 
 /* Real-time Model Data Structure */
@@ -227,16 +254,20 @@ extern "C" {
  *
  * '<Root>' : 'Stanley_Querregler'
  * '<S1>'   : 'Stanley_Querregler/Blank Message'
- * '<S2>'   : 'Stanley_Querregler/Publish'
- * '<S3>'   : 'Stanley_Querregler/Subscribe'
- * '<S4>'   : 'Stanley_Querregler/Subscribe1'
- * '<S5>'   : 'Stanley_Querregler/Subsystem'
- * '<S6>'   : 'Stanley_Querregler/Subscribe/Enabled Subsystem'
- * '<S7>'   : 'Stanley_Querregler/Subscribe1/Enabled Subsystem'
- * '<S8>'   : 'Stanley_Querregler/Subsystem/Drehzahl in Geschwindigkeit  umrechnen'
- * '<S9>'   : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley'
- * '<S10>'  : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley/Dynamic'
- * '<S11>'  : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley/Kinematic'
- * '<S12>'  : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley/Dynamic/Dynamic Disabled'
+ * '<S2>'   : 'Stanley_Querregler/Publish1'
+ * '<S3>'   : 'Stanley_Querregler/Subscribe1'
+ * '<S4>'   : 'Stanley_Querregler/Subscribe2'
+ * '<S5>'   : 'Stanley_Querregler/Subscribe3'
+ * '<S6>'   : 'Stanley_Querregler/Subscribe4'
+ * '<S7>'   : 'Stanley_Querregler/Subsystem'
+ * '<S8>'   : 'Stanley_Querregler/Subscribe1/Enabled Subsystem'
+ * '<S9>'   : 'Stanley_Querregler/Subscribe2/Enabled Subsystem'
+ * '<S10>'  : 'Stanley_Querregler/Subscribe3/Enabled Subsystem'
+ * '<S11>'  : 'Stanley_Querregler/Subscribe4/Enabled Subsystem'
+ * '<S12>'  : 'Stanley_Querregler/Subsystem/Drehzahl in Geschwindigkeit  umrechnen'
+ * '<S13>'  : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley'
+ * '<S14>'  : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley/Dynamic'
+ * '<S15>'  : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley/Kinematic'
+ * '<S16>'  : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley/Dynamic/Dynamic Disabled'
  */
 #endif                                 /* RTW_HEADER_Stanley_Querregler_h_ */
