@@ -2,7 +2,7 @@
 ## Makefile generated for Simulink model 'raddrehzahl_filter'. 
 ## 
 ## Makefile     : raddrehzahl_filter.mk
-## Generated on : Thu Jan 30 21:51:57 2020
+## Generated on : Sun Feb 02 23:13:57 2020
 ## MATLAB Coder version: 4.3 (R2019b)
 ## 
 ## Build Info:
@@ -23,11 +23,11 @@
 
 PRODUCT_NAME              = raddrehzahl_filter
 MAKEFILE                  = raddrehzahl_filter.mk
-MATLAB_ROOT               = /usr/local/MATLAB/R2019b
-MATLAB_BIN                = /usr/local/MATLAB/R2019b/bin
-MATLAB_ARCH_BIN           = $(MATLAB_BIN)/glnxa64
+MATLAB_ROOT               = C:/PROGRA~1/MATLAB/R2019b
+MATLAB_BIN                = C:/PROGRA~1/MATLAB/R2019b/bin
+MATLAB_ARCH_BIN           = $(MATLAB_BIN)/win64
 MASTER_ANCHOR_DIR         = 
-START_DIR                 = /home/robert/Documents/Carolocup/Regler/Filter
+START_DIR                 = C:/Users/rober/Documents/Carolo_Cup/Regler/Filter
 SOLVER                    = 
 SOLVER_OBJ                = 
 CLASSIC_INTERFACE         = 0
@@ -51,6 +51,7 @@ CPP_STANDARD_OPTS         =
 # MACROS
 #-----------
 
+SHELL        = %SystemRoot%/system32/cmd.exe
 CCOUTPUTFLAG = --output_file=
 LDOUTPUTFLAG = --output_file=
 
@@ -111,9 +112,9 @@ OUTPUT_FLAG         = -o
 ARDEBUG             =
 STATICLIB_OUTPUT_FLAG =
 MEX_DEBUG           = -g
-RM                  = @rm -f
+RM                  = @del /F
 ECHO                = @echo
-MV                  = @mv
+MV                  = @move
 RUN                 =
 
 #----------------------------------------
@@ -161,12 +162,12 @@ INCLUDES = $(INCLUDES_BUILDINFO)
 ## DEFINES
 ###########################################################################
 
-DEFINES_ = -DMODEL=raddrehzahl_filter -DNUMST=2 -DNCSTATES=1 -DHAVESTDIO -DMODEL_HAS_DYNAMICALLY_LOADED_SFCNS=0 -DUNIX -DCLASSIC_INTERFACE=0 -DALLOCATIONFCN=0 -DTID01EQ=1 -DONESTEPFCN=1 -DTERMFCN=1 -DMULTI_INSTANCE_CODE=0 -DINTEGER_CODE=0 -DMT=0 -DROS_PROJECT -DMW_SCHED_OTHER -DSTACK_SIZE=64 -D__MW_TARGET_USE_HARDWARE_RESOURCES_H__ -DRT=RT
+DEFINES_ = -DMODEL=raddrehzahl_filter -DNUMST=2 -DNCSTATES=1 -DHAVESTDIO -DMODEL_HAS_DYNAMICALLY_LOADED_SFCNS=0 -DCLASSIC_INTERFACE=0 -DALLOCATIONFCN=0 -DTID01EQ=1 -DONESTEPFCN=1 -DTERMFCN=1 -DMULTI_INSTANCE_CODE=0 -DINTEGER_CODE=0 -DMT=0 -DROS_PROJECT -DMW_SCHED_OTHER -DSTACK_SIZE=64 -D__MW_TARGET_USE_HARDWARE_RESOURCES_H__ -DRT=RT
 DEFINES_BUILD_ARGS = -DCLASSIC_INTERFACE=0 -DALLOCATIONFCN=0 -DONESTEPFCN=1 -DTERMFCN=1 -DMULTI_INSTANCE_CODE=0 -DINTEGER_CODE=0 -DMT=0
 DEFINES_CUSTOM = 
 DEFINES_OPTS = -DTID01EQ=1
 DEFINES_SKIPFORSIL = -DROS_PROJECT -DMW_SCHED_OTHER -DSTACK_SIZE=64
-DEFINES_STANDARD = -DMODEL=raddrehzahl_filter -DNUMST=2 -DNCSTATES=1 -DHAVESTDIO -DMODEL_HAS_DYNAMICALLY_LOADED_SFCNS=0 -DUNIX
+DEFINES_STANDARD = -DMODEL=raddrehzahl_filter -DNUMST=2 -DNCSTATES=1 -DHAVESTDIO -DMODEL_HAS_DYNAMICALLY_LOADED_SFCNS=0
 
 DEFINES = $(DEFINES_) $(DEFINES_BUILD_ARGS) $(DEFINES_CUSTOM) $(DEFINES_OPTS) $(DEFINES_SKIPFORSIL) $(DEFINES_STANDARD)
 
@@ -216,7 +217,7 @@ SYSTEM_LIBS =
 # C Compiler
 #---------------
 
-CFLAGS_SKIPFORSIL =   -fpermissive
+CFLAGS_SKIPFORSIL =   -fpermissive -fpermissive -fpermissive -fpermissive -fpermissive
 CFLAGS_BASIC = $(DEFINES) $(INCLUDES)
 
 CFLAGS += $(CFLAGS_SKIPFORSIL) $(CFLAGS_BASIC)
@@ -225,7 +226,7 @@ CFLAGS += $(CFLAGS_SKIPFORSIL) $(CFLAGS_BASIC)
 # C++ Compiler
 #-----------------
 
-CPPFLAGS_SKIPFORSIL =   -fpermissive
+CPPFLAGS_SKIPFORSIL =   -fpermissive -fpermissive -fpermissive -fpermissive -fpermissive
 CPPFLAGS_BASIC = $(DEFINES) $(INCLUDES)
 
 CPPFLAGS += $(CPPFLAGS_SKIPFORSIL) $(CPPFLAGS_BASIC)
@@ -465,8 +466,8 @@ info :
 
 clean : 
 	$(ECHO) "### Deleting all derived files..."
-	$(RM) $(PRODUCT)
-	$(RM) $(ALL_OBJS)
+	$(RM) $(subst /,\,$(PRODUCT))
+	$(RM) $(subst /,\,$(ALL_OBJS))
 	$(RM) *Object
 	$(ECHO) "### Deleted all derived files."
 

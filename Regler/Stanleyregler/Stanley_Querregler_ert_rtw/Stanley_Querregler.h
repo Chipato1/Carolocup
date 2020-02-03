@@ -7,9 +7,9 @@
  *
  * Code generation for model "Stanley_Querregler".
  *
- * Model version              : 1.16
+ * Model version              : 1.17
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Thu Jan 30 22:16:52 2020
+ * C++ source code generated on : Sun Feb  2 23:17:35 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -120,10 +120,10 @@ struct P_Stanley_Querregler_T_ {
                                         * Referenced by: '<S7>/Gain'
                                         */
   real_T Rckwrts_Value;                /* Expression: -1
-                                        * Referenced by: '<S7>/RÃ¼ckwÃ¤rts'
+                                        * Referenced by: '<S7>/Rückwärts'
                                         */
   real_T Vorwrts_Value;                /* Expression: 1
-                                        * Referenced by: '<S7>/VorwÃ¤rts'
+                                        * Referenced by: '<S7>/Vorwärts'
                                         */
   real_T Kinematic_MaxSteeringAngle;   /* Expression: MaxSteeringAngle
                                         * Referenced by: '<S13>/Kinematic'

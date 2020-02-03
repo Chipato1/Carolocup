@@ -7,9 +7,9 @@
  *
  * Code generation for model "raddrehzahl_filter".
  *
- * Model version              : 1.6
+ * Model version              : 1.7
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Thu Jan 30 22:06:38 2020
+ * C++ source code generated on : Sun Feb  2 22:42:49 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping

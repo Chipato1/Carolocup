@@ -132,8 +132,8 @@ this.def["slros_node_init"] = {file: "slros_initialize_cpp.html",line:21,type:"f
 CodeDefine.instance = new CodeDefine();
 var testHarnessInfo = {OwnerFileName: "", HarnessOwner: "", HarnessName: "", IsTestHarness: "0"};
 var relPathToBuildDir = "../ert_main.c";
-var fileSep = "/";
-var isPC = false;
+var fileSep = "\\";
+var isPC = true;
 function Html2SrcLink() {
 	this.html2SrcPath = new Array;
 	this.html2Root = new Array;
@@ -171,13 +171,13 @@ function Html2SrcLink() {
 	this.html2Root["MW_custom_RTOS_header_h.html"] = "MW_custom_RTOS_header_h.html";
 	this.html2SrcPath["MW_target_hardware_resources_h.html"] = "../MW_target_hardware_resources.h";
 	this.html2Root["MW_target_hardware_resources_h.html"] = "MW_target_hardware_resources_h.html";
-	this.html2SrcPath["linuxinitialize_cpp.html"] = "../../../../../../../../usr/local/MATLAB/R2019b/toolbox/target/codertarget/rtos/src/linuxinitialize.cpp";
+	this.html2SrcPath["linuxinitialize_cpp.html"] = "../../../../../../../../Program Files/MATLAB/R2019b/toolbox/target/codertarget/rtos/src/linuxinitialize.cpp";
 	this.html2Root["linuxinitialize_cpp.html"] = "linuxinitialize_cpp.html";
 	this.html2SrcPath["slros_busmsg_conversion_cpp.html"] = "../slros_busmsg_conversion.cpp";
 	this.html2Root["slros_busmsg_conversion_cpp.html"] = "slros_busmsg_conversion_cpp.html";
 	this.html2SrcPath["slros_busmsg_conversion_h.html"] = "../slros_busmsg_conversion.h";
 	this.html2Root["slros_busmsg_conversion_h.html"] = "slros_busmsg_conversion_h.html";
-	this.html2SrcPath["slros_generic_param_cpp.html"] = "../../../../../../../../usr/local/MATLAB/R2019b/toolbox/ros/slros/src/slros_generic_param.cpp";
+	this.html2SrcPath["slros_generic_param_cpp.html"] = "../../../../../../../../Program Files/MATLAB/R2019b/toolbox/ros/slros/src/slros_generic_param.cpp";
 	this.html2Root["slros_generic_param_cpp.html"] = "slros_generic_param_cpp.html";
 	this.html2SrcPath["slros_initialize_cpp.html"] = "../slros_initialize.cpp";
 	this.html2Root["slros_initialize_cpp.html"] = "slros_initialize_cpp.html";
