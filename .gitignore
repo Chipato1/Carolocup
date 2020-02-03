@@ -6,6 +6,7 @@
 ROS_Code/catkin_ws/devel/
 logs/
 ROS_Code/catkin_ws/build/
+ROS_Code/catkin_ws/install/
 bin/
 lib/
 msg_gen/
