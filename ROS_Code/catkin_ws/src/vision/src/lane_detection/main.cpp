@@ -94,6 +94,16 @@ vision::VisionResultMsg copyToMsg(VisionResult source)
 
 bool firstImage = false;
 
+void publishHough() {
+	while (ros::ok()) {
+		std::unique_lock<std::mutex> lk(detector->houghMutex);
+		detector->condition.wait(lk);
+		detector->houghZumutung.lock();
+		std::cout << "test";
+		detector->houghZumutung.unlock();
+	}
+}
+
 void imageCallback(const sensor_msgs::ImageConstPtr &msg,
 				   const sensor_msgs::CameraInfoConstPtr &info_msg) {
 	// Verify camera is actually calibrated
@@ -195,7 +205,10 @@ int main(int argc, char **argv)
 	debugImagePublisher = it.advertise(config["debug_image_topic_name"], 1);
 
 	std::cout << "Success! Entering ROS Loop" << std::endl;
+
+	std::thread t1(publishHough);
 	std::cout << "Lane detection node launched!" << std::endl;
+
 	ros::Rate rate(60.);
 	while (ros::ok())
 	{

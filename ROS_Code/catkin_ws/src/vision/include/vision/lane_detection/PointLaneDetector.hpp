@@ -27,9 +27,14 @@ public:
 	double thres_cut;
 
 	std::function <void (std::vector<cv::Vec4i> data)> houghCallback;
+	std::mutex houghMutex;
+	std::mutex houghZumutung;
 
 	cv::cuda::GpuMat map1GPU;
 	cv::cuda::GpuMat map2GPU;
+
+	cv::cuda::Stream stream;
+	std::condition_variable condition;
 	
 private:
 	void calculateAlgorithm();
@@ -89,7 +94,7 @@ private:
 	cv::Ptr<cv::cuda::CannyEdgeDetector> canny;
 	cv::Ptr<cv::cuda::HoughSegmentDetector> hough;
 
-	cv::cuda::Stream stream;
+	
 
 	cv::Mat transformationMat;
 

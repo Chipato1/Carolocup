@@ -23,6 +23,9 @@ using namespace cv::cuda;
 
 void drawResult(cv::Mat im, cv::Mat x1, cv::Mat x2, cv::Scalar color, int intersect);
 
+void tester(int status, void* userData) {
+	std::cout << "TEST";
+}
 
 PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config) {
 	this->vRes = VisionResult();
@@ -88,7 +91,7 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 	this->canny = cuda::createCannyEdgeDetector(low_thresh, high_thresh, aperture_size, false);
 	this->hough = cuda::createHoughSegmentDetector(1.0f, (float) (CV_PI / 180.0f), 50, 5);
 
-	this->stream.enqueueHostCallback(&PointLaneDetector::houghStreamCb, this);
+	
 
 	this->ipmSize = Size(1200 * this->ipmScaling, 2400 * this->ipmScaling);
 
@@ -292,21 +295,24 @@ void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 	this->canny->detect(this->thresholdGPU, this->edgeGPU);
 	this->edgeGPU.download(edge);
 
-//Hough Transformation 
+	//Hough Transformation 
+	houghZumutung.lock();
 	this->hough->detect(this->edgeGPU, this->houghLinesGPU, stream);
-
-	
+	this->stream.enqueueHostCallback(&PointLaneDetector::houghStreamCb, this);
+	houghZumutung.unlock();
 }
 
 void PointLaneDetector::houghStreamCb(int status, void *userData) {
-	std::vector<cv::Vec4i> houghPointsResult;
+	
+	//std::vector<cv::Vec4i> houghPointsResult;
 	PointLaneDetector *self = static_cast<PointLaneDetector *>(userData);
-
-	if (!self->houghLinesGPU.empty()){
+	std::lock_guard<std::mutex> lk(self->houghMutex);
+	self->condition.notify_one();
+	/*if (!self->houghLinesGPU.empty()){
 		houghPointsResult.resize(self->houghLinesGPU.cols);
 		self->houghLinesCPU = cv::Mat(1, self->houghLinesGPU.cols, CV_32SC4, &houghPointsResult[0]);
 		self->houghLinesGPU.download(self->houghLinesCPU);
-	}
+	}*/
 
 	//self->houghCallback(houghPointsResult);
 }
