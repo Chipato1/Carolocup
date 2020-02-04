@@ -99,7 +99,15 @@ void publishHough() {
 		std::unique_lock<std::mutex> lk(detector->houghMutex);
 		detector->condition.wait(lk);
 		detector->houghZumutung.lock();
-		std::cout << "test";
+		std::vector<cv::Vec4i> houghPointsResult;
+		if (!detector->houghLinesGPU.empty()){
+			houghPointsResult.resize(detector->houghLinesGPU.cols);
+			houghLinesCPU = cv::Mat(1, houghLinesGPU.cols, CV_32SC4, &houghPointsResult[0]);
+			houghLinesGPU.download(houghLinesCPU);
+			vision::HoughPointsArray arr;
+			houghPublisher.publish(arr);
+		}
+		
 		detector->houghZumutung.unlock();
 	}
 }

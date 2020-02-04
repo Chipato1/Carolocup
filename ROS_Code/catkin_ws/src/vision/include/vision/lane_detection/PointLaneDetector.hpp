@@ -33,6 +33,9 @@ public:
 	cv::cuda::GpuMat map1GPU;
 	cv::cuda::GpuMat map2GPU;
 
+
+	cv::cuda::GpuMat houghLinesGPU;
+
 	cv::cuda::Stream stream;
 	std::condition_variable condition;
 	
@@ -112,7 +115,6 @@ private:
 	cv::cuda::GpuMat ipmGPU;
 	cv::cuda::GpuMat thresholdGPU;
 	cv::cuda::GpuMat edgeGPU;
-	cv::cuda::GpuMat houghLinesGPU;
 
 	
 
