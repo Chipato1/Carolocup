@@ -4,7 +4,7 @@ Servo servo;
 Servo motor;  
 
 std_msgs::Bool rc_msg;
-std_msgs::Int16 test_msg;
+//std_msgs::Int16 test_msg;
 
 ros::Subscriber<std_msgs::Float32> sub_servo("ctl_servoAngle", servo_cb);
 ros::Subscriber<std_msgs::Int16> sub_motor("ctl_motorRpm", motor_cb);      
@@ -14,7 +14,7 @@ ros::Subscriber<std_msgs::UInt8> sub_light_b("trj_breakLight", lichtBremse_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_rem("trj_remoteLight", lichtRemote_cb);
 
 ros::Publisher rc_pub("akt_rc", &rc_msg);
-ros::Publisher test_pub("akt_test", &test_msg);
+//ros::Publisher test_pub("akt_test", &test_msg);
 
 int16_t voltage_rcmode; //remove
 
@@ -44,7 +44,7 @@ void init_aktorik(ros::NodeHandle *aktorik_node)
   aktorik_node->subscribe(sub_light_rem);
 
   aktorik_node->advertise(rc_pub);
-  aktorik_node->advertise(test_pub);
+  //aktorik_node->advertise(test_pub);
   
   motor.attach(6); //Motor an Pin zuweisen
   servo.attach(5); //Servo an Pin zuweisen
@@ -155,15 +155,15 @@ void servo_bewegung(float lenkwinkel_bogenmass)
 
 void motor_bewegung(int16_t motor_drehzahl){
 
-  int8_t motor_uebertragung;
+  int16_t motor_uebertragung;
   
   if(motor_drehzahl < 0)//rückwärts
   {     
-    motor_uebertragung = 90 +(0.234 * motor_drehzahl);
+    motor_uebertragung = (int) 90 +(0.234 * motor_drehzahl);
   }
   else//vorwärts
   {  
-  motor_uebertragung = (0.236 * motor_drehzahl) + 96;
+  motor_uebertragung = (int) (0.236 * motor_drehzahl) + 96;
   }
   /* 
    * Übergangsbereich von 91 bis 95 wird nicht betrachtet
@@ -173,7 +173,7 @@ void motor_bewegung(int16_t motor_drehzahl){
 
 void motor_bewegung_RC_mode()
 {
-  int8_t motor_uebertragung_RC_mode;
+  int16_t motor_uebertragung_RC_mode;
   //motor.attach(6);
   analogvalue_motor_rcmode = analogRead(tiefpass_pwm_motor_voltage_nr);
   //int voltage_motor_rcmode = referenzvoltage * analogvalue_motor_rcmode;
@@ -181,12 +181,12 @@ void motor_bewegung_RC_mode()
     if (analogvalue_motor_rcmode < tiefpass_untere_spannung) //rückwarts
     {       
         //motor_uebertragung_RC_mode = (analogvalue_motor_rcmode * 3.3333) - 9.99;
-        motor_uebertragung_RC_mode = 70;
+        motor_uebertragung_RC_mode = 75;
     }
     else if (analogvalue_motor_rcmode > tiefpass_obere_spannung)//vorwärts
     {   
         //motor_uebertragung_RC_mode = (analogvalue_motor_rcmode * 2.222) + 36.06;
-        motor_uebertragung_RC_mode = 120;
+        motor_uebertragung_RC_mode = 110;
     }
     else
     {
@@ -222,9 +222,9 @@ void rc_publish ()
   rc_msg.data = rc_mode;
   rc_pub.publish(&rc_msg);
 }
-
+/*
 void test_publish ()
 { 
   test_msg.data = analogvalue_motor_rcmode;
   test_pub.publish(&test_msg);
-}
+}*/

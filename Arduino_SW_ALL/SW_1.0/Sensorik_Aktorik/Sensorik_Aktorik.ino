@@ -27,12 +27,13 @@ void loop()
   //Aktorik Teil -> hier kann der Rückgabewert ausgelesen werden
   //Der Wert sagt ob der RC mode aktiviert ist 
   aktorik();
+  
   tof = read_TOF();
   rpm = read_RPM();
   tof_publish(tof[0], tof[1], tof[2], tof[3], tof[4]);
   rpm_publish(rpm);
   rc_publish(); 
-  test_publish();
+  //test_publish();
   
   arduino_node.spinOnce();
 }

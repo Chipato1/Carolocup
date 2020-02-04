@@ -1,4 +1,5 @@
 #include "rpm.h"
+#include <Arduino.h>
 
 #define RPM_inputPin    14
 #define ticks_per_cycle 4
@@ -17,7 +18,7 @@ void init_rpm(){
 
 float read_RPM()
 {
-  if (rpm_T1 > rpm_T2){
+  if (rpm_T2 > rpm_T1){
     rpm_value = 60000 * rpm_count / (rpm_T2 - rpm_T1);
     rpm_T1 = rpm_T2;
     rpm_count = 0;    

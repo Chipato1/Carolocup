@@ -47,6 +47,6 @@ void set_led_states();
 void set_output(short state, short port);
 
 void rc_publish();
-void test_publish();
+//void test_publish();
 
 #endif
