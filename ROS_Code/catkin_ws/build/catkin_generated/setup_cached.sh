@@ -7,6 +7,9 @@
 # new environment variables
 
 # modified environment variables
-export PWD="/home/xavier/Documents/Github/Carolocup/ROS_Code/catkin_ws/build"
-export PYTHONPATH="/home/xavier/Documents/Github/Carolocup/ROS_Code/catkin_ws/devel/lib/python2.7/dist-packages:$PYTHONPATH"
-export ROS_PACKAGE_PATH="/home/chipato/Desktop/Test_git/Carolocup/ROS_Code/catkin_ws/src:/home/chipato/Desktop/CaroloGit/Carolocup/ROS_Code/catkin_ws/src:/home/xavier/Documents/Github/Carolocup/ROS_Code/catkin_ws/src:/opt/ros/melodic/share"
+export CMAKE_PREFIX_PATH="/home/chipato/Desktop/GIT2143/Carolocup/ROS_Code/catkin_ws/devel:$CMAKE_PREFIX_PATH"
+export LD_LIBRARY_PATH="/home/chipato/Desktop/GIT2143/Carolocup/ROS_Code/catkin_ws/devel/lib:$LD_LIBRARY_PATH"
+export PWD="/home/chipato/Desktop/GIT2143/Carolocup/ROS_Code/catkin_ws/build"
+export PYTHONPATH="/home/chipato/Desktop/GIT2143/Carolocup/ROS_Code/catkin_ws/devel/lib/python2.7/dist-packages:$PYTHONPATH"
+export ROSLISP_PACKAGE_DIRECTORIES="/home/chipato/Desktop/GIT2143/Carolocup/ROS_Code/catkin_ws/devel/share/common-lisp"
+export ROS_PACKAGE_PATH="/home/chipato/Desktop/GIT2143/Carolocup/ROS_Code/catkin_ws/src:$ROS_PACKAGE_PATH"

@@ -1,6 +1,6 @@
 # CMake generated Testfile for 
-# Source directory: /home/xavier/Documents/Github/Carolocup/ROS_Code/catkin_ws/src
-# Build directory: /home/xavier/Documents/Github/Carolocup/ROS_Code/catkin_ws/build
+# Source directory: /home/chipato/Desktop/GIT2143/Carolocup/ROS_Code/catkin_ws/src
+# Build directory: /home/chipato/Desktop/GIT2143/Carolocup/ROS_Code/catkin_ws/build
 # 
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.
