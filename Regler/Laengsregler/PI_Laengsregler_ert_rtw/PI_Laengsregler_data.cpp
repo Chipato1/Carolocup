@@ -7,9 +7,9 @@
  *
  * Code generation for model "PI_Laengsregler".
  *
- * Model version              : 1.27
+ * Model version              : 1.28
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Mon Feb  3 23:45:19 2020
+ * C++ source code generated on : Tue Feb  4 19:20:11 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -23,6 +23,21 @@
 
 /* Block parameters (default storage) */
 P_PI_Laengsregler_T PI_Laengsregler_P = {
+  /* Variable: ir
+   * Referenced by: '<S33>/Integral Gain'
+   */
+  1.7,
+
+  /* Variable: pr
+   * Referenced by: '<S41>/Proportional Gain'
+   */
+  1.3,
+
+  /* Mask Parameter: PIDController_InitialConditionF
+   * Referenced by: '<S36>/Integrator'
+   */
+  0.0,
+
   /* Computed Parameter: Constant_Value
    * Referenced by: '<S4>/Constant'
    */
@@ -44,20 +59,20 @@ P_PI_Laengsregler_T PI_Laengsregler_P = {
     0                                  /* Data */
   },
 
-  /* Computed Parameter: Radumfang_Gain
+  /* Expression: 1/0.175896
    * Referenced by: '<S2>/Radumfang'
    */
-  5.6851778F,
+  5.6851776049483789,
 
-  /* Computed Parameter: Getriebe_Gain
+  /* Expression: 7
    * Referenced by: '<S2>/Getriebe'
    */
-  7.0F,
+  7.0,
 
   /* Start of '<S5>/Enabled Subsystem' */
   {
     /* Computed Parameter: Out1_Y0
-     * Referenced by: '<S7>/Out1'
+     * Referenced by: '<S52>/Out1'
      */
     {
       0.0F                             /* Data */
@@ -70,7 +85,7 @@ P_PI_Laengsregler_T PI_Laengsregler_P = {
   /* Start of '<S4>/Enabled Subsystem' */
   {
     /* Computed Parameter: Out1_Y0
-     * Referenced by: '<S6>/Out1'
+     * Referenced by: '<S51>/Out1'
      */
     {
       0.0F                             /* Data */

@@ -24,13 +24,15 @@ void *threadJoinStatus;
 int terminatingmodel = 0;
 void *baseRateTask(void *arg)
 {
-  runModel = (rtmGetErrorStatus(PI_Laengsregler_M) == (NULL));
+  runModel = (rtmGetErrorStatus(PI_Laengsregler_M) == (NULL)) &&
+    !rtmGetStopRequested(PI_Laengsregler_M);
   while (runModel) {
     sem_wait(&baserateTaskSem);
     PI_Laengsregler_step();
 
     /* Get model outputs here */
-    stopRequested = !((rtmGetErrorStatus(PI_Laengsregler_M) == (NULL)));
+    stopRequested = !((rtmGetErrorStatus(PI_Laengsregler_M) == (NULL)) &&
+                      !rtmGetStopRequested(PI_Laengsregler_M));
     runModel = !stopRequested;
   }
 

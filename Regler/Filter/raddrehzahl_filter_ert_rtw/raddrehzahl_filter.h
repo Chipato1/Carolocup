@@ -7,9 +7,9 @@
  *
  * Code generation for model "raddrehzahl_filter".
  *
- * Model version              : 1.7
+ * Model version              : 1.9
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Sun Feb  2 22:42:49 2020
+ * C++ source code generated on : Tue Feb  4 19:28:58 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -152,20 +152,31 @@
 # define rtmGetTPtr(rtm)               ((rtm)->Timing.t)
 #endif
 
+/* Block signals for system '<S6>/Enabled Subsystem' */
+typedef struct {
+  SL_Bus_raddrehzahl_filter_std_msgs_Float32 In1;/* '<S9>/In1' */
+} B_EnabledSubsystem_raddrehzah_T;
+
 /* Block signals (default storage) */
 typedef struct {
-  real_T Multiply;                     /* '<Root>/Multiply' */
-  SL_Bus_raddrehzahl_filter_std_msgs_Float32 In1;/* '<S6>/In1' */
+  real_T Switch;                       /* '<Root>/Switch' */
+  SL_Bus_raddrehzahl_filter_std_msgs_Bool In1;/* '<S8>/In1' */
+  B_EnabledSubsystem_raddrehzah_T EnabledSubsystem_b;/* '<S7>/Enabled Subsystem' */
+  B_EnabledSubsystem_raddrehzah_T EnabledSubsystem_a;/* '<S6>/Enabled Subsystem' */
 } B_raddrehzahl_filter_T;
 
 /* Block states (default storage) for system '<Root>' */
 typedef struct {
   ros_slros_internal_block_Publ_T obj; /* '<S4>/SinkBlock' */
   ros_slros_internal_block_Publ_T obj_i;/* '<S3>/SinkBlock' */
-  ros_slros_internal_block_Subs_T obj_d;/* '<S5>/SourceBlock' */
+  ros_slros_internal_block_Subs_T obj_d;/* '<S7>/SourceBlock' */
+  ros_slros_internal_block_Subs_T obj_dl;/* '<S6>/SourceBlock' */
+  ros_slros_internal_block_Subs_T obj_m;/* '<S5>/SourceBlock' */
   real_T DiscreteTransferFcn_states[2];/* '<Root>/Discrete Transfer Fcn' */
   real_T DiscreteTransferFcn_tmp;      /* '<Root>/Discrete Transfer Fcn' */
-  boolean_T objisempty;                /* '<S5>/SourceBlock' */
+  boolean_T objisempty;                /* '<S7>/SourceBlock' */
+  boolean_T objisempty_o;              /* '<S6>/SourceBlock' */
+  boolean_T objisempty_g;              /* '<S5>/SourceBlock' */
   boolean_T objisempty_j;              /* '<S4>/SinkBlock' */
   boolean_T objisempty_k;              /* '<S3>/SinkBlock' */
 } DW_raddrehzahl_filter_T;
@@ -196,6 +207,13 @@ typedef struct {
 
 #endif
 
+/* Parameters for system: '<S6>/Enabled Subsystem' */
+struct P_EnabledSubsystem_raddrehzah_T_ {
+  SL_Bus_raddrehzahl_filter_std_msgs_Float32 Out1_Y0;/* Computed Parameter: Out1_Y0
+                                                      * Referenced by: '<S9>/Out1'
+                                                      */
+};
+
 /* Parameters (default storage) */
 struct P_raddrehzahl_filter_T_ {
   real_T denom_drehzahl[3];            /* Variable: denom_drehzahl
@@ -204,27 +222,35 @@ struct P_raddrehzahl_filter_T_ {
   real_T num_drehzahl[3];              /* Variable: num_drehzahl
                                         * Referenced by: '<Root>/Discrete Transfer Fcn'
                                         */
-  SL_Bus_raddrehzahl_filter_std_msgs_Float32 Out1_Y0;/* Computed Parameter: Out1_Y0
-                                                      * Referenced by: '<S6>/Out1'
-                                                      */
-  SL_Bus_raddrehzahl_filter_std_msgs_Float32 Constant_Value;/* Computed Parameter: Constant_Value
-                                                             * Referenced by: '<S5>/Constant'
-                                                             */
+  SL_Bus_raddrehzahl_filter_std_msgs_Bool Out1_Y0;/* Computed Parameter: Out1_Y0
+                                                   * Referenced by: '<S8>/Out1'
+                                                   */
+  SL_Bus_raddrehzahl_filter_std_msgs_Bool Constant_Value;/* Computed Parameter: Constant_Value
+                                                          * Referenced by: '<S5>/Constant'
+                                                          */
+  SL_Bus_raddrehzahl_filter_std_msgs_Float32 Constant_Value_j;/* Computed Parameter: Constant_Value_j
+                                                               * Referenced by: '<S6>/Constant'
+                                                               */
+  SL_Bus_raddrehzahl_filter_std_msgs_Float32 Constant_Value_m;/* Computed Parameter: Constant_Value_m
+                                                               * Referenced by: '<S7>/Constant'
+                                                               */
   SL_Bus_raddrehzahl_filter_std_msgs_Float32 Constant_Value_l;/* Computed Parameter: Constant_Value_l
                                                                * Referenced by: '<S1>/Constant'
                                                                */
   SL_Bus_raddrehzahl_filter_std_msgs_Float32 Constant_Value_n;/* Computed Parameter: Constant_Value_n
                                                                * Referenced by: '<S2>/Constant'
                                                                */
-  real_T DiscreteTransferFcn_InitialStat;/* Expression: 0
-                                          * Referenced by: '<Root>/Discrete Transfer Fcn'
-                                          */
   real_T Multiply_Gain;                /* Expression: 0.175896
                                         * Referenced by: '<Root>/Multiply'
                                         */
+  real_T DiscreteTransferFcn_InitialStat;/* Expression: 0
+                                          * Referenced by: '<Root>/Discrete Transfer Fcn'
+                                          */
   real_T Integrator_IC;                /* Expression: 0
                                         * Referenced by: '<Root>/Integrator'
                                         */
+  P_EnabledSubsystem_raddrehzah_T EnabledSubsystem_b;/* '<S7>/Enabled Subsystem' */
+  P_EnabledSubsystem_raddrehzah_T EnabledSubsystem_a;/* '<S6>/Enabled Subsystem' */
 };
 
 /* Real-time Model Data Structure */
@@ -356,7 +382,11 @@ extern "C" {
  * '<S2>'   : 'raddrehzahl_filter/Blank Message1'
  * '<S3>'   : 'raddrehzahl_filter/Publish'
  * '<S4>'   : 'raddrehzahl_filter/Publish1'
- * '<S5>'   : 'raddrehzahl_filter/Subscribe1'
- * '<S6>'   : 'raddrehzahl_filter/Subscribe1/Enabled Subsystem'
+ * '<S5>'   : 'raddrehzahl_filter/Subscribe'
+ * '<S6>'   : 'raddrehzahl_filter/Subscribe1'
+ * '<S7>'   : 'raddrehzahl_filter/Subscribe2'
+ * '<S8>'   : 'raddrehzahl_filter/Subscribe/Enabled Subsystem'
+ * '<S9>'   : 'raddrehzahl_filter/Subscribe1/Enabled Subsystem'
+ * '<S10>'  : 'raddrehzahl_filter/Subscribe2/Enabled Subsystem'
  */
 #endif                                 /* RTW_HEADER_raddrehzahl_filter_h_ */

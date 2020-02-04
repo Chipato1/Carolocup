@@ -7,8 +7,14 @@
 extern ros::NodeHandle * SLROSNodePtr;
 extern const std::string SLROSNodeName;
 
+// For Block raddrehzahl_filter/Subscribe
+extern SimulinkSubscriber<std_msgs::Bool, SL_Bus_raddrehzahl_filter_std_msgs_Bool> Sub_raddrehzahl_filter_19;
+
 // For Block raddrehzahl_filter/Subscribe1
 extern SimulinkSubscriber<std_msgs::Float32, SL_Bus_raddrehzahl_filter_std_msgs_Float32> Sub_raddrehzahl_filter_3;
+
+// For Block raddrehzahl_filter/Subscribe2
+extern SimulinkSubscriber<std_msgs::Float32, SL_Bus_raddrehzahl_filter_std_msgs_Float32> Sub_raddrehzahl_filter_22;
 
 // For Block raddrehzahl_filter/Publish
 extern SimulinkPublisher<std_msgs::Float32, SL_Bus_raddrehzahl_filter_std_msgs_Float32> Pub_raddrehzahl_filter_7;

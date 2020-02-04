@@ -7,9 +7,9 @@
  *
  * Code generation for model "raddrehzahl_filter".
  *
- * Model version              : 1.7
+ * Model version              : 1.9
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Sun Feb  2 22:42:49 2020
+ * C++ source code generated on : Tue Feb  4 19:28:58 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -28,6 +28,15 @@
 typedef struct {
   real32_T Data;
 } SL_Bus_raddrehzahl_filter_std_msgs_Float32;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_SL_Bus_raddrehzahl_filter_std_msgs_Bool_
+#define DEFINED_TYPEDEF_FOR_SL_Bus_raddrehzahl_filter_std_msgs_Bool_
+
+typedef struct {
+  boolean_T Data;
+} SL_Bus_raddrehzahl_filter_std_msgs_Bool;
 
 #endif
 
@@ -52,6 +61,9 @@ typedef struct {
 } ros_slros_internal_block_Subs_T;
 
 #endif                               /*typedef_ros_slros_internal_block_Subs_T*/
+
+/* Parameters for system: '<S6>/Enabled Subsystem' */
+typedef struct P_EnabledSubsystem_raddrehzah_T_ P_EnabledSubsystem_raddrehzah_T;
 
 /* Parameters (default storage) */
 typedef struct P_raddrehzahl_filter_T_ P_raddrehzahl_filter_T;

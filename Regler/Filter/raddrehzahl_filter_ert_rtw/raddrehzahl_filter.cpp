@@ -7,9 +7,9 @@
  *
  * Code generation for model "raddrehzahl_filter".
  *
- * Model version              : 1.7
+ * Model version              : 1.9
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Sun Feb  2 22:42:49 2020
+ * C++ source code generated on : Tue Feb  4 19:28:58 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -121,6 +121,38 @@ static void rt_ertODEUpdateContinuousStates(RTWSolverInfo *si )
   rtsiSetSimTimeStep(si,MAJOR_TIME_STEP);
 }
 
+/*
+ * System initialize for enable system:
+ *    '<S6>/Enabled Subsystem'
+ *    '<S7>/Enabled Subsystem'
+ */
+void raddrehza_EnabledSubsystem_Init(B_EnabledSubsystem_raddrehzah_T *localB,
+  P_EnabledSubsystem_raddrehzah_T *localP)
+{
+  /* SystemInitialize for Outport: '<S9>/Out1' */
+  localB->In1 = localP->Out1_Y0;
+}
+
+/*
+ * Output and update for enable system:
+ *    '<S6>/Enabled Subsystem'
+ *    '<S7>/Enabled Subsystem'
+ */
+void raddrehzahl_fi_EnabledSubsystem(boolean_T rtu_Enable, const
+  SL_Bus_raddrehzahl_filter_std_msgs_Float32 *rtu_In1,
+  B_EnabledSubsystem_raddrehzah_T *localB)
+{
+  /* Outputs for Enabled SubSystem: '<S6>/Enabled Subsystem' incorporates:
+   *  EnablePort: '<S9>/Enable'
+   */
+  if (rtu_Enable) {
+    /* Inport: '<S9>/In1' */
+    localB->In1 = *rtu_In1;
+  }
+
+  /* End of Outputs for SubSystem: '<S6>/Enabled Subsystem' */
+}
+
 static void matlabCodegenHandle_matlabCo_my(ros_slros_internal_block_Subs_T *obj)
 {
   if (!obj->matlabCodegenIsDeleted) {
@@ -138,7 +170,12 @@ static void matlabCodegenHandle_matlabCodeg(ros_slros_internal_block_Publ_T *obj
 /* Model step function */
 void raddrehzahl_filter_step(void)
 {
-  SL_Bus_raddrehzahl_filter_std_msgs_Float32 b_varargout_2;
+  /* local block i/o variables */
+  SL_Bus_raddrehzahl_filter_std_msgs_Float32 rtb_SourceBlock_o2;
+  SL_Bus_raddrehzahl_filter_std_msgs_Float32 rtb_SourceBlock_o2_g;
+  boolean_T rtb_SourceBlock_o1;
+  boolean_T rtb_SourceBlock_o1_d;
+  SL_Bus_raddrehzahl_filter_std_msgs_Bool b_varargout_2;
   boolean_T b_varargout_1;
   SL_Bus_raddrehzahl_filter_std_msgs_Float32 rtb_BusAssignment1;
   SL_Bus_raddrehzahl_filter_std_msgs_Float32 rtb_BusAssignment;
@@ -164,14 +201,26 @@ void raddrehzahl_filter_step(void)
   }
 
   if (rtmIsMajorTimeStep(raddrehzahl_filter_M)) {
-    /* Outputs for Atomic SubSystem: '<Root>/Subscribe1' */
+    /* Outputs for Atomic SubSystem: '<Root>/Subscribe2' */
+    /* MATLABSystem: '<S7>/SourceBlock' */
+    rtb_SourceBlock_o1 = Sub_raddrehzahl_filter_22.getLatestMessage
+      (&rtb_SourceBlock_o2);
+
+    /* Outputs for Enabled SubSystem: '<S7>/Enabled Subsystem' */
+    raddrehzahl_fi_EnabledSubsystem(rtb_SourceBlock_o1, &rtb_SourceBlock_o2,
+      &raddrehzahl_filter_B.EnabledSubsystem_b);
+
+    /* End of Outputs for SubSystem: '<S7>/Enabled Subsystem' */
+    /* End of Outputs for SubSystem: '<Root>/Subscribe2' */
+
+    /* Outputs for Atomic SubSystem: '<Root>/Subscribe' */
     /* MATLABSystem: '<S5>/SourceBlock' incorporates:
-     *  Inport: '<S6>/In1'
+     *  Inport: '<S8>/In1'
      */
-    b_varargout_1 = Sub_raddrehzahl_filter_3.getLatestMessage(&b_varargout_2);
+    b_varargout_1 = Sub_raddrehzahl_filter_19.getLatestMessage(&b_varargout_2);
 
     /* Outputs for Enabled SubSystem: '<S5>/Enabled Subsystem' incorporates:
-     *  EnablePort: '<S6>/Enable'
+     *  EnablePort: '<S8>/Enable'
      */
     if (b_varargout_1) {
       raddrehzahl_filter_B.In1 = b_varargout_2;
@@ -179,33 +228,54 @@ void raddrehzahl_filter_step(void)
 
     /* End of MATLABSystem: '<S5>/SourceBlock' */
     /* End of Outputs for SubSystem: '<S5>/Enabled Subsystem' */
+    /* End of Outputs for SubSystem: '<Root>/Subscribe' */
+
+    /* Outputs for Atomic SubSystem: '<Root>/Subscribe1' */
+    /* MATLABSystem: '<S6>/SourceBlock' */
+    rtb_SourceBlock_o1_d = Sub_raddrehzahl_filter_3.getLatestMessage
+      (&rtb_SourceBlock_o2_g);
+
+    /* Outputs for Enabled SubSystem: '<S6>/Enabled Subsystem' */
+    raddrehzahl_fi_EnabledSubsystem(rtb_SourceBlock_o1_d, &rtb_SourceBlock_o2_g,
+      &raddrehzahl_filter_B.EnabledSubsystem_a);
+
+    /* End of Outputs for SubSystem: '<S6>/Enabled Subsystem' */
     /* End of Outputs for SubSystem: '<Root>/Subscribe1' */
 
     /* DiscreteTransferFcn: '<Root>/Discrete Transfer Fcn' incorporates:
      *  DataTypeConversion: '<Root>/Data Type Conversion'
      */
     raddrehzahl_filter_DW.DiscreteTransferFcn_tmp =
-      ((raddrehzahl_filter_B.In1.Data - raddrehzahl_filter_P.denom_drehzahl[1] *
+      ((raddrehzahl_filter_B.EnabledSubsystem_a.In1.Data -
+        raddrehzahl_filter_P.denom_drehzahl[1] *
         raddrehzahl_filter_DW.DiscreteTransferFcn_states[0]) -
        raddrehzahl_filter_P.denom_drehzahl[2] *
        raddrehzahl_filter_DW.DiscreteTransferFcn_states[1]) /
       raddrehzahl_filter_P.denom_drehzahl[0];
 
-    /* Gain: '<Root>/Multiply' incorporates:
+    /* Switch: '<Root>/Switch' incorporates:
      *  DiscreteTransferFcn: '<Root>/Discrete Transfer Fcn'
+     *  Gain: '<Root>/Multiply'
      */
-    raddrehzahl_filter_B.Multiply = ((raddrehzahl_filter_P.num_drehzahl[0] *
-      raddrehzahl_filter_DW.DiscreteTransferFcn_tmp +
-      raddrehzahl_filter_P.num_drehzahl[1] *
-      raddrehzahl_filter_DW.DiscreteTransferFcn_states[0]) +
-      raddrehzahl_filter_P.num_drehzahl[2] *
-      raddrehzahl_filter_DW.DiscreteTransferFcn_states[1]) *
-      raddrehzahl_filter_P.Multiply_Gain;
+    if (raddrehzahl_filter_B.In1.Data) {
+      raddrehzahl_filter_B.Switch =
+        raddrehzahl_filter_B.EnabledSubsystem_b.In1.Data;
+    } else {
+      raddrehzahl_filter_B.Switch = ((raddrehzahl_filter_P.num_drehzahl[0] *
+        raddrehzahl_filter_DW.DiscreteTransferFcn_tmp +
+        raddrehzahl_filter_P.num_drehzahl[1] *
+        raddrehzahl_filter_DW.DiscreteTransferFcn_states[0]) +
+        raddrehzahl_filter_P.num_drehzahl[2] *
+        raddrehzahl_filter_DW.DiscreteTransferFcn_states[1]) *
+        raddrehzahl_filter_P.Multiply_Gain;
+    }
+
+    /* End of Switch: '<Root>/Switch' */
 
     /* BusAssignment: '<Root>/Bus Assignment' incorporates:
      *  DataTypeConversion: '<Root>/Data Type Conversion1'
      */
-    rtb_BusAssignment.Data = static_cast<real32_T>(raddrehzahl_filter_B.Multiply);
+    rtb_BusAssignment.Data = static_cast<real32_T>(raddrehzahl_filter_B.Switch);
 
     /* Outputs for Atomic SubSystem: '<Root>/Publish' */
     /* MATLABSystem: '<S3>/SinkBlock' */
@@ -280,7 +350,7 @@ void raddrehzahl_filter_derivatives(void)
   _rtXdot = ((XDot_raddrehzahl_filter_T *) raddrehzahl_filter_M->derivs);
 
   /* Derivatives for Integrator: '<Root>/Integrator' */
-  _rtXdot->Integrator_CSTATE = raddrehzahl_filter_B.Multiply;
+  _rtXdot->Integrator_CSTATE = raddrehzahl_filter_B.Switch;
 }
 
 /* Model initialize function */
@@ -341,30 +411,71 @@ void raddrehzahl_filter_initialize(void)
 
   {
     char_T tmp[14];
+    char_T tmp_0[25];
+    char_T tmp_1[17];
     int32_T i;
-    static const char_T tmp_0[13] = { '/', 's', 'n', 's', '_', 'w', 'h', 'e',
+    static const char_T tmp_2[16] = { '/', 't', 'r', 'j', '_', 't', 'a', 'r',
+      'g', 'e', 't', 'S', 'p', 'e', 'e', 'd' };
+
+    static const char_T tmp_3[24] = { '/', 'c', 't', 'l', '_', 'w', 'i', 't',
+      'h', 'o', 'u', 't', 'S', 'e', 'n', 's', 'o', 'r', 'V', 'a', 'l', 'u', 'e',
+      's' };
+
+    static const char_T tmp_4[13] = { '/', 's', 'n', 's', '_', 'w', 'h', 'e',
       'e', 'l', 'R', 'p', 'm' };
 
-    static const char_T tmp_1[13] = { '/', 'c', 't', 'l', '_', 'v', 'e', 'l',
+    static const char_T tmp_5[13] = { '/', 'c', 't', 'l', '_', 'v', 'e', 'l',
       'o', 'c', 'i', 't', 'y' };
 
-    static const char_T tmp_2[13] = { '/', 'c', 't', 'l', '_', 'd', 'i', 's',
+    static const char_T tmp_6[13] = { '/', 'c', 't', 'l', '_', 'd', 'i', 's',
       't', 'a', 'n', 'c', 'e' };
 
-    /* Start for Atomic SubSystem: '<Root>/Subscribe1' */
-    /* Start for MATLABSystem: '<S5>/SourceBlock' */
+    /* Start for Atomic SubSystem: '<Root>/Subscribe2' */
+    /* Start for MATLABSystem: '<S7>/SourceBlock' */
     raddrehzahl_filter_DW.obj_d.matlabCodegenIsDeleted = false;
     raddrehzahl_filter_DW.objisempty = true;
     raddrehzahl_filter_DW.obj_d.isInitialized = 1;
+    for (i = 0; i < 16; i++) {
+      tmp_1[i] = tmp_2[i];
+    }
+
+    tmp_1[16] = '\x00';
+    Sub_raddrehzahl_filter_22.createSubscriber(tmp_1, 1);
+    raddrehzahl_filter_DW.obj_d.isSetupComplete = true;
+
+    /* End of Start for MATLABSystem: '<S7>/SourceBlock' */
+    /* End of Start for SubSystem: '<Root>/Subscribe2' */
+
+    /* Start for Atomic SubSystem: '<Root>/Subscribe' */
+    /* Start for MATLABSystem: '<S5>/SourceBlock' */
+    raddrehzahl_filter_DW.obj_m.matlabCodegenIsDeleted = false;
+    raddrehzahl_filter_DW.objisempty_g = true;
+    raddrehzahl_filter_DW.obj_m.isInitialized = 1;
+    for (i = 0; i < 24; i++) {
+      tmp_0[i] = tmp_3[i];
+    }
+
+    tmp_0[24] = '\x00';
+    Sub_raddrehzahl_filter_19.createSubscriber(tmp_0, 1);
+    raddrehzahl_filter_DW.obj_m.isSetupComplete = true;
+
+    /* End of Start for MATLABSystem: '<S5>/SourceBlock' */
+    /* End of Start for SubSystem: '<Root>/Subscribe' */
+
+    /* Start for Atomic SubSystem: '<Root>/Subscribe1' */
+    /* Start for MATLABSystem: '<S6>/SourceBlock' */
+    raddrehzahl_filter_DW.obj_dl.matlabCodegenIsDeleted = false;
+    raddrehzahl_filter_DW.objisempty_o = true;
+    raddrehzahl_filter_DW.obj_dl.isInitialized = 1;
     for (i = 0; i < 13; i++) {
-      tmp[i] = tmp_0[i];
+      tmp[i] = tmp_4[i];
     }
 
     tmp[13] = '\x00';
     Sub_raddrehzahl_filter_3.createSubscriber(tmp, 1);
-    raddrehzahl_filter_DW.obj_d.isSetupComplete = true;
+    raddrehzahl_filter_DW.obj_dl.isSetupComplete = true;
 
-    /* End of Start for MATLABSystem: '<S5>/SourceBlock' */
+    /* End of Start for MATLABSystem: '<S6>/SourceBlock' */
     /* End of Start for SubSystem: '<Root>/Subscribe1' */
 
     /* Start for Atomic SubSystem: '<Root>/Publish' */
@@ -373,7 +484,7 @@ void raddrehzahl_filter_initialize(void)
     raddrehzahl_filter_DW.objisempty_k = true;
     raddrehzahl_filter_DW.obj_i.isInitialized = 1;
     for (i = 0; i < 13; i++) {
-      tmp[i] = tmp_1[i];
+      tmp[i] = tmp_5[i];
     }
 
     tmp[13] = '\x00';
@@ -389,7 +500,7 @@ void raddrehzahl_filter_initialize(void)
     raddrehzahl_filter_DW.objisempty_j = true;
     raddrehzahl_filter_DW.obj.isInitialized = 1;
     for (i = 0; i < 13; i++) {
-      tmp[i] = tmp_2[i];
+      tmp[i] = tmp_6[i];
     }
 
     tmp[13] = '\x00';
@@ -409,21 +520,49 @@ void raddrehzahl_filter_initialize(void)
   /* InitializeConditions for Integrator: '<Root>/Integrator' */
   raddrehzahl_filter_X.Integrator_CSTATE = raddrehzahl_filter_P.Integrator_IC;
 
-  /* SystemInitialize for Atomic SubSystem: '<Root>/Subscribe1' */
+  /* SystemInitialize for Atomic SubSystem: '<Root>/Subscribe2' */
+  /* SystemInitialize for Enabled SubSystem: '<S7>/Enabled Subsystem' */
+  raddrehza_EnabledSubsystem_Init(&raddrehzahl_filter_B.EnabledSubsystem_b,
+    &raddrehzahl_filter_P.EnabledSubsystem_b);
+
+  /* End of SystemInitialize for SubSystem: '<S7>/Enabled Subsystem' */
+  /* End of SystemInitialize for SubSystem: '<Root>/Subscribe2' */
+
+  /* SystemInitialize for Atomic SubSystem: '<Root>/Subscribe' */
   /* SystemInitialize for Enabled SubSystem: '<S5>/Enabled Subsystem' */
-  /* SystemInitialize for Outport: '<S6>/Out1' */
+  /* SystemInitialize for Outport: '<S8>/Out1' */
   raddrehzahl_filter_B.In1 = raddrehzahl_filter_P.Out1_Y0;
 
   /* End of SystemInitialize for SubSystem: '<S5>/Enabled Subsystem' */
+  /* End of SystemInitialize for SubSystem: '<Root>/Subscribe' */
+
+  /* SystemInitialize for Atomic SubSystem: '<Root>/Subscribe1' */
+  /* SystemInitialize for Enabled SubSystem: '<S6>/Enabled Subsystem' */
+  raddrehza_EnabledSubsystem_Init(&raddrehzahl_filter_B.EnabledSubsystem_a,
+    &raddrehzahl_filter_P.EnabledSubsystem_a);
+
+  /* End of SystemInitialize for SubSystem: '<S6>/Enabled Subsystem' */
   /* End of SystemInitialize for SubSystem: '<Root>/Subscribe1' */
 }
 
 /* Model terminate function */
 void raddrehzahl_filter_terminate(void)
 {
-  /* Terminate for Atomic SubSystem: '<Root>/Subscribe1' */
-  /* Terminate for MATLABSystem: '<S5>/SourceBlock' */
+  /* Terminate for Atomic SubSystem: '<Root>/Subscribe2' */
+  /* Terminate for MATLABSystem: '<S7>/SourceBlock' */
   matlabCodegenHandle_matlabCo_my(&raddrehzahl_filter_DW.obj_d);
+
+  /* End of Terminate for SubSystem: '<Root>/Subscribe2' */
+
+  /* Terminate for Atomic SubSystem: '<Root>/Subscribe' */
+  /* Terminate for MATLABSystem: '<S5>/SourceBlock' */
+  matlabCodegenHandle_matlabCo_my(&raddrehzahl_filter_DW.obj_m);
+
+  /* End of Terminate for SubSystem: '<Root>/Subscribe' */
+
+  /* Terminate for Atomic SubSystem: '<Root>/Subscribe1' */
+  /* Terminate for MATLABSystem: '<S6>/SourceBlock' */
+  matlabCodegenHandle_matlabCo_my(&raddrehzahl_filter_DW.obj_dl);
 
   /* End of Terminate for SubSystem: '<Root>/Subscribe1' */
 
