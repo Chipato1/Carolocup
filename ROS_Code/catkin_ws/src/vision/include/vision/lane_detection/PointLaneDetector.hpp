@@ -4,6 +4,7 @@
 #include <opencv2/cudaimgproc.hpp>
 #include <map>
 #include <string>
+#include <condition_variable>
 class PointLaneDetector {
 public:
 	PointLaneDetector(std::map<std::string, std::string>&);
@@ -27,9 +28,17 @@ public:
 	double thres_cut;
 
 	std::function <void (std::vector<cv::Vec4i> data)> houghCallback;
+	std::mutex houghMutex;
+	std::mutex houghZumutung;
 
 	cv::cuda::GpuMat map1GPU;
 	cv::cuda::GpuMat map2GPU;
+
+
+	cv::cuda::GpuMat houghLinesGPU;
+
+	cv::cuda::Stream stream;
+	std::condition_variable condition;
 	
 private:
 	void calculateAlgorithm();
@@ -89,7 +98,7 @@ private:
 	cv::Ptr<cv::cuda::CannyEdgeDetector> canny;
 	cv::Ptr<cv::cuda::HoughSegmentDetector> hough;
 
-	cv::cuda::Stream stream;
+	
 
 	cv::Mat transformationMat;
 
@@ -107,7 +116,6 @@ private:
 	cv::cuda::GpuMat ipmGPU;
 	cv::cuda::GpuMat thresholdGPU;
 	cv::cuda::GpuMat edgeGPU;
-	cv::cuda::GpuMat houghLinesGPU;
 
 	
 
