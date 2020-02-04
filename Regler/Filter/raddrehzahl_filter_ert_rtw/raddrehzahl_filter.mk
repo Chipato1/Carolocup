@@ -2,7 +2,7 @@
 ## Makefile generated for Simulink model 'raddrehzahl_filter'. 
 ## 
 ## Makefile     : raddrehzahl_filter.mk
-## Generated on : Tue Feb 04 19:29:04 2020
+## Generated on : Tue Feb 04 19:47:37 2020
 ## MATLAB Coder version: 4.3 (R2019b)
 ## 
 ## Build Info:
@@ -217,7 +217,7 @@ SYSTEM_LIBS =
 # C Compiler
 #---------------
 
-CFLAGS_SKIPFORSIL =   -fpermissive
+CFLAGS_SKIPFORSIL =   -fpermissive -fpermissive
 CFLAGS_BASIC = $(DEFINES) $(INCLUDES)
 
 CFLAGS += $(CFLAGS_SKIPFORSIL) $(CFLAGS_BASIC)
@@ -226,7 +226,7 @@ CFLAGS += $(CFLAGS_SKIPFORSIL) $(CFLAGS_BASIC)
 # C++ Compiler
 #-----------------
 
-CPPFLAGS_SKIPFORSIL =   -fpermissive
+CPPFLAGS_SKIPFORSIL =   -fpermissive -fpermissive
 CPPFLAGS_BASIC = $(DEFINES) $(INCLUDES)
 
 CPPFLAGS += $(CPPFLAGS_SKIPFORSIL) $(CPPFLAGS_BASIC)
