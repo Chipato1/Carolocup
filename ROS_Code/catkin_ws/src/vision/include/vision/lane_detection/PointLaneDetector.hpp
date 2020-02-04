@@ -4,6 +4,7 @@
 #include <opencv2/cudaimgproc.hpp>
 #include <map>
 #include <string>
+#include <condition_variable>
 class PointLaneDetector {
 public:
 	PointLaneDetector(std::map<std::string, std::string>&);

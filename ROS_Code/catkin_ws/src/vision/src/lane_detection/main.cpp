@@ -14,6 +14,7 @@
 #include <image_transport/image_transport.h>
 
 #include <chrono>
+#include <thread>
 
 std::map<std::string, std::string> readConfigFile()
 {
@@ -102,10 +103,22 @@ void publishHough() {
 		std::vector<cv::Vec4i> houghPointsResult;
 		if (!detector->houghLinesGPU.empty()){
 			houghPointsResult.resize(detector->houghLinesGPU.cols);
-			houghLinesCPU = cv::Mat(1, houghLinesGPU.cols, CV_32SC4, &houghPointsResult[0]);
-			houghLinesGPU.download(houghLinesCPU);
-			vision::HoughPointsArray arr;
-			houghPublisher.publish(arr);
+			detector->houghLinesCPU = cv::Mat(1, detector->houghLinesGPU.cols, CV_32SC4, &houghPointsResult[0]);
+			detector->houghLinesGPU.download(detector->houghLinesCPU);
+			cv::Vec4i l;
+			vision::HoughPointsArray msg;
+			vision::HoughPoints houghData;
+			
+			for (size_t i = 0; i < houghPointsResult.size(); i++) {
+				l = houghPointsResult[i];
+				houghData.x1 = l[0]; 
+				houghData.y1 = l[1]; 
+				houghData.x2 = l[2];
+				houghData.y2 = l[3];
+			}
+
+			msg.points.push_back(houghData); 
+			houghPublisher.publish(msg);
 		}
 		
 		detector->houghZumutung.unlock();
@@ -140,22 +153,6 @@ void imageCallback(const sensor_msgs::ImageConstPtr &msg,
 		detector->map1GPU = model_.full_map1GPU;
 		detector->map2GPU = model_.full_map2GPU;
 
-		detector->houghCallback = [&houghPublisher] (std::vector<cv::Vec4i> data) {
-			cv::Vec4i l;
-			vision::HoughPointsArray msg;
-			vision::HoughPoints houghData;
-			
-			for (size_t i = 0; i < data.size(); i++) {
-				l = data[i];
-				houghData.x1 = l[0]; 
-				houghData.y1 = l[1]; 
-				houghData.x2 = l[2];
-				houghData.y2 = l[3];
-			}
-
-			msg.points.push_back(houghData); 
-			houghPublisher.publish(msg);
-		};
 
 		firstImage = true;
 	}
