@@ -132,7 +132,11 @@ const ros::Duration SE_TIMEOUT_JUNCTION_WAIT_MS(3);
 const ros::Duration SE_TIMEOUT_JUNCTION_OBSTACLE_WAIT_MS(5);
 const ros::Duration SE_TIMEOUT_JUNCTION_DRIVE_OVER_MS(3);
 
-#define SE_SENSOR_BUFFER_LENGTH 50
+#define SE_SENSOR_BUFFER_LENGTH 10
+
+#define SE_LIGHT_MODE_OFF 0
+#define SE_LIGHT_MODE_ON 1
+#define SE_LIGHT_MODE_BLINK 2
 
 /* ROS specifics */
 // Subscribers
@@ -155,6 +159,11 @@ ros::Publisher se_pub_targetSpeed;
 ros::Publisher se_pub_enableLateralControl;
 ros::Publisher se_pub_steeringAngle;
 
+ros::Publisher se_pub_flashRight;
+ros::Publisher se_pub_flashLeft;
+ros::Publisher se_pub_brakeLight;
+ros::Publisher se_pub_remoteLight;
+
 /* Topic Callbacks */
 //void se_cb_sub_camerashit(const state_machine::VisionResultMsg msg);
 
@@ -168,6 +177,17 @@ void se_cb_sub_tof_l(const std_msgs::Float32::ConstPtr& msg);
 void se_cb_sub_tof_b(const std_msgs::Float32::ConstPtr& msg);
 
 void se_cb_sub_rc_mode(const std_msgs::Bool::ConstPtr& msg);
+
+/* Publisher functions */
+void se_setDeltaY(float deltaY);
+void se_setTargetSpeed(float targetSpeed);
+void se_setEnableLateralControl(bool enableLateralControl);
+void se_setSteeringAngle(float steeringAngle);
+
+void se_setFlashRight(int mode);
+void se_setFlashLeft(int mode);
+void se_setBrakeLight(int mode);
+void se_setRemoteLight(int mode);
 
 /* Sensor variables */
 //state_machine:::VisionResultMsg visionResult;

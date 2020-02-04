@@ -40,6 +40,16 @@ void sm_init()
 {
 	se_init();
 
+	se_setEnableLateralControl(SE_FALSE);
+	se_setTargetSpeed(0);
+	se_setSteeringAngle(0);
+	se_setDeltaY(0);
+
+	se_setFlashRight(SE_LIGHT_MODE_OFF);
+	se_setFlashLeft(SE_LIGHT_MODE_OFF);
+	se_setBrakeLight(SE_LIGHT_MODE_OFF);
+	se_setRemoteLight(SE_LIGHT_MODE_OFF);
+
 	sm_switch_state(INIT);
 }
 
@@ -271,7 +281,9 @@ void sm_handle_LEAVE_BOX()
 {
 	if (sm_isStateChanged())
 	{
-		// set controller setpoint
+		se_setDeltaY(0);
+		se_setTargetSpeed(0.5);
+
 		se_startLeaveBoxTimer();
 	}
 
@@ -283,6 +295,13 @@ void sm_handle_LEAVE_BOX()
 
 void sm_handle_DRIVE_RIGHT()
 {
+	if (sm_isStateChanged())
+	{
+		se_setEnableLateralControl(SE_TRUE);
+		se_setTargetSpeed(0.5);
+	}
+
+	se_setDeltaY(0);
 	// routine for passing camera data to controller
 
 	if (!se_isTrackAvailable())
@@ -303,7 +322,11 @@ void sm_handle_DRIVE_RIGHT()
 
 void sm_handle_KEEP_TRACK_RIGHT()
 {
-	// preserve setpoints for controller
+	if (sm_isStateChanged())
+	{
+		se_setEnableLateralControl(SE_FALSE);
+		se_setTargetSpeed(0.5);
+	}
 
 	if (se_isTrackAvailable())
 	{
@@ -313,11 +336,17 @@ void sm_handle_KEEP_TRACK_RIGHT()
 
 void sm_handle_JUNCTION_BRAKE()
 {
-	// set brake setpoint for controller
+	if (sm_isStateChanged())
+	{
+		se_setTargetSpeed(0);
+		se_setBrakeLight(SE_LIGHT_MODE_ON);
+	}
 
 	if (se_isCarStopped())
 	{
 		sm_switch_state(JUNCTION_WAIT);
+		
+		se_setBrakeLight(SE_LIGHT_MODE_OFF);
 	}
 }
 
@@ -357,10 +386,12 @@ void sm_handle_JUNCTION_DRIVE_OVER()
 {
 	if (sm_isStateChanged())
 	{
+		se_setEnableLateralControl(SE_FALSE);
+		se_setSteeringAngle(0);
+		se_setTargetSpeed(0.5);
+
 		se_startJunctionDriveOverTimeout();
 	}
-
-	// controller setpoints
 
 	if (se_isJunctionDriveOverTimeout())
 	{
@@ -444,18 +475,39 @@ void sm_handle_RC_MODE()
 {
 	if (sm_isStateChanged())
 	{
-		// disable controller
+		se_setEnableLateralControl(SE_FALSE);
+		se_setTargetSpeed(0);
+		se_setSteeringAngle(0);
+		se_setDeltaY(0);
+
+		se_setFlashRight(SE_LIGHT_MODE_OFF);
+		se_setFlashLeft(SE_LIGHT_MODE_OFF);
+		se_setBrakeLight(SE_LIGHT_MODE_OFF);
+		se_setRemoteLight(SE_LIGHT_MODE_BLINK);
 	}
 
 	if (!se_isRCModeActivated())
 	{
 		sm_switch_state(DRIVE_RIGHT);
+
+		se_setRemoteLight(SE_LIGHT_MODE_OFF);
 	}
 }
 
 void sm_handle_STOPPED()
 {
+	if (sm_isStateChanged())
+	{
+		se_setEnableLateralControl(SE_FALSE);
+		se_setTargetSpeed(0);
+		se_setSteeringAngle(0);
+		se_setDeltaY(0);
 
+		se_setFlashRight(SE_LIGHT_MODE_OFF);
+		se_setFlashLeft(SE_LIGHT_MODE_OFF);
+		se_setBrakeLight(SE_LIGHT_MODE_OFF);
+		se_setRemoteLight(SE_LIGHT_MODE_OFF);
+	}
 }
 
 /*
@@ -534,6 +586,11 @@ void se_init()
 	se_pub_enableLateralControl = n.advertise<std_msgs::Bool>("trj_enableLateralControl", 1000);
 	se_pub_steeringAngle = n.advertise<std_msgs::Float32>("trj_steeringAngle", 1000);
 
+	se_pub_flashRight = n.advertise<std_msgs::Float32>("trj_flashRight", 1000);
+	se_pub_flashLeft = n.advertise<std_msgs::Float32>("trj_flashLeft", 1000);
+	se_pub_brakeLight = n.advertise<std_msgs::Float32>("trj_brakeLight", 1000);
+	se_pub_remoteLight = n.advertise<std_msgs::Float32>("trj_remoteLight", 1000);
+
 	// State
 
 	se_rc_mode_activated = SE_FALSE;
@@ -587,6 +644,63 @@ void se_cb_sub_tof_b(const std_msgs::Float32::ConstPtr& msg)
 void se_cb_sub_rc_mode(const std_msgs::Bool::ConstPtr& msg)
 {
 	se_rc_mode_activated = msg->data;
+}
+
+/* Publisher functions */
+void se_setDeltaY(float deltaY)
+{
+	std_msgs::Float32 msg;
+	msg.data = deltaY;
+	se_pub_deltaY.publish(msg);
+}
+
+void se_setTargetSpeed(float targetSpeed)
+{
+	std_msgs::Float32 msg;
+	msg.data = targetSpeed;
+	se_pub_targetSpeed.publish(msg);
+}
+
+void se_setEnableLateralControl(bool enableLateralControl)
+{
+	std_msgs::Bool msg;
+	msg.data = enableLateralControl;
+	se_pub_enableLateralControl.publish(msg);
+}
+
+void se_setSteeringAngle(float steeringAngle)
+{
+	std_msgs::Float32 msg;
+	msg.data = steeringAngle;
+	se_pub_steeringAngle.publish(msg);
+}
+
+void se_setFlashRight(int mode)
+{
+	std_msgs::UInt8 msg;
+	msg.data = mode;
+	se_pub_flashRight.publish(msg);
+}
+
+void se_setFlashLeft(int mode)
+{
+	std_msgs::UInt8 msg;
+	msg.data = mode;
+	se_pub_flashLeft.publish(msg);
+}
+
+void se_setBrakeLight(int mode)
+{
+	std_msgs::UInt8 msg;
+	msg.data = mode;
+	se_pub_brakeLight.publish(msg);
+}
+
+void se_setRemoteLight(int mode)
+{
+	std_msgs::UInt8 msg;
+	msg.data = mode;
+	se_pub_remoteLight.publish(msg);
 }
 
 /* Arduino state */
