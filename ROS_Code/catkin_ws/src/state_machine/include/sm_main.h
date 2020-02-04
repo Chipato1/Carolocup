@@ -16,6 +16,7 @@
 
 #include "std_msgs/UInt8.h"
 #include "std_msgs/Float32.h"
+#include "std_msgs/Bool.h"
 
 //#include <state_machine/VisionResultMsg.h>
 
@@ -146,12 +147,12 @@ ros::Subscriber se_sub_tof_r;
 ros::Subscriber se_sub_tof_l;
 ros::Subscriber se_sub_tof_b;
 
-ros::Subscriber se_sub_rcMode;
+ros::Subscriber se_sub_rc_mode;
 
 // Publishers
 ros::Publisher se_pub_deltaY;
 ros::Publisher se_pub_targetSpeed;
-ros::Publisher se_pub_enableLateralController;
+ros::Publisher se_pub_enableLateralControl;
 ros::Publisher se_pub_steeringAngle;
 
 /* Topic Callbacks */
@@ -166,7 +167,7 @@ void se_cb_sub_tof_r(const std_msgs::Float32::ConstPtr& msg);
 void se_cb_sub_tof_l(const std_msgs::Float32::ConstPtr& msg);
 void se_cb_sub_tof_b(const std_msgs::Float32::ConstPtr& msg);
 
-void se_cb_sub_tof_b(const std_msgs::Float32::ConstPtr& msg);
+void se_cb_sub_rc_mode(const std_msgs::Bool::ConstPtr& msg);
 
 /* Sensor variables */
 //state_machine:::VisionResultMsg visionResult;
@@ -185,6 +186,8 @@ se_sensorBuffer_t se_buffer_tof_fr;
 se_sensorBuffer_t se_buffer_tof_r;
 se_sensorBuffer_t se_buffer_tof_l;
 se_sensorBuffer_t se_buffer_tof_b;
+
+bool se_rc_mode_activated;
 
 void se_sensorBuffer_append(se_sensorBuffer_t* buffer, float value);
 

@@ -21,9 +21,6 @@ int main(int argc, char **argv)
 	//hier brauchen wir den Service Client für maxis spurerkennung
 	//ros::ServiceClient client = n.serviceClient<beginner_tutorials::AddTwoInts>("QR_Detected");
 
-	//Publisher .. brauchen wir bestimmt noch"
-	//ros::Publisher servo_pub = n.advertise<std_msgs::UInt8>("motor", 1000);
-
 	ros::Rate loop_rate(50);
 	INIT_data.begin = ros::Time::now();
 
@@ -515,6 +512,8 @@ void se_init()
 {
 	ros::NodeHandle n;
 
+	// Subscribers
+
 	//se_sub_camerashit = n.subscribe("", 50, se_cb_sub_camerashit); // todo
 
 	se_sub_currentSpeed = n.subscribe("ctl_velocity", 50, se_cb_sub_currentSpeed);
@@ -526,7 +525,22 @@ void se_init()
 	se_sub_tof_l = n.subscribe("sns_distanceLeft", 50, se_cb_sub_tof_l);
 	se_sub_tof_b = n.subscribe("sns_distanceBack", 50, se_cb_sub_tof_b);
 
-	//akt_rc
+	se_sub_rc_mode = n.subscribe("akt_rc", 50, se_cb_sub_rc_mode);
+
+	// Publishers
+
+	se_pub_deltaY = n.advertise<std_msgs::Float32>("trj_deltaY", 1000);
+	se_pub_targetSpeed = n.advertise<std_msgs::Float32>("trj_targetSpeed", 1000);
+	se_pub_enableLateralControl = n.advertise<std_msgs::Bool>("trj_enableLateralControl", 1000);
+	se_pub_steeringAngle = n.advertise<std_msgs::Float32>("trj_steeringAngle", 1000);
+
+	// State
+
+	se_rc_mode_activated = SE_FALSE;
+	se_currentSpeed = 0;
+	se_currentDistance = 0;
+
+	// todo initialize buffers
 }
 
 /* Topic Callbacks */
@@ -570,10 +584,15 @@ void se_cb_sub_tof_b(const std_msgs::Float32::ConstPtr& msg)
 	se_sensorBuffer_append(&se_buffer_tof_b, msg->data);
 }
 
+void se_cb_sub_rc_mode(const std_msgs::Bool::ConstPtr& msg)
+{
+	se_rc_mode_activated = msg->data;
+}
+
 /* Arduino state */
 int se_isRCModeActivated()
 {
-	return SE_FALSE;
+	return se_rc_mode_activated;
 }
 
 int se_isStartButtonPressed()
