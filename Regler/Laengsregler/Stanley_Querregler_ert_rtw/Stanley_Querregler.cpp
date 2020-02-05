@@ -7,9 +7,9 @@
  *
  * Code generation for model "Stanley_Querregler".
  *
- * Model version              : 1.21
+ * Model version              : 1.22
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Wed Feb  5 14:06:45 2020
+ * C++ source code generated on : Wed Feb  5 15:15:36 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -42,6 +42,7 @@ static void matlabCodegenHandle_matlabCodeg(ros_slros_internal_block_Publ_T *obj
  * System initialize for enable system:
  *    '<S4>/Enabled Subsystem'
  *    '<S5>/Enabled Subsystem'
+ *    '<S6>/Enabled Subsystem'
  */
 void Stanley_Q_EnabledSubsystem_Init(B_EnabledSubsystem_Stanley_Qu_T *localB,
   P_EnabledSubsystem_Stanley_Qu_T *localP)
@@ -54,6 +55,7 @@ void Stanley_Q_EnabledSubsystem_Init(B_EnabledSubsystem_Stanley_Qu_T *localB,
  * Output and update for enable system:
  *    '<S4>/Enabled Subsystem'
  *    '<S5>/Enabled Subsystem'
+ *    '<S6>/Enabled Subsystem'
  */
 void Stanley_Querre_EnabledSubsystem(boolean_T rtu_Enable, const
   SL_Bus_Stanley_Querregler_std_msgs_Float32 *rtu_In1,
@@ -121,13 +123,12 @@ static void matlabCodegenHandle_matlabCodeg(ros_slros_internal_block_Publ_T *obj
 /* Model step function */
 void Stanley_Querregler_step(void)
 {
+  real32_T delta;
   SL_Bus_Stanley_Querregler_std_msgs_Bool b_varargout_2;
   boolean_T b_varargout_1;
-  SL_Bus_Stanley_Querregler_std_msgs_Int16 b_varargout_2_0;
-  SL_Bus_Stanley_Querregler_std_msgs_Float32 b_varargout_2_1;
+  SL_Bus_Stanley_Querregler_std_msgs_Float32 b_varargout_2_0;
   SL_Bus_Stanley_Querregler_std_msgs_Float32 rtb_BusAssignment;
   real_T rtb_ms;
-  real32_T rtb_Gain1;
   real_T d_idx_0;
   real_T d_idx_1;
   real32_T u0;
@@ -142,7 +143,7 @@ void Stanley_Querregler_step(void)
    *  EnablePort: '<S8>/Enable'
    */
   if (b_varargout_1) {
-    Stanley_Querregler_B.In1_p = b_varargout_2;
+    Stanley_Querregler_B.In1 = b_varargout_2;
   }
 
   /* End of MATLABSystem: '<S3>/SourceBlock' */
@@ -150,35 +151,22 @@ void Stanley_Querregler_step(void)
   /* End of Outputs for SubSystem: '<Root>/Subscribe1' */
 
   /* Outputs for Atomic SubSystem: '<Root>/Subscribe5' */
-  /* MATLABSystem: '<S6>/SourceBlock' incorporates:
-   *  Inport: '<S11>/In1'
-   */
+  /* MATLABSystem: '<S6>/SourceBlock' */
   b_varargout_1 = Sub_Stanley_Querregler_83.getLatestMessage(&b_varargout_2_0);
 
-  /* Outputs for Enabled SubSystem: '<S6>/Enabled Subsystem' incorporates:
-   *  EnablePort: '<S11>/Enable'
-   */
-  if (b_varargout_1) {
-    Stanley_Querregler_B.In1 = b_varargout_2_0;
-  }
+  /* Outputs for Enabled SubSystem: '<S6>/Enabled Subsystem' */
+  Stanley_Querre_EnabledSubsystem(b_varargout_1, &b_varargout_2_0,
+    &Stanley_Querregler_B.EnabledSubsystem_n);
 
-  /* End of MATLABSystem: '<S6>/SourceBlock' */
   /* End of Outputs for SubSystem: '<S6>/Enabled Subsystem' */
   /* End of Outputs for SubSystem: '<Root>/Subscribe5' */
 
-  /* Gain: '<Root>/Gain1' incorporates:
-   *  DataTypeConversion: '<Root>/Data Type Conversion1'
-   *  Gain: '<Root>/Gain'
-   */
-  rtb_Gain1 = Stanley_Querregler_P.Gain_Gain_g * static_cast<real32_T>
-    (Stanley_Querregler_B.In1.Data) * Stanley_Querregler_P.Gain1_Gain;
-
   /* Outputs for Atomic SubSystem: '<Root>/Subscribe2' */
   /* MATLABSystem: '<S4>/SourceBlock' */
-  b_varargout_1 = Sub_Stanley_Querregler_65.getLatestMessage(&b_varargout_2_1);
+  b_varargout_1 = Sub_Stanley_Querregler_65.getLatestMessage(&b_varargout_2_0);
 
   /* Outputs for Enabled SubSystem: '<S4>/Enabled Subsystem' */
-  Stanley_Querre_EnabledSubsystem(b_varargout_1, &b_varargout_2_1,
+  Stanley_Querre_EnabledSubsystem(b_varargout_1, &b_varargout_2_0,
     &Stanley_Querregler_B.EnabledSubsystem_g);
 
   /* End of Outputs for SubSystem: '<S4>/Enabled Subsystem' */
@@ -187,12 +175,13 @@ void Stanley_Querregler_step(void)
   /* Outputs for Enabled SubSystem: '<Root>/Subsystem' incorporates:
    *  EnablePort: '<S7>/Enable'
    */
-  if (Stanley_Querregler_B.In1_p.Data) {
+  if (Stanley_Querregler_B.In1.Data) {
     /* Switch: '<S7>/Switch' incorporates:
      *  Constant: '<S7>/Rückwärts'
      *  Constant: '<S7>/Vorwärts'
      */
-    if (rtb_Gain1 >= Stanley_Querregler_P.Switch_Threshold) {
+    if (Stanley_Querregler_B.EnabledSubsystem_n.In1.Data >=
+        Stanley_Querregler_P.Switch_Threshold) {
       rtb_ms = Stanley_Querregler_P.Vorwrts_Value;
     } else {
       rtb_ms = Stanley_Querregler_P.Rckwrts_Value;
@@ -245,16 +234,21 @@ void Stanley_Querregler_step(void)
       /* Switch: '<S7>/Switch1' incorporates:
        *  Gain: '<S7>/Gain'
        */
-      if (!(rtb_Gain1 > Stanley_Querregler_P.Switch1_Threshold)) {
-        rtb_Gain1 *= Stanley_Querregler_P.Gain_Gain;
+      if (Stanley_Querregler_B.EnabledSubsystem_n.In1.Data >
+          Stanley_Querregler_P.Switch1_Threshold) {
+        delta = Stanley_Querregler_B.EnabledSubsystem_n.In1.Data;
+      } else {
+        delta = Stanley_Querregler_P.Gain_Gain *
+          Stanley_Querregler_B.EnabledSubsystem_n.In1.Data;
       }
 
-      rtb_Gain1 = -(static_cast<real32_T>(atan(static_cast<real_T>
-        ((static_cast<real32_T>((-(d_idx_0 * sin(Stanley_Querregler_B.refPose[2])
-        - d_idx_1 * cos(Stanley_Querregler_B.refPose[2])) *
-        Stanley_Querregler_P.LateralControllerStanley_Positi)) / (rtb_Gain1 +
-        1.0F))))) + static_cast<real32_T>((Stanley_Querregler_B.b -
-        3.1415926535897931)));
+      delta = -(static_cast<real32_T>(atan(static_cast<real_T>
+                  ((static_cast<real32_T>((-(d_idx_0 * sin
+        (Stanley_Querregler_B.refPose[2]) - d_idx_1 * cos
+        (Stanley_Querregler_B.refPose[2])) *
+        Stanley_Querregler_P.LateralControllerStanley_Positi)) / (delta + 1.0F)))))
+                + static_cast<real32_T>((Stanley_Querregler_B.b -
+                  3.1415926535897931)));
     } else {
       if (rtb_ms == 1.0) {
         rtb_ms = Stanley_Querregler_P.LateralControllerStanley_Positi;
@@ -265,27 +259,31 @@ void Stanley_Querregler_step(void)
       /* Switch: '<S7>/Switch1' incorporates:
        *  Gain: '<S7>/Gain'
        */
-      if (!(rtb_Gain1 > Stanley_Querregler_P.Switch1_Threshold)) {
-        rtb_Gain1 *= Stanley_Querregler_P.Gain_Gain;
+      if (Stanley_Querregler_B.EnabledSubsystem_n.In1.Data >
+          Stanley_Querregler_P.Switch1_Threshold) {
+        delta = Stanley_Querregler_B.EnabledSubsystem_n.In1.Data;
+      } else {
+        delta = Stanley_Querregler_P.Gain_Gain *
+          Stanley_Querregler_B.EnabledSubsystem_n.In1.Data;
       }
 
-      rtb_Gain1 = static_cast<real32_T>(atan(static_cast<real_T>
+      delta = static_cast<real32_T>(atan(static_cast<real_T>
         ((static_cast<real32_T>((-(d_idx_0 * sin(Stanley_Querregler_B.refPose[2])
-        - d_idx_1 * cos(Stanley_Querregler_B.refPose[2])) * rtb_ms)) /
-          (rtb_Gain1 + -1.0F))))) + static_cast<real32_T>
-        ((Stanley_Querregler_B.b - 3.1415926535897931));
+        - d_idx_1 * cos(Stanley_Querregler_B.refPose[2])) * rtb_ms)) / (delta +
+        -1.0F))))) + static_cast<real32_T>((Stanley_Querregler_B.b -
+        3.1415926535897931));
     }
 
-    rtb_Gain1 *= 57.2957802F;
-    u0 = static_cast<real32_T>(fabs(static_cast<real_T>(rtb_Gain1)));
-    if (rtb_Gain1 < 0.0F) {
-      rtb_Gain1 = -1.0F;
-    } else if (rtb_Gain1 > 0.0F) {
-      rtb_Gain1 = 1.0F;
-    } else if (rtb_Gain1 == 0.0F) {
-      rtb_Gain1 = 0.0F;
+    delta *= 57.2957802F;
+    u0 = static_cast<real32_T>(fabs(static_cast<real_T>(delta)));
+    if (delta < 0.0F) {
+      delta = -1.0F;
+    } else if (delta > 0.0F) {
+      delta = 1.0F;
+    } else if (delta == 0.0F) {
+      delta = 0.0F;
     } else {
-      rtb_Gain1 = (rtNaNF);
+      delta = (rtNaNF);
     }
 
     if ((!(u0 < static_cast<real32_T>
@@ -295,40 +293,40 @@ void Stanley_Querregler_step(void)
       u0 = static_cast<real32_T>(Stanley_Querregler_P.Kinematic_MaxSteeringAngle);
     }
 
-    rtb_Gain1 *= u0;
+    delta *= u0;
 
     /* End of MATLAB Function: '<S12>/Kinematic' */
 
     /* Saturate: '<S7>/Sättigung' */
-    if (rtb_Gain1 > Stanley_Querregler_P.Sttigung_UpperSat) {
-      rtb_Gain1 = Stanley_Querregler_P.Sttigung_UpperSat;
+    if (delta > Stanley_Querregler_P.Sttigung_UpperSat) {
+      delta = Stanley_Querregler_P.Sttigung_UpperSat;
     } else {
-      if (rtb_Gain1 < Stanley_Querregler_P.Sttigung_LowerSat) {
-        rtb_Gain1 = Stanley_Querregler_P.Sttigung_LowerSat;
+      if (delta < Stanley_Querregler_P.Sttigung_LowerSat) {
+        delta = Stanley_Querregler_P.Sttigung_LowerSat;
       }
     }
 
     /* End of Saturate: '<S7>/Sättigung' */
 
     /* Gain: '<S7>/Bogenmaß' */
-    Stanley_Querregler_B.Bogenma = Stanley_Querregler_P.Bogenma_Gain * rtb_Gain1;
+    Stanley_Querregler_B.Bogenma = Stanley_Querregler_P.Bogenma_Gain * delta;
   }
 
   /* End of Outputs for SubSystem: '<Root>/Subsystem' */
 
   /* Outputs for Atomic SubSystem: '<Root>/Subscribe4' */
   /* MATLABSystem: '<S5>/SourceBlock' */
-  b_varargout_1 = Sub_Stanley_Querregler_78.getLatestMessage(&b_varargout_2_1);
+  b_varargout_1 = Sub_Stanley_Querregler_78.getLatestMessage(&b_varargout_2_0);
 
   /* Outputs for Enabled SubSystem: '<S5>/Enabled Subsystem' */
-  Stanley_Querre_EnabledSubsystem(b_varargout_1, &b_varargout_2_1,
+  Stanley_Querre_EnabledSubsystem(b_varargout_1, &b_varargout_2_0,
     &Stanley_Querregler_B.EnabledSubsystem_i);
 
   /* End of Outputs for SubSystem: '<S5>/Enabled Subsystem' */
   /* End of Outputs for SubSystem: '<Root>/Subscribe4' */
 
   /* Switch: '<Root>/Switch' */
-  if (Stanley_Querregler_B.In1_p.Data) {
+  if (Stanley_Querregler_B.In1.Data) {
     /* BusAssignment: '<Root>/Bus Assignment' */
     rtb_BusAssignment.Data = Stanley_Querregler_B.Bogenma;
   } else {
@@ -364,14 +362,14 @@ void Stanley_Querregler_initialize(void)
   {
     char_T tmp[16];
     char_T tmp_0[12];
-    char_T tmp_1[14];
+    char_T tmp_1[17];
     int32_T i;
     static const char_T tmp_2[25] = { '/', 't', 'r', 'j', '_', 'e', 'n', 'a',
       'b', 'l', 'e', 'L', 'a', 't', 'e', 'r', 'a', 'l', 'C', 'o', 'n', 't', 'r',
       'o', 'l' };
 
-    static const char_T tmp_3[13] = { '/', 'c', 't', 'l', '_', 'm', 'o', 't',
-      'o', 'r', 'R', 'p', 'm' };
+    static const char_T tmp_3[16] = { '/', 't', 'r', 'j', '_', 't', 'a', 'r',
+      'g', 'e', 't', 'S', 'p', 'e', 'e', 'd' };
 
     static const char_T tmp_4[11] = { '/', 't', 'r', 'j', '_', 'd', 'e', 'l',
       't', 'a', 'Y' };
@@ -403,11 +401,11 @@ void Stanley_Querregler_initialize(void)
     Stanley_Querregler_DW.obj_k.matlabCodegenIsDeleted = false;
     Stanley_Querregler_DW.objisempty = true;
     Stanley_Querregler_DW.obj_k.isInitialized = 1;
-    for (i = 0; i < 13; i++) {
+    for (i = 0; i < 16; i++) {
       tmp_1[i] = tmp_3[i];
     }
 
-    tmp_1[13] = '\x00';
+    tmp_1[16] = '\x00';
     Sub_Stanley_Querregler_83.createSubscriber(tmp_1, 1);
     Stanley_Querregler_DW.obj_k.isSetupComplete = true;
 
@@ -466,15 +464,15 @@ void Stanley_Querregler_initialize(void)
   /* SystemInitialize for Atomic SubSystem: '<Root>/Subscribe1' */
   /* SystemInitialize for Enabled SubSystem: '<S3>/Enabled Subsystem' */
   /* SystemInitialize for Outport: '<S8>/Out1' */
-  Stanley_Querregler_B.In1_p = Stanley_Querregler_P.Out1_Y0;
+  Stanley_Querregler_B.In1 = Stanley_Querregler_P.Out1_Y0;
 
   /* End of SystemInitialize for SubSystem: '<S3>/Enabled Subsystem' */
   /* End of SystemInitialize for SubSystem: '<Root>/Subscribe1' */
 
   /* SystemInitialize for Atomic SubSystem: '<Root>/Subscribe5' */
   /* SystemInitialize for Enabled SubSystem: '<S6>/Enabled Subsystem' */
-  /* SystemInitialize for Outport: '<S11>/Out1' */
-  Stanley_Querregler_B.In1 = Stanley_Querregler_P.Out1_Y0_h;
+  Stanley_Q_EnabledSubsystem_Init(&Stanley_Querregler_B.EnabledSubsystem_n,
+    &Stanley_Querregler_P.EnabledSubsystem_n);
 
   /* End of SystemInitialize for SubSystem: '<S6>/Enabled Subsystem' */
   /* End of SystemInitialize for SubSystem: '<Root>/Subscribe5' */

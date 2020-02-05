@@ -13,7 +13,7 @@ SimulinkSubscriber<std_msgs::Float32, SL_Bus_Stanley_Querregler_std_msgs_Float32
 SimulinkSubscriber<std_msgs::Float32, SL_Bus_Stanley_Querregler_std_msgs_Float32> Sub_Stanley_Querregler_78;
 
 // For Block Stanley_Querregler/Subscribe5
-SimulinkSubscriber<std_msgs::Int16, SL_Bus_Stanley_Querregler_std_msgs_Int16> Sub_Stanley_Querregler_83;
+SimulinkSubscriber<std_msgs::Float32, SL_Bus_Stanley_Querregler_std_msgs_Float32> Sub_Stanley_Querregler_83;
 
 // For Block Stanley_Querregler/Publish1
 SimulinkPublisher<std_msgs::Float32, SL_Bus_Stanley_Querregler_std_msgs_Float32> Pub_Stanley_Querregler_72;

@@ -7,9 +7,9 @@
  *
  * Code generation for model "Stanley_Querregler".
  *
- * Model version              : 1.21
+ * Model version              : 1.22
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Wed Feb  5 14:06:45 2020
+ * C++ source code generated on : Wed Feb  5 15:15:36 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -60,9 +60,9 @@ typedef struct {
   real_T currPose[3];
   char_T cv1[19];
   real_T b;
-  SL_Bus_Stanley_Querregler_std_msgs_Int16 In1;/* '<S11>/In1' */
-  SL_Bus_Stanley_Querregler_std_msgs_Bool In1_p;/* '<S8>/In1' */
+  SL_Bus_Stanley_Querregler_std_msgs_Bool In1;/* '<S8>/In1' */
   real32_T Bogenma;                    /* '<S7>/Bogenmaß' */
+  B_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem_n;/* '<S6>/Enabled Subsystem' */
   B_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem_i;/* '<S5>/Enabled Subsystem' */
   B_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem_g;/* '<S4>/Enabled Subsystem' */
 } B_Stanley_Querregler_T;
@@ -110,15 +110,12 @@ struct P_Stanley_Querregler_T_ {
   SL_Bus_Stanley_Querregler_std_msgs_Float32 Constant_Value_i;/* Computed Parameter: Constant_Value_i
                                                                * Referenced by: '<S5>/Constant'
                                                                */
+  SL_Bus_Stanley_Querregler_std_msgs_Float32 Constant_Value_l;/* Computed Parameter: Constant_Value_l
+                                                               * Referenced by: '<S6>/Constant'
+                                                               */
   SL_Bus_Stanley_Querregler_std_msgs_Float32 Constant_Value_k;/* Computed Parameter: Constant_Value_k
                                                                * Referenced by: '<S1>/Constant'
                                                                */
-  SL_Bus_Stanley_Querregler_std_msgs_Int16 Out1_Y0_h;/* Computed Parameter: Out1_Y0_h
-                                                      * Referenced by: '<S11>/Out1'
-                                                      */
-  SL_Bus_Stanley_Querregler_std_msgs_Int16 Constant_Value_l;/* Computed Parameter: Constant_Value_l
-                                                             * Referenced by: '<S6>/Constant'
-                                                             */
   real_T Rckwrts_Value;                /* Expression: -1
                                         * Referenced by: '<S7>/Rückwärts'
                                         */
@@ -161,12 +158,7 @@ struct P_Stanley_Querregler_T_ {
   real32_T Bogenma_Gain;               /* Computed Parameter: Bogenma_Gain
                                         * Referenced by: '<S7>/Bogenmaß'
                                         */
-  real32_T Gain_Gain_g;                /* Computed Parameter: Gain_Gain_g
-                                        * Referenced by: '<Root>/Gain'
-                                        */
-  real32_T Gain1_Gain;                 /* Computed Parameter: Gain1_Gain
-                                        * Referenced by: '<Root>/Gain1'
-                                        */
+  P_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem_n;/* '<S6>/Enabled Subsystem' */
   P_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem_i;/* '<S5>/Enabled Subsystem' */
   P_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem_g;/* '<S4>/Enabled Subsystem' */
 };

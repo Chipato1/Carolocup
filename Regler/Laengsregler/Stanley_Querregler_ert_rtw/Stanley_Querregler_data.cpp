@@ -7,9 +7,9 @@
  *
  * Code generation for model "Stanley_Querregler".
  *
- * Model version              : 1.21
+ * Model version              : 1.22
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Wed Feb  5 14:06:45 2020
+ * C++ source code generated on : Wed Feb  5 15:15:36 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -61,25 +61,18 @@ P_Stanley_Querregler_T Stanley_Querregler_P = {
     0.0F                               /* Data */
   },
 
-  /* Computed Parameter: Constant_Value_k
-   * Referenced by: '<S1>/Constant'
+  /* Computed Parameter: Constant_Value_l
+   * Referenced by: '<S6>/Constant'
    */
   {
     0.0F                               /* Data */
   },
 
-  /* Computed Parameter: Out1_Y0_h
-   * Referenced by: '<S11>/Out1'
+  /* Computed Parameter: Constant_Value_k
+   * Referenced by: '<S1>/Constant'
    */
   {
-    0                                  /* Data */
-  },
-
-  /* Computed Parameter: Constant_Value_l
-   * Referenced by: '<S6>/Constant'
-   */
-  {
-    0                                  /* Data */
+    0.0F                               /* Data */
   },
 
   /* Expression: -1
@@ -152,15 +145,18 @@ P_Stanley_Querregler_T Stanley_Querregler_P = {
    */
   0.0174532924F,
 
-  /* Computed Parameter: Gain_Gain_g
-   * Referenced by: '<Root>/Gain'
-   */
-  0.142857149F,
+  /* Start of '<S6>/Enabled Subsystem' */
+  {
+    /* Computed Parameter: Out1_Y0
+     * Referenced by: '<S11>/Out1'
+     */
+    {
+      0.0F                             /* Data */
+    }
+  }
+  ,
 
-  /* Computed Parameter: Gain1_Gain
-   * Referenced by: '<Root>/Gain1'
-   */
-  0.175986F,
+  /* End of '<S6>/Enabled Subsystem' */
 
   /* Start of '<S5>/Enabled Subsystem' */
   {
