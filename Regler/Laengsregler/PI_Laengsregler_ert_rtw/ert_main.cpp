@@ -24,13 +24,15 @@ void *threadJoinStatus;
 int terminatingmodel = 0;
 void *baseRateTask(void *arg)
 {
-  runModel = (rtmGetErrorStatus(PI_Laengsregler_M) == (NULL));
+  runModel = (rtmGetErrorStatus(PI_Laengsregler_M) == (NULL)) &&
+    !rtmGetStopRequested(PI_Laengsregler_M);
   while (runModel) {
     sem_wait(&baserateTaskSem);
     PI_Laengsregler_step();
 
     /* Get model outputs here */
-    stopRequested = !((rtmGetErrorStatus(PI_Laengsregler_M) == (NULL)));
+    stopRequested = !((rtmGetErrorStatus(PI_Laengsregler_M) == (NULL)) &&
+                      !rtmGetStopRequested(PI_Laengsregler_M));
     runModel = !stopRequested;
   }
 
@@ -75,7 +77,7 @@ int main(int argc, char **argv)
   PI_Laengsregler_initialize();
 
   /* Call RTOS Initialization function */
-  myRTOSInit(0.01, 0);
+  myRTOSInit(1.0E-6, 0);
 
   /* Wait for stop semaphore */
   sem_wait(&stopSem);

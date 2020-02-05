@@ -1,0 +1,1 @@
+Die Aktorik bekommt die Motordrehzahl als 1byte Variable übergeben.
