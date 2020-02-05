@@ -7,9 +7,9 @@
  *
  * Code generation for model "PI_Laengsregler".
  *
- * Model version              : 1.21
+ * Model version              : 1.36
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Wed Jan 29 19:17:21 2020
+ * C++ source code generated on : Wed Feb  5 15:07:18 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -61,9 +61,6 @@ typedef struct {
 } ros_slros_internal_block_Subs_T;
 
 #endif                               /*typedef_ros_slros_internal_block_Subs_T*/
-
-/* Parameters for system: '<S4>/Enabled Subsystem' */
-typedef struct P_EnabledSubsystem_PI_Laengsr_T_ P_EnabledSubsystem_PI_Laengsr_T;
 
 /* Parameters (default storage) */
 typedef struct P_PI_Laengsregler_T_ P_PI_Laengsregler_T;

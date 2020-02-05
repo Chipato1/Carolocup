@@ -7,9 +7,9 @@
  *
  * Code generation for model "PI_Laengsregler".
  *
- * Model version              : 1.21
+ * Model version              : 1.36
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Wed Jan 29 19:17:21 2020
+ * C++ source code generated on : Wed Feb  5 15:07:18 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -23,78 +23,34 @@
 
 /* Block parameters (default storage) */
 P_PI_Laengsregler_T PI_Laengsregler_P = {
-  /* Variable: ir
-   * Referenced by: '<S33>/Integral Gain'
+  /* Computed Parameter: Out1_Y0
+   * Referenced by: '<S5>/Out1'
    */
-  1.7,
-
-  /* Variable: pr
-   * Referenced by: '<S41>/Proportional Gain'
-   */
-  1.3,
-
-  /* Variable: u
-   * Referenced by: '<S2>/Multiply'
-   */
-  7.0F,
-
-  /* Mask Parameter: PIDController_InitialConditionF
-   * Referenced by: '<S36>/Integrator'
-   */
-  0.0,
+  {
+    0.0F                               /* Data */
+  },
 
   /* Computed Parameter: Constant_Value
-   * Referenced by: '<S4>/Constant'
+   * Referenced by: '<S3>/Constant'
    */
   {
     0.0F                               /* Data */
   },
 
-  /* Computed Parameter: Constant_Value_l
-   * Referenced by: '<S5>/Constant'
-   */
-  {
-    0.0F                               /* Data */
-  },
-
-  /* Computed Parameter: Constant_Value_j
+  /* Computed Parameter: Constant_Value_m
    * Referenced by: '<S1>/Constant'
    */
   {
     0                                  /* Data */
   },
 
-  /* Computed Parameter: Reglermotordrehzahl_Y0
-   * Referenced by: '<S2>/Reglermotordrehzahl'
+  /* Computed Parameter: Radumfang_Gain
+   * Referenced by: '<S4>/Radumfang'
    */
-  0.0,
+  5.6851778F,
 
-  /* Expression: 1
-   * Referenced by: '<Root>/Constant'
+  /* Computed Parameter: Getriebe_Gain
+   * Referenced by: '<S4>/Getriebe'
    */
-  1.0,
-
-  /* Start of '<S5>/Enabled Subsystem' */
-  {
-    /* Computed Parameter: Out1_Y0
-     * Referenced by: '<S52>/Out1'
-     */
-    {
-      0.0F                             /* Data */
-    }
-  }
-  ,
-
-  /* End of '<S5>/Enabled Subsystem' */
-
-  /* Start of '<S4>/Enabled Subsystem' */
-  {
-    /* Computed Parameter: Out1_Y0
-     * Referenced by: '<S51>/Out1'
-     */
-    {
-      0.0F                             /* Data */
-    }
-  }
-  /* End of '<S4>/Enabled Subsystem' */
+  7.0F
 };
