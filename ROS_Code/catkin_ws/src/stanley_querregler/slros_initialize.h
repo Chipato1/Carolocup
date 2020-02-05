@@ -13,11 +13,11 @@ extern SimulinkSubscriber<std_msgs::Bool, SL_Bus_Stanley_Querregler_std_msgs_Boo
 // For Block Stanley_Querregler/Subscribe2
 extern SimulinkSubscriber<std_msgs::Float32, SL_Bus_Stanley_Querregler_std_msgs_Float32> Sub_Stanley_Querregler_65;
 
-// For Block Stanley_Querregler/Subscribe3
-extern SimulinkSubscriber<std_msgs::Float32, SL_Bus_Stanley_Querregler_std_msgs_Float32> Sub_Stanley_Querregler_66;
-
 // For Block Stanley_Querregler/Subscribe4
 extern SimulinkSubscriber<std_msgs::Float32, SL_Bus_Stanley_Querregler_std_msgs_Float32> Sub_Stanley_Querregler_78;
+
+// For Block Stanley_Querregler/Subscribe5
+extern SimulinkSubscriber<std_msgs::Float32, SL_Bus_Stanley_Querregler_std_msgs_Float32> Sub_Stanley_Querregler_83;
 
 // For Block Stanley_Querregler/Publish1
 extern SimulinkPublisher<std_msgs::Float32, SL_Bus_Stanley_Querregler_std_msgs_Float32> Pub_Stanley_Querregler_72;

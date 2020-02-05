@@ -7,9 +7,9 @@
  *
  * Code generation for model "PI_Laengsregler".
  *
- * Model version              : 1.30
+ * Model version              : 1.36
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Tue Feb  4 21:14:39 2020
+ * C++ source code generated on : Wed Feb  5 15:07:18 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -23,6 +23,13 @@
 
 /* Block parameters (default storage) */
 P_PI_Laengsregler_T PI_Laengsregler_P = {
+  /* Computed Parameter: Out1_Y0
+   * Referenced by: '<S5>/Out1'
+   */
+  {
+    0.0F                               /* Data */
+  },
+
   /* Computed Parameter: Constant_Value
    * Referenced by: '<S3>/Constant'
    */
@@ -30,14 +37,7 @@ P_PI_Laengsregler_T PI_Laengsregler_P = {
     0.0F                               /* Data */
   },
 
-  /* Computed Parameter: Constant_Value_l
-   * Referenced by: '<S4>/Constant'
-   */
-  {
-    0.0F                               /* Data */
-  },
-
-  /* Computed Parameter: Constant_Value_j
+  /* Computed Parameter: Constant_Value_m
    * Referenced by: '<S1>/Constant'
    */
   {
@@ -45,36 +45,12 @@ P_PI_Laengsregler_T PI_Laengsregler_P = {
   },
 
   /* Computed Parameter: Radumfang_Gain
-   * Referenced by: '<S5>/Radumfang'
+   * Referenced by: '<S4>/Radumfang'
    */
   5.6851778F,
 
   /* Computed Parameter: Getriebe_Gain
-   * Referenced by: '<S5>/Getriebe'
+   * Referenced by: '<S4>/Getriebe'
    */
-  7.0F,
-
-  /* Start of '<S4>/Enabled Subsystem' */
-  {
-    /* Computed Parameter: Out1_Y0
-     * Referenced by: '<S7>/Out1'
-     */
-    {
-      0.0F                             /* Data */
-    }
-  }
-  ,
-
-  /* End of '<S4>/Enabled Subsystem' */
-
-  /* Start of '<S3>/Enabled Subsystem' */
-  {
-    /* Computed Parameter: Out1_Y0
-     * Referenced by: '<S6>/Out1'
-     */
-    {
-      0.0F                             /* Data */
-    }
-  }
-  /* End of '<S3>/Enabled Subsystem' */
+  7.0F
 };

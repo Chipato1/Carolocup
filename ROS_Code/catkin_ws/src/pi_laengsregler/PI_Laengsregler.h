@@ -7,9 +7,9 @@
  *
  * Code generation for model "PI_Laengsregler".
  *
- * Model version              : 1.30
+ * Model version              : 1.36
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Tue Feb  4 21:14:39 2020
+ * C++ source code generated on : Wed Feb  5 15:07:18 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -47,53 +47,36 @@
 # define rtmSetErrorStatus(rtm, val)   ((rtm)->errorStatus = (val))
 #endif
 
-/* Block signals for system '<S3>/Enabled Subsystem' */
-typedef struct {
-  SL_Bus_PI_Laengsregler_std_msgs_Float32 In1;/* '<S6>/In1' */
-} B_EnabledSubsystem_PI_Laengsr_T;
-
 /* Block signals (default storage) */
 typedef struct {
-  B_EnabledSubsystem_PI_Laengsr_T EnabledSubsystem_n;/* '<S4>/Enabled Subsystem' */
-  B_EnabledSubsystem_PI_Laengsr_T EnabledSubsystem;/* '<S3>/Enabled Subsystem' */
+  SL_Bus_PI_Laengsregler_std_msgs_Float32 In1;/* '<S5>/In1' */
 } B_PI_Laengsregler_T;
 
 /* Block states (default storage) for system '<Root>' */
 typedef struct {
   ros_slros_internal_block_Publ_T obj; /* '<S2>/SinkBlock' */
-  ros_slros_internal_block_Subs_T obj_o;/* '<S4>/SourceBlock' */
-  ros_slros_internal_block_Subs_T obj_j;/* '<S3>/SourceBlock' */
-  boolean_T objisempty;                /* '<S4>/SourceBlock' */
-  boolean_T objisempty_c;              /* '<S3>/SourceBlock' */
-  boolean_T objisempty_f;              /* '<S2>/SinkBlock' */
+  ros_slros_internal_block_Subs_T obj_k;/* '<S3>/SourceBlock' */
+  boolean_T objisempty;                /* '<S3>/SourceBlock' */
+  boolean_T objisempty_m;              /* '<S2>/SinkBlock' */
 } DW_PI_Laengsregler_T;
-
-/* Parameters for system: '<S3>/Enabled Subsystem' */
-struct P_EnabledSubsystem_PI_Laengsr_T_ {
-  SL_Bus_PI_Laengsregler_std_msgs_Float32 Out1_Y0;/* Computed Parameter: Out1_Y0
-                                                   * Referenced by: '<S6>/Out1'
-                                                   */
-};
 
 /* Parameters (default storage) */
 struct P_PI_Laengsregler_T_ {
+  SL_Bus_PI_Laengsregler_std_msgs_Float32 Out1_Y0;/* Computed Parameter: Out1_Y0
+                                                   * Referenced by: '<S5>/Out1'
+                                                   */
   SL_Bus_PI_Laengsregler_std_msgs_Float32 Constant_Value;/* Computed Parameter: Constant_Value
                                                           * Referenced by: '<S3>/Constant'
                                                           */
-  SL_Bus_PI_Laengsregler_std_msgs_Float32 Constant_Value_l;/* Computed Parameter: Constant_Value_l
-                                                            * Referenced by: '<S4>/Constant'
-                                                            */
-  SL_Bus_PI_Laengsregler_std_msgs_Int16 Constant_Value_j;/* Computed Parameter: Constant_Value_j
+  SL_Bus_PI_Laengsregler_std_msgs_Int16 Constant_Value_m;/* Computed Parameter: Constant_Value_m
                                                           * Referenced by: '<S1>/Constant'
                                                           */
   real32_T Radumfang_Gain;             /* Computed Parameter: Radumfang_Gain
-                                        * Referenced by: '<S5>/Radumfang'
+                                        * Referenced by: '<S4>/Radumfang'
                                         */
   real32_T Getriebe_Gain;              /* Computed Parameter: Getriebe_Gain
-                                        * Referenced by: '<S5>/Getriebe'
+                                        * Referenced by: '<S4>/Getriebe'
                                         */
-  P_EnabledSubsystem_PI_Laengsr_T EnabledSubsystem_n;/* '<S4>/Enabled Subsystem' */
-  P_EnabledSubsystem_PI_Laengsr_T EnabledSubsystem;/* '<S3>/Enabled Subsystem' */
 };
 
 /* Real-time Model Data Structure */
@@ -177,12 +160,10 @@ extern "C" {
  * Here is the system hierarchy for this model
  *
  * '<Root>' : 'PI_Laengsregler'
- * '<S1>'   : 'PI_Laengsregler/Blank Message'
- * '<S2>'   : 'PI_Laengsregler/Publish'
- * '<S3>'   : 'PI_Laengsregler/Subscribe'
- * '<S4>'   : 'PI_Laengsregler/Subscribe1'
- * '<S5>'   : 'PI_Laengsregler/Subsystem'
- * '<S6>'   : 'PI_Laengsregler/Subscribe/Enabled Subsystem'
- * '<S7>'   : 'PI_Laengsregler/Subscribe1/Enabled Subsystem'
+ * '<S1>'   : 'PI_Laengsregler/Blank Message2'
+ * '<S2>'   : 'PI_Laengsregler/Publish2'
+ * '<S3>'   : 'PI_Laengsregler/Subscribe4'
+ * '<S4>'   : 'PI_Laengsregler/Subsystem'
+ * '<S5>'   : 'PI_Laengsregler/Subscribe4/Enabled Subsystem'
  */
 #endif                                 /* RTW_HEADER_PI_Laengsregler_h_ */
