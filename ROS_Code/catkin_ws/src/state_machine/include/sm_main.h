@@ -138,6 +138,10 @@ const ros::Duration SE_TIMEOUT_JUNCTION_DRIVE_OVER_MS(3);
 #define SE_LIGHT_MODE_ON 1
 #define SE_LIGHT_MODE_BLINK 2
 
+#define SE_AUTO_DRIVE_MODE_OFF 0
+#define SE_AUTO_DRIVE_MODE_FREEDRIVE 1
+#define SE_AUTO_DRIVE_MODE_OBSTACLEAVOIDANCE 2
+
 /* ROS specifics */
 // Subscribers
 ros::Subscriber se_sub_camerashit;
@@ -152,6 +156,7 @@ ros::Subscriber se_sub_tof_l;
 ros::Subscriber se_sub_tof_b;
 
 ros::Subscriber se_sub_rc_mode;
+ros::Subscriber se_sub_autoDriveMode;
 
 // Publishers
 ros::Publisher se_pub_deltaY;
@@ -177,6 +182,7 @@ void se_cb_sub_tof_l(const std_msgs::Float32::ConstPtr& msg);
 void se_cb_sub_tof_b(const std_msgs::Float32::ConstPtr& msg);
 
 void se_cb_sub_rc_mode(const std_msgs::Bool::ConstPtr& msg);
+void se_cb_sub_autoDriveMode(const std_msgs::UInt8::ConstPtr& msg);
 
 /* Publisher functions */
 void se_setDeltaY(float deltaY);
@@ -207,9 +213,11 @@ se_sensorBuffer_t se_buffer_tof_r;
 se_sensorBuffer_t se_buffer_tof_l;
 se_sensorBuffer_t se_buffer_tof_b;
 
-bool se_rc_mode_activated;
-
 void se_sensorBuffer_append(se_sensorBuffer_t* buffer, float value);
+
+/* RC variables */
+bool se_rc_mode_activated;
+int se_currentAutoDriveMode;
 
 /* Timer variables */
 ros::Time se_timer_gate;
@@ -232,7 +240,9 @@ void se_init();
 
 /* Arduino state */
 int se_isRCModeActivated();
-int se_isStartButtonPressed();
+int se_isInOffMode();
+int se_isInFreeDriveMode();
+int se_isInObstacleAvoidanceMode();
 
 /* Camera */
 int se_isQRCodePresent();
@@ -271,11 +281,13 @@ int se_isJunctionDriveOverTimeout();
 
 #include <math.h>
 
-#define LANEWIDTH 0
+#define LANEWIDTH 300
 #define MIN_TURNRADIUS 2000
 #define MAX_STEERINGANGLE 26
 #define TOF_R_OFFSET 200
 #define PARKING_SPACE_BUFFER 100
+
+#define PI 3.141592654
 
 typedef struct
 {

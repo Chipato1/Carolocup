@@ -236,7 +236,7 @@ void sm_handle_INIT()
 
 void sm_handle_READY()
 {
-	if (se_isStartButtonPressed())
+	if (!se_isInOffMode())
 	{
 		sm_switch_state(BOX_WAIT_FOR_QR_APPEAR);
 	}
@@ -594,6 +594,8 @@ void se_init()
 	// State
 
 	se_rc_mode_activated = SE_FALSE;
+	se_currentAutoDriveMode = SE_AUTO_DRIVE_MODE_FREEDRIVE; // change later
+
 	se_currentSpeed = 0;
 	se_currentDistance = 0;
 
@@ -644,6 +646,11 @@ void se_cb_sub_tof_b(const std_msgs::Float32::ConstPtr& msg)
 void se_cb_sub_rc_mode(const std_msgs::Bool::ConstPtr& msg)
 {
 	se_rc_mode_activated = msg->data;
+}
+
+void se_cb_sub_autoDriveMode(const std_msgs::UInt8::ConstPtr& msg)
+{
+	se_currentAutoDriveMode = msg->data;
 }
 
 /* Publisher functions */
@@ -709,9 +716,19 @@ int se_isRCModeActivated()
 	return se_rc_mode_activated;
 }
 
-int se_isStartButtonPressed()
+int se_isInOffMode()
 {
-	return SE_TRUE;
+	return se_currentAutoDriveMode == SE_AUTO_DRIVE_MODE_OFF;
+}
+
+int se_isInFreeDriveMode()
+{
+	return se_currentAutoDriveMode == SE_AUTO_DRIVE_MODE_FREEDRIVE;
+}
+
+int se_isInObstacleAvoidanceMode()
+{
+	return se_currentAutoDriveMode == SE_AUTO_DRIVE_MODE_OBSTACLEAVOIDANCE;
 }
 
 /* Camera */
