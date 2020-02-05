@@ -3,5 +3,6 @@
 
 void init_rpm();
 float read_RPM();
-void RPM_Ticks();
+void RPM_Ticks_Left();
+void RPM_Ticks_Right();
 #endif

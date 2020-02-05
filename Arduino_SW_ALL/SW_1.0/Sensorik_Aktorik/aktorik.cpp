@@ -10,7 +10,7 @@ ros::Subscriber<std_msgs::Float32> sub_servo("ctl_servoAngle", servo_cb);
 ros::Subscriber<std_msgs::Int16> sub_motor("ctl_motorRpm", motor_cb);      
 ros::Subscriber<std_msgs::UInt8> sub_light_l("trj_flashLeft", lichtLinks_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_r("trj_flashRight", lichtRechts_cb);
-ros::Subscriber<std_msgs::UInt8> sub_light_b("trj_breakLight", lichtBremse_cb);
+ros::Subscriber<std_msgs::UInt8> sub_light_b("trj_brakeLight", lichtBremse_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_rem("trj_remoteLight", lichtRemote_cb);
 
 ros::Publisher rc_pub("akt_rc", &rc_msg);
