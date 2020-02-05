@@ -4,7 +4,7 @@ Servo servo;
 Servo motor;  
 
 std_msgs::Bool rc_msg;
-//std_msgs::Int16 test_msg;
+std_msgs::Int16 test_msg;
 
 ros::Subscriber<std_msgs::Float32> sub_servo("ctl_servoAngle", servo_cb);
 ros::Subscriber<std_msgs::Int16> sub_motor("ctl_motorRpm", motor_cb);      
@@ -14,14 +14,15 @@ ros::Subscriber<std_msgs::UInt8> sub_light_b("trj_brakeLight", lichtBremse_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_rem("trj_remoteLight", lichtRemote_cb);
 
 ros::Publisher rc_pub("akt_rc", &rc_msg);
-//ros::Publisher test_pub("akt_test", &test_msg);
+ros::Publisher test_pub("akt_test", &test_msg);
 
 int16_t voltage_rcmode; //remove
+//int16_t motor_uebertragung_RC_mode;
 
-bool rc_mode = 0;
+bool rc_mode = false;
 int16_t analogvalue_motor_rcmode; //eingelesener Pin - Wert am Tiefpass vom Motor
 int16_t analogvalue_rcmode;   //eingelesener Pin an Channel 4, um zu schauen ob im RC-Mode
-  
+int i = 0;
 float wert_servo;
 float lenkwinkel_servosize;
 float lenkwinkel_grad;
@@ -34,6 +35,8 @@ short state_light_rem = 0;
 uint16_t previousMillis = 0;
 boolean blinkstate = true;
 
+int array[3];
+
 void init_aktorik(ros::NodeHandle *aktorik_node)
 {  
   aktorik_node->subscribe(sub_servo);  //Zuweisung Servo Subscriber zum Aktorik - Knoten
@@ -44,7 +47,7 @@ void init_aktorik(ros::NodeHandle *aktorik_node)
   aktorik_node->subscribe(sub_light_rem);
 
   aktorik_node->advertise(rc_pub);
-  //aktorik_node->advertise(test_pub);
+  aktorik_node->advertise(test_pub);
   
   motor.attach(6); //Motor an Pin zuweisen
   servo.attach(5); //Servo an Pin zuweisen
@@ -64,17 +67,16 @@ void init_aktorik(ros::NodeHandle *aktorik_node)
   //Alle Lichter ausschalten
   digitalWrite(blinker_links, LOW);            
   digitalWrite(blinker_rechts, LOW); 
-  digitalWrite(bremslicht, LOW); 
+  digitalWrite(bremslicht,LOW); 
   digitalWrite(rueckfahrlicht, LOW);
   digitalWrite(blaues_licht, LOW);
+  digitalWrite(frontlicht,HIGH);
 }
 
 bool aktorik()
 {  
   //int voltage_rcmode;
-  
   analogvalue_rcmode = analogRead(tiefpass_rcmode_voltage_nr);    //Einlesen des Pins vom Tiefpass vom channel 4
-  voltage_rcmode = referenzvoltage * analogvalue_rcmode;
   
   if (analogvalue_rcmode > rcmode_schwellenwert)
   {
@@ -156,7 +158,7 @@ void servo_bewegung(float lenkwinkel_bogenmass)
 void motor_bewegung(int16_t motor_drehzahl){
 
   int16_t motor_uebertragung;
-  
+  //motor.attach(6);
   if(motor_drehzahl < 0)//rückwärts
   {     
     motor_uebertragung = (int) 90 +(0.234 * motor_drehzahl);
@@ -174,26 +176,45 @@ void motor_bewegung(int16_t motor_drehzahl){
 void motor_bewegung_RC_mode()
 {
   int16_t motor_uebertragung_RC_mode;
-  //motor.attach(6);
-  analogvalue_motor_rcmode = analogRead(tiefpass_pwm_motor_voltage_nr);
-  //int voltage_motor_rcmode = referenzvoltage * analogvalue_motor_rcmode;
   
+ // analogvalue_motor_rcmode = analogRead(tiefpass_pwm_motor_voltage_nr);
+  
+    analogvalue_motor_rcmode = analogRead(tiefpass_pwm_motor_voltage_nr);
+    array[i]=analogvalue_motor_rcmode;
+    if(i==2)
+    {
+        float dummy = (array[0]+array[1]+array[2])/3.0;
+        if(dummy<38)
+        {
+          motor_uebertragung_RC_mode = 87;
+        }else if(dummy>49)
+        {
+          motor_uebertragung_RC_mode = 100;
+        }else 
+        {
+          motor_uebertragung_RC_mode = 93;
+        }
+        i= 0;
+        motor.write(motor_uebertragung_RC_mode);
+    }
+  i++;
+  /*
     if (analogvalue_motor_rcmode < tiefpass_untere_spannung) //rückwarts
     {       
         //motor_uebertragung_RC_mode = (analogvalue_motor_rcmode * 3.3333) - 9.99;
-        motor_uebertragung_RC_mode = 75;
+        motor_uebertragung_RC_mode = 87;
     }
     else if (analogvalue_motor_rcmode > tiefpass_obere_spannung)//vorwärts
     {   
         //motor_uebertragung_RC_mode = (analogvalue_motor_rcmode * 2.222) + 36.06;
-        motor_uebertragung_RC_mode = 110;
+        motor_uebertragung_RC_mode = 100;
     }
     else
     {
       //motor.detach(6);
       motor_uebertragung_RC_mode = 93;
-    }
-    motor.write(motor_uebertragung_RC_mode); 
+    }*/
+   // motor.write(motor_uebertragung_RC_mode); 
 }
 
 void set_led_states()
@@ -222,9 +243,9 @@ void rc_publish ()
   rc_msg.data = rc_mode;
   rc_pub.publish(&rc_msg);
 }
-/*
+
 void test_publish ()
 { 
   test_msg.data = analogvalue_motor_rcmode;
   test_pub.publish(&test_msg);
-}*/
+}

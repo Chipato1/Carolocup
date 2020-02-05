@@ -48,7 +48,7 @@ float read_RPM()
   
   rpm_value_Left /= ticks_per_cycle; 
   rpm_value_Right /= ticks_per_cycle;
-
+  //return (rpm_value_Right);
   return ((rpm_value_Left + rpm_value_Right) / 2);
 }
 

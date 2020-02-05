@@ -12,9 +12,9 @@
 
 #define referenzvoltage               0.0021259765       //Referenzspannung zur Berechnung der Tiefpassspannung vom Motor - PWM
 #define pi                            3.141592653589
-#define tiefpass_untere_spannung      32           //Schwellwert Spannung am Tiefpass zum rückwertsfahren
-#define tiefpass_obere_spannung       50           //Schwellwert Spannung am Tiefpass zum vorwärtsfahren
-#define rcmode_schwellenwert          33               //Schwellwert Spannung an Channel 4 zur Erkennung, dass RC mode aktiv ist
+#define tiefpass_untere_spannung      35          //Schwellwert Spannung am Tiefpass zum rückwertsfahren
+#define tiefpass_obere_spannung       53          //Schwellwert Spannung am Tiefpass zum vorwärtsfahren
+#define rcmode_schwellenwert          50          //Schwellwert Spannung an Channel 4 zur Erkennung, dass RC mode aktiv ist
 
 #define interval 1000
 
@@ -23,12 +23,12 @@
 #define tiefpass_pwm_motor_voltage_nr 13
 #define tiefpass_rcmode_voltage_nr    12
 #define MUX_Select                    48
-#define frontlicht                    53
-#define blinker_links                 51
-#define blinker_rechts                49
-#define bremslicht                    47
-#define rueckfahrlicht                45
-#define blaues_licht                  43
+#define frontlicht                    34
+#define blinker_links                 38
+#define blinker_rechts                40
+#define bremslicht                    36
+#define rueckfahrlicht                32
+#define blaues_licht                  42
 
 void init_aktorik(ros::NodeHandle *aktorik_node);
 bool aktorik();
@@ -47,6 +47,6 @@ void set_led_states();
 void set_output(short state, short port);
 
 void rc_publish();
-//void test_publish();
+void test_publish();
 
 #endif
