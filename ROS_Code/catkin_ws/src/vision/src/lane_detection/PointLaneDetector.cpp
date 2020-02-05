@@ -492,10 +492,10 @@ void PointLaneDetector::prepareInterpolation(int i) {
 
 
 
-		if (foundLL && leftIndex >= 0 && distancesLeft.at(leftIndex) < 350) {
+		if (foundLL && leftIndex >= 0 && distancesLeft.at(leftIndex) < 250) {
 			int dx = laneMiddles.at(leftIndex).x - this->leftLaneStartPoint.x;
 			int dy = laneMiddles.at(leftIndex).y - this->leftLaneStartPoint.y;
-			if ((dx < 60 && i - lastLeftIterator < 3) || lastLeftIterator >= 3) {
+			if ((abs(dx) < 60 && i - lastLeftIterator < 3) || lastLeftIterator >= 3) {
 				lastLeftIterator = i;
 				vRes.lanePoints.at(0).push_back(laneMiddles.at(leftIndex));
 				calculateSolveMatrix(laneMiddles.at(leftIndex), lA, lB, numberOfLeftPoints);
@@ -509,10 +509,11 @@ void PointLaneDetector::prepareInterpolation(int i) {
 			leftIndex = -1;
 		}
 
-		if (foundML && middleIndex >= 0 && distancesMiddle.at(middleIndex) < 350) {
+		if (foundML && middleIndex >= 0 && distancesMiddle.at(middleIndex) < 300) {
 			int dx = laneMiddles.at(middleIndex).x - this->middleLaneStartPoint.x;
 			int dy = laneMiddles.at(middleIndex).y - this->middleLaneStartPoint.y;
-			if ((dy < 60 && i - lastMiddleIterator < 3) || lastMiddleIterator >= 3) {
+			int temp = i - lastMiddleIterator;
+			if ((abs(dx) < 30 && temp < 5) || temp >= 5) {
 				lastMiddleIterator = i;
 				vRes.lanePoints.at(1).push_back(laneMiddles.at(middleIndex));
 				calculateSolveMatrix(laneMiddles.at(middleIndex), mA, mB, numberOfMiddlePoints);
@@ -523,10 +524,10 @@ void PointLaneDetector::prepareInterpolation(int i) {
 		else {
 			middleIndex = -1;
 		}
-		if (foundRL && rightIndex >= 0 && distancesRight.at(rightIndex) < 350) {
+		if (foundRL && rightIndex >= 0 && distancesRight.at(rightIndex) < 250) {
 			int dx = laneMiddles.at(rightIndex).x - this->rightLaneStartPoint.x;
 			int dy = laneMiddles.at(rightIndex).y - this->rightLaneStartPoint.y;
-			if ((dy < 60 && i - lastRightIterator < 3) || lastRightIterator >= 3) {
+			if ((abs(dx) < 60 && i - lastRightIterator < 3) || lastRightIterator >= 3) {
 				lastRightIterator = i;
 				vRes.lanePoints.at(2).push_back(laneMiddles.at(rightIndex));
 				calculateSolveMatrix(laneMiddles.at(rightIndex), rA, rB, numberOfRightPoints);
