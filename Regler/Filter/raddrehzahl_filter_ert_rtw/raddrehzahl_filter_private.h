@@ -7,9 +7,9 @@
  *
  * Code generation for model "raddrehzahl_filter".
  *
- * Model version              : 1.10
+ * Model version              : 1.12
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Tue Feb  4 19:46:14 2020
+ * C++ source code generated on : Wed Feb  5 17:01:29 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -22,7 +22,6 @@
 #define RTW_HEADER_raddrehzahl_filter_private_h_
 #include "rtwtypes.h"
 #include "multiword_types.h"
-#include "raddrehzahl_filter.h"
 
 /* Private macros used by the generated code to access rtModel */
 #ifndef rtmIsMajorTimeStep
@@ -36,12 +35,6 @@
 #ifndef rtmSetTPtr
 # define rtmSetTPtr(rtm, val)          ((rtm)->Timing.t = (val))
 #endif
-
-extern void raddrehza_EnabledSubsystem_Init(B_EnabledSubsystem_raddrehzah_T
-  *localB, P_EnabledSubsystem_raddrehzah_T *localP);
-extern void raddrehzahl_fi_EnabledSubsystem(boolean_T rtu_Enable, const
-  SL_Bus_raddrehzahl_filter_std_msgs_Float32 *rtu_In1,
-  B_EnabledSubsystem_raddrehzah_T *localB);
 
 /* private model entry point functions */
 extern void raddrehzahl_filter_derivatives(void);

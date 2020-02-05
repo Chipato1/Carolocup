@@ -77,7 +77,7 @@ int main(int argc, char **argv)
   PI_Laengsregler_initialize();
 
   /* Call RTOS Initialization function */
-  myRTOSInit(1.0E-6, 0);
+  myRTOSInit(0.01, 0);
 
   /* Wait for stop semaphore */
   sem_wait(&stopSem);

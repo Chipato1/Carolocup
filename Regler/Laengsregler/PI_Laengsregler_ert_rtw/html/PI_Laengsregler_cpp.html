@@ -29,11 +29,11 @@
 <tr name="9" id="9">
 <td><a id="l9" class='ln'>9</a></td><td><span class="ct"> *</span></td></tr>
 <tr name="10" id="10">
-<td><a id="l10" class='ln'>10</a></td><td><span class="ct"> * Model version              : 1.28</span></td></tr>
+<td><a id="l10" class='ln'>10</a></td><td><span class="ct"> * Model version              : 1.29</span></td></tr>
 <tr name="11" id="11">
 <td><a id="l11" class='ln'>11</a></td><td><span class="ct"> * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019</span></td></tr>
 <tr name="12" id="12">
-<td><a id="l12" class='ln'>12</a></td><td><span class="ct"> * C++ source code generated on : Tue Feb  4 19:20:11 2020</span></td></tr>
+<td><a id="l12" class='ln'>12</a></td><td><span class="ct"> * C++ source code generated on : Wed Feb  5 17:00:02 2020</span></td></tr>
 <tr name="13" id="13">
 <td><a id="l13" class='ln'>13</a></td><td><span class="ct"> *</span></td></tr>
 <tr name="14" id="14">
@@ -583,11 +583,11 @@
 <tr name="286" id="286">
 <td><a id="l286" class='ln'>286</a></td><td>    <span class="br">{</span></td></tr>
 <tr name="287" id="287">
-<td><a id="l287" class='ln'>287</a></td><td>      <span class="ct">/* Update absolute timer for sample time: [1.0E-6s, 0.0s] */</span></td></tr>
+<td><a id="l287" class='ln'>287</a></td><td>      <span class="ct">/* Update absolute timer for sample time: [0.01s, 0.0s] */</span></td></tr>
 <tr name="288" id="288">
 <td><a id="l288" class='ln'>288</a></td><td>      <span class="ct">/* The "clockTick1" counts the number of times the code of this task has</span></td></tr>
 <tr name="289" id="289">
-<td><a id="l289" class='ln'>289</a></td><td><span class="ct">       * been executed. The resolution of this integer timer is 1.0E-6, which is the step size</span></td></tr>
+<td><a id="l289" class='ln'>289</a></td><td><span class="ct">       * been executed. The resolution of this integer timer is 0.01, which is the step size</span></td></tr>
 <tr name="290" id="290">
 <td><a id="l290" class='ln'>290</a></td><td><span class="ct">       * of the task. Size of "clockTick1" ensures timer will not overflow during the</span></td></tr>
 <tr name="291" id="291">
@@ -719,7 +719,7 @@
 <tr name="354" id="354">
 <td><a id="l354" class='ln'>354</a></td><td>  <a id="354c3" class="tk">rtmSetTPtr</a>(<a id="354c14" class="tk">PI_Laengsregler_M</a>, <a id="354c33" class="tk">&amp;</a><a id="354c34" class="tk">PI_Laengsregler_M</a>-&gt;<a id="354c53" class="tk">Timing</a>.<a id="354c60" class="tk">tArray</a>[0]);</td></tr>
 <tr name="355" id="355">
-<td><a id="l355" class='ln'>355</a></td><td>  <a id="355c3" class="tk">PI_Laengsregler_M</a>-&gt;<a id="355c22" class="tk">Timing</a>.<a id="355c29" class="tk">stepSize0</a> = 1.0E-6;</td></tr>
+<td><a id="l355" class='ln'>355</a></td><td>  <a id="355c3" class="tk">PI_Laengsregler_M</a>-&gt;<a id="355c22" class="tk">Timing</a>.<a id="355c29" class="tk">stepSize0</a> = 0.01;</td></tr>
 <tr name="356" id="356">
 <td><a id="l356" class='ln'>356</a></td><td></td></tr>
 <tr name="357" id="357">

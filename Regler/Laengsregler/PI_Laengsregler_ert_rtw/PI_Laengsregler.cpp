@@ -7,9 +7,9 @@
  *
  * Code generation for model "PI_Laengsregler".
  *
- * Model version              : 1.28
+ * Model version              : 1.29
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Tue Feb  4 19:20:11 2020
+ * C++ source code generated on : Wed Feb  5 17:00:02 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -284,9 +284,9 @@ void PI_Laengsregler_step(void)
       (&PI_Laengsregler_M->solverInfo);
 
     {
-      /* Update absolute timer for sample time: [1.0E-6s, 0.0s] */
+      /* Update absolute timer for sample time: [0.01s, 0.0s] */
       /* The "clockTick1" counts the number of times the code of this task has
-       * been executed. The resolution of this integer timer is 1.0E-6, which is the step size
+       * been executed. The resolution of this integer timer is 0.01, which is the step size
        * of the task. Size of "clockTick1" ensures timer will not overflow during the
        * application lifespan selected.
        * Timer of this task consists of two 32 bit unsigned integers.
@@ -352,7 +352,7 @@ void PI_Laengsregler_initialize(void)
                     (&PI_Laengsregler_M->intgData));
   rtsiSetSolverName(&PI_Laengsregler_M->solverInfo,"ode3");
   rtmSetTPtr(PI_Laengsregler_M, &PI_Laengsregler_M->Timing.tArray[0]);
-  PI_Laengsregler_M->Timing.stepSize0 = 1.0E-6;
+  PI_Laengsregler_M->Timing.stepSize0 = 0.01;
 
   /* block I/O */
   (void) memset((static_cast<void *>(&PI_Laengsregler_B)), 0,
