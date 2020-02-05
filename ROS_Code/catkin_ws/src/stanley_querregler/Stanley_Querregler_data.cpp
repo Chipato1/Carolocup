@@ -7,9 +7,9 @@
  *
  * Code generation for model "Stanley_Querregler".
  *
- * Model version              : 1.19
+ * Model version              : 1.22
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Tue Feb  4 19:48:55 2020
+ * C++ source code generated on : Wed Feb  5 15:15:36 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -54,14 +54,14 @@ P_Stanley_Querregler_T Stanley_Querregler_P = {
     0.0F                               /* Data */
   },
 
-  /* Computed Parameter: Constant_Value_c
+  /* Computed Parameter: Constant_Value_i
    * Referenced by: '<S5>/Constant'
    */
   {
     0.0F                               /* Data */
   },
 
-  /* Computed Parameter: Constant_Value_i
+  /* Computed Parameter: Constant_Value_l
    * Referenced by: '<S6>/Constant'
    */
   {

@@ -7,9 +7,9 @@
  *
  * Code generation for model "Stanley_Querregler".
  *
- * Model version              : 1.19
+ * Model version              : 1.22
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Tue Feb  4 19:48:55 2020
+ * C++ source code generated on : Wed Feb  5 15:15:36 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -150,16 +150,16 @@ void Stanley_Querregler_step(void)
   /* End of Outputs for SubSystem: '<S3>/Enabled Subsystem' */
   /* End of Outputs for SubSystem: '<Root>/Subscribe1' */
 
-  /* Outputs for Atomic SubSystem: '<Root>/Subscribe3' */
-  /* MATLABSystem: '<S5>/SourceBlock' */
-  b_varargout_1 = Sub_Stanley_Querregler_66.getLatestMessage(&b_varargout_2_0);
+  /* Outputs for Atomic SubSystem: '<Root>/Subscribe5' */
+  /* MATLABSystem: '<S6>/SourceBlock' */
+  b_varargout_1 = Sub_Stanley_Querregler_83.getLatestMessage(&b_varargout_2_0);
 
-  /* Outputs for Enabled SubSystem: '<S5>/Enabled Subsystem' */
+  /* Outputs for Enabled SubSystem: '<S6>/Enabled Subsystem' */
   Stanley_Querre_EnabledSubsystem(b_varargout_1, &b_varargout_2_0,
-    &Stanley_Querregler_B.EnabledSubsystem_p);
+    &Stanley_Querregler_B.EnabledSubsystem_n);
 
-  /* End of Outputs for SubSystem: '<S5>/Enabled Subsystem' */
-  /* End of Outputs for SubSystem: '<Root>/Subscribe3' */
+  /* End of Outputs for SubSystem: '<S6>/Enabled Subsystem' */
+  /* End of Outputs for SubSystem: '<Root>/Subscribe5' */
 
   /* Outputs for Atomic SubSystem: '<Root>/Subscribe2' */
   /* MATLABSystem: '<S4>/SourceBlock' */
@@ -180,7 +180,7 @@ void Stanley_Querregler_step(void)
      *  Constant: '<S7>/Rückwärts'
      *  Constant: '<S7>/Vorwärts'
      */
-    if (Stanley_Querregler_B.EnabledSubsystem_p.In1.Data >=
+    if (Stanley_Querregler_B.EnabledSubsystem_n.In1.Data >=
         Stanley_Querregler_P.Switch_Threshold) {
       rtb_ms = Stanley_Querregler_P.Vorwrts_Value;
     } else {
@@ -234,12 +234,12 @@ void Stanley_Querregler_step(void)
       /* Switch: '<S7>/Switch1' incorporates:
        *  Gain: '<S7>/Gain'
        */
-      if (Stanley_Querregler_B.EnabledSubsystem_p.In1.Data >
+      if (Stanley_Querregler_B.EnabledSubsystem_n.In1.Data >
           Stanley_Querregler_P.Switch1_Threshold) {
-        delta = Stanley_Querregler_B.EnabledSubsystem_p.In1.Data;
+        delta = Stanley_Querregler_B.EnabledSubsystem_n.In1.Data;
       } else {
         delta = Stanley_Querregler_P.Gain_Gain *
-          Stanley_Querregler_B.EnabledSubsystem_p.In1.Data;
+          Stanley_Querregler_B.EnabledSubsystem_n.In1.Data;
       }
 
       delta = -(static_cast<real32_T>(atan(static_cast<real_T>
@@ -259,12 +259,12 @@ void Stanley_Querregler_step(void)
       /* Switch: '<S7>/Switch1' incorporates:
        *  Gain: '<S7>/Gain'
        */
-      if (Stanley_Querregler_B.EnabledSubsystem_p.In1.Data >
+      if (Stanley_Querregler_B.EnabledSubsystem_n.In1.Data >
           Stanley_Querregler_P.Switch1_Threshold) {
-        delta = Stanley_Querregler_B.EnabledSubsystem_p.In1.Data;
+        delta = Stanley_Querregler_B.EnabledSubsystem_n.In1.Data;
       } else {
         delta = Stanley_Querregler_P.Gain_Gain *
-          Stanley_Querregler_B.EnabledSubsystem_p.In1.Data;
+          Stanley_Querregler_B.EnabledSubsystem_n.In1.Data;
       }
 
       delta = static_cast<real32_T>(atan(static_cast<real_T>
@@ -315,14 +315,14 @@ void Stanley_Querregler_step(void)
   /* End of Outputs for SubSystem: '<Root>/Subsystem' */
 
   /* Outputs for Atomic SubSystem: '<Root>/Subscribe4' */
-  /* MATLABSystem: '<S6>/SourceBlock' */
+  /* MATLABSystem: '<S5>/SourceBlock' */
   b_varargout_1 = Sub_Stanley_Querregler_78.getLatestMessage(&b_varargout_2_0);
 
-  /* Outputs for Enabled SubSystem: '<S6>/Enabled Subsystem' */
+  /* Outputs for Enabled SubSystem: '<S5>/Enabled Subsystem' */
   Stanley_Querre_EnabledSubsystem(b_varargout_1, &b_varargout_2_0,
     &Stanley_Querregler_B.EnabledSubsystem_i);
 
-  /* End of Outputs for SubSystem: '<S6>/Enabled Subsystem' */
+  /* End of Outputs for SubSystem: '<S5>/Enabled Subsystem' */
   /* End of Outputs for SubSystem: '<Root>/Subscribe4' */
 
   /* Switch: '<Root>/Switch' */
@@ -362,14 +362,14 @@ void Stanley_Querregler_initialize(void)
   {
     char_T tmp[16];
     char_T tmp_0[12];
-    char_T tmp_1[14];
+    char_T tmp_1[17];
     int32_T i;
     static const char_T tmp_2[25] = { '/', 't', 'r', 'j', '_', 'e', 'n', 'a',
       'b', 'l', 'e', 'L', 'a', 't', 'e', 'r', 'a', 'l', 'C', 'o', 'n', 't', 'r',
       'o', 'l' };
 
-    static const char_T tmp_3[13] = { '/', 'c', 't', 'l', '_', 'v', 'e', 'l',
-      'o', 'c', 'i', 't', 'y' };
+    static const char_T tmp_3[16] = { '/', 't', 'r', 'j', '_', 't', 'a', 'r',
+      'g', 'e', 't', 'S', 'p', 'e', 'e', 'd' };
 
     static const char_T tmp_4[11] = { '/', 't', 'r', 'j', '_', 'd', 'e', 'l',
       't', 'a', 'Y' };
@@ -396,21 +396,21 @@ void Stanley_Querregler_initialize(void)
     /* End of Start for MATLABSystem: '<S3>/SourceBlock' */
     /* End of Start for SubSystem: '<Root>/Subscribe1' */
 
-    /* Start for Atomic SubSystem: '<Root>/Subscribe3' */
-    /* Start for MATLABSystem: '<S5>/SourceBlock' */
-    Stanley_Querregler_DW.obj_o.matlabCodegenIsDeleted = false;
-    Stanley_Querregler_DW.objisempty_h = true;
-    Stanley_Querregler_DW.obj_o.isInitialized = 1;
-    for (i = 0; i < 13; i++) {
+    /* Start for Atomic SubSystem: '<Root>/Subscribe5' */
+    /* Start for MATLABSystem: '<S6>/SourceBlock' */
+    Stanley_Querregler_DW.obj_k.matlabCodegenIsDeleted = false;
+    Stanley_Querregler_DW.objisempty = true;
+    Stanley_Querregler_DW.obj_k.isInitialized = 1;
+    for (i = 0; i < 16; i++) {
       tmp_1[i] = tmp_3[i];
     }
 
-    tmp_1[13] = '\x00';
-    Sub_Stanley_Querregler_66.createSubscriber(tmp_1, 1);
-    Stanley_Querregler_DW.obj_o.isSetupComplete = true;
+    tmp_1[16] = '\x00';
+    Sub_Stanley_Querregler_83.createSubscriber(tmp_1, 1);
+    Stanley_Querregler_DW.obj_k.isSetupComplete = true;
 
-    /* End of Start for MATLABSystem: '<S5>/SourceBlock' */
-    /* End of Start for SubSystem: '<Root>/Subscribe3' */
+    /* End of Start for MATLABSystem: '<S6>/SourceBlock' */
+    /* End of Start for SubSystem: '<Root>/Subscribe5' */
 
     /* Start for Atomic SubSystem: '<Root>/Subscribe2' */
     /* Start for MATLABSystem: '<S4>/SourceBlock' */
@@ -429,9 +429,9 @@ void Stanley_Querregler_initialize(void)
     /* End of Start for SubSystem: '<Root>/Subscribe2' */
 
     /* Start for Atomic SubSystem: '<Root>/Subscribe4' */
-    /* Start for MATLABSystem: '<S6>/SourceBlock' */
+    /* Start for MATLABSystem: '<S5>/SourceBlock' */
     Stanley_Querregler_DW.obj_c.matlabCodegenIsDeleted = false;
-    Stanley_Querregler_DW.objisempty = true;
+    Stanley_Querregler_DW.objisempty_k = true;
     Stanley_Querregler_DW.obj_c.isInitialized = 1;
     for (i = 0; i < 18; i++) {
       Stanley_Querregler_B.cv1[i] = tmp_5[i];
@@ -441,7 +441,7 @@ void Stanley_Querregler_initialize(void)
     Sub_Stanley_Querregler_78.createSubscriber(Stanley_Querregler_B.cv1, 1);
     Stanley_Querregler_DW.obj_c.isSetupComplete = true;
 
-    /* End of Start for MATLABSystem: '<S6>/SourceBlock' */
+    /* End of Start for MATLABSystem: '<S5>/SourceBlock' */
     /* End of Start for SubSystem: '<Root>/Subscribe4' */
 
     /* Start for Atomic SubSystem: '<Root>/Publish1' */
@@ -469,13 +469,13 @@ void Stanley_Querregler_initialize(void)
   /* End of SystemInitialize for SubSystem: '<S3>/Enabled Subsystem' */
   /* End of SystemInitialize for SubSystem: '<Root>/Subscribe1' */
 
-  /* SystemInitialize for Atomic SubSystem: '<Root>/Subscribe3' */
-  /* SystemInitialize for Enabled SubSystem: '<S5>/Enabled Subsystem' */
-  Stanley_Q_EnabledSubsystem_Init(&Stanley_Querregler_B.EnabledSubsystem_p,
-    &Stanley_Querregler_P.EnabledSubsystem_p);
+  /* SystemInitialize for Atomic SubSystem: '<Root>/Subscribe5' */
+  /* SystemInitialize for Enabled SubSystem: '<S6>/Enabled Subsystem' */
+  Stanley_Q_EnabledSubsystem_Init(&Stanley_Querregler_B.EnabledSubsystem_n,
+    &Stanley_Querregler_P.EnabledSubsystem_n);
 
-  /* End of SystemInitialize for SubSystem: '<S5>/Enabled Subsystem' */
-  /* End of SystemInitialize for SubSystem: '<Root>/Subscribe3' */
+  /* End of SystemInitialize for SubSystem: '<S6>/Enabled Subsystem' */
+  /* End of SystemInitialize for SubSystem: '<Root>/Subscribe5' */
 
   /* SystemInitialize for Atomic SubSystem: '<Root>/Subscribe2' */
   /* SystemInitialize for Enabled SubSystem: '<S4>/Enabled Subsystem' */
@@ -492,11 +492,11 @@ void Stanley_Querregler_initialize(void)
   /* End of SystemInitialize for SubSystem: '<Root>/Subsystem' */
 
   /* SystemInitialize for Atomic SubSystem: '<Root>/Subscribe4' */
-  /* SystemInitialize for Enabled SubSystem: '<S6>/Enabled Subsystem' */
+  /* SystemInitialize for Enabled SubSystem: '<S5>/Enabled Subsystem' */
   Stanley_Q_EnabledSubsystem_Init(&Stanley_Querregler_B.EnabledSubsystem_i,
     &Stanley_Querregler_P.EnabledSubsystem_i);
 
-  /* End of SystemInitialize for SubSystem: '<S6>/Enabled Subsystem' */
+  /* End of SystemInitialize for SubSystem: '<S5>/Enabled Subsystem' */
   /* End of SystemInitialize for SubSystem: '<Root>/Subscribe4' */
 }
 
@@ -509,11 +509,11 @@ void Stanley_Querregler_terminate(void)
 
   /* End of Terminate for SubSystem: '<Root>/Subscribe1' */
 
-  /* Terminate for Atomic SubSystem: '<Root>/Subscribe3' */
-  /* Terminate for MATLABSystem: '<S5>/SourceBlock' */
-  matlabCodegenHandle_matlabCod_a(&Stanley_Querregler_DW.obj_o);
+  /* Terminate for Atomic SubSystem: '<Root>/Subscribe5' */
+  /* Terminate for MATLABSystem: '<S6>/SourceBlock' */
+  matlabCodegenHandle_matlabCod_a(&Stanley_Querregler_DW.obj_k);
 
-  /* End of Terminate for SubSystem: '<Root>/Subscribe3' */
+  /* End of Terminate for SubSystem: '<Root>/Subscribe5' */
 
   /* Terminate for Atomic SubSystem: '<Root>/Subscribe2' */
   /* Terminate for MATLABSystem: '<S4>/SourceBlock' */
@@ -522,7 +522,7 @@ void Stanley_Querregler_terminate(void)
   /* End of Terminate for SubSystem: '<Root>/Subscribe2' */
 
   /* Terminate for Atomic SubSystem: '<Root>/Subscribe4' */
-  /* Terminate for MATLABSystem: '<S6>/SourceBlock' */
+  /* Terminate for MATLABSystem: '<S5>/SourceBlock' */
   matlabCodegenHandle_matlabCod_a(&Stanley_Querregler_DW.obj_c);
 
   /* End of Terminate for SubSystem: '<Root>/Subscribe4' */
