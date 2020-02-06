@@ -31,9 +31,9 @@
 #define bremslicht                    36
 #define rueckfahrlicht                32
 #define blaues_licht                  42
-#define drive_mode_off                XX
-#define drive_mode_freeDrive          XX
-#define drive_mode_obstacleAvoidance  XX
+#define drive_mode_off                41
+#define drive_mode_freeDrive          43
+#define drive_mode_obstacleAvoidance  45
 
 void init_aktorik(ros::NodeHandle *aktorik_node);
 bool aktorik();
