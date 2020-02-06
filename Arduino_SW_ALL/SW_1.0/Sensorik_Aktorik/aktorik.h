@@ -15,7 +15,9 @@
 #define tiefpass_untere_spannung      35                  //Schwellwert Spannung am Tiefpass zum rückwertsfahren
 #define tiefpass_obere_spannung       53                  //Schwellwert Spannung am Tiefpass zum vorwärtsfahren
 #define rcmode_schwellenwert          50                  //Schwellwert Spannung an Channel 4 zur Erkennung, dass RC mode aktiv ist
-
+#define servo_Steigung_kleinerNull    1.11111
+#define servo_Steigung_groesserNull   1.4
+#define servo_nullstellung_PWM        88
 #define interval 1000
 
 #define tiefpass_pwm_motor_voltage    A13

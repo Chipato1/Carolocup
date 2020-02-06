@@ -143,11 +143,11 @@ void servo_bewegung(float lenkwinkel_bogenmass)
   lenkwinkel_grad = (lenkwinkel_bogenmass/pi)*180;
   if(lenkwinkel_grad<=0)
   {
-    lenkwinkel_servosize = ((1.11111)*lenkwinkel_grad) + 88;
+    lenkwinkel_servosize = ((servo_Steigung_kleinerNull)*lenkwinkel_grad) + servo_nullstellung_PWM;
   }
   else
   {
-    lenkwinkel_servosize = 1.4*lenkwinkel_grad + 88;
+    lenkwinkel_servosize = servo_Steigung_groesserNull*lenkwinkel_grad + servo_nullstellung_PWM;
   } 
   servo.write(lenkwinkel_servosize); //Servo fährt in die ensprechende Stellung
 }
