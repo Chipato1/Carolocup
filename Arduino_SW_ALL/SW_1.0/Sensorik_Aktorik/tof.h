@@ -3,13 +3,11 @@
 #include "Adafruit_VL6180X.h"
 #include "Adafruit_VL53L0X.h"
 
-
 //addresses for ToF sensors
 #define ToF_front_ADDRESS 0x30
 #define ToF_left_ADDRESS  0x31
 #define ToF_right_ADDRESS 0x32
 #define ToF_cross_ADDRESS 0x33
-
 
 //shutdown pins for ToF sensors
 #define ToF_front_SHT     25

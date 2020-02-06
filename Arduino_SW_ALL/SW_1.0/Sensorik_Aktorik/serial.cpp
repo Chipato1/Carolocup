@@ -2,7 +2,6 @@
 
 std_msgs::Float32 rpm_msg;
 std_msgs::UInt16 tof_front_msg, tof_left_msg, tof_right_msg, tof_cross_msg, tof_back_msg;
-std_msgs::Int8 error_msg;
 
 ros::Publisher rpm_pub("sns_wheelRpm", &rpm_msg);
 
@@ -11,9 +10,6 @@ ros::Publisher tof_left_pub("sns_distanceLeft", &tof_left_msg);
 ros::Publisher tof_right_pub("sns_distanceRight", &tof_right_msg);
 ros::Publisher tof_cross_pub("sns_distanceCross", &tof_cross_msg);
 ros::Publisher tof_back_pub("sns_distanceBack", &tof_back_msg);
-
-//ros::Publisher error_pub("error", &error_msg);
-
 
 void init_sensorik(ros::NodeHandle *arduino_node){
   arduino_node->advertise(rpm_pub);

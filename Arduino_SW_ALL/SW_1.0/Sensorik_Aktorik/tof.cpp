@@ -41,27 +41,28 @@ bool init_tof()
   
   //init ToF_front
   digitalWrite(ToF_front_SHT,HIGH);
-  ToF_front.begin(ToF_front_ADDRESS);
+  //ToF_front.begin(ToF_front_ADDRESS);
+  return_value = return_value && ToF_front.begin(ToF_front_ADDRESS);
   
   //init ToF_left
   digitalWrite(ToF_left_SHT,HIGH);
-  ToF_left.begin(ToF_left_ADDRESS);
-  //return_value = return_value && ToF_left.begin(ToF_left_ADDRESS);
+  //ToF_left.begin(ToF_left_ADDRESS);
+  return_value = return_value && ToF_left.begin(ToF_left_ADDRESS);
   
   //init ToF_right
   digitalWrite(ToF_right_SHT,HIGH);
-  ToF_right.begin(ToF_right_ADDRESS);
-  //return_value = return_value && ToF_right.begin(ToF_right_ADDRESS);
+  //ToF_right.begin(ToF_right_ADDRESS);
+  return_value = return_value && ToF_right.begin(ToF_right_ADDRESS);
   
   //init ToF_cross
   digitalWrite(ToF_cross_SHT,HIGH);
-  ToF_cross.begin(ToF_cross_ADDRESS);
-  //return_value = return_value && ToF_cross.begin(ToF_cross_ADDRESS);
+  //ToF_cross.begin(ToF_cross_ADDRESS);
+  return_value = return_value && ToF_cross.begin(ToF_cross_ADDRESS);
 
   //init ToF_back
   digitalWrite(ToF_back_SHT,HIGH);
-  ToF_back.begin();
-  //return_value = return_value && ToF_back.begin();
+  //ToF_back.begin();
+  return_value = return_value && ToF_back.begin();
   
   return return_value;
 }

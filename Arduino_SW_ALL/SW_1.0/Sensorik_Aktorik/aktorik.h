@@ -10,11 +10,11 @@
 #include <std_msgs/Float32.h>
 #include <std_msgs/Bool.h>
 
-#define referenzvoltage               0.0021259765       //Referenzspannung zur Berechnung der Tiefpassspannung vom Motor - PWM
+#define referenzvoltage               0.0021259765        //Referenzspannung zur Berechnung der Tiefpassspannung vom Motor - PWM
 #define pi                            3.141592653589
-#define tiefpass_untere_spannung      35          //Schwellwert Spannung am Tiefpass zum rückwertsfahren
-#define tiefpass_obere_spannung       53          //Schwellwert Spannung am Tiefpass zum vorwärtsfahren
-#define rcmode_schwellenwert          50          //Schwellwert Spannung an Channel 4 zur Erkennung, dass RC mode aktiv ist
+#define tiefpass_untere_spannung      35                  //Schwellwert Spannung am Tiefpass zum rückwertsfahren
+#define tiefpass_obere_spannung       53                  //Schwellwert Spannung am Tiefpass zum vorwärtsfahren
+#define rcmode_schwellenwert          50                  //Schwellwert Spannung an Channel 4 zur Erkennung, dass RC mode aktiv ist
 
 #define interval 1000
 
@@ -41,12 +41,12 @@ void lichtBremse_cb(const std_msgs::UInt8& light_state);
 void lichtRemote_cb(const std_msgs::UInt8& light_state);
 
 void servo_bewegung(float lenkwinkel_bogenmass);  //Funktion Servosteuerung im autonomen Betrieb
-void motor_bewegung(int16_t motor_drehzahl);         //Funktion Motorsteuerung im autonomen Betrieb
-void motor_bewegung_RC_mode ();     //Funktion Motorsteuerung im RC - Mode
+void motor_bewegung(int16_t motor_drehzahl);      //Funktion Motorsteuerung im autonomen Betrieb
+void motor_bewegung_RC_mode ();                   //Funktion Motorsteuerung im RC - Mode
 void set_led_states();
 void set_output(short state, short port);
 
 void rc_publish();
-void test_publish();
+//void test_publish();
 
 #endif

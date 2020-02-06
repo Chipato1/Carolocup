@@ -4,7 +4,7 @@ Servo servo;
 Servo motor;  
 
 std_msgs::Bool rc_msg;
-std_msgs::Int16 test_msg;
+//std_msgs::Int16 test_msg;
 
 ros::Subscriber<std_msgs::Float32> sub_servo("ctl_servoAngle", servo_cb);
 ros::Subscriber<std_msgs::Int16> sub_motor("ctl_motorRpm", motor_cb);      
@@ -14,10 +14,7 @@ ros::Subscriber<std_msgs::UInt8> sub_light_b("trj_brakeLight", lichtBremse_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_rem("trj_remoteLight", lichtRemote_cb);
 
 ros::Publisher rc_pub("akt_rc", &rc_msg);
-ros::Publisher test_pub("akt_test", &test_msg);
-
-int16_t voltage_rcmode; //remove
-//int16_t motor_uebertragung_RC_mode;
+//ros::Publisher test_pub("akt_test", &test_msg);
 
 bool rc_mode = false;
 int16_t analogvalue_motor_rcmode; //eingelesener Pin - Wert am Tiefpass vom Motor
@@ -47,7 +44,7 @@ void init_aktorik(ros::NodeHandle *aktorik_node)
   aktorik_node->subscribe(sub_light_rem);
 
   aktorik_node->advertise(rc_pub);
-  aktorik_node->advertise(test_pub);
+  //aktorik_node->advertise(test_pub);
   
   motor.attach(6); //Motor an Pin zuweisen
   servo.attach(5); //Servo an Pin zuweisen
@@ -75,11 +72,11 @@ void init_aktorik(ros::NodeHandle *aktorik_node)
 
 bool aktorik()
 {  
-  //int voltage_rcmode;
+  int voltage_rcmode;
   analogvalue_rcmode = analogRead(tiefpass_rcmode_voltage_nr);    //Einlesen des Pins vom Tiefpass vom channel 4
   
   if (analogvalue_rcmode > rcmode_schwellenwert)
-  {
+  {//RC-Mode
     state_light_rem = 2;
     digitalWrite(MUX_Select, HIGH);     //Multiplexer auf RCmode umschalten
     rc_mode = true;
@@ -87,9 +84,9 @@ bool aktorik()
   }
   
   else 
-  {
-    state_light_rem = 0;  //balue LED ausschalten
-    digitalWrite(MUX_Select, LOW);     //Multiplexer auf autonomen Betrieb umschalten
+  {//autonomer Betrieb
+    state_light_rem = 0;                //blaue LED ausschalten
+    digitalWrite(MUX_Select, LOW);      //Multiplexer auf autonomen Betrieb umschalten
     rc_mode = false;
   }
 
@@ -243,9 +240,9 @@ void rc_publish ()
   rc_msg.data = rc_mode;
   rc_pub.publish(&rc_msg);
 }
-
+/*
 void test_publish ()
 { 
   test_msg.data = analogvalue_motor_rcmode;
   test_pub.publish(&test_msg);
-}
+}*/
