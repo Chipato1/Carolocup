@@ -26,8 +26,8 @@ void loop()
   //Aktorik Teil -> hier kann der Rückgabewert ausgelesen werden
   //Der Wert sagt ob der RC mode aktiviert ist 
   aktorik();
-  rc_publish(); 
-  //test_publish();
+  rc_publish();
+  drive_mode_publish();
 
   tof = read_TOF();
   tof_publish(tof[0], tof[1], tof[2], tof[3], tof[4]);
