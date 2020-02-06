@@ -41,6 +41,7 @@ void lichtLinks_cb(const std_msgs::UInt8& light_state);
 void lichtRechts_cb(const std_msgs::UInt8& light_state);
 void lichtBremse_cb(const std_msgs::UInt8& light_state);
 void lichtRemote_cb(const std_msgs::UInt8& light_state);
+void lichtRueck_cb(const std_msgs::UInt8& light_state);
 
 void servo_bewegung(float lenkwinkel_bogenmass);  //Funktion Servosteuerung im autonomen Betrieb
 void motor_bewegung(int16_t motor_drehzahl);      //Funktion Motorsteuerung im autonomen Betrieb
