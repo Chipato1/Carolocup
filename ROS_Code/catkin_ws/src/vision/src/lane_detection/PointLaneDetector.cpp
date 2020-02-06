@@ -74,7 +74,18 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 	this->ML_MAX_X	 			= 	config.count("ML_MAX_X") 	 		? stoi(config["ML_MAX_X"])				: 850;
 	this->RL_MIN_X	 			= 	config.count("RL_MIN_X") 	 		? stoi(config["RL_MIN_X"])				: 1100;
 	this->RL_MAX_X	 			= 	config.count("RL_MAX_X") 	 		? stoi(config["RL_MAX_X"])				: 1300;
-	this->ipmScaling			= 	config.count("ipm_scaling") 	 	? stod(config["ipm_scaling"])			: 1;	
+
+	this->LL_MIN_Y = config.count("LL_MIN_Y") ? stoi(config["LL_MIN_Y"]) : 250;
+	this->LL_MAX_Y = config.count("LL_MAX_Y") ? stoi(config["LL_MAX_Y"]) : 350;
+	this->ML_MIN_Y = config.count("ML_MIN_Y") ? stoi(config["ML_MIN_Y"]) : 650;
+	this->ML_MAX_Y = config.count("ML_MAX_Y") ? stoi(config["ML_MAX_Y"]) : 850;
+	this->RL_MIN_Y = config.count("RL_MIN_Y") ? stoi(config["RL_MIN_Y"]) : 1100;
+	this->RL_MAX_Y = config.count("RL_MAX_Y") ? stoi(config["RL_MAX_Y"]) : 1300;
+
+
+	this->ipmScaling			= 	config.count("ipm_scaling") 	 	? stod(config["ipm_scaling"])			: 1;
+	this->ipm_size_x			= 	config.count("ipm_size_x") 	 		? stod(config["ipm_size_x"])			: 1200;	
+	this->ipm_size_y			= 	config.count("ipm_size_y") 	 		? stod(config["ipm_size_y"])			: 2400;		
 
 
 	this->LANE_THRES_MIN 		= 	this->LANE_THRES_MIN 	*  this->ipmScaling;
@@ -85,6 +96,13 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 	this->ML_MAX_X	 			= 	this->ML_MAX_X 			*  this->ipmScaling;
 	this->RL_MIN_X	 			= 	this->RL_MIN_X 			*  this->ipmScaling;
 	this->RL_MAX_X	 			= 	this->RL_MAX_X 			*  this->ipmScaling;
+
+	this->LL_MIN_Y			 	= 	this->LL_MIN_Y 			*  this->ipmScaling;
+	this->LL_MAX_Y 				= 	this->LL_MAX_Y 			*  this->ipmScaling;
+	this->ML_MIN_Y	 			= 	this->ML_MIN_Y 			*  this->ipmScaling;
+	this->ML_MAX_Y	 			= 	this->ML_MAX_Y 			*  this->ipmScaling;
+	this->RL_MIN_Y	 			= 	this->RL_MIN_Y 			*  this->ipmScaling;
+	this->RL_MAX_Y	 			= 	this->RL_MAX_Y 			*  this->ipmScaling;
 	
 
 
@@ -93,7 +111,7 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 
 	
 
-	this->ipmSize = Size(1200 * this->ipmScaling, 2400 * this->ipmScaling);
+	this->ipmSize = Size(ipm_size_x * this->ipmScaling, ipm_size_y * this->ipmScaling);
 
 	double alpha_ = camera_angle_pitch;
 	double beta_ = camera_angle_roll;
@@ -303,18 +321,9 @@ void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 }
 
 void PointLaneDetector::houghStreamCb(int status, void *userData) {
-	
-	//std::vector<cv::Vec4i> houghPointsResult;
 	PointLaneDetector *self = static_cast<PointLaneDetector *>(userData);
 	std::lock_guard<std::mutex> lk(self->houghMutex);
 	self->condition.notify_one();
-	/*if (!self->houghLinesGPU.empty()){
-		houghPointsResult.resize(self->houghLinesGPU.cols);
-		self->houghLinesCPU = cv::Mat(1, self->houghLinesGPU.cols, CV_32SC4, &houghPointsResult[0]);
-		self->houghLinesGPU.download(self->houghLinesCPU);
-	}*/
-
-	//self->houghCallback(houghPointsResult);
 }
 
 void PointLaneDetector::calculateAlgorithm() {
@@ -397,17 +406,16 @@ void PointLaneDetector::classifyPoints(int line) {
 			}
 
 			if (analysisPoint.x > LL_MIN_X&& analysisPoint.x < LL_MAX_X && analysisPoint.y >= LL_MIN_Y && analysisPoint.y < LL_MAX_Y) {
-					if (!foundLL) {
-						foundLL = true;
-						leftLaneStartPoint = analysisPoint;
-						vRes.lanePoints.at(0).push_back(analysisPoint);
-						calculateSolveMatrix(analysisPoint, lA, lB, numberOfLeftPoints);
-						laneMiddles.erase(laneMiddles.begin() + pointI);
-						//pointI--;
-						this->leftDistances[line] = 1;
-						lastLeftIterator = line;
-						numberOfLeftPoints++;
-					}
+				if (!foundLL) {
+					foundLL = true;
+					leftLaneStartPoint = analysisPoint;
+					vRes.lanePoints.at(0).push_back(analysisPoint);
+					calculateSolveMatrix(analysisPoint, lA, lB, numberOfLeftPoints);
+					laneMiddles.erase(laneMiddles.begin() + pointI);
+					this->leftDistances[line] = 1;
+					lastLeftIterator = line;
+					numberOfLeftPoints++;
+				}
 			}
 			else if (analysisPoint.x > ML_MIN_X&& analysisPoint.x < ML_MAX_X && analysisPoint.y >= ML_MIN_Y && analysisPoint.y < ML_MAX_Y) {
 				if (!foundML) {
@@ -416,7 +424,6 @@ void PointLaneDetector::classifyPoints(int line) {
 					vRes.lanePoints.at(1).push_back(analysisPoint);
 					calculateSolveMatrix(analysisPoint, mA, mB, numberOfMiddlePoints);
 					laneMiddles.erase(laneMiddles.begin() + pointI);
-					//pointI--;
 					this->middleDistances[line] = 1;
 					lastMiddleIterator = line;
 					numberOfMiddlePoints++;
@@ -429,7 +436,6 @@ void PointLaneDetector::classifyPoints(int line) {
 					vRes.lanePoints.at(2).push_back(analysisPoint);
 					calculateSolveMatrix(analysisPoint, rA, rB, numberOfRightPoints);
 					laneMiddles.erase(laneMiddles.begin() + pointI);
-					//pointI--;
 					this->rightDistances[line] = 1;
 					lastRightIterator = line;
 					numberOfRightPoints++;
@@ -508,9 +514,7 @@ void PointLaneDetector::prepareInterpolation(int i) {
 				leftLaneStartPoint = laneMiddles.at(leftIndex);
 				oldLeftRel = (dx / dy);
 				numberOfLeftPoints++;
-			}
-			
-			
+			}			
 		}
 		else {
 			leftIndex = -1;
