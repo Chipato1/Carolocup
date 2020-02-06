@@ -10,6 +10,7 @@ static uint16_t tof_array[5];
 bool init_tof()
 {
   bool return_value = true;
+  bool value;
   
   pinMode(ToF_front_SHT,OUTPUT);
   pinMode(ToF_left_SHT,OUTPUT);
@@ -41,28 +42,28 @@ bool init_tof()
   
   //init ToF_front
   digitalWrite(ToF_front_SHT,HIGH);
-  //ToF_front.begin(ToF_front_ADDRESS);
-  return_value = return_value && ToF_front.begin(ToF_front_ADDRESS);
+  value = ToF_front.begin(ToF_front_ADDRESS);
+  return_value = return_value && value;
   
   //init ToF_left
   digitalWrite(ToF_left_SHT,HIGH);
-  //ToF_left.begin(ToF_left_ADDRESS);
-  return_value = return_value && ToF_left.begin(ToF_left_ADDRESS);
+  value = ToF_left.begin(ToF_left_ADDRESS);
+  return_value = return_value && value;
   
   //init ToF_right
   digitalWrite(ToF_right_SHT,HIGH);
-  //ToF_right.begin(ToF_right_ADDRESS);
-  return_value = return_value && ToF_right.begin(ToF_right_ADDRESS);
+  value = ToF_right.begin(ToF_right_ADDRESS);
+  return_value = return_value && value;
   
   //init ToF_cross
   digitalWrite(ToF_cross_SHT,HIGH);
-  //ToF_cross.begin(ToF_cross_ADDRESS);
-  return_value = return_value && ToF_cross.begin(ToF_cross_ADDRESS);
+  value = ToF_cross.begin(ToF_cross_ADDRESS);
+  return_value = return_value && value;
 
   //init ToF_back
   digitalWrite(ToF_back_SHT,HIGH);
-  //ToF_back.begin();
-  return_value = return_value && ToF_back.begin();
+  value = ToF_back.begin();
+  return_value = return_value && value;
   
   return return_value;
 }
