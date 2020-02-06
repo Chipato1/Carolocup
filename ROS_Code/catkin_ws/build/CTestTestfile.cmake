@@ -1,6 +1,6 @@
 # CMake generated Testfile for 
-# Source directory: /home/chipato/Desktop/GIT2143/Carolocup/ROS_Code/catkin_ws/src
-# Build directory: /home/chipato/Desktop/GIT2143/Carolocup/ROS_Code/catkin_ws/build
+# Source directory: /home/chipato/Desktop/Carolocup/ROS_Code/catkin_ws/src
+# Build directory: /home/chipato/Desktop/Carolocup/ROS_Code/catkin_ws/build
 # 
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.
@@ -15,7 +15,9 @@ subdirs("rosserial/rosserial_vex_cortex")
 subdirs("rosserial/rosserial_vex_v5")
 subdirs("rosserial/rosserial_xbee")
 subdirs("rosserial/rosserial_client")
-subdirs("regler")
+subdirs("pi_laengsregler")
+subdirs("raddrehzahl_filter")
+subdirs("stanley_querregler")
 subdirs("test_nodes")
 subdirs("rosserial/rosserial_server")
 subdirs("rosserial/rosserial_embeddedlinux")
