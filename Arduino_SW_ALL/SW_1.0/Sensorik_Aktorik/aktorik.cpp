@@ -20,10 +20,12 @@ bool rc_mode = false;
 int16_t analogvalue_motor_rcmode; //eingelesener Pin - Wert am Tiefpass vom Motor
 int16_t analogvalue_rcmode;   //eingelesener Pin an Channel 4, um zu schauen ob im RC-Mode
 int16_t drive_mode;
-int i = 0;
+int motor_zaehler = 0;
 float wert_servo;
 float lenkwinkel_servosize;
 float lenkwinkel_grad;
+int16_t motor_uebertragung_RC_mode;
+int16_t motor_uebertragung;
 
 short state_light_r = 0;
 short state_light_l = 0;
@@ -33,7 +35,7 @@ short state_light_rem = 0;
 uint16_t previousMillis = 0;
 boolean blinkstate = true;
 
-int array[3];
+int arr[] = {0, 0, 0, 0, 0, 0};
 
 void init_aktorik(ros::NodeHandle *aktorik_node)
 {  
@@ -81,7 +83,7 @@ bool aktorik()
   analogvalue_rcmode = analogRead(tiefpass_rcmode_voltage_nr);    //Einlesen des Pins vom Tiefpass vom channel 4
   
   if (analogvalue_rcmode > rcmode_schwellenwert)
-  {//RC-Mode
+  {                                    //RC-Mode
     state_light_rem = 2;
     digitalWrite(MUX_Select, LOW);     //Multiplexer auf RCmode umschalten
     rc_mode = true;
@@ -89,9 +91,9 @@ bool aktorik()
   }
   
   else 
-  {//autonomer Betrieb
+  {                                     //autonomer Betrieb
     state_light_rem = 0;                //blaue LED ausschalten
-    digitalWrite(MUX_Select, HIGH);      //Multiplexer auf autonomen Betrieb umschalten
+    digitalWrite(MUX_Select, HIGH);     //Multiplexer auf autonomen Betrieb umschalten
     rc_mode = false;
   }
 
@@ -173,9 +175,8 @@ void servo_bewegung(float lenkwinkel_bogenmass)
   servo.write(lenkwinkel_servosize); //Servo fährt in die ensprechende Stellung
 }
 
-void motor_bewegung(int16_t motor_drehzahl){
-
-  int16_t motor_uebertragung;
+void motor_bewegung(int16_t motor_drehzahl)
+{
   //motor.attach(6);
   if(motor_drehzahl < 0)//rückwärts
   {     
@@ -193,29 +194,35 @@ void motor_bewegung(int16_t motor_drehzahl){
 
 void motor_bewegung_RC_mode()
 {
-  int16_t motor_uebertragung_RC_mode;
   
  // analogvalue_motor_rcmode = analogRead(tiefpass_pwm_motor_voltage_nr);
   
     analogvalue_motor_rcmode = analogRead(tiefpass_pwm_motor_voltage_nr);
-    array[i]=analogvalue_motor_rcmode;
-    if(i==2)
+    arr[motor_zaehler]=analogvalue_motor_rcmode;
+    
+    float dummy = (arr[0]+arr[1]+arr[2]+arr[3]+arr[4]+arr[5])/6.0;
+    
+    if(dummy < 34)
     {
-        float dummy = (array[0]+array[1]+array[2])/3.0;
-        if(dummy<34)
-        {
-          motor_uebertragung_RC_mode = 87;
-        }else if(dummy>45)
-        {
-          motor_uebertragung_RC_mode = 100;
-        }else 
-        {
-          motor_uebertragung_RC_mode = 93;
-        }
-        i= 0;
-        motor.write(motor_uebertragung_RC_mode);
+      motor_uebertragung_RC_mode = 87;
     }
-  i++;
+    else if(dummy > 45)
+    {
+      motor_uebertragung_RC_mode = 100;
+    }
+    else 
+    {
+       motor_uebertragung_RC_mode = 93;
+    }
+    
+    motor.write(motor_uebertragung_RC_mode);
+    
+    motor_zaehler++;
+    
+    if(motor_zaehler > 5)
+    {
+        motor_zaehler = 0;
+    }
   /*
     if (analogvalue_motor_rcmode < tiefpass_untere_spannung) //rückwarts
     {       
