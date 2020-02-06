@@ -17,9 +17,9 @@ int main(int argc, char **argv)
 {
 	ros::init(argc, argv, "state_machine_ext");
 	ros::NodeHandle n;
-
+	
+	ROS_INFO("started state-machine and trajektorie");
 	//hier brauchen wir den Service Client für maxis spurerkennung
-	//ros::ServiceClient client = n.serviceClient<beginner_tutorials::AddTwoInts>("QR_Detected");
 
 	ros::Rate loop_rate(50);
 	INIT_data.begin = ros::Time::now();
@@ -30,6 +30,7 @@ int main(int argc, char **argv)
 	{
 		sm_step();
 
+		ros::spinOnce();
 		loop_rate.sleep();
 	}
 
@@ -566,7 +567,7 @@ void se_init()
 
 	// Subscribers
 
-	//se_sub_camerashit = n.subscribe("", 50, se_cb_sub_camerashit); // todo
+	se_sub_visionResult = n.subscribe("visionresult", 10, se_cb_sub_visionResult);
 
 	se_sub_currentSpeed = n.subscribe("ctl_velocity", 50, se_cb_sub_currentSpeed);
 	se_sub_currentDistance = n.subscribe("ctl_distance", 50, se_cb_sub_currentDistance);
@@ -586,10 +587,10 @@ void se_init()
 	se_pub_enableLateralControl = n.advertise<std_msgs::Bool>("trj_enableLateralControl", 1000);
 	se_pub_steeringAngle = n.advertise<std_msgs::Float32>("trj_steeringAngle", 1000);
 
-	se_pub_flashRight = n.advertise<std_msgs::Float32>("trj_flashRight", 1000);
-	se_pub_flashLeft = n.advertise<std_msgs::Float32>("trj_flashLeft", 1000);
-	se_pub_brakeLight = n.advertise<std_msgs::Float32>("trj_brakeLight", 1000);
-	se_pub_remoteLight = n.advertise<std_msgs::Float32>("trj_remoteLight", 1000);
+	se_pub_flashRight = n.advertise<std_msgs::UInt8>("trj_flashRight", 1000);
+	se_pub_flashLeft = n.advertise<std_msgs::UInt8>("trj_flashLeft", 1000);
+	se_pub_brakeLight = n.advertise<std_msgs::UInt8>("trj_brakeLight", 1000);
+	se_pub_remoteLight = n.advertise<std_msgs::UInt8>("trj_remoteLight", 1000);
 
 	// State
 
@@ -603,10 +604,11 @@ void se_init()
 }
 
 /* Topic Callbacks */
-/*void se_cb_sub_camerashit(const vision:::VisionResultMsg msg)
+void se_cb_sub_visionResult(const vision::VisionResultMsg::ConstPtr& msg)
 {
-	visionResult = msg->data;
-}*/
+	visionResult = *msg;
+	std::cout << visionResult.foundRL;
+}
 
 void se_cb_sub_currentSpeed(const std_msgs::Float32::ConstPtr& msg)
 {

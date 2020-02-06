@@ -18,7 +18,8 @@
 #include "std_msgs/Float32.h"
 #include "std_msgs/Bool.h"
 
-//#include <state_machine/VisionResultMsg.h>
+#include <vision/VisionResultMsg.h>
+#include <vision/SetBool.h>
 
 //#include "sm_estimation.h"
 //#include "trajectory.h"
@@ -144,7 +145,7 @@ const ros::Duration SE_TIMEOUT_JUNCTION_DRIVE_OVER_MS(3);
 
 /* ROS specifics */
 // Subscribers
-ros::Subscriber se_sub_camerashit;
+ros::Subscriber se_sub_visionResult;
 
 ros::Subscriber se_sub_currentSpeed;
 ros::Subscriber se_sub_currentDistance;
@@ -170,7 +171,7 @@ ros::Publisher se_pub_brakeLight;
 ros::Publisher se_pub_remoteLight;
 
 /* Topic Callbacks */
-//void se_cb_sub_camerashit(const state_machine::VisionResultMsg msg);
+void se_cb_sub_visionResult(const vision::VisionResultMsg::ConstPtr& msg);
 
 void se_cb_sub_currentSpeed(const std_msgs::Float32::ConstPtr& msg);
 void se_cb_sub_currentDistance(const std_msgs::Float32::ConstPtr& msg);
@@ -196,7 +197,7 @@ void se_setBrakeLight(int mode);
 void se_setRemoteLight(int mode);
 
 /* Sensor variables */
-//state_machine:::VisionResultMsg visionResult;
+vision::VisionResultMsg visionResult;
 
 float se_currentSpeed;
 float se_currentDistance;
