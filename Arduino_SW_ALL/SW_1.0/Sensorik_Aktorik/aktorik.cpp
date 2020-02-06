@@ -12,7 +12,6 @@ ros::Subscriber<std_msgs::UInt8> sub_light_l("trj_flashLeft", lichtLinks_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_r("trj_flashRight", lichtRechts_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_b("trj_brakeLight", lichtBremse_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_rem("trj_remoteLight", lichtRemote_cb);
-ros::Subscriber<std_msgs::UInt8> sub_light_rueck("trj_reverseLight", lichtRueck_cb);
 
 ros::Publisher rc_pub("akt_rc", &rc_msg);
 //ros::Publisher test_pub("akt_test", &test_msg);
@@ -23,13 +22,12 @@ int16_t analogvalue_rcmode;   //eingelesener Pin an Channel 4, um zu schauen ob 
 int i = 0;
 float wert_servo;
 float lenkwinkel_servosize;
-float lenkwinkel_grad = 0;
+float lenkwinkel_grad;
 
 short state_light_r = 0;
 short state_light_l = 0;
 short state_light_b = 0;
 short state_light_rem = 0;
-short state_light_rueck = 0;
 
 uint16_t previousMillis = 0;
 boolean blinkstate = true;
@@ -44,8 +42,6 @@ void init_aktorik(ros::NodeHandle *aktorik_node)
   aktorik_node->subscribe(sub_light_r);
   aktorik_node->subscribe(sub_light_b);
   aktorik_node->subscribe(sub_light_rem);
-  aktorik_node->subscribe(sub_light_rueck);
-
 
   aktorik_node->advertise(rc_pub);
   //aktorik_node->advertise(test_pub);
@@ -76,9 +72,9 @@ void init_aktorik(ros::NodeHandle *aktorik_node)
 
 bool aktorik()
 {  
-  digitalWrite(frontlicht,HIGH);
   int voltage_rcmode;
   analogvalue_rcmode = analogRead(tiefpass_rcmode_voltage_nr);    //Einlesen des Pins vom Tiefpass vom channel 4
+  
   if (analogvalue_rcmode > rcmode_schwellenwert)
   {//RC-Mode
     state_light_rem = 2;
@@ -86,6 +82,7 @@ bool aktorik()
     rc_mode = true;
     motor_bewegung_RC_mode();
   }
+  
   else 
   {//autonomer Betrieb
     state_light_rem = 0;                //blaue LED ausschalten
@@ -123,12 +120,12 @@ void motor_cb(const std_msgs::Int16& cmd_msg)//Callback - Funktion für Motorauf
 
 void lichtLinks_cb(const std_msgs::UInt8& light_state)
 {
-  state_light_l = light_state.data;
+  state_light_r = light_state.data;
 }
 
 void lichtRechts_cb(const std_msgs::UInt8& light_state)
 {
-  state_light_r = light_state.data;
+  state_light_l = light_state.data;
 }
 
 void lichtBremse_cb(const std_msgs::UInt8& light_state)
@@ -141,21 +138,16 @@ void lichtRemote_cb(const std_msgs::UInt8& light_state)
   state_light_rem = light_state.data;
 }
 
-void lichtRueck_cb(const std_msgs::UInt8& light_state)
-{
-  state_light_rueck = light_state.data;
-}
-
 void servo_bewegung(float lenkwinkel_bogenmass)
 {
   lenkwinkel_grad = (lenkwinkel_bogenmass/pi)*180;
   if(lenkwinkel_grad<=0)
   {
-    lenkwinkel_servosize = ((servo_Steigung_kleinerNull)*lenkwinkel_grad) + servo_nullstellung_PWM;
+    lenkwinkel_servosize = ((3/2)*lenkwinkel_grad) + 96;
   }
   else
   {
-    lenkwinkel_servosize = servo_Steigung_groesserNull*lenkwinkel_grad + servo_nullstellung_PWM;
+    lenkwinkel_servosize = lenkwinkel_grad + 96;
   } 
   servo.write(lenkwinkel_servosize); //Servo fährt in die ensprechende Stellung
 }
@@ -163,25 +155,27 @@ void servo_bewegung(float lenkwinkel_bogenmass)
 void motor_bewegung(int16_t motor_drehzahl){
 
   int16_t motor_uebertragung;
+  //motor.attach(6);
   if(motor_drehzahl < 0)//rückwärts
   {     
     motor_uebertragung = (int) 90 +(0.234 * motor_drehzahl);
   }
-  else if((motor_drehzahl > 0))//vorwärts
+  else//vorwärts
   {  
-    motor_uebertragung = (int) (0.236 * motor_drehzahl) + 96;
+  motor_uebertragung = (int) (0.236 * motor_drehzahl) + 96;
   }
-  else
-  {
-     motor_uebertragung = 93;
-  }
+  /* 
+   * Übergangsbereich von 91 bis 95 wird nicht betrachtet
+   */
  motor.write(motor_uebertragung);
 }
 
 void motor_bewegung_RC_mode()
 {
   int16_t motor_uebertragung_RC_mode;
+  
  // analogvalue_motor_rcmode = analogRead(tiefpass_pwm_motor_voltage_nr);
+  
     analogvalue_motor_rcmode = analogRead(tiefpass_pwm_motor_voltage_nr);
     array[i]=analogvalue_motor_rcmode;
     if(i==2)
@@ -190,15 +184,12 @@ void motor_bewegung_RC_mode()
         if(dummy<38)
         {
           motor_uebertragung_RC_mode = 87;
-          digitalWrite(frontlicht,HIGH);
         }else if(dummy>49)
         {
           motor_uebertragung_RC_mode = 100;
-          digitalWrite(frontlicht,LOW);
         }else 
         {
           motor_uebertragung_RC_mode = 93;
-          digitalWrite(frontlicht,LOW);
         }
         i= 0;
         motor.write(motor_uebertragung_RC_mode);
@@ -217,6 +208,7 @@ void motor_bewegung_RC_mode()
     }
     else
     {
+      //motor.detach(6);
       motor_uebertragung_RC_mode = 93;
     }*/
    // motor.write(motor_uebertragung_RC_mode); 
@@ -228,7 +220,6 @@ void set_led_states()
   set_output(state_light_r, blinker_rechts);
   set_output(state_light_b, bremslicht);
   set_output(state_light_rem, blaues_licht);
-  set_output(state_light_rueck, rueckfahrlicht);
 }
 
 void set_output(short state, short port)
