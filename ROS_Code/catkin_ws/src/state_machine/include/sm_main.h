@@ -230,6 +230,19 @@ ros::Time se_timer_junctionDriveOver;
 int se_overtakingStartDistance;
 int se_parkingStartDistance;
 
+/*typedef struct
+{
+	double delta; // ^0 * 1
+	double phi; // ^1 * 1
+	double c0; // ^2 * 1/2
+	double c1; // ^3 * 1/6
+} clothoide_t;*/
+
+typedef double clothoide_t[4]; // todo buffer // c1^3, ...
+
+clothoide_t se_currentClothoideRight;
+clothoide_t se_currentClothoideLeft;
+
 /* Util */
 float se_getAverage(float* arr, unsigned int len);
 float se_getBufferAverage(se_sensorBuffer_t* buffer);
@@ -283,20 +296,12 @@ int se_isJunctionDriveOverTimeout();
 #include <math.h>
 
 #define LANEWIDTH 300
-#define MIN_TURNRADIUS 2000
+#define MIN_TURNRADIUS 1000
 #define MAX_STEERINGANGLE 26
 #define TOF_R_OFFSET 200
 #define PARKING_SPACE_BUFFER 100
 
 #define PI 3.141592654
-
-typedef struct
-{
-	float a; // ^0
-	float b; // ^1
-	float c; // ^2
-	float d; // ^3
-} clothoide_t;
 
 typedef struct
 {

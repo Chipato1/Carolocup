@@ -60,6 +60,8 @@ void sm_step()
 	{
 		sm_switch_state(RC_MODE);
 	}
+	
+	std::cout << stateInformatio_i.currentState << std::endl;
 
 	switch(stateInformation_i.currentState)
 	{
@@ -302,8 +304,7 @@ void sm_handle_DRIVE_RIGHT()
 		se_setTargetSpeed(0.5);
 	}
 
-	se_setDeltaY(0);
-	// routine for passing camera data to controller
+	se_setDeltaY(se_currentClothoideRight[3]);
 
 	if (!se_isTrackAvailable())
 	{
@@ -599,15 +600,64 @@ void se_init()
 
 	se_currentSpeed = 0;
 	se_currentDistance = 0;
+	
+	se_currentClothoideRight = {0, 0, 0, 0};
+	se_currentClothoideLeft = {0, 0, 0, 0};
 
 	// todo initialize buffers
+}
+
+double getMidValue(double val1, double val2)
+{
+	return (val1 + ((val2 - val1) / 2));
 }
 
 /* Topic Callbacks */
 void se_cb_sub_visionResult(const vision::VisionResultMsg::ConstPtr& msg)
 {
 	visionResult = *msg;
-	std::cout << visionResult.foundRL;
+	
+	double new_r_delta;
+	double new_r_phi;
+	double new_r_c0;
+	double new_r_c1;
+	
+	double new_l_delta;
+	double new_l_phi;
+	double new_l_c0;
+	double new_l_c1;
+	
+	if (visionResult.solvedLL1)
+	{
+		if (visionResult.solvedML1)
+		{
+			new_l_c1 = getMidValue(visionResult.leftLane1[0], visionResult.middleLane1[0]);
+			new_l_c0 = getMidValue(visionResult.leftLane1[1], visionResult.middleLane1[1]);
+			new_l_phi = getMidValue(visionResult.leftLane1[2], visionResult.middleLane1[2]);
+			new_l_delta = getMidValue(visionResult.leftLane1[3], visionResult.middleLane1[3]);
+			
+			se_currentClothoideLeft[0] = new_l_c1;
+			se_currentClothoideLeft[1] = new_l_c0;
+			se_currentClothoideLeft[2] = new_l_phi;
+			se_currentClothoideLeft[3] = new_l_delta;
+		}
+	}
+	
+	if (visionResult.solvedML1)
+	{
+		if (visionResult.solvedRL1)
+		{
+			new_r_c1 = getMidValue(visionResult.leftLane1[0], visionResult.middleLane1[0]);
+			new_r_c0 = getMidValue(visionResult.leftLane1[1], visionResult.middleLane1[1]);
+			new_r_phi = getMidValue(visionResult.leftLane1[2], visionResult.middleLane1[2]);
+			new_r_delta = getMidValue(visionResult.leftLane1[3], visionResult.middleLane1[3]);
+			
+			se_currentClothoideRight[0] = new_l_c1;
+			se_currentClothoideRight[1] = new_l_c0;
+			se_currentClothoideRight[2] = new_l_phi;
+			se_currentClothoideRight[3] = new_l_delta;
+		}
+	}
 }
 
 void se_cb_sub_currentSpeed(const std_msgs::Float32::ConstPtr& msg)
@@ -741,7 +791,7 @@ int se_isQRCodePresent()
 
 int se_isQRCodeGone()
 {
-	return SE_FALSE;
+	return SE_TRUE;
 }
 
 int se_isTrackAvailable()
