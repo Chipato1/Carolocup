@@ -70,14 +70,23 @@ private:
 
 	int LL_MIN_Y = 1500;
 	int LL_MAX_Y = 2000;
-	int ML_MIN_Y = 2000;
+	int ML_MIN_Y = 1800;
 	int ML_MAX_Y = 2400;
-	int RL_MIN_Y = 2000;
+	int RL_MIN_Y = 1800;
 	int RL_MAX_Y = 2400;
+
+	int ignoreXMin = 450;
+	int ignoreXMax = 750;
+	int ignoreYMax = 2400;
+	int ignoreYMin = 2300;
 
 	int leftIndex = -1;
 	int middleIndex = -1;
 	int rightIndex = -1;
+
+	double oldLeftRel = -1.0;
+	double oldMiddleRel = -1.0;
+	double oldRIghtRel = -1.0;
 
 	int lastLeftIterator = 0;
 	int lastMiddleIterator = 0;
