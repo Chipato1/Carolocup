@@ -78,7 +78,7 @@ bool aktorik()
   if (analogvalue_rcmode > rcmode_schwellenwert)
   {//RC-Mode
     state_light_rem = 2;
-    digitalWrite(MUX_Select, HIGH);     //Multiplexer auf RCmode umschalten
+    digitalWrite(MUX_Select, LOW);     //Multiplexer auf RCmode umschalten
     rc_mode = true;
     motor_bewegung_RC_mode();
   }
@@ -86,7 +86,7 @@ bool aktorik()
   else 
   {//autonomer Betrieb
     state_light_rem = 0;                //blaue LED ausschalten
-    digitalWrite(MUX_Select, LOW);      //Multiplexer auf autonomen Betrieb umschalten
+    digitalWrite(MUX_Select, HIGH);      //Multiplexer auf autonomen Betrieb umschalten
     rc_mode = false;
   }
 
