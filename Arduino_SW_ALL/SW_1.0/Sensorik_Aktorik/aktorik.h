@@ -15,7 +15,9 @@
 #define tiefpass_untere_spannung      35                  //Schwellwert Spannung am Tiefpass zum rückwertsfahren
 #define tiefpass_obere_spannung       53                  //Schwellwert Spannung am Tiefpass zum vorwärtsfahren
 #define rcmode_schwellenwert          50                  //Schwellwert Spannung an Channel 4 zur Erkennung, dass RC mode aktiv ist
-
+#define servo_Steigung_kleinerNull    1.11111
+#define servo_Steigung_groesserNull   1.4
+#define servo_nullstellung_PWM        88
 #define interval 1000
 
 #define tiefpass_pwm_motor_voltage    A13
@@ -39,6 +41,7 @@ void lichtLinks_cb(const std_msgs::UInt8& light_state);
 void lichtRechts_cb(const std_msgs::UInt8& light_state);
 void lichtBremse_cb(const std_msgs::UInt8& light_state);
 void lichtRemote_cb(const std_msgs::UInt8& light_state);
+void lichtRueck_cb(const std_msgs::UInt8& light_state);
 
 void servo_bewegung(float lenkwinkel_bogenmass);  //Funktion Servosteuerung im autonomen Betrieb
 void motor_bewegung(int16_t motor_drehzahl);      //Funktion Motorsteuerung im autonomen Betrieb
