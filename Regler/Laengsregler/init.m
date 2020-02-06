@@ -8,6 +8,7 @@
 %regelungsnormalform vor:
 n=2;
 tau = 3.215/5;
+tau2=0.308;
 tasten = 0.1;%es wird mit einer Abtastzeit von tasten abgetastet
 w=(2*pi/tasten)/10;%Grenzfrequenz des Tiefpasses, diese sollte um einiges kleiner sein als die abtastfrequenz
 b = [0; 1];

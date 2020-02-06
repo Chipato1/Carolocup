@@ -7,9 +7,9 @@
  *
  * Code generation for model "Stanley_Querregler".
  *
- * Model version              : 1.17
+ * Model version              : 1.20
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Sun Feb  2 23:17:35 2020
+ * C++ source code generated on : Thu Feb  6 09:41:26 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -59,9 +59,9 @@ typedef struct {
   real_T refPose[3];
   real_T currPose[3];
   char_T cv1[19];
-  real_T Gain1;                        /* '<S7>/Gain1' */
   real_T b;
   SL_Bus_Stanley_Querregler_std_msgs_Bool In1;/* '<S8>/In1' */
+  real32_T Bogenma;                    /* '<S7>/Bogenmaß' */
   B_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem_i;/* '<S6>/Enabled Subsystem' */
   B_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem_p;/* '<S5>/Enabled Subsystem' */
   B_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem_g;/* '<S4>/Enabled Subsystem' */
@@ -92,11 +92,11 @@ struct P_EnabledSubsystem_Stanley_Qu_T_ {
 struct P_Stanley_Querregler_T_ {
   real_T LateralControllerStanley_Positi;
                               /* Mask Parameter: LateralControllerStanley_Positi
-                               * Referenced by: '<S13>/Kinematic'
+                               * Referenced by: '<S12>/Kinematic'
                                */
   real_T LateralControllerStanley_Posi_p;
                               /* Mask Parameter: LateralControllerStanley_Posi_p
-                               * Referenced by: '<S13>/Kinematic'
+                               * Referenced by: '<S12>/Kinematic'
                                */
   SL_Bus_Stanley_Querregler_std_msgs_Bool Out1_Y0;/* Computed Parameter: Out1_Y0
                                                    * Referenced by: '<S8>/Out1'
@@ -116,9 +116,6 @@ struct P_Stanley_Querregler_T_ {
   SL_Bus_Stanley_Querregler_std_msgs_Float32 Constant_Value_k;/* Computed Parameter: Constant_Value_k
                                                                * Referenced by: '<S1>/Constant'
                                                                */
-  real_T Gain_Gain;                    /* Expression: -1
-                                        * Referenced by: '<S7>/Gain'
-                                        */
   real_T Rckwrts_Value;                /* Expression: -1
                                         * Referenced by: '<S7>/Rückwärts'
                                         */
@@ -126,46 +123,43 @@ struct P_Stanley_Querregler_T_ {
                                         * Referenced by: '<S7>/Vorwärts'
                                         */
   real_T Kinematic_MaxSteeringAngle;   /* Expression: MaxSteeringAngle
-                                        * Referenced by: '<S13>/Kinematic'
+                                        * Referenced by: '<S12>/Kinematic'
                                         */
   real_T Kinematic_Wheelbase;          /* Expression: Wheelbase
-                                        * Referenced by: '<S13>/Kinematic'
+                                        * Referenced by: '<S12>/Kinematic'
                                         */
-  real_T Lenkwinkel_Y0;                /* Computed Parameter: Lenkwinkel_Y0
-                                        * Referenced by: '<S7>/Lenkwinkel'
+  real_T _Value[3];                    /* Expression: [0.4, 0, 0]
+                                        * Referenced by: '<S7>/ '
                                         */
-  real_T xytheta_Value[3];             /* Expression: [0.4, 0, 0]
+  real_T _Value_m[3];                  /* Expression: [0 1 00000]
+                                        * Referenced by: '<S7>/  '
+                                        */
+  real_T xytheta_Value[3];             /* Expression: [0 0 0000000]
                                         * Referenced by: '<S7>/[x, y, theta]'
                                         */
-  real_T Constant1_Value[3];           /* Expression: [0 1 0]
-                                        * Referenced by: '<S7>/Constant1'
+  real32_T Gain_Gain;                  /* Computed Parameter: Gain_Gain
+                                        * Referenced by: '<S7>/Gain'
                                         */
-  real_T Constant_Value_a[3];          /* Expression: [0 0 0]
-                                        * Referenced by: '<S7>/Constant'
+  real32_T Lenkwinkel_Y0;              /* Computed Parameter: Lenkwinkel_Y0
+                                        * Referenced by: '<S7>/Lenkwinkel'
                                         */
-  real_T Constant_Value_ab;            /* Expression: 2*pi
-                                        * Referenced by: '<S12>/Constant'
+  real32_T Gain1_Gain;                 /* Computed Parameter: Gain1_Gain
+                                        * Referenced by: '<S7>/Gain1'
                                         */
-  real_T Radiuscm_Value;               /* Expression: 5.6/2
-                                        * Referenced by: '<S12>/Radius (cm)'
-                                        */
-  real_T cminm_Gain;                   /* Expression: 0.01
-                                        * Referenced by: '<S12>/cm in m'
-                                        */
-  real_T Switch1_Threshold;            /* Expression: 0
+  real32_T Switch1_Threshold;          /* Computed Parameter: Switch1_Threshold
                                         * Referenced by: '<S7>/Switch1'
                                         */
-  real_T Switch_Threshold;             /* Expression: 0
+  real32_T Switch_Threshold;           /* Computed Parameter: Switch_Threshold
                                         * Referenced by: '<S7>/Switch'
                                         */
-  real_T Saturation_UpperSat;          /* Expression: 20
-                                        * Referenced by: '<S7>/Saturation'
+  real32_T Sttigung_UpperSat;          /* Computed Parameter: Sttigung_UpperSat
+                                        * Referenced by: '<S7>/Sättigung'
                                         */
-  real_T Saturation_LowerSat;          /* Expression: -20
-                                        * Referenced by: '<S7>/Saturation'
+  real32_T Sttigung_LowerSat;          /* Computed Parameter: Sttigung_LowerSat
+                                        * Referenced by: '<S7>/Sättigung'
                                         */
-  real_T Gain1_Gain;                   /* Expression: pi/180
-                                        * Referenced by: '<S7>/Gain1'
+  real32_T Bogenma_Gain;               /* Computed Parameter: Bogenma_Gain
+                                        * Referenced by: '<S7>/Bogenmaß'
                                         */
   P_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem_i;/* '<S6>/Enabled Subsystem' */
   P_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem_p;/* '<S5>/Enabled Subsystem' */
@@ -239,6 +233,12 @@ extern "C" {
 #endif
 
 /*-
+ * These blocks were eliminated from the model due to optimizations:
+ *
+ * Block '<Root>/Data Type Conversion' : Eliminate redundant data type conversion
+ */
+
+/*-
  * The generated code includes comments that allow you to trace directly
  * back to the appropriate location in the model.  The basic format
  * is <system>/block_name, where system is the system number (uniquely
@@ -264,10 +264,9 @@ extern "C" {
  * '<S9>'   : 'Stanley_Querregler/Subscribe2/Enabled Subsystem'
  * '<S10>'  : 'Stanley_Querregler/Subscribe3/Enabled Subsystem'
  * '<S11>'  : 'Stanley_Querregler/Subscribe4/Enabled Subsystem'
- * '<S12>'  : 'Stanley_Querregler/Subsystem/Drehzahl in Geschwindigkeit  umrechnen'
- * '<S13>'  : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley'
- * '<S14>'  : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley/Dynamic'
- * '<S15>'  : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley/Kinematic'
- * '<S16>'  : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley/Dynamic/Dynamic Disabled'
+ * '<S12>'  : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley'
+ * '<S13>'  : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley/Dynamic'
+ * '<S14>'  : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley/Kinematic'
+ * '<S15>'  : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley/Dynamic/Dynamic Disabled'
  */
 #endif                                 /* RTW_HEADER_Stanley_Querregler_h_ */

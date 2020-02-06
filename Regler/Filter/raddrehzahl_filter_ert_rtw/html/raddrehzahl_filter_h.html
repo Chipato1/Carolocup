@@ -29,11 +29,11 @@
 <tr name="9" id="9">
 <td><a id="l9" class='ln'>9</a></td><td><span class="ct"> *</span></td></tr>
 <tr name="10" id="10">
-<td><a id="l10" class='ln'>10</a></td><td><span class="ct"> * Model version              : 1.12</span></td></tr>
+<td><a id="l10" class='ln'>10</a></td><td><span class="ct"> * Model version              : 1.13</span></td></tr>
 <tr name="11" id="11">
 <td><a id="l11" class='ln'>11</a></td><td><span class="ct"> * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019</span></td></tr>
 <tr name="12" id="12">
-<td><a id="l12" class='ln'>12</a></td><td><span class="ct"> * C++ source code generated on : Wed Feb  5 17:01:29 2020</span></td></tr>
+<td><a id="l12" class='ln'>12</a></td><td><span class="ct"> * C++ source code generated on : Thu Feb  6 09:38:28 2020</span></td></tr>
 <tr name="13" id="13">
 <td><a id="l13" class='ln'>13</a></td><td><span class="ct"> *</span></td></tr>
 <tr name="14" id="14">
@@ -447,295 +447,307 @@
 <tr name="218" id="218">
 <td><a id="l218" class='ln'>218</a></td><td><span class="ct">                                                               */</span></td></tr>
 <tr name="219" id="219">
-<td><a id="l219" class='ln'>219</a></td><td>  <a id="219c3" class="tk">real_T</a> <a id="219c10" class="tk">DiscreteTransferFcn_InitialStat</a>;<span class="ct">/* Expression: 0</span></td></tr>
+<td><a id="l219" class='ln'>219</a></td><td>  <a id="219c3" class="tk">real_T</a> <a id="219c10" class="tk">rpmto1s_Gain</a>;                 <span class="ct">/* Expression: 1/60</span></td></tr>
 <tr name="220" id="220">
-<td><a id="l220" class='ln'>220</a></td><td><span class="ct">                                          * Referenced by: '&lt;Root&gt;/Discrete Transfer Fcn'</span></td></tr>
+<td><a id="l220" class='ln'>220</a></td><td><span class="ct">                                        * Referenced by: '&lt;Root&gt;/rpm to 1//s'</span></td></tr>
 <tr name="221" id="221">
-<td><a id="l221" class='ln'>221</a></td><td><span class="ct">                                          */</span></td></tr>
+<td><a id="l221" class='ln'>221</a></td><td><span class="ct">                                        */</span></td></tr>
 <tr name="222" id="222">
-<td><a id="l222" class='ln'>222</a></td><td>  <a id="222c3" class="tk">real_T</a> <a id="222c10" class="tk">Multiply_Gain</a>;                <span class="ct">/* Expression: 0.175896</span></td></tr>
+<td><a id="l222" class='ln'>222</a></td><td>  <a id="222c3" class="tk">real_T</a> <a id="222c10" class="tk">DiscreteTransferFcn_InitialStat</a>;<span class="ct">/* Expression: 0</span></td></tr>
 <tr name="223" id="223">
-<td><a id="l223" class='ln'>223</a></td><td><span class="ct">                                        * Referenced by: '&lt;Root&gt;/Multiply'</span></td></tr>
+<td><a id="l223" class='ln'>223</a></td><td><span class="ct">                                          * Referenced by: '&lt;Root&gt;/Discrete Transfer Fcn'</span></td></tr>
 <tr name="224" id="224">
-<td><a id="l224" class='ln'>224</a></td><td><span class="ct">                                        */</span></td></tr>
+<td><a id="l224" class='ln'>224</a></td><td><span class="ct">                                          */</span></td></tr>
 <tr name="225" id="225">
-<td><a id="l225" class='ln'>225</a></td><td>  <a id="225c3" class="tk">real_T</a> <a id="225c10" class="tk">Integrator_IC</a>;                <span class="ct">/* Expression: 0</span></td></tr>
+<td><a id="l225" class='ln'>225</a></td><td>  <a id="225c3" class="tk">real_T</a> <a id="225c10" class="tk">Multiply_Gain</a>;                <span class="ct">/* Expression: 0.175896</span></td></tr>
 <tr name="226" id="226">
-<td><a id="l226" class='ln'>226</a></td><td><span class="ct">                                        * Referenced by: '&lt;Root&gt;/Integrator'</span></td></tr>
+<td><a id="l226" class='ln'>226</a></td><td><span class="ct">                                        * Referenced by: '&lt;Root&gt;/Multiply'</span></td></tr>
 <tr name="227" id="227">
 <td><a id="l227" class='ln'>227</a></td><td><span class="ct">                                        */</span></td></tr>
 <tr name="228" id="228">
-<td><a id="l228" class='ln'>228</a></td><td><span class="br">}</span>;</td></tr>
+<td><a id="l228" class='ln'>228</a></td><td>  <a id="228c3" class="tk">real_T</a> <a id="228c10" class="tk">Gain_Gain</a>;                    <span class="ct">/* Expression: 1000</span></td></tr>
 <tr name="229" id="229">
-<td><a id="l229" class='ln'>229</a></td><td></td></tr>
+<td><a id="l229" class='ln'>229</a></td><td><span class="ct">                                        * Referenced by: '&lt;Root&gt;/Gain'</span></td></tr>
 <tr name="230" id="230">
-<td><a id="l230" class='ln'>230</a></td><td><span class="ct">/* Real-time Model Data Structure */</span></td></tr>
+<td><a id="l230" class='ln'>230</a></td><td><span class="ct">                                        */</span></td></tr>
 <tr name="231" id="231">
-<td><a id="l231" class='ln'>231</a></td><td><span class="kw">struct</span> <a id="231c8" class="tk">tag_RTM_raddrehzahl_filter_T</a> <span class="br">{</span></td></tr>
+<td><a id="l231" class='ln'>231</a></td><td>  <a id="231c3" class="tk">real_T</a> <a id="231c10" class="tk">Integrator_IC</a>;                <span class="ct">/* Expression: 0</span></td></tr>
 <tr name="232" id="232">
-<td><a id="l232" class='ln'>232</a></td><td>  <span class="kw">const</span> <a id="232c9" class="tk">char_T</a> <a id="232c16" class="tk">*</a><a id="232c17" class="tk">errorStatus</a>;</td></tr>
+<td><a id="l232" class='ln'>232</a></td><td><span class="ct">                                        * Referenced by: '&lt;Root&gt;/Integrator'</span></td></tr>
 <tr name="233" id="233">
-<td><a id="l233" class='ln'>233</a></td><td>  <a id="233c3" class="tk">RTWSolverInfo</a> <a id="233c17" class="tk">solverInfo</a>;</td></tr>
+<td><a id="l233" class='ln'>233</a></td><td><span class="ct">                                        */</span></td></tr>
 <tr name="234" id="234">
-<td><a id="l234" class='ln'>234</a></td><td>  <a id="234c3" class="tk">X_raddrehzahl_filter_T</a> <a id="234c26" class="tk">*</a><a id="234c27" class="tk">contStates</a>;</td></tr>
+<td><a id="l234" class='ln'>234</a></td><td><span class="br">}</span>;</td></tr>
 <tr name="235" id="235">
-<td><a id="l235" class='ln'>235</a></td><td>  <a id="235c3" class="tk">int_T</a> <a id="235c9" class="tk">*</a><a id="235c10" class="tk">periodicContStateIndices</a>;</td></tr>
+<td><a id="l235" class='ln'>235</a></td><td></td></tr>
 <tr name="236" id="236">
-<td><a id="l236" class='ln'>236</a></td><td>  <a id="236c3" class="tk">real_T</a> <a id="236c10" class="tk">*</a><a id="236c11" class="tk">periodicContStateRanges</a>;</td></tr>
+<td><a id="l236" class='ln'>236</a></td><td><span class="ct">/* Real-time Model Data Structure */</span></td></tr>
 <tr name="237" id="237">
-<td><a id="l237" class='ln'>237</a></td><td>  <a id="237c3" class="tk">real_T</a> <a id="237c10" class="tk">*</a><a id="237c11" class="tk">derivs</a>;</td></tr>
+<td><a id="l237" class='ln'>237</a></td><td><span class="kw">struct</span> <a id="237c8" class="tk">tag_RTM_raddrehzahl_filter_T</a> <span class="br">{</span></td></tr>
 <tr name="238" id="238">
-<td><a id="l238" class='ln'>238</a></td><td>  <a id="238c3" class="tk">boolean_T</a> <a id="238c13" class="tk">*</a><a id="238c14" class="tk">contStateDisabled</a>;</td></tr>
+<td><a id="l238" class='ln'>238</a></td><td>  <span class="kw">const</span> <a id="238c9" class="tk">char_T</a> <a id="238c16" class="tk">*</a><a id="238c17" class="tk">errorStatus</a>;</td></tr>
 <tr name="239" id="239">
-<td><a id="l239" class='ln'>239</a></td><td>  <a id="239c3" class="tk">boolean_T</a> <a id="239c13" class="tk">zCCacheNeedsReset</a>;</td></tr>
+<td><a id="l239" class='ln'>239</a></td><td>  <a id="239c3" class="tk">RTWSolverInfo</a> <a id="239c17" class="tk">solverInfo</a>;</td></tr>
 <tr name="240" id="240">
-<td><a id="l240" class='ln'>240</a></td><td>  <a id="240c3" class="tk">boolean_T</a> <a id="240c13" class="tk">derivCacheNeedsReset</a>;</td></tr>
+<td><a id="l240" class='ln'>240</a></td><td>  <a id="240c3" class="tk">X_raddrehzahl_filter_T</a> <a id="240c26" class="tk">*</a><a id="240c27" class="tk">contStates</a>;</td></tr>
 <tr name="241" id="241">
-<td><a id="l241" class='ln'>241</a></td><td>  <a id="241c3" class="tk">boolean_T</a> <a id="241c13" class="tk">CTOutputIncnstWithState</a>;</td></tr>
+<td><a id="l241" class='ln'>241</a></td><td>  <a id="241c3" class="tk">int_T</a> <a id="241c9" class="tk">*</a><a id="241c10" class="tk">periodicContStateIndices</a>;</td></tr>
 <tr name="242" id="242">
-<td><a id="l242" class='ln'>242</a></td><td>  <a id="242c3" class="tk">real_T</a> <a id="242c10" class="tk">odeY</a>[1];</td></tr>
+<td><a id="l242" class='ln'>242</a></td><td>  <a id="242c3" class="tk">real_T</a> <a id="242c10" class="tk">*</a><a id="242c11" class="tk">periodicContStateRanges</a>;</td></tr>
 <tr name="243" id="243">
-<td><a id="l243" class='ln'>243</a></td><td>  <a id="243c3" class="tk">real_T</a> <a id="243c10" class="tk">odeF</a>[3][1];</td></tr>
+<td><a id="l243" class='ln'>243</a></td><td>  <a id="243c3" class="tk">real_T</a> <a id="243c10" class="tk">*</a><a id="243c11" class="tk">derivs</a>;</td></tr>
 <tr name="244" id="244">
-<td><a id="l244" class='ln'>244</a></td><td>  <a id="244c3" class="tk">ODE3_IntgData</a> <a id="244c17" class="tk">intgData</a>;</td></tr>
+<td><a id="l244" class='ln'>244</a></td><td>  <a id="244c3" class="tk">boolean_T</a> <a id="244c13" class="tk">*</a><a id="244c14" class="tk">contStateDisabled</a>;</td></tr>
 <tr name="245" id="245">
-<td><a id="l245" class='ln'>245</a></td><td></td></tr>
+<td><a id="l245" class='ln'>245</a></td><td>  <a id="245c3" class="tk">boolean_T</a> <a id="245c13" class="tk">zCCacheNeedsReset</a>;</td></tr>
 <tr name="246" id="246">
-<td><a id="l246" class='ln'>246</a></td><td>  <span class="ct">/*</span></td></tr>
+<td><a id="l246" class='ln'>246</a></td><td>  <a id="246c3" class="tk">boolean_T</a> <a id="246c13" class="tk">derivCacheNeedsReset</a>;</td></tr>
 <tr name="247" id="247">
-<td><a id="l247" class='ln'>247</a></td><td><span class="ct">   * Sizes:</span></td></tr>
+<td><a id="l247" class='ln'>247</a></td><td>  <a id="247c3" class="tk">boolean_T</a> <a id="247c13" class="tk">CTOutputIncnstWithState</a>;</td></tr>
 <tr name="248" id="248">
-<td><a id="l248" class='ln'>248</a></td><td><span class="ct">   * The following substructure contains sizes information</span></td></tr>
+<td><a id="l248" class='ln'>248</a></td><td>  <a id="248c3" class="tk">real_T</a> <a id="248c10" class="tk">odeY</a>[1];</td></tr>
 <tr name="249" id="249">
-<td><a id="l249" class='ln'>249</a></td><td><span class="ct">   * for many of the model attributes such as inputs, outputs,</span></td></tr>
+<td><a id="l249" class='ln'>249</a></td><td>  <a id="249c3" class="tk">real_T</a> <a id="249c10" class="tk">odeF</a>[3][1];</td></tr>
 <tr name="250" id="250">
-<td><a id="l250" class='ln'>250</a></td><td><span class="ct">   * dwork, sample times, etc.</span></td></tr>
+<td><a id="l250" class='ln'>250</a></td><td>  <a id="250c3" class="tk">ODE3_IntgData</a> <a id="250c17" class="tk">intgData</a>;</td></tr>
 <tr name="251" id="251">
-<td><a id="l251" class='ln'>251</a></td><td><span class="ct">   */</span></td></tr>
+<td><a id="l251" class='ln'>251</a></td><td></td></tr>
 <tr name="252" id="252">
-<td><a id="l252" class='ln'>252</a></td><td>  <span class="kw">struct</span> <span class="br">{</span></td></tr>
+<td><a id="l252" class='ln'>252</a></td><td>  <span class="ct">/*</span></td></tr>
 <tr name="253" id="253">
-<td><a id="l253" class='ln'>253</a></td><td>    <a id="253c5" class="tk">int_T</a> <a id="253c11" class="tk">numContStates</a>;</td></tr>
+<td><a id="l253" class='ln'>253</a></td><td><span class="ct">   * Sizes:</span></td></tr>
 <tr name="254" id="254">
-<td><a id="l254" class='ln'>254</a></td><td>    <a id="254c5" class="tk">int_T</a> <a id="254c11" class="tk">numPeriodicContStates</a>;</td></tr>
+<td><a id="l254" class='ln'>254</a></td><td><span class="ct">   * The following substructure contains sizes information</span></td></tr>
 <tr name="255" id="255">
-<td><a id="l255" class='ln'>255</a></td><td>    <a id="255c5" class="tk">int_T</a> <a id="255c11" class="tk">numSampTimes</a>;</td></tr>
+<td><a id="l255" class='ln'>255</a></td><td><span class="ct">   * for many of the model attributes such as inputs, outputs,</span></td></tr>
 <tr name="256" id="256">
-<td><a id="l256" class='ln'>256</a></td><td>  <span class="br">}</span> <a id="256c5" class="tk">Sizes</a>;</td></tr>
+<td><a id="l256" class='ln'>256</a></td><td><span class="ct">   * dwork, sample times, etc.</span></td></tr>
 <tr name="257" id="257">
-<td><a id="l257" class='ln'>257</a></td><td></td></tr>
+<td><a id="l257" class='ln'>257</a></td><td><span class="ct">   */</span></td></tr>
 <tr name="258" id="258">
-<td><a id="l258" class='ln'>258</a></td><td>  <span class="ct">/*</span></td></tr>
+<td><a id="l258" class='ln'>258</a></td><td>  <span class="kw">struct</span> <span class="br">{</span></td></tr>
 <tr name="259" id="259">
-<td><a id="l259" class='ln'>259</a></td><td><span class="ct">   * Timing:</span></td></tr>
+<td><a id="l259" class='ln'>259</a></td><td>    <a id="259c5" class="tk">int_T</a> <a id="259c11" class="tk">numContStates</a>;</td></tr>
 <tr name="260" id="260">
-<td><a id="l260" class='ln'>260</a></td><td><span class="ct">   * The following substructure contains information regarding</span></td></tr>
+<td><a id="l260" class='ln'>260</a></td><td>    <a id="260c5" class="tk">int_T</a> <a id="260c11" class="tk">numPeriodicContStates</a>;</td></tr>
 <tr name="261" id="261">
-<td><a id="l261" class='ln'>261</a></td><td><span class="ct">   * the timing information for the model.</span></td></tr>
+<td><a id="l261" class='ln'>261</a></td><td>    <a id="261c5" class="tk">int_T</a> <a id="261c11" class="tk">numSampTimes</a>;</td></tr>
 <tr name="262" id="262">
-<td><a id="l262" class='ln'>262</a></td><td><span class="ct">   */</span></td></tr>
+<td><a id="l262" class='ln'>262</a></td><td>  <span class="br">}</span> <a id="262c5" class="tk">Sizes</a>;</td></tr>
 <tr name="263" id="263">
-<td><a id="l263" class='ln'>263</a></td><td>  <span class="kw">struct</span> <span class="br">{</span></td></tr>
+<td><a id="l263" class='ln'>263</a></td><td></td></tr>
 <tr name="264" id="264">
-<td><a id="l264" class='ln'>264</a></td><td>    <a id="264c5" class="tk">uint32_T</a> <a id="264c14" class="tk">clockTick0</a>;</td></tr>
+<td><a id="l264" class='ln'>264</a></td><td>  <span class="ct">/*</span></td></tr>
 <tr name="265" id="265">
-<td><a id="l265" class='ln'>265</a></td><td>    <a id="265c5" class="tk">uint32_T</a> <a id="265c14" class="tk">clockTickH0</a>;</td></tr>
+<td><a id="l265" class='ln'>265</a></td><td><span class="ct">   * Timing:</span></td></tr>
 <tr name="266" id="266">
-<td><a id="l266" class='ln'>266</a></td><td>    <a id="266c5" class="tk">time_T</a> <a id="266c12" class="tk">stepSize0</a>;</td></tr>
+<td><a id="l266" class='ln'>266</a></td><td><span class="ct">   * The following substructure contains information regarding</span></td></tr>
 <tr name="267" id="267">
-<td><a id="l267" class='ln'>267</a></td><td>    <a id="267c5" class="tk">uint32_T</a> <a id="267c14" class="tk">clockTick1</a>;</td></tr>
+<td><a id="l267" class='ln'>267</a></td><td><span class="ct">   * the timing information for the model.</span></td></tr>
 <tr name="268" id="268">
-<td><a id="l268" class='ln'>268</a></td><td>    <a id="268c5" class="tk">uint32_T</a> <a id="268c14" class="tk">clockTickH1</a>;</td></tr>
+<td><a id="l268" class='ln'>268</a></td><td><span class="ct">   */</span></td></tr>
 <tr name="269" id="269">
-<td><a id="l269" class='ln'>269</a></td><td>    <a id="269c5" class="tk">SimTimeStep</a> <a id="269c17" class="tk">simTimeStep</a>;</td></tr>
+<td><a id="l269" class='ln'>269</a></td><td>  <span class="kw">struct</span> <span class="br">{</span></td></tr>
 <tr name="270" id="270">
-<td><a id="l270" class='ln'>270</a></td><td>    <a id="270c5" class="tk">boolean_T</a> <a id="270c15" class="tk">stopRequestedFlag</a>;</td></tr>
+<td><a id="l270" class='ln'>270</a></td><td>    <a id="270c5" class="tk">uint32_T</a> <a id="270c14" class="tk">clockTick0</a>;</td></tr>
 <tr name="271" id="271">
-<td><a id="l271" class='ln'>271</a></td><td>    <a id="271c5" class="tk">time_T</a> <a id="271c12" class="tk">*</a><a id="271c13" class="tk">t</a>;</td></tr>
+<td><a id="l271" class='ln'>271</a></td><td>    <a id="271c5" class="tk">uint32_T</a> <a id="271c14" class="tk">clockTickH0</a>;</td></tr>
 <tr name="272" id="272">
-<td><a id="l272" class='ln'>272</a></td><td>    <a id="272c5" class="tk">time_T</a> <a id="272c12" class="tk">tArray</a>[2];</td></tr>
+<td><a id="l272" class='ln'>272</a></td><td>    <a id="272c5" class="tk">time_T</a> <a id="272c12" class="tk">stepSize0</a>;</td></tr>
 <tr name="273" id="273">
-<td><a id="l273" class='ln'>273</a></td><td>  <span class="br">}</span> <a id="273c5" class="tk">Timing</a>;</td></tr>
+<td><a id="l273" class='ln'>273</a></td><td>    <a id="273c5" class="tk">uint32_T</a> <a id="273c14" class="tk">clockTick1</a>;</td></tr>
 <tr name="274" id="274">
-<td><a id="l274" class='ln'>274</a></td><td><span class="br">}</span>;</td></tr>
+<td><a id="l274" class='ln'>274</a></td><td>    <a id="274c5" class="tk">uint32_T</a> <a id="274c14" class="tk">clockTickH1</a>;</td></tr>
 <tr name="275" id="275">
-<td><a id="l275" class='ln'>275</a></td><td></td></tr>
+<td><a id="l275" class='ln'>275</a></td><td>    <a id="275c5" class="tk">SimTimeStep</a> <a id="275c17" class="tk">simTimeStep</a>;</td></tr>
 <tr name="276" id="276">
-<td><a id="l276" class='ln'>276</a></td><td><span class="ct">/* Block parameters (default storage) */</span></td></tr>
+<td><a id="l276" class='ln'>276</a></td><td>    <a id="276c5" class="tk">boolean_T</a> <a id="276c15" class="tk">stopRequestedFlag</a>;</td></tr>
 <tr name="277" id="277">
-<td><a id="l277" class='ln'>277</a></td><td><span class="pp">#ifdef</span> <a id="277c8" class="tk">__cplusplus</a></td></tr>
+<td><a id="l277" class='ln'>277</a></td><td>    <a id="277c5" class="tk">time_T</a> <a id="277c12" class="tk">*</a><a id="277c13" class="tk">t</a>;</td></tr>
 <tr name="278" id="278">
-<td><a id="l278" class='ln'>278</a></td><td></td></tr>
+<td><a id="l278" class='ln'>278</a></td><td>    <a id="278c5" class="tk">time_T</a> <a id="278c12" class="tk">tArray</a>[2];</td></tr>
 <tr name="279" id="279">
-<td><a id="l279" class='ln'>279</a></td><td><span class="kw">extern</span> "C" <span class="br">{</span></td></tr>
+<td><a id="l279" class='ln'>279</a></td><td>  <span class="br">}</span> <a id="279c5" class="tk">Timing</a>;</td></tr>
 <tr name="280" id="280">
-<td><a id="l280" class='ln'>280</a></td><td></td></tr>
+<td><a id="l280" class='ln'>280</a></td><td><span class="br">}</span>;</td></tr>
 <tr name="281" id="281">
-<td><a id="l281" class='ln'>281</a></td><td><span class="pp">#endif</span></td></tr>
+<td><a id="l281" class='ln'>281</a></td><td></td></tr>
 <tr name="282" id="282">
-<td><a id="l282" class='ln'>282</a></td><td></td></tr>
+<td><a id="l282" class='ln'>282</a></td><td><span class="ct">/* Block parameters (default storage) */</span></td></tr>
 <tr name="283" id="283">
-<td><a id="l283" class='ln'>283</a></td><td>  <span class="kw">extern</span> <a id="283c10" class="tk">P_raddrehzahl_filter_T</a> <a id="283c33" class="tk">raddrehzahl_filter_P</a>;</td></tr>
+<td><a id="l283" class='ln'>283</a></td><td><span class="pp">#ifdef</span> <a id="283c8" class="tk">__cplusplus</a></td></tr>
 <tr name="284" id="284">
 <td><a id="l284" class='ln'>284</a></td><td></td></tr>
 <tr name="285" id="285">
-<td><a id="l285" class='ln'>285</a></td><td><span class="pp">#ifdef</span> <a id="285c8" class="tk">__cplusplus</a></td></tr>
+<td><a id="l285" class='ln'>285</a></td><td><span class="kw">extern</span> "C" <span class="br">{</span></td></tr>
 <tr name="286" id="286">
 <td><a id="l286" class='ln'>286</a></td><td></td></tr>
 <tr name="287" id="287">
-<td><a id="l287" class='ln'>287</a></td><td><span class="br">}</span></td></tr>
+<td><a id="l287" class='ln'>287</a></td><td><span class="pp">#endif</span></td></tr>
 <tr name="288" id="288">
-<td><a id="l288" class='ln'>288</a></td><td><span class="pp">#endif</span></td></tr>
+<td><a id="l288" class='ln'>288</a></td><td></td></tr>
 <tr name="289" id="289">
-<td><a id="l289" class='ln'>289</a></td><td></td></tr>
+<td><a id="l289" class='ln'>289</a></td><td>  <span class="kw">extern</span> <a id="289c10" class="tk">P_raddrehzahl_filter_T</a> <a id="289c33" class="tk">raddrehzahl_filter_P</a>;</td></tr>
 <tr name="290" id="290">
-<td><a id="l290" class='ln'>290</a></td><td><span class="ct">/* Block signals (default storage) */</span></td></tr>
+<td><a id="l290" class='ln'>290</a></td><td></td></tr>
 <tr name="291" id="291">
 <td><a id="l291" class='ln'>291</a></td><td><span class="pp">#ifdef</span> <a id="291c8" class="tk">__cplusplus</a></td></tr>
 <tr name="292" id="292">
 <td><a id="l292" class='ln'>292</a></td><td></td></tr>
 <tr name="293" id="293">
-<td><a id="l293" class='ln'>293</a></td><td><span class="kw">extern</span> "C" <span class="br">{</span></td></tr>
+<td><a id="l293" class='ln'>293</a></td><td><span class="br">}</span></td></tr>
 <tr name="294" id="294">
-<td><a id="l294" class='ln'>294</a></td><td></td></tr>
+<td><a id="l294" class='ln'>294</a></td><td><span class="pp">#endif</span></td></tr>
 <tr name="295" id="295">
-<td><a id="l295" class='ln'>295</a></td><td><span class="pp">#endif</span></td></tr>
+<td><a id="l295" class='ln'>295</a></td><td></td></tr>
 <tr name="296" id="296">
-<td><a id="l296" class='ln'>296</a></td><td></td></tr>
+<td><a id="l296" class='ln'>296</a></td><td><span class="ct">/* Block signals (default storage) */</span></td></tr>
 <tr name="297" id="297">
-<td><a id="l297" class='ln'>297</a></td><td>  <span class="kw">extern</span> <a id="297c10" class="tk">B_raddrehzahl_filter_T</a> <a id="297c33" class="tk">raddrehzahl_filter_B</a>;</td></tr>
+<td><a id="l297" class='ln'>297</a></td><td><span class="pp">#ifdef</span> <a id="297c8" class="tk">__cplusplus</a></td></tr>
 <tr name="298" id="298">
 <td><a id="l298" class='ln'>298</a></td><td></td></tr>
 <tr name="299" id="299">
-<td><a id="l299" class='ln'>299</a></td><td><span class="pp">#ifdef</span> <a id="299c8" class="tk">__cplusplus</a></td></tr>
+<td><a id="l299" class='ln'>299</a></td><td><span class="kw">extern</span> "C" <span class="br">{</span></td></tr>
 <tr name="300" id="300">
 <td><a id="l300" class='ln'>300</a></td><td></td></tr>
 <tr name="301" id="301">
-<td><a id="l301" class='ln'>301</a></td><td><span class="br">}</span></td></tr>
+<td><a id="l301" class='ln'>301</a></td><td><span class="pp">#endif</span></td></tr>
 <tr name="302" id="302">
-<td><a id="l302" class='ln'>302</a></td><td><span class="pp">#endif</span></td></tr>
+<td><a id="l302" class='ln'>302</a></td><td></td></tr>
 <tr name="303" id="303">
-<td><a id="l303" class='ln'>303</a></td><td></td></tr>
+<td><a id="l303" class='ln'>303</a></td><td>  <span class="kw">extern</span> <a id="303c10" class="tk">B_raddrehzahl_filter_T</a> <a id="303c33" class="tk">raddrehzahl_filter_B</a>;</td></tr>
 <tr name="304" id="304">
-<td><a id="l304" class='ln'>304</a></td><td><span class="ct">/* Continuous states (default storage) */</span></td></tr>
+<td><a id="l304" class='ln'>304</a></td><td></td></tr>
 <tr name="305" id="305">
-<td><a id="l305" class='ln'>305</a></td><td><span class="kw">extern</span> <a id="305c8" class="tk">X_raddrehzahl_filter_T</a> <a id="305c31" class="tk">raddrehzahl_filter_X</a>;</td></tr>
+<td><a id="l305" class='ln'>305</a></td><td><span class="pp">#ifdef</span> <a id="305c8" class="tk">__cplusplus</a></td></tr>
 <tr name="306" id="306">
 <td><a id="l306" class='ln'>306</a></td><td></td></tr>
 <tr name="307" id="307">
-<td><a id="l307" class='ln'>307</a></td><td><span class="ct">/* Block states (default storage) */</span></td></tr>
+<td><a id="l307" class='ln'>307</a></td><td><span class="br">}</span></td></tr>
 <tr name="308" id="308">
-<td><a id="l308" class='ln'>308</a></td><td><span class="kw">extern</span> <a id="308c8" class="tk">DW_raddrehzahl_filter_T</a> <a id="308c32" class="tk">raddrehzahl_filter_DW</a>;</td></tr>
+<td><a id="l308" class='ln'>308</a></td><td><span class="pp">#endif</span></td></tr>
 <tr name="309" id="309">
 <td><a id="l309" class='ln'>309</a></td><td></td></tr>
 <tr name="310" id="310">
-<td><a id="l310" class='ln'>310</a></td><td><span class="pp">#ifdef</span> <a id="310c8" class="tk">__cplusplus</a></td></tr>
+<td><a id="l310" class='ln'>310</a></td><td><span class="ct">/* Continuous states (default storage) */</span></td></tr>
 <tr name="311" id="311">
-<td><a id="l311" class='ln'>311</a></td><td></td></tr>
+<td><a id="l311" class='ln'>311</a></td><td><span class="kw">extern</span> <a id="311c8" class="tk">X_raddrehzahl_filter_T</a> <a id="311c31" class="tk">raddrehzahl_filter_X</a>;</td></tr>
 <tr name="312" id="312">
-<td><a id="l312" class='ln'>312</a></td><td><span class="kw">extern</span> "C" <span class="br">{</span></td></tr>
+<td><a id="l312" class='ln'>312</a></td><td></td></tr>
 <tr name="313" id="313">
-<td><a id="l313" class='ln'>313</a></td><td></td></tr>
+<td><a id="l313" class='ln'>313</a></td><td><span class="ct">/* Block states (default storage) */</span></td></tr>
 <tr name="314" id="314">
-<td><a id="l314" class='ln'>314</a></td><td><span class="pp">#endif</span></td></tr>
+<td><a id="l314" class='ln'>314</a></td><td><span class="kw">extern</span> <a id="314c8" class="tk">DW_raddrehzahl_filter_T</a> <a id="314c32" class="tk">raddrehzahl_filter_DW</a>;</td></tr>
 <tr name="315" id="315">
 <td><a id="l315" class='ln'>315</a></td><td></td></tr>
 <tr name="316" id="316">
-<td><a id="l316" class='ln'>316</a></td><td>  <span class="ct">/* Model entry point functions */</span></td></tr>
+<td><a id="l316" class='ln'>316</a></td><td><span class="pp">#ifdef</span> <a id="316c8" class="tk">__cplusplus</a></td></tr>
 <tr name="317" id="317">
-<td><a id="l317" class='ln'>317</a></td><td>  <span class="kw">extern</span> <span class="kw">void</span> <a id="317c15" class="tk">raddrehzahl_filter_initialize</a>(<span class="kw">void</span>);</td></tr>
+<td><a id="l317" class='ln'>317</a></td><td></td></tr>
 <tr name="318" id="318">
-<td><a id="l318" class='ln'>318</a></td><td>  <span class="kw">extern</span> <span class="kw">void</span> <a id="318c15" class="tk">raddrehzahl_filter_step</a>(<span class="kw">void</span>);</td></tr>
+<td><a id="l318" class='ln'>318</a></td><td><span class="kw">extern</span> "C" <span class="br">{</span></td></tr>
 <tr name="319" id="319">
-<td><a id="l319" class='ln'>319</a></td><td>  <span class="kw">extern</span> <span class="kw">void</span> <a id="319c15" class="tk">raddrehzahl_filter_terminate</a>(<span class="kw">void</span>);</td></tr>
+<td><a id="l319" class='ln'>319</a></td><td></td></tr>
 <tr name="320" id="320">
-<td><a id="l320" class='ln'>320</a></td><td></td></tr>
+<td><a id="l320" class='ln'>320</a></td><td><span class="pp">#endif</span></td></tr>
 <tr name="321" id="321">
-<td><a id="l321" class='ln'>321</a></td><td><span class="pp">#ifdef</span> <a id="321c8" class="tk">__cplusplus</a></td></tr>
+<td><a id="l321" class='ln'>321</a></td><td></td></tr>
 <tr name="322" id="322">
-<td><a id="l322" class='ln'>322</a></td><td></td></tr>
+<td><a id="l322" class='ln'>322</a></td><td>  <span class="ct">/* Model entry point functions */</span></td></tr>
 <tr name="323" id="323">
-<td><a id="l323" class='ln'>323</a></td><td><span class="br">}</span></td></tr>
+<td><a id="l323" class='ln'>323</a></td><td>  <span class="kw">extern</span> <span class="kw">void</span> <a id="323c15" class="tk">raddrehzahl_filter_initialize</a>(<span class="kw">void</span>);</td></tr>
 <tr name="324" id="324">
-<td><a id="l324" class='ln'>324</a></td><td><span class="pp">#endif</span></td></tr>
+<td><a id="l324" class='ln'>324</a></td><td>  <span class="kw">extern</span> <span class="kw">void</span> <a id="324c15" class="tk">raddrehzahl_filter_step</a>(<span class="kw">void</span>);</td></tr>
 <tr name="325" id="325">
-<td><a id="l325" class='ln'>325</a></td><td></td></tr>
+<td><a id="l325" class='ln'>325</a></td><td>  <span class="kw">extern</span> <span class="kw">void</span> <a id="325c15" class="tk">raddrehzahl_filter_terminate</a>(<span class="kw">void</span>);</td></tr>
 <tr name="326" id="326">
-<td><a id="l326" class='ln'>326</a></td><td><span class="ct">/* Real-time Model object */</span></td></tr>
+<td><a id="l326" class='ln'>326</a></td><td></td></tr>
 <tr name="327" id="327">
 <td><a id="l327" class='ln'>327</a></td><td><span class="pp">#ifdef</span> <a id="327c8" class="tk">__cplusplus</a></td></tr>
 <tr name="328" id="328">
 <td><a id="l328" class='ln'>328</a></td><td></td></tr>
 <tr name="329" id="329">
-<td><a id="l329" class='ln'>329</a></td><td><span class="kw">extern</span> "C" <span class="br">{</span></td></tr>
+<td><a id="l329" class='ln'>329</a></td><td><span class="br">}</span></td></tr>
 <tr name="330" id="330">
-<td><a id="l330" class='ln'>330</a></td><td></td></tr>
+<td><a id="l330" class='ln'>330</a></td><td><span class="pp">#endif</span></td></tr>
 <tr name="331" id="331">
-<td><a id="l331" class='ln'>331</a></td><td><span class="pp">#endif</span></td></tr>
+<td><a id="l331" class='ln'>331</a></td><td></td></tr>
 <tr name="332" id="332">
-<td><a id="l332" class='ln'>332</a></td><td></td></tr>
+<td><a id="l332" class='ln'>332</a></td><td><span class="ct">/* Real-time Model object */</span></td></tr>
 <tr name="333" id="333">
-<td><a id="l333" class='ln'>333</a></td><td>  <span class="kw">extern</span> <a id="333c10" class="tk">RT_MODEL_raddrehzahl_filter_T</a> <a id="333c40" class="tk">*</a><span class="kw">const</span> <a id="333c47" class="tk">raddrehzahl_filter_M</a>;</td></tr>
+<td><a id="l333" class='ln'>333</a></td><td><span class="pp">#ifdef</span> <a id="333c8" class="tk">__cplusplus</a></td></tr>
 <tr name="334" id="334">
 <td><a id="l334" class='ln'>334</a></td><td></td></tr>
 <tr name="335" id="335">
-<td><a id="l335" class='ln'>335</a></td><td><span class="pp">#ifdef</span> <a id="335c8" class="tk">__cplusplus</a></td></tr>
+<td><a id="l335" class='ln'>335</a></td><td><span class="kw">extern</span> "C" <span class="br">{</span></td></tr>
 <tr name="336" id="336">
 <td><a id="l336" class='ln'>336</a></td><td></td></tr>
 <tr name="337" id="337">
-<td><a id="l337" class='ln'>337</a></td><td><span class="br">}</span></td></tr>
+<td><a id="l337" class='ln'>337</a></td><td><span class="pp">#endif</span></td></tr>
 <tr name="338" id="338">
-<td><a id="l338" class='ln'>338</a></td><td><span class="pp">#endif</span></td></tr>
+<td><a id="l338" class='ln'>338</a></td><td></td></tr>
 <tr name="339" id="339">
-<td><a id="l339" class='ln'>339</a></td><td></td></tr>
+<td><a id="l339" class='ln'>339</a></td><td>  <span class="kw">extern</span> <a id="339c10" class="tk">RT_MODEL_raddrehzahl_filter_T</a> <a id="339c40" class="tk">*</a><span class="kw">const</span> <a id="339c47" class="tk">raddrehzahl_filter_M</a>;</td></tr>
 <tr name="340" id="340">
-<td><a id="l340" class='ln'>340</a></td><td><span class="ct">/*-</span></td></tr>
+<td><a id="l340" class='ln'>340</a></td><td></td></tr>
 <tr name="341" id="341">
-<td><a id="l341" class='ln'>341</a></td><td><span class="ct"> * The generated code includes comments that allow you to trace directly</span></td></tr>
+<td><a id="l341" class='ln'>341</a></td><td><span class="pp">#ifdef</span> <a id="341c8" class="tk">__cplusplus</a></td></tr>
 <tr name="342" id="342">
-<td><a id="l342" class='ln'>342</a></td><td><span class="ct"> * back to the appropriate location in the model.  The basic format</span></td></tr>
+<td><a id="l342" class='ln'>342</a></td><td></td></tr>
 <tr name="343" id="343">
-<td><a id="l343" class='ln'>343</a></td><td><span class="ct"> * is &lt;system&gt;/block_name, where system is the system number (uniquely</span></td></tr>
+<td><a id="l343" class='ln'>343</a></td><td><span class="br">}</span></td></tr>
 <tr name="344" id="344">
-<td><a id="l344" class='ln'>344</a></td><td><span class="ct"> * assigned by Simulink) and block_name is the name of the block.</span></td></tr>
+<td><a id="l344" class='ln'>344</a></td><td><span class="pp">#endif</span></td></tr>
 <tr name="345" id="345">
-<td><a id="l345" class='ln'>345</a></td><td><span class="ct"> *</span></td></tr>
+<td><a id="l345" class='ln'>345</a></td><td></td></tr>
 <tr name="346" id="346">
-<td><a id="l346" class='ln'>346</a></td><td><span class="ct"> * Use the MATLAB hilite_system command to trace the generated code back</span></td></tr>
+<td><a id="l346" class='ln'>346</a></td><td><span class="ct">/*-</span></td></tr>
 <tr name="347" id="347">
-<td><a id="l347" class='ln'>347</a></td><td><span class="ct"> * to the model.  For example,</span></td></tr>
+<td><a id="l347" class='ln'>347</a></td><td><span class="ct"> * The generated code includes comments that allow you to trace directly</span></td></tr>
 <tr name="348" id="348">
-<td><a id="l348" class='ln'>348</a></td><td><span class="ct"> *</span></td></tr>
+<td><a id="l348" class='ln'>348</a></td><td><span class="ct"> * back to the appropriate location in the model.  The basic format</span></td></tr>
 <tr name="349" id="349">
-<td><a id="l349" class='ln'>349</a></td><td><span class="ct"> * hilite_system('&lt;S3&gt;')    - opens system 3</span></td></tr>
+<td><a id="l349" class='ln'>349</a></td><td><span class="ct"> * is &lt;system&gt;/block_name, where system is the system number (uniquely</span></td></tr>
 <tr name="350" id="350">
-<td><a id="l350" class='ln'>350</a></td><td><span class="ct"> * hilite_system('&lt;S3&gt;/Kp') - opens and selects block Kp which resides in S3</span></td></tr>
+<td><a id="l350" class='ln'>350</a></td><td><span class="ct"> * assigned by Simulink) and block_name is the name of the block.</span></td></tr>
 <tr name="351" id="351">
 <td><a id="l351" class='ln'>351</a></td><td><span class="ct"> *</span></td></tr>
 <tr name="352" id="352">
-<td><a id="l352" class='ln'>352</a></td><td><span class="ct"> * Here is the system hierarchy for this model</span></td></tr>
+<td><a id="l352" class='ln'>352</a></td><td><span class="ct"> * Use the MATLAB hilite_system command to trace the generated code back</span></td></tr>
 <tr name="353" id="353">
-<td><a id="l353" class='ln'>353</a></td><td><span class="ct"> *</span></td></tr>
+<td><a id="l353" class='ln'>353</a></td><td><span class="ct"> * to the model.  For example,</span></td></tr>
 <tr name="354" id="354">
-<td><a id="l354" class='ln'>354</a></td><td><span class="ct"> * '&lt;Root&gt;' : 'raddrehzahl_filter'</span></td></tr>
+<td><a id="l354" class='ln'>354</a></td><td><span class="ct"> *</span></td></tr>
 <tr name="355" id="355">
-<td><a id="l355" class='ln'>355</a></td><td><span class="ct"> * '&lt;S1&gt;'   : 'raddrehzahl_filter/Blank Message'</span></td></tr>
+<td><a id="l355" class='ln'>355</a></td><td><span class="ct"> * hilite_system('&lt;S3&gt;')    - opens system 3</span></td></tr>
 <tr name="356" id="356">
-<td><a id="l356" class='ln'>356</a></td><td><span class="ct"> * '&lt;S2&gt;'   : 'raddrehzahl_filter/Blank Message1'</span></td></tr>
+<td><a id="l356" class='ln'>356</a></td><td><span class="ct"> * hilite_system('&lt;S3&gt;/Kp') - opens and selects block Kp which resides in S3</span></td></tr>
 <tr name="357" id="357">
-<td><a id="l357" class='ln'>357</a></td><td><span class="ct"> * '&lt;S3&gt;'   : 'raddrehzahl_filter/Publish'</span></td></tr>
+<td><a id="l357" class='ln'>357</a></td><td><span class="ct"> *</span></td></tr>
 <tr name="358" id="358">
-<td><a id="l358" class='ln'>358</a></td><td><span class="ct"> * '&lt;S4&gt;'   : 'raddrehzahl_filter/Publish1'</span></td></tr>
+<td><a id="l358" class='ln'>358</a></td><td><span class="ct"> * Here is the system hierarchy for this model</span></td></tr>
 <tr name="359" id="359">
-<td><a id="l359" class='ln'>359</a></td><td><span class="ct"> * '&lt;S5&gt;'   : 'raddrehzahl_filter/Subscribe1'</span></td></tr>
+<td><a id="l359" class='ln'>359</a></td><td><span class="ct"> *</span></td></tr>
 <tr name="360" id="360">
-<td><a id="l360" class='ln'>360</a></td><td><span class="ct"> * '&lt;S6&gt;'   : 'raddrehzahl_filter/Subscribe1/Enabled Subsystem'</span></td></tr>
+<td><a id="l360" class='ln'>360</a></td><td><span class="ct"> * '&lt;Root&gt;' : 'raddrehzahl_filter'</span></td></tr>
 <tr name="361" id="361">
-<td><a id="l361" class='ln'>361</a></td><td><span class="ct"> */</span></td></tr>
+<td><a id="l361" class='ln'>361</a></td><td><span class="ct"> * '&lt;S1&gt;'   : 'raddrehzahl_filter/Blank Message'</span></td></tr>
 <tr name="362" id="362">
-<td><a id="l362" class='ln'>362</a></td><td><span class="pp">#endif</span>                                 <span class="ct">/* RTW_HEADER_raddrehzahl_filter_h_ */</span></td></tr>
+<td><a id="l362" class='ln'>362</a></td><td><span class="ct"> * '&lt;S2&gt;'   : 'raddrehzahl_filter/Blank Message1'</span></td></tr>
 <tr name="363" id="363">
-<td><a id="l363" class='ln'>363</a></td><td></td></tr>
+<td><a id="l363" class='ln'>363</a></td><td><span class="ct"> * '&lt;S3&gt;'   : 'raddrehzahl_filter/Publish'</span></td></tr>
+<tr name="364" id="364">
+<td><a id="l364" class='ln'>364</a></td><td><span class="ct"> * '&lt;S4&gt;'   : 'raddrehzahl_filter/Publish1'</span></td></tr>
+<tr name="365" id="365">
+<td><a id="l365" class='ln'>365</a></td><td><span class="ct"> * '&lt;S5&gt;'   : 'raddrehzahl_filter/Subscribe1'</span></td></tr>
+<tr name="366" id="366">
+<td><a id="l366" class='ln'>366</a></td><td><span class="ct"> * '&lt;S6&gt;'   : 'raddrehzahl_filter/Subscribe1/Enabled Subsystem'</span></td></tr>
+<tr name="367" id="367">
+<td><a id="l367" class='ln'>367</a></td><td><span class="ct"> */</span></td></tr>
+<tr name="368" id="368">
+<td><a id="l368" class='ln'>368</a></td><td><span class="pp">#endif</span>                                 <span class="ct">/* RTW_HEADER_raddrehzahl_filter_h_ */</span></td></tr>
+<tr name="369" id="369">
+<td><a id="l369" class='ln'>369</a></td><td></td></tr>
 </table>
 </pre>
 </body>

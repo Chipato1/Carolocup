@@ -7,9 +7,9 @@
  *
  * Code generation for model "PI_Laengsregler".
  *
- * Model version              : 1.29
+ * Model version              : 1.31
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Wed Feb  5 17:00:02 2020
+ * C++ source code generated on : Thu Feb  6 10:28:06 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -68,7 +68,7 @@ static void rt_ertODEUpdateContinuousStates(RTWSolverInfo *si )
   real_T *f2 = id->f[2];
   real_T hB[3];
   int_T i;
-  int_T nXc = 1;
+  int_T nXc = 2;
   rtsiSetSimTimeStep(si,MINOR_TIME_STEP);
 
   /* Save the state values at time t in y, we'll use x as ynew. */
@@ -174,7 +174,7 @@ void PI_Laengsregler_step(void)
   boolean_T rtb_SourceBlock_o1;
   boolean_T rtb_SourceBlock_o1_k;
   SL_Bus_PI_Laengsregler_std_msgs_Int16 rtb_BusAssignment;
-  real_T rtb_Add;
+  real_T rtb_Saturation;
   real_T tmp;
   if (rtmIsMajorTimeStep(PI_Laengsregler_M)) {
     /* set solver stop time */
@@ -225,22 +225,38 @@ void PI_Laengsregler_step(void)
      *  DataTypeConversion: '<S2>/Data Type Conversion'
      *  DataTypeConversion: '<S2>/Data Type Conversion1'
      */
-    rtb_Add = static_cast<real_T>(PI_Laengsregler_B.EnabledSubsystem.In1.Data) -
+    PI_Laengsregler_B.Add = static_cast<real_T>
+      (PI_Laengsregler_B.EnabledSubsystem.In1.Data) -
       PI_Laengsregler_B.EnabledSubsystem_n.In1.Data;
 
-    /* Gain: '<S41>/Proportional Gain' */
-    PI_Laengsregler_B.ProportionalGain = PI_Laengsregler_P.pr * rtb_Add;
+    /* Gain: '<S2>/Gain' */
+    PI_Laengsregler_B.Gain = PI_Laengsregler_P.pr * PI_Laengsregler_B.Add;
   }
+
+  /* Sum: '<S2>/Add1' incorporates:
+   *  Gain: '<S2>/Gain1'
+   *  Integrator: '<S2>/Integrator'
+   */
+  rtb_Saturation = PI_Laengsregler_P.ir * PI_Laengsregler_X.Integrator_CSTATE +
+    PI_Laengsregler_B.Gain;
+
+  /* Saturate: '<S2>/Saturation' */
+  if (rtb_Saturation > PI_Laengsregler_P.Saturation_UpperSat) {
+    rtb_Saturation = PI_Laengsregler_P.Saturation_UpperSat;
+  } else {
+    if (rtb_Saturation < PI_Laengsregler_P.Saturation_LowerSat) {
+      rtb_Saturation = PI_Laengsregler_P.Saturation_LowerSat;
+    }
+  }
+
+  /* End of Saturate: '<S2>/Saturation' */
 
   /* DataTypeConversion: '<Root>/Data Type Conversion' incorporates:
    *  Gain: '<S2>/Getriebe'
    *  Gain: '<S2>/Radumfang'
-   *  Integrator: '<S36>/Integrator'
-   *  Sum: '<S45>/Sum'
    */
-  tmp = floor((PI_Laengsregler_B.ProportionalGain +
-               PI_Laengsregler_X.Integrator_CSTATE) *
-              PI_Laengsregler_P.Radumfang_Gain * PI_Laengsregler_P.Getriebe_Gain);
+  tmp = floor(PI_Laengsregler_P.Radumfang_Gain * rtb_Saturation *
+              PI_Laengsregler_P.Getriebe_Gain);
   if (rtIsNaN(tmp) || rtIsInf(tmp)) {
     tmp = 0.0;
   } else {
@@ -259,9 +275,26 @@ void PI_Laengsregler_step(void)
   Pub_PI_Laengsregler_79.publish(&rtb_BusAssignment);
 
   /* End of Outputs for SubSystem: '<Root>/Publish' */
+
+  /* Switch: '<S2>/Switch' incorporates:
+   *  Constant: '<S2>/Constant'
+   *  Constant: '<S2>/Constant1'
+   *  Switch: '<S2>/Switch1'
+   */
+  if (rtb_Saturation >= PI_Laengsregler_P.Switch_Threshold) {
+    PI_Laengsregler_B.Switch = PI_Laengsregler_P.Constant_Value_d;
+  } else if (rtb_Saturation > PI_Laengsregler_P.Switch1_Threshold) {
+    /* Switch: '<S2>/Switch1' */
+    PI_Laengsregler_B.Switch = PI_Laengsregler_B.Add;
+  } else {
+    PI_Laengsregler_B.Switch = PI_Laengsregler_P.Constant1_Value;
+  }
+
+  /* End of Switch: '<S2>/Switch' */
   if (rtmIsMajorTimeStep(PI_Laengsregler_M)) {
     /* Gain: '<S33>/Integral Gain' */
-    PI_Laengsregler_B.IntegralGain = PI_Laengsregler_P.ir * rtb_Add;
+    PI_Laengsregler_B.IntegralGain = PI_Laengsregler_P.ir *
+      PI_Laengsregler_B.Add;
   }
 
   if (rtmIsMajorTimeStep(PI_Laengsregler_M)) {
@@ -284,9 +317,9 @@ void PI_Laengsregler_step(void)
       (&PI_Laengsregler_M->solverInfo);
 
     {
-      /* Update absolute timer for sample time: [0.01s, 0.0s] */
+      /* Update absolute timer for sample time: [0.02s, 0.0s] */
       /* The "clockTick1" counts the number of times the code of this task has
-       * been executed. The resolution of this integer timer is 0.01, which is the step size
+       * been executed. The resolution of this integer timer is 0.02, which is the step size
        * of the task. Size of "clockTick1" ensures timer will not overflow during the
        * application lifespan selected.
        * Timer of this task consists of two 32 bit unsigned integers.
@@ -307,8 +340,11 @@ void PI_Laengsregler_derivatives(void)
   XDot_PI_Laengsregler_T *_rtXdot;
   _rtXdot = ((XDot_PI_Laengsregler_T *) PI_Laengsregler_M->derivs);
 
+  /* Derivatives for Integrator: '<S2>/Integrator' */
+  _rtXdot->Integrator_CSTATE = PI_Laengsregler_B.Switch;
+
   /* Derivatives for Integrator: '<S36>/Integrator' */
-  _rtXdot->Integrator_CSTATE = PI_Laengsregler_B.IntegralGain;
+  _rtXdot->Integrator_CSTATE_d = PI_Laengsregler_B.IntegralGain;
 }
 
 /* Model initialize function */
@@ -352,7 +388,7 @@ void PI_Laengsregler_initialize(void)
                     (&PI_Laengsregler_M->intgData));
   rtsiSetSolverName(&PI_Laengsregler_M->solverInfo,"ode3");
   rtmSetTPtr(PI_Laengsregler_M, &PI_Laengsregler_M->Timing.tArray[0]);
-  PI_Laengsregler_M->Timing.stepSize0 = 0.01;
+  PI_Laengsregler_M->Timing.stepSize0 = 0.02;
 
   /* block I/O */
   (void) memset((static_cast<void *>(&PI_Laengsregler_B)), 0,
@@ -430,8 +466,11 @@ void PI_Laengsregler_initialize(void)
     /* End of Start for SubSystem: '<Root>/Publish' */
   }
 
+  /* InitializeConditions for Integrator: '<S2>/Integrator' */
+  PI_Laengsregler_X.Integrator_CSTATE = PI_Laengsregler_P.Integrator_IC;
+
   /* InitializeConditions for Integrator: '<S36>/Integrator' */
-  PI_Laengsregler_X.Integrator_CSTATE =
+  PI_Laengsregler_X.Integrator_CSTATE_d =
     PI_Laengsregler_P.PIDController_InitialConditionF;
 
   /* SystemInitialize for Atomic SubSystem: '<Root>/Subscribe' */

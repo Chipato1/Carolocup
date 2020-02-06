@@ -7,9 +7,9 @@
  *
  * Code generation for model "raddrehzahl_filter".
  *
- * Model version              : 1.12
+ * Model version              : 1.13
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Wed Feb  5 17:01:29 2020
+ * C++ source code generated on : Thu Feb  6 09:38:28 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -216,11 +216,17 @@ struct P_raddrehzahl_filter_T_ {
   SL_Bus_raddrehzahl_filter_std_msgs_Float32 Constant_Value_n;/* Computed Parameter: Constant_Value_n
                                                                * Referenced by: '<S2>/Constant'
                                                                */
+  real_T rpmto1s_Gain;                 /* Expression: 1/60
+                                        * Referenced by: '<Root>/rpm to 1//s'
+                                        */
   real_T DiscreteTransferFcn_InitialStat;/* Expression: 0
                                           * Referenced by: '<Root>/Discrete Transfer Fcn'
                                           */
   real_T Multiply_Gain;                /* Expression: 0.175896
                                         * Referenced by: '<Root>/Multiply'
+                                        */
+  real_T Gain_Gain;                    /* Expression: 1000
+                                        * Referenced by: '<Root>/Gain'
                                         */
   real_T Integrator_IC;                /* Expression: 0
                                         * Referenced by: '<Root>/Integrator'

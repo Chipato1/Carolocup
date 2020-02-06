@@ -7,9 +7,9 @@
  *
  * Code generation for model "raddrehzahl_filter".
  *
- * Model version              : 1.12
+ * Model version              : 1.13
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Wed Feb  5 17:01:29 2020
+ * C++ source code generated on : Thu Feb  6 09:38:28 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -183,9 +183,11 @@ void raddrehzahl_filter_step(void)
 
     /* DiscreteTransferFcn: '<Root>/Discrete Transfer Fcn' incorporates:
      *  DataTypeConversion: '<Root>/Data Type Conversion'
+     *  Gain: '<Root>/rpm to 1//s'
      */
     raddrehzahl_filter_DW.DiscreteTransferFcn_tmp =
-      ((raddrehzahl_filter_B.In1.Data - raddrehzahl_filter_P.denom_drehzahl[1] *
+      ((raddrehzahl_filter_P.rpmto1s_Gain * raddrehzahl_filter_B.In1.Data -
+        raddrehzahl_filter_P.denom_drehzahl[1] *
         raddrehzahl_filter_DW.DiscreteTransferFcn_states[0]) -
        raddrehzahl_filter_P.denom_drehzahl[2] *
        raddrehzahl_filter_DW.DiscreteTransferFcn_states[1]) /
@@ -204,8 +206,10 @@ void raddrehzahl_filter_step(void)
 
     /* BusAssignment: '<Root>/Bus Assignment' incorporates:
      *  DataTypeConversion: '<Root>/Data Type Conversion1'
+     *  Gain: '<Root>/Gain'
      */
-    rtb_BusAssignment.Data = static_cast<real32_T>(raddrehzahl_filter_B.Multiply);
+    rtb_BusAssignment.Data = static_cast<real32_T>
+      ((raddrehzahl_filter_P.Gain_Gain * raddrehzahl_filter_B.Multiply));
 
     /* Outputs for Atomic SubSystem: '<Root>/Publish' */
     /* MATLABSystem: '<S3>/SinkBlock' */

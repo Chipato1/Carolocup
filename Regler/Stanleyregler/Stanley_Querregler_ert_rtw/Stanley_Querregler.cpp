@@ -7,9 +7,9 @@
  *
  * Code generation for model "Stanley_Querregler".
  *
- * Model version              : 1.17
+ * Model version              : 1.20
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Sun Feb  2 23:17:35 2020
+ * C++ source code generated on : Thu Feb  6 09:41:26 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -72,7 +72,7 @@ void Stanley_Querre_EnabledSubsystem(boolean_T rtu_Enable, const
   /* End of Outputs for SubSystem: '<S4>/Enabled Subsystem' */
 }
 
-/* Function for MATLAB Function: '<S13>/Kinematic' */
+/* Function for MATLAB Function: '<S12>/Kinematic' */
 static void Stanle_angleUtilities_wrapTo2Pi(real_T *theta)
 {
   boolean_T positiveInput;
@@ -128,9 +128,10 @@ void Stanley_Querregler_step(void)
   SL_Bus_Stanley_Querregler_std_msgs_Float32 b_varargout_2_0;
   SL_Bus_Stanley_Querregler_std_msgs_Float32 rtb_BusAssignment;
   real_T rtb_ms;
-  real_T rtb_Product1;
+  real32_T rtb_Switch;
   real_T d_idx_0;
   real_T d_idx_1;
+  real32_T u0;
 
   /* Outputs for Atomic SubSystem: '<Root>/Subscribe1' */
   /* MATLABSystem: '<S3>/SourceBlock' incorporates:
@@ -175,22 +176,16 @@ void Stanley_Querregler_step(void)
    *  EnablePort: '<S7>/Enable'
    */
   if (Stanley_Querregler_B.In1.Data) {
-    /* Product: '<S12>/Product1' incorporates:
-     *  Constant: '<S12>/Constant'
-     *  Constant: '<S12>/Radius (cm)'
-     *  Gain: '<S12>/cm in m'
-     *  Product: '<S12>/Product'
-     */
-    rtb_Product1 = Stanley_Querregler_P.cminm_Gain *
-      Stanley_Querregler_P.Radiuscm_Value *
-      Stanley_Querregler_B.EnabledSubsystem_p.In1.Data *
-      Stanley_Querregler_P.Constant_Value_ab;
+    /* Gain: '<S7>/Gain1' */
+    rtb_Switch = Stanley_Querregler_P.Gain1_Gain *
+      Stanley_Querregler_B.EnabledSubsystem_g.In1.Data;
 
     /* Switch: '<S7>/Switch' incorporates:
      *  Constant: '<S7>/Rückwärts'
      *  Constant: '<S7>/Vorwärts'
      */
-    if (rtb_Product1 > Stanley_Querregler_P.Switch_Threshold) {
+    if (Stanley_Querregler_B.EnabledSubsystem_p.In1.Data >=
+        Stanley_Querregler_P.Switch_Threshold) {
       rtb_ms = Stanley_Querregler_P.Vorwrts_Value;
     } else {
       rtb_ms = Stanley_Querregler_P.Rckwrts_Value;
@@ -198,36 +193,33 @@ void Stanley_Querregler_step(void)
 
     /* End of Switch: '<S7>/Switch' */
 
-    /* MATLAB Function: '<S13>/Kinematic' incorporates:
-     *  Constant: '<S7>/Constant'
-     *  Constant: '<S7>/Constant1'
+    /* MATLAB Function: '<S12>/Kinematic' incorporates:
+     *  Constant: '<S7>/ '
+     *  Constant: '<S7>/  '
      *  Constant: '<S7>/[x, y, theta]'
      *  Product: '<S7>/Matrix Multiply'
      *  Sum: '<S7>/Add'
      */
-    Stanley_Querregler_B.refPose[0] = Stanley_Querregler_P.Constant1_Value[0] *
-      Stanley_Querregler_B.EnabledSubsystem_g.In1.Data +
-      Stanley_Querregler_P.xytheta_Value[0];
-    Stanley_Querregler_B.currPose[0] = Stanley_Querregler_P.Constant_Value_a[0];
-    Stanley_Querregler_B.refPose[1] = Stanley_Querregler_P.Constant1_Value[1] *
-      Stanley_Querregler_B.EnabledSubsystem_g.In1.Data +
-      Stanley_Querregler_P.xytheta_Value[1];
-    Stanley_Querregler_B.currPose[1] = Stanley_Querregler_P.Constant_Value_a[1];
-    Stanley_Querregler_B.refPose[2] = (Stanley_Querregler_P.Constant1_Value[2] *
-      Stanley_Querregler_B.EnabledSubsystem_g.In1.Data +
-      Stanley_Querregler_P.xytheta_Value[2]) * 0.017453292519943295;
+    Stanley_Querregler_B.refPose[0] = Stanley_Querregler_P._Value_m[0] *
+      rtb_Switch + Stanley_Querregler_P._Value[0];
+    Stanley_Querregler_B.currPose[0] = Stanley_Querregler_P.xytheta_Value[0];
+    Stanley_Querregler_B.refPose[1] = Stanley_Querregler_P._Value_m[1] *
+      rtb_Switch + Stanley_Querregler_P._Value[1];
+    Stanley_Querregler_B.currPose[1] = Stanley_Querregler_P.xytheta_Value[1];
+    Stanley_Querregler_B.refPose[2] = (Stanley_Querregler_P._Value_m[2] *
+      rtb_Switch + Stanley_Querregler_P._Value[2]) * 0.017453292519943295;
     Stanle_angleUtilities_wrapTo2Pi(&Stanley_Querregler_B.refPose[2]);
     Stanley_Querregler_B.currPose[2] = 0.017453292519943295 *
-      Stanley_Querregler_P.Constant_Value_a[2];
+      Stanley_Querregler_P.xytheta_Value[2];
     Stanle_angleUtilities_wrapTo2Pi(&Stanley_Querregler_B.currPose[2]);
     if (rtb_ms == 1.0) {
       d_idx_0 = (Stanley_Querregler_P.Kinematic_Wheelbase * cos
                  (Stanley_Querregler_B.currPose[2]) +
-                 Stanley_Querregler_P.Constant_Value_a[0]) -
+                 Stanley_Querregler_P.xytheta_Value[0]) -
         Stanley_Querregler_B.refPose[0];
       d_idx_1 = (Stanley_Querregler_P.Kinematic_Wheelbase * sin
                  (Stanley_Querregler_B.currPose[2]) +
-                 Stanley_Querregler_P.Constant_Value_a[1]) -
+                 Stanley_Querregler_P.xytheta_Value[1]) -
         Stanley_Querregler_B.refPose[1];
     } else {
       d_idx_0 = Stanley_Querregler_B.currPose[0] - Stanley_Querregler_B.refPose
@@ -243,15 +235,20 @@ void Stanley_Querregler_step(void)
       /* Switch: '<S7>/Switch1' incorporates:
        *  Gain: '<S7>/Gain'
        */
-      if (!(rtb_Product1 > Stanley_Querregler_P.Switch1_Threshold)) {
-        rtb_Product1 *= Stanley_Querregler_P.Gain_Gain;
+      if (Stanley_Querregler_B.EnabledSubsystem_p.In1.Data >
+          Stanley_Querregler_P.Switch1_Threshold) {
+        rtb_Switch = Stanley_Querregler_B.EnabledSubsystem_p.In1.Data;
+      } else {
+        rtb_Switch = Stanley_Querregler_P.Gain_Gain *
+          Stanley_Querregler_B.EnabledSubsystem_p.In1.Data;
       }
 
-      rtb_Product1 = -(atan(-(d_idx_0 * sin(Stanley_Querregler_B.refPose[2]) -
-        d_idx_1 * cos(Stanley_Querregler_B.refPose[2])) *
-                            Stanley_Querregler_P.LateralControllerStanley_Positi
-                            / (rtb_Product1 + 1.0)) + (Stanley_Querregler_B.b -
-        3.1415926535897931));
+      rtb_Switch = -(static_cast<real32_T>(atan(static_cast<real_T>((
+        static_cast<real32_T>((-(d_idx_0 * sin(Stanley_Querregler_B.refPose[2])
+        - d_idx_1 * cos(Stanley_Querregler_B.refPose[2])) *
+        Stanley_Querregler_P.LateralControllerStanley_Positi)) / (rtb_Switch +
+        1.0F))))) + static_cast<real32_T>((Stanley_Querregler_B.b -
+        3.1415926535897931)));
     } else {
       if (rtb_ms == 1.0) {
         rtb_ms = Stanley_Querregler_P.LateralControllerStanley_Positi;
@@ -262,50 +259,58 @@ void Stanley_Querregler_step(void)
       /* Switch: '<S7>/Switch1' incorporates:
        *  Gain: '<S7>/Gain'
        */
-      if (!(rtb_Product1 > Stanley_Querregler_P.Switch1_Threshold)) {
-        rtb_Product1 *= Stanley_Querregler_P.Gain_Gain;
+      if (Stanley_Querregler_B.EnabledSubsystem_p.In1.Data >
+          Stanley_Querregler_P.Switch1_Threshold) {
+        rtb_Switch = Stanley_Querregler_B.EnabledSubsystem_p.In1.Data;
+      } else {
+        rtb_Switch = Stanley_Querregler_P.Gain_Gain *
+          Stanley_Querregler_B.EnabledSubsystem_p.In1.Data;
       }
 
-      rtb_Product1 = atan(-(d_idx_0 * sin(Stanley_Querregler_B.refPose[2]) -
-                            d_idx_1 * cos(Stanley_Querregler_B.refPose[2])) *
-                          rtb_ms / (rtb_Product1 + -1.0)) +
-        (Stanley_Querregler_B.b - 3.1415926535897931);
+      rtb_Switch = static_cast<real32_T>(atan(static_cast<real_T>
+        ((static_cast<real32_T>((-(d_idx_0 * sin(Stanley_Querregler_B.refPose[2])
+        - d_idx_1 * cos(Stanley_Querregler_B.refPose[2])) * rtb_ms)) /
+          (rtb_Switch + -1.0F))))) + static_cast<real32_T>
+        ((Stanley_Querregler_B.b - 3.1415926535897931));
     }
 
-    rtb_Product1 *= 57.295779513082323;
-    rtb_ms = fabs(rtb_Product1);
-    if (rtb_Product1 < 0.0) {
-      rtb_Product1 = -1.0;
-    } else if (rtb_Product1 > 0.0) {
-      rtb_Product1 = 1.0;
-    } else if (rtb_Product1 == 0.0) {
-      rtb_Product1 = 0.0;
+    rtb_Switch *= 57.2957802F;
+    u0 = static_cast<real32_T>(fabs(static_cast<real_T>(rtb_Switch)));
+    if (rtb_Switch < 0.0F) {
+      rtb_Switch = -1.0F;
+    } else if (rtb_Switch > 0.0F) {
+      rtb_Switch = 1.0F;
+    } else if (rtb_Switch == 0.0F) {
+      rtb_Switch = 0.0F;
     } else {
-      rtb_Product1 = (rtNaN);
+      rtb_Switch = (rtNaNF);
     }
 
-    if ((!(rtb_ms < Stanley_Querregler_P.Kinematic_MaxSteeringAngle)) &&
-        (!rtIsNaN(Stanley_Querregler_P.Kinematic_MaxSteeringAngle))) {
-      rtb_ms = Stanley_Querregler_P.Kinematic_MaxSteeringAngle;
+    if ((!(u0 < static_cast<real32_T>
+           (Stanley_Querregler_P.Kinematic_MaxSteeringAngle))) && (!rtIsNaNF(
+          static_cast<real32_T>(Stanley_Querregler_P.Kinematic_MaxSteeringAngle))))
+    {
+      u0 = static_cast<real32_T>(Stanley_Querregler_P.Kinematic_MaxSteeringAngle);
     }
 
-    rtb_Product1 *= rtb_ms;
+    rtb_Switch *= u0;
 
-    /* End of MATLAB Function: '<S13>/Kinematic' */
+    /* End of MATLAB Function: '<S12>/Kinematic' */
 
-    /* Saturate: '<S7>/Saturation' */
-    if (rtb_Product1 > Stanley_Querregler_P.Saturation_UpperSat) {
-      rtb_Product1 = Stanley_Querregler_P.Saturation_UpperSat;
+    /* Saturate: '<S7>/Sättigung' */
+    if (rtb_Switch > Stanley_Querregler_P.Sttigung_UpperSat) {
+      rtb_Switch = Stanley_Querregler_P.Sttigung_UpperSat;
     } else {
-      if (rtb_Product1 < Stanley_Querregler_P.Saturation_LowerSat) {
-        rtb_Product1 = Stanley_Querregler_P.Saturation_LowerSat;
+      if (rtb_Switch < Stanley_Querregler_P.Sttigung_LowerSat) {
+        rtb_Switch = Stanley_Querregler_P.Sttigung_LowerSat;
       }
     }
 
-    /* End of Saturate: '<S7>/Saturation' */
+    /* End of Saturate: '<S7>/Sättigung' */
 
-    /* Gain: '<S7>/Gain1' */
-    Stanley_Querregler_B.Gain1 = Stanley_Querregler_P.Gain1_Gain * rtb_Product1;
+    /* Gain: '<S7>/Bogenmaß' */
+    Stanley_Querregler_B.Bogenma = Stanley_Querregler_P.Bogenma_Gain *
+      rtb_Switch;
   }
 
   /* End of Outputs for SubSystem: '<Root>/Subsystem' */
@@ -323,10 +328,8 @@ void Stanley_Querregler_step(void)
 
   /* Switch: '<Root>/Switch' */
   if (Stanley_Querregler_B.In1.Data) {
-    /* BusAssignment: '<Root>/Bus Assignment' incorporates:
-     *  DataTypeConversion: '<Root>/Data Type Conversion'
-     */
-    rtb_BusAssignment.Data = static_cast<real32_T>(Stanley_Querregler_B.Gain1);
+    /* BusAssignment: '<Root>/Bus Assignment' */
+    rtb_BusAssignment.Data = Stanley_Querregler_B.Bogenma;
   } else {
     /* BusAssignment: '<Root>/Bus Assignment' */
     rtb_BusAssignment.Data = Stanley_Querregler_B.EnabledSubsystem_i.In1.Data;
@@ -485,7 +488,7 @@ void Stanley_Querregler_initialize(void)
 
   /* SystemInitialize for Enabled SubSystem: '<Root>/Subsystem' */
   /* SystemInitialize for Outport: '<S7>/Lenkwinkel' */
-  Stanley_Querregler_B.Gain1 = Stanley_Querregler_P.Lenkwinkel_Y0;
+  Stanley_Querregler_B.Bogenma = Stanley_Querregler_P.Lenkwinkel_Y0;
 
   /* End of SystemInitialize for SubSystem: '<Root>/Subsystem' */
 

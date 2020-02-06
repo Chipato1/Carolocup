@@ -7,9 +7,9 @@
  *
  * Code generation for model "PI_Laengsregler".
  *
- * Model version              : 1.29
+ * Model version              : 1.31
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Wed Feb  5 17:00:02 2020
+ * C++ source code generated on : Thu Feb  6 10:28:06 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -162,7 +162,9 @@ typedef struct {
 
 /* Block signals (default storage) */
 typedef struct {
-  real_T ProportionalGain;             /* '<S41>/Proportional Gain' */
+  real_T Add;                          /* '<S2>/Add' */
+  real_T Gain;                         /* '<S2>/Gain' */
+  real_T Switch;                       /* '<S2>/Switch' */
   real_T IntegralGain;                 /* '<S33>/Integral Gain' */
   B_EnabledSubsystem_PI_Laengsr_T EnabledSubsystem_n;/* '<S5>/Enabled Subsystem' */
   B_EnabledSubsystem_PI_Laengsr_T EnabledSubsystem;/* '<S4>/Enabled Subsystem' */
@@ -180,17 +182,20 @@ typedef struct {
 
 /* Continuous states (default storage) */
 typedef struct {
-  real_T Integrator_CSTATE;            /* '<S36>/Integrator' */
+  real_T Integrator_CSTATE;            /* '<S2>/Integrator' */
+  real_T Integrator_CSTATE_d;          /* '<S36>/Integrator' */
 } X_PI_Laengsregler_T;
 
 /* State derivatives (default storage) */
 typedef struct {
-  real_T Integrator_CSTATE;            /* '<S36>/Integrator' */
+  real_T Integrator_CSTATE;            /* '<S2>/Integrator' */
+  real_T Integrator_CSTATE_d;          /* '<S36>/Integrator' */
 } XDot_PI_Laengsregler_T;
 
 /* State disabled  */
 typedef struct {
-  boolean_T Integrator_CSTATE;         /* '<S36>/Integrator' */
+  boolean_T Integrator_CSTATE;         /* '<S2>/Integrator' */
+  boolean_T Integrator_CSTATE_d;       /* '<S36>/Integrator' */
 } XDis_PI_Laengsregler_T;
 
 #ifndef ODE3_INTG
@@ -214,10 +219,12 @@ struct P_EnabledSubsystem_PI_Laengsr_T_ {
 /* Parameters (default storage) */
 struct P_PI_Laengsregler_T_ {
   real_T ir;                           /* Variable: ir
-                                        * Referenced by: '<S33>/Integral Gain'
+                                        * Referenced by:
+                                        *   '<S2>/Gain1'
+                                        *   '<S33>/Integral Gain'
                                         */
   real_T pr;                           /* Variable: pr
-                                        * Referenced by: '<S41>/Proportional Gain'
+                                        * Referenced by: '<S2>/Gain'
                                         */
   real_T PIDController_InitialConditionF;
                               /* Mask Parameter: PIDController_InitialConditionF
@@ -232,11 +239,32 @@ struct P_PI_Laengsregler_T_ {
   SL_Bus_PI_Laengsregler_std_msgs_Int16 Constant_Value_j;/* Computed Parameter: Constant_Value_j
                                                           * Referenced by: '<S1>/Constant'
                                                           */
+  real_T Switch1_Threshold;            /* Expression: -2.6
+                                        * Referenced by: '<S2>/Switch1'
+                                        */
+  real_T Integrator_IC;                /* Expression: 0
+                                        * Referenced by: '<S2>/Integrator'
+                                        */
+  real_T Saturation_UpperSat;          /* Expression: 2.63
+                                        * Referenced by: '<S2>/Saturation'
+                                        */
+  real_T Saturation_LowerSat;          /* Expression: -2.63
+                                        * Referenced by: '<S2>/Saturation'
+                                        */
   real_T Radumfang_Gain;               /* Expression: 1/0.175896
                                         * Referenced by: '<S2>/Radumfang'
                                         */
   real_T Getriebe_Gain;                /* Expression: 7
                                         * Referenced by: '<S2>/Getriebe'
+                                        */
+  real_T Constant1_Value;              /* Expression: 0
+                                        * Referenced by: '<S2>/Constant1'
+                                        */
+  real_T Constant_Value_d;             /* Expression: 0
+                                        * Referenced by: '<S2>/Constant'
+                                        */
+  real_T Switch_Threshold;             /* Expression: 2.6
+                                        * Referenced by: '<S2>/Switch'
                                         */
   P_EnabledSubsystem_PI_Laengsr_T EnabledSubsystem_n;/* '<S5>/Enabled Subsystem' */
   P_EnabledSubsystem_PI_Laengsr_T EnabledSubsystem;/* '<S4>/Enabled Subsystem' */
@@ -254,8 +282,8 @@ struct tag_RTM_PI_Laengsregler_T {
   boolean_T zCCacheNeedsReset;
   boolean_T derivCacheNeedsReset;
   boolean_T CTOutputIncnstWithState;
-  real_T odeY[1];
-  real_T odeF[3][1];
+  real_T odeY[2];
+  real_T odeF[3][2];
   ODE3_IntgData intgData;
 
   /*
@@ -355,7 +383,8 @@ extern "C" {
 /*-
  * These blocks were eliminated from the model due to optimizations:
  *
- * Block '<S2>/Data Type Conversion2' : Eliminate redundant data type conversion
+ * Block '<S41>/Proportional Gain' : Unused code path elimination
+ * Block '<S45>/Sum' : Unused code path elimination
  */
 
 /*-

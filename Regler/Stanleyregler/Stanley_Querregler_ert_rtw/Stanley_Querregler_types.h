@@ -7,9 +7,9 @@
  *
  * Code generation for model "Stanley_Querregler".
  *
- * Model version              : 1.17
+ * Model version              : 1.20
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Sun Feb  2 23:17:35 2020
+ * C++ source code generated on : Thu Feb  6 09:41:26 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -62,7 +62,7 @@ typedef struct {
 
 #endif                               /*typedef_ros_slros_internal_block_Subs_T*/
 
-/* Custom Type definition for MATLAB Function: '<S13>/Kinematic' */
+/* Custom Type definition for MATLAB Function: '<S12>/Kinematic' */
 #ifndef struct_tag_sOUC5r4zsFawyqfEUBdluaD
 #define struct_tag_sOUC5r4zsFawyqfEUBdluaD
 

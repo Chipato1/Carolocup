@@ -144,7 +144,7 @@ Output entry point of generated code
 Timing
 </td>
 <td width="75%" align="left" valign="top">
-Must be called periodically, every 0.2 seconds
+Must be called periodically, every 0.01 seconds
 </td>
 
 </tr>
@@ -414,21 +414,6 @@ SL_Bus_Stanley_Querregler_std_msgs_Float32
 </tr>
 <tr class="even">
 <td width="42%" align="left" valign="top">
-&lt;S7&gt;/Gain
-</td>
-<td width="26%" align="left" valign="top">
-Stanley_Querregler_P.Gain_Gain
-</td>
-<td width="21%" align="left" valign="top">
-real_T
-</td>
-<td width="10%" align="right" valign="top">
-1
-</td>
-
-</tr>
-<tr class="odd">
-<td width="42%" align="left" valign="top">
 &lt;S7&gt;/Rückwärts
 </td>
 <td width="26%" align="left" valign="top">
@@ -442,7 +427,7 @@ real_T
 </td>
 
 </tr>
-<tr class="even">
+<tr class="odd">
 <td width="42%" align="left" valign="top">
 &lt;S7&gt;/Vorwärts
 </td>
@@ -457,9 +442,9 @@ real_T
 </td>
 
 </tr>
-<tr class="odd">
+<tr class="even">
 <td width="42%" align="left" valign="top">
-&lt;S15&gt;/ SFunction 
+&lt;S14&gt;/ SFunction 
 </td>
 <td width="26%" align="left" valign="top">
 Stanley_Querregler_P.Kinematic_MaxSteeringAngle
@@ -472,9 +457,9 @@ real_T
 </td>
 
 </tr>
-<tr class="even">
+<tr class="odd">
 <td width="42%" align="left" valign="top">
-&lt;S15&gt;/ SFunction 
+&lt;S14&gt;/ SFunction 
 </td>
 <td width="26%" align="left" valign="top">
 Stanley_Querregler_P.Kinematic_Wheelbase
@@ -487,18 +472,33 @@ real_T
 </td>
 
 </tr>
-<tr class="odd">
+<tr class="even">
 <td width="42%" align="left" valign="top">
-&lt;S7&gt;/Lenkwinkel
+&lt;S7&gt;/ 
 </td>
 <td width="26%" align="left" valign="top">
-Stanley_Querregler_P.Lenkwinkel_Y0
+Stanley_Querregler_P._Value
 </td>
 <td width="21%" align="left" valign="top">
 real_T
 </td>
 <td width="10%" align="right" valign="top">
-1
+[1  3]
+</td>
+
+</tr>
+<tr class="odd">
+<td width="42%" align="left" valign="top">
+&lt;S7&gt;/  
+</td>
+<td width="26%" align="left" valign="top">
+Stanley_Querregler_P._Value_m
+</td>
+<td width="21%" align="left" valign="top">
+real_T
+</td>
+<td width="10%" align="right" valign="top">
+[1  3]
 </td>
 
 </tr>
@@ -519,43 +519,13 @@ real_T
 </tr>
 <tr class="odd">
 <td width="42%" align="left" valign="top">
-&lt;S7&gt;/Constant1
+&lt;S7&gt;/Gain
 </td>
 <td width="26%" align="left" valign="top">
-Stanley_Querregler_P.Constant1_Value
+Stanley_Querregler_P.Gain_Gain
 </td>
 <td width="21%" align="left" valign="top">
-real_T
-</td>
-<td width="10%" align="right" valign="top">
-[1  3]
-</td>
-
-</tr>
-<tr class="even">
-<td width="42%" align="left" valign="top">
-&lt;S7&gt;/Constant
-</td>
-<td width="26%" align="left" valign="top">
-Stanley_Querregler_P.Constant_Value_a
-</td>
-<td width="21%" align="left" valign="top">
-real_T
-</td>
-<td width="10%" align="right" valign="top">
-[1  3]
-</td>
-
-</tr>
-<tr class="odd">
-<td width="42%" align="left" valign="top">
-&lt;S12&gt;/Constant
-</td>
-<td width="26%" align="left" valign="top">
-Stanley_Querregler_P.Constant_Value_ab
-</td>
-<td width="21%" align="left" valign="top">
-real_T
+real32_T
 </td>
 <td width="10%" align="right" valign="top">
 1
@@ -564,13 +534,13 @@ real_T
 </tr>
 <tr class="even">
 <td width="42%" align="left" valign="top">
-&lt;S12&gt;/Radius (cm)
+&lt;S7&gt;/Lenkwinkel
 </td>
 <td width="26%" align="left" valign="top">
-Stanley_Querregler_P.Radiuscm_Value
+Stanley_Querregler_P.Lenkwinkel_Y0
 </td>
 <td width="21%" align="left" valign="top">
-real_T
+real32_T
 </td>
 <td width="10%" align="right" valign="top">
 1
@@ -579,13 +549,13 @@ real_T
 </tr>
 <tr class="odd">
 <td width="42%" align="left" valign="top">
-&lt;S12&gt;/cm in m
+&lt;S7&gt;/Gain1
 </td>
 <td width="26%" align="left" valign="top">
-Stanley_Querregler_P.cminm_Gain
+Stanley_Querregler_P.Gain1_Gain
 </td>
 <td width="21%" align="left" valign="top">
-real_T
+real32_T
 </td>
 <td width="10%" align="right" valign="top">
 1
@@ -600,7 +570,7 @@ real_T
 Stanley_Querregler_P.Switch1_Threshold
 </td>
 <td width="21%" align="left" valign="top">
-real_T
+real32_T
 </td>
 <td width="10%" align="right" valign="top">
 1
@@ -615,7 +585,7 @@ real_T
 Stanley_Querregler_P.Switch_Threshold
 </td>
 <td width="21%" align="left" valign="top">
-real_T
+real32_T
 </td>
 <td width="10%" align="right" valign="top">
 1
@@ -624,13 +594,13 @@ real_T
 </tr>
 <tr class="even">
 <td width="42%" align="left" valign="top">
-&lt;S7&gt;/Saturation
+&lt;S7&gt;/Sättigung
 </td>
 <td width="26%" align="left" valign="top">
-Stanley_Querregler_P.Saturation_UpperSat
+Stanley_Querregler_P.Sttigung_UpperSat
 </td>
 <td width="21%" align="left" valign="top">
-real_T
+real32_T
 </td>
 <td width="10%" align="right" valign="top">
 1
@@ -639,13 +609,13 @@ real_T
 </tr>
 <tr class="odd">
 <td width="42%" align="left" valign="top">
-&lt;S7&gt;/Saturation
+&lt;S7&gt;/Sättigung
 </td>
 <td width="26%" align="left" valign="top">
-Stanley_Querregler_P.Saturation_LowerSat
+Stanley_Querregler_P.Sttigung_LowerSat
 </td>
 <td width="21%" align="left" valign="top">
-real_T
+real32_T
 </td>
 <td width="10%" align="right" valign="top">
 1
@@ -654,13 +624,13 @@ real_T
 </tr>
 <tr class="even">
 <td width="42%" align="left" valign="top">
-&lt;S7&gt;/Gain1
+&lt;S7&gt;/Bogenmaß
 </td>
 <td width="26%" align="left" valign="top">
-Stanley_Querregler_P.Gain1_Gain
+Stanley_Querregler_P.Bogenma_Gain
 </td>
 <td width="21%" align="left" valign="top">
-real_T
+real32_T
 </td>
 <td width="10%" align="right" valign="top">
 1
