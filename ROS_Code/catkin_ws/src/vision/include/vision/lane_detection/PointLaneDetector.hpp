@@ -93,6 +93,8 @@ private:
 	int lastRightIterator = 0;
 
 	double ipmScaling = 1; 
+	int ipm_size_x = 1200;
+	int ipm_size_y = 2400;
 
 	//MODELLPARAMETER
 	//Grad des Modells (Klothoide)
