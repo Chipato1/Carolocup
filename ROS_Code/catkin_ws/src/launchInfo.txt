@@ -1,8 +1,17 @@
 roscore
 roslaunch src/ueye_cam/launch/mono8.launch
-//Spur
+
+// Spur
 rosrun vision vision_lanedetectionnode
-//QR
+
+// QR
 rosrun vision vision_startboxdetectionnode
-//Stoplinie
+
+// Stoplinie
 rosrun vision vision_stoplinedetectionnode
+
+// State Machine / Trajektorie
+rosrun state_machine state_machine_node
+
+// Serial
+

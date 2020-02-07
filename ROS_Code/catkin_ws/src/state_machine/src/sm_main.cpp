@@ -286,7 +286,7 @@ void sm_handle_LEAVE_BOX()
 	if (sm_isStateChanged())
 	{
 		se_setDeltaY(0);
-		se_setTargetSpeed(0.5);
+		se_setTargetSpeed(0.15);
 
 		se_startLeaveBoxTimer();
 	}
@@ -302,10 +302,10 @@ void sm_handle_DRIVE_RIGHT()
 	if (sm_isStateChanged())
 	{
 		se_setEnableLateralControl(SE_TRUE);
-		se_setTargetSpeed(0.5);
+		se_setTargetSpeed(0.3);
 	}
 
-	se_setDeltaY(se_currentClothoideRight[3]);
+	se_setDeltaY(-se_currentClothoideRight[3]);
 
 	if (!se_isTrackAvailable())
 	{
@@ -629,6 +629,11 @@ void se_cb_sub_visionResult(const vision::VisionResultMsg::ConstPtr& msg)
 	std_msgs::Float64 new_r_phi;
 	std_msgs::Float64 new_r_c0;
 	std_msgs::Float64 new_r_c1;
+
+	std_msgs::Float64 new_m_delta;
+	std_msgs::Float64 new_m_phi;
+	std_msgs::Float64 new_m_c0;
+	std_msgs::Float64 new_m_c1;
 	
 	std_msgs::Float64 new_l_delta;
 	std_msgs::Float64 new_l_phi;
@@ -656,20 +661,27 @@ void se_cb_sub_visionResult(const vision::VisionResultMsg::ConstPtr& msg)
 
 	if (msg->foundML && msg->solvedML1)
 	{
-		std::cout << "ML detected"<< "\n";
+		std::cout << "ML detected" << "\n";
 		if (msg->foundRL && msg->solvedRL1)
 		{
-			std::cout << "RL detected"<< "\n";
+			std::cout << "RL detected" << "\n";
 
-			new_r_c1.data = msg->rightLane1[0];//getMidValue(msg->middleLane1[0], msg->rightLane1[0]);
-			new_r_c0.data = msg->rightLane1[1];//getMidValue(msg->middleLane1[1], msg->rightLane1[1]);
-			new_r_phi.data = msg->rightLane1[2];//getMidValue(msg->middleLane1[2], msg->rightLane1[2]);
-			new_r_delta.data = msg->rightLane1[3];//getMidValue(msg->middleLane1[3], msg->rightLane1[3]);
+			new_r_c1.data = msg->rightLane1[0];
+			new_r_c0.data = msg->rightLane1[1];
+			new_r_phi.data = msg->rightLane1[2];
+			new_r_delta.data = msg->rightLane1[3];
+
+			new_m_c1.data = msg->middleLane1[0];
+			new_m_c0.data = msg->middleLane1[1];
+			new_m_phi.data = msg->middleLane1[2];
+			new_m_delta.data = msg->middleLane1[3];
 			
-			se_currentClothoideRight[0] = new_r_c1.data;
-			se_currentClothoideRight[1] = new_r_c0.data;
-			se_currentClothoideRight[2] = new_r_phi.data;
-			se_currentClothoideRight[3] = new_r_delta.data;
+			se_currentClothoideRight[0] = getMidValue(new_m_c1.data, new_r_c1.data);
+			se_currentClothoideRight[1] = getMidValue(new_m_c0.data, new_r_c0.data);
+			se_currentClothoideRight[2] = getMidValue(new_m_phi.data, new_r_phi.data);
+			se_currentClothoideRight[3] = getMidValue(new_m_delta.data, new_r_delta.data);
+
+			std::cout << se_currentClothoideRight[3] << "\n";
 		}
 	}
 	/*
