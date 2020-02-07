@@ -1,5 +1,7 @@
 #include <vision/parkinglot_detection/ParkinglotDetector.hpp>
 
+#include <vison/ParkinglotMsg.h>
+
 #include <iostream>
 #include <map>
 #include <fstream>
@@ -9,6 +11,11 @@
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
 #include <chrono>
+std::map<std::string, std::string> config;
+
+
+
+
 
 std::map<std::string, std::string> readConfigFile() {
 	std::ifstream infile("/home/xavier/config/config.cfg");
@@ -35,11 +42,38 @@ std::map<std::string, std::string> readConfigFile() {
 	return my_map;
 }
 
+ParkinglotDetector detector;
+double distance;
+bool parkinglotFound;
+ros::Publisher parkinglotPublisher;
 
-void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
+
+
+
+void imageCallback(const vision::HoughPointsArray::ConstPtr& msg) {
 	cv::Mat image = cv_bridge::toCvShare(msg, "mono8")->image;
-	//----------------------------CODE HIER EINFÜGEN---------------
+	//---------------------    -------CODE HIER EINFÜGEN---------------
+	distance = detector.detectParkinglots(msg, config);
+
+	if (distance > -1)
+	{
+		parkinglotFound = true;
+	}
+	else
+	{
+		parkinglotFound = false;
+	}
+
+	vision::ParkinglotMsg lotmsg;
+	lotmsg.distance = distance;
+	lotmsg.parkinglotDetected = parkinglotFound;
+
+	parkinglotPublisher.publish(lotmsg);
 }
+
+
+
+
 
 int main(int argc, char** argv) {
 	std::cout << "Launching ROS Lane Detection node..." << std::endl;
@@ -49,13 +83,16 @@ int main(int argc, char** argv) {
 	std::cout << "Success!" << std::endl;
 	std::cout << "Trying to load config file config.cfg" << std::endl;
 	//Config Datei lesen und DrivingVision-Klasse erstellen
-	std::map<std::string, std::string> config = readConfigFile();
+	config = readConfigFile();
 	std::cout << "Success!" << std::endl;
 
 	ros::NodeHandle nh;
-	image_transport::ImageTransport it(nh);
-	//
-	image_transport::Subscriber sub = it.subscribe(config["cam_im_topic_name"] , 1, imageCallback);
+	//image_transport::ImageTransport it(nh);
+	parkinglotPublisher = nh.advertise<vision::ParkinglotMsg>(("Parkinglot", 1);
+	ros::Subscriber sub = nh.subscribe("HoughResult" , 1, imageCallback);
 	ros::spin();
+
+
+	
 	return 0;
 }
