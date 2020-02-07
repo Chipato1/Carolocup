@@ -6,6 +6,8 @@ Servo motor;
 std_msgs::Bool rc_msg;
 std_msgs::Int16 drive_mode_msg;
 
+std_msgs::Int16 test_msg;
+
 ros::Subscriber<std_msgs::Float32> sub_servo("ctl_servoAngle", servo_cb);
 ros::Subscriber<std_msgs::Int16> sub_motor("ctl_motorRpm", motor_cb);      
 ros::Subscriber<std_msgs::UInt8> sub_light_l("trj_flashLeft", lichtLinks_cb);
@@ -16,7 +18,12 @@ ros::Subscriber<std_msgs::UInt8> sub_light_rem("trj_remoteLight", lichtRemote_cb
 ros::Publisher rc_pub("akt_rc", &rc_msg);
 ros::Publisher drive_mode_pub("akt_autoDriveMode", &drive_mode_msg);
 
+ros::Publisher test_pub("test_rc", &test_msg);
+
 bool rc_mode = false;
+
+int test_value = 0;
+
 int16_t analogvalue_motor_rcmode; //eingelesener Pin - Wert am Tiefpass vom Motor
 int16_t analogvalue_rcmode;   //eingelesener Pin an Channel 4, um zu schauen ob im RC-Mode
 int16_t drive_mode;
@@ -48,9 +55,10 @@ void init_aktorik(ros::NodeHandle *aktorik_node)
 
   aktorik_node->advertise(rc_pub);
   aktorik_node->advertise(drive_mode_pub);
+  aktorik_node->advertise(test_pub);
   
   motor.attach(6); //Motor an Pin zuweisen
-  servo.attach(48); //Servo an Pin zuweisen
+  servo.attach(5); //Servo an Pin zuweisen
 
   //Setzen der Lichter als Ausgang
   pinMode(frontlicht, OUTPUT);              
@@ -60,7 +68,6 @@ void init_aktorik(ros::NodeHandle *aktorik_node)
   pinMode(rueckfahrlicht, OUTPUT);          
   pinMode(blaues_licht, OUTPUT);
   
-  //pinMode(MUX_Select, OUTPUT);
   pinMode(tiefpass_pwm_motor_voltage, INPUT);
   pinMode(tiefpass_rcmode_voltage, INPUT);
 
@@ -84,16 +91,19 @@ bool aktorik()
   
   if (analogvalue_rcmode > rcmode_schwellenwert)
   {                                    //RC-Mode
-    state_light_rem = 2;
- //   digitalWrite(MUX_Select, LOW);     //Multiplexer auf RCmode umschalten
-    rc_mode = true;
-    motor_bewegung_RC_mode();
+    delay(5);
+    if(analogvalue_rcmode > rcmode_schwellenwert){
+      state_light_rem = 2;
+   
+      rc_mode = true;
+      motor_bewegung_RC_mode();
+    }
   }
   
   else 
   {                                     //autonomer Betrieb
     state_light_rem = 0;                //blaue LED ausschalten
-  //  digitalWrite(MUX_Select, HIGH);     //Multiplexer auf autonomen Betrieb umschalten
+    
     rc_mode = false;
   }
 
@@ -163,28 +173,35 @@ void lichtRemote_cb(const std_msgs::UInt8& light_state)
 
 void servo_bewegung(float lenkwinkel_bogenmass)
 {
-  lenkwinkel_grad = (lenkwinkel_bogenmass/pi)*180;
+  lenkwinkel_grad = 20*(lenkwinkel_bogenmass/pi)*180;
   if(lenkwinkel_grad<=0)
   {
-    lenkwinkel_servosize = ((3/2)*lenkwinkel_grad) + 96;
+    lenkwinkel_servosize = lenkwinkel_grad + 91.5;
   }
   else
   {
-    lenkwinkel_servosize = lenkwinkel_grad + 96;
+    lenkwinkel_servosize = lenkwinkel_grad + 91.5;
   } 
   servo.write(lenkwinkel_servosize); //Servo fährt in die ensprechende Stellung
 }
 
 void motor_bewegung(int16_t motor_drehzahl)
 {
+  test_value = 1;
+  test_publish();
+  
   //motor.attach(6);
   if(motor_drehzahl < 0)//rückwärts
   {     
+    test_value = 2;
+    test_publish();
     motor_uebertragung = (int) 90 +(0.234 * motor_drehzahl);
   }
   else//vorwärts
   {  
-  motor_uebertragung = (int) (0.236 * motor_drehzahl) + 93; //96 raus!!!! 
+    test_value = 3;
+    test_publish();
+    motor_uebertragung = (int) (0.236 * motor_drehzahl) + 93; //96 raus!!!! 
   }
   /* 
    * Übergangsbereich von 91 bis 95 wird nicht betrachtet
@@ -194,8 +211,8 @@ void motor_bewegung(int16_t motor_drehzahl)
 
 void motor_bewegung_RC_mode()
 {
-  
- // analogvalue_motor_rcmode = analogRead(tiefpass_pwm_motor_voltage_nr);
+  test_value = 4;
+  test_publish();
   
     analogvalue_motor_rcmode = analogRead(tiefpass_pwm_motor_voltage_nr);
     arr[motor_zaehler]=analogvalue_motor_rcmode;
@@ -273,4 +290,10 @@ void drive_mode_publish ()
 { 
   drive_mode_msg.data = drive_mode;
   drive_mode_pub.publish(&drive_mode_msg);
+}
+
+void test_publish ()
+{ 
+  test_msg.data = test_value;
+  test_pub.publish(&test_msg);
 }
