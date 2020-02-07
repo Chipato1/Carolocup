@@ -1,0 +1,8 @@
+prefix=/home/robert/catkin_ws/devel
+
+Name: stanley_querregler
+Description: Description of stanley_querregler
+Version: 1.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: roscpp std_msgs
