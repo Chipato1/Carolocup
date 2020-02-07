@@ -1,4 +1,5 @@
 #include <vision/stopline_detection/StoplineDetector.hpp>
+#include <vision/StoplineMsg.h>
 
 #include <iostream>
 #include <map>
@@ -36,12 +37,22 @@ std::map<std::string, std::string> readConfigFile() {
 }
 
 StoplineDetector stoplineDetector;
+ros::Publisher stoplinePublisher;
+StoplineMsg stop_Msg;
+double result;
 void imageCallback(const vision::HoughPointsArray::ConstPtr& msg){
-	//vision::HoughPointsArray &msgPoints = msg->points;
-	
     //cv::Mat image = cv::imread("/Users/beni/Desktop/Studium/Studienarbeit/OpenCV/OpenCVTest/OpenCVTest/images");
-    	stoplineDetector.detect(msg, msg->points.size());
-	//---------------------------CODE HIER EINFÜGEN----------------------
+    result = stoplineDetector.detect(msg, msg->points.size(), config);
+    
+    if (result > 0 ) {
+        stop_Msg.stoplineDetected = true;
+        stop_Msg.distance = result;
+    } else {
+        stop_Msg.stoplineDetected = false;
+        stop_Msg.distance = 0;
+    }
+    
+    stoplinePublisher.publish(stop_Msg);
 }
 
 int main(int argc, char** argv) {
@@ -57,7 +68,9 @@ int main(int argc, char** argv) {
 
 	ros::NodeHandle nh;
 	//image_transport::ImageTransport it(nh);
-	
+
+    //TODO:funktioniert das wenn ein NodeHandel 2 verschiedene Topics subscripet und pushlished
+    stoplinePublisher = nh.advertise<vision::StoplineMsg>("Stoplines", 1);
 	ros::Subscriber sub = nh.subscribe("HoughResult" , 1, imageCallback);
 	ros::spin();
 	return 0;

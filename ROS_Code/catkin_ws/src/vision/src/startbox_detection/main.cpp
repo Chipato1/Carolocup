@@ -38,7 +38,6 @@ std::map<std::string, std::string> readConfigFile() {
 
 cv::Mat image;
 StartboxDetector detector = StartboxDetector();
-
 bool detectQRCode(vision::SetBool::Request  &req, vision::SetBool::Response &res) {
 	res.success = detector.checkQRCode(image);
 	return true;
@@ -47,6 +46,7 @@ bool detectQRCode(vision::SetBool::Request  &req, vision::SetBool::Response &res
 void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 	image = cv_bridge::toCvShare(msg, "mono8")->image;
 	//---------------CODE HIER EINFÜGEN---------------------
+    
 }
 
 int main(int argc, char** argv) {

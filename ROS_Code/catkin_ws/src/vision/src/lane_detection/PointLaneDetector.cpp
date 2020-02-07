@@ -1,5 +1,4 @@
 #include <vision/lane_detection/PointLaneDetector.hpp>
-#define WINDOWS_DEBUG
 
 #include <opencv2/core/utility.hpp>
 #include <opencv2/imgproc.hpp>
@@ -113,7 +112,7 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 
 
 	this->canny = cuda::createCannyEdgeDetector(low_thresh, high_thresh, aperture_size, false);
-	this->hough = cuda::createHoughSegmentDetector(1.0f, (float) (CV_PI / 180.0f), 50, 5);
+	this->hough = cuda::createHoughSegmentDetector(1.0f, (float) (CV_PI / 180.0f),50, 5);
 
 	
 
