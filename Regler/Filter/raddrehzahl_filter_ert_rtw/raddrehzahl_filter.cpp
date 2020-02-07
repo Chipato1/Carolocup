@@ -7,9 +7,9 @@
  *
  * Code generation for model "raddrehzahl_filter".
  *
- * Model version              : 1.13
+ * Model version              : 1.15
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Thu Feb  6 09:38:28 2020
+ * C++ source code generated on : Fri Feb  7 12:37:59 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -206,10 +206,8 @@ void raddrehzahl_filter_step(void)
 
     /* BusAssignment: '<Root>/Bus Assignment' incorporates:
      *  DataTypeConversion: '<Root>/Data Type Conversion1'
-     *  Gain: '<Root>/Gain'
      */
-    rtb_BusAssignment.Data = static_cast<real32_T>
-      ((raddrehzahl_filter_P.Gain_Gain * raddrehzahl_filter_B.Multiply));
+    rtb_BusAssignment.Data = static_cast<real32_T>(raddrehzahl_filter_B.Multiply);
 
     /* Outputs for Atomic SubSystem: '<Root>/Publish' */
     /* MATLABSystem: '<S3>/SinkBlock' */
@@ -220,10 +218,11 @@ void raddrehzahl_filter_step(void)
 
   /* BusAssignment: '<Root>/Bus Assignment1' incorporates:
    *  DataTypeConversion: '<Root>/Data Type Conversion2'
+   *  Gain: '<Root>/Gain'
    *  Integrator: '<Root>/Integrator'
    */
-  rtb_BusAssignment1.Data = static_cast<real32_T>
-    (raddrehzahl_filter_X.Integrator_CSTATE);
+  rtb_BusAssignment1.Data = raddrehzahl_filter_P.Gain_Gain *
+    static_cast<real32_T>(raddrehzahl_filter_X.Integrator_CSTATE);
 
   /* Outputs for Atomic SubSystem: '<Root>/Publish1' */
   /* MATLABSystem: '<S4>/SinkBlock' */

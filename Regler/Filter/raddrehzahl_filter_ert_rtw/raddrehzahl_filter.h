@@ -7,9 +7,9 @@
  *
  * Code generation for model "raddrehzahl_filter".
  *
- * Model version              : 1.13
+ * Model version              : 1.15
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Thu Feb  6 09:38:28 2020
+ * C++ source code generated on : Fri Feb  7 12:37:59 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -225,11 +225,11 @@ struct P_raddrehzahl_filter_T_ {
   real_T Multiply_Gain;                /* Expression: 0.175896
                                         * Referenced by: '<Root>/Multiply'
                                         */
-  real_T Gain_Gain;                    /* Expression: 1000
-                                        * Referenced by: '<Root>/Gain'
-                                        */
   real_T Integrator_IC;                /* Expression: 0
                                         * Referenced by: '<Root>/Integrator'
+                                        */
+  real32_T Gain_Gain;                  /* Computed Parameter: Gain_Gain
+                                        * Referenced by: '<Root>/Gain'
                                         */
 };
 
