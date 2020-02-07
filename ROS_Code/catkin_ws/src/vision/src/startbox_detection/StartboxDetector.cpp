@@ -7,7 +7,7 @@ StartboxDetector::StartboxDetector() {
 }
 
 bool StartboxDetector::checkQRCode(cv::Mat inputImage) {
-//    cv::resize(inputImage, inputImage, cv::Size(1600,1200));
+    cv::resize(inputImage, inputImage, cv::Size(1600,1200));
     cv::threshold(inputImage, inputImage, 70, 255, cv::THRESH_BINARY);
     //Detect and Decode the QRCode in the image
     extractedData = qrDecoder.detectAndDecode(inputImage);

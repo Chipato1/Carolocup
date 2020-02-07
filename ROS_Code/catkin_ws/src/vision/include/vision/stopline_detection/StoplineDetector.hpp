@@ -24,6 +24,7 @@ public:
     cv::Mat defineROI (cv::Mat &image);
     Vec4i getStopLine (vector<Vec4i> lines);
     vector<Vec4i> checkOrthogonal(vector<Vec4i> lines, vector<Vec4i> pLines);
+    bool StoplineDetector::lineIsWithinArea(Vec4i line, Point carCenter);
     
     //Debug Function
     void failureReport(string i);
