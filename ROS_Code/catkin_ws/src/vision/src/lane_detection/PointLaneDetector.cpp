@@ -472,7 +472,7 @@ void PointLaneDetector::prepareInterpolation(int i) {
 
 
 
-		if (leftIndex == middleIndex) {
+		if (foundLL && foundML && leftIndex == middleIndex) {
 			if (*iteratorLeft <= *iteratorMiddle) {
 				middleIndex = -1;
 			}
@@ -480,7 +480,7 @@ void PointLaneDetector::prepareInterpolation(int i) {
 				leftIndex = -1;
 			}
 		}
-		if (leftIndex == rightIndex) {
+		if (foundLL && foundRL && leftIndex == rightIndex) {
 			if (*iteratorLeft <= *iteratorRight) {
 				rightIndex = -1;
 			}
@@ -489,7 +489,7 @@ void PointLaneDetector::prepareInterpolation(int i) {
 			}
 		}
 
-		if (middleIndex == rightIndex) {
+		if (foundML && foundRL && middleIndex == rightIndex) {
 			if (*iteratorMiddle <= *iteratorRight) {
 				rightIndex = -1;
 			}
@@ -502,7 +502,7 @@ void PointLaneDetector::prepareInterpolation(int i) {
 
 
 
-		if (foundLL && leftIndex >= 0 && distancesLeft.at(leftIndex) < 350) {
+		if (foundLL && leftIndex >= 0 && distancesLeft.at(leftIndex) < 420) {
 			int dx = laneMiddles.at(leftIndex).x - this->leftLaneStartPoint.x;
 			int dy = laneMiddles.at(leftIndex).y - this->leftLaneStartPoint.y;
 			double temp = (double)i - (double)lastLeftIterator;
@@ -520,7 +520,7 @@ void PointLaneDetector::prepareInterpolation(int i) {
 			leftIndex = -1;
 		}
 
-		if (foundML && middleIndex >= 0 && distancesMiddle.at(middleIndex) < 350) {
+		if (foundML && middleIndex >= 0 && distancesMiddle.at(middleIndex) < 420) {
 			double dx = abs(laneMiddles.at(middleIndex).x - this->middleLaneStartPoint.x);
 			double dy = abs(laneMiddles.at(middleIndex).y - this->middleLaneStartPoint.y);
 			double temp = (double)i - (double)lastMiddleIterator;
@@ -537,7 +537,7 @@ void PointLaneDetector::prepareInterpolation(int i) {
 		else {
 			middleIndex = -1;
 		}
-		if (foundRL && rightIndex >= 0 && distancesRight.at(rightIndex) < 350) {
+		if (foundRL && rightIndex >= 0 && distancesRight.at(rightIndex) < 420) {
 			int dx = laneMiddles.at(rightIndex).x - this->rightLaneStartPoint.x;
 			int dy = laneMiddles.at(rightIndex).y - this->rightLaneStartPoint.y;
 			double temp = (double)i - (double)lastRightIterator;
@@ -714,9 +714,9 @@ void PointLaneDetector::laneMiddlePoints(std::vector<cv::Point>& laneMiddles, Ma
 			Point middle;
 			middle.x = pt1.x + diff / 2;
 			middle.y = pt1.y + (pt2.y - pt1.y) / 2 + yPos;
-			if (!(middle.x > ignoreXMin&& middle.x <= ignoreXMax && middle.y > ignoreYMin&& middle.y <= ignoreYMax)) {
+			if (!(middle.x > ignoreXMin && middle.x <= ignoreXMax && middle.y > ignoreYMin&& middle.y <= ignoreYMax)) {
 				laneMiddles.push_back(middle);
-			}
+			} 
 		}
 	}
 }
