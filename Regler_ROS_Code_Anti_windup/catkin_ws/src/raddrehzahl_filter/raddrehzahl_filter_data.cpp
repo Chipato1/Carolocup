@@ -7,9 +7,9 @@
  *
  * Code generation for model "raddrehzahl_filter".
  *
- * Model version              : 1.13
+ * Model version              : 1.16
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Thu Feb  6 09:38:28 2020
+ * C++ source code generated on : Fri Feb  7 18:13:59 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -26,12 +26,12 @@ P_raddrehzahl_filter_T raddrehzahl_filter_P = {
   /* Variable: denom_drehzahl
    * Referenced by: '<Root>/Discrete Transfer Fcn'
    */
-  { 1.0, -1.5610180758007179, 0.641351538057563 },
+  { 1.0, -0.94280904158206336, 0.33333333333333337 },
 
   /* Variable: num_drehzahl
    * Referenced by: '<Root>/Discrete Transfer Fcn'
    */
-  { 0.020083365564211253, 0.040166731128422506, 0.020083365564211253 },
+  { 0.0976310729378175, 0.195262145875635, 0.0976310729378175 },
 
   /* Computed Parameter: Out1_Y0
    * Referenced by: '<S6>/Out1'
@@ -76,13 +76,13 @@ P_raddrehzahl_filter_T raddrehzahl_filter_P = {
    */
   0.175896,
 
-  /* Expression: 1000
-   * Referenced by: '<Root>/Gain'
-   */
-  1000.0,
-
   /* Expression: 0
    * Referenced by: '<Root>/Integrator'
    */
-  0.0
+  0.0,
+
+  /* Computed Parameter: Gain_Gain
+   * Referenced by: '<Root>/Gain'
+   */
+  1000.0F
 };

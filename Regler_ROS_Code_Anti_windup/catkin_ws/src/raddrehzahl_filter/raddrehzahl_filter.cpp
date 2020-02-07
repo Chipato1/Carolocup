@@ -7,9 +7,9 @@
  *
  * Code generation for model "raddrehzahl_filter".
  *
- * Model version              : 1.13
+ * Model version              : 1.16
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Thu Feb  6 09:38:28 2020
+ * C++ source code generated on : Fri Feb  7 18:13:59 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -206,10 +206,8 @@ void raddrehzahl_filter_step(void)
 
     /* BusAssignment: '<Root>/Bus Assignment' incorporates:
      *  DataTypeConversion: '<Root>/Data Type Conversion1'
-     *  Gain: '<Root>/Gain'
      */
-    rtb_BusAssignment.Data = static_cast<real32_T>
-      ((raddrehzahl_filter_P.Gain_Gain * raddrehzahl_filter_B.Multiply));
+    rtb_BusAssignment.Data = static_cast<real32_T>(raddrehzahl_filter_B.Multiply);
 
     /* Outputs for Atomic SubSystem: '<Root>/Publish' */
     /* MATLABSystem: '<S3>/SinkBlock' */
@@ -220,10 +218,11 @@ void raddrehzahl_filter_step(void)
 
   /* BusAssignment: '<Root>/Bus Assignment1' incorporates:
    *  DataTypeConversion: '<Root>/Data Type Conversion2'
+   *  Gain: '<Root>/Gain'
    *  Integrator: '<Root>/Integrator'
    */
-  rtb_BusAssignment1.Data = static_cast<real32_T>
-    (raddrehzahl_filter_X.Integrator_CSTATE);
+  rtb_BusAssignment1.Data = raddrehzahl_filter_P.Gain_Gain *
+    static_cast<real32_T>(raddrehzahl_filter_X.Integrator_CSTATE);
 
   /* Outputs for Atomic SubSystem: '<Root>/Publish1' */
   /* MATLABSystem: '<S4>/SinkBlock' */
@@ -260,9 +259,9 @@ void raddrehzahl_filter_step(void)
       (&raddrehzahl_filter_M->solverInfo);
 
     {
-      /* Update absolute timer for sample time: [0.01s, 0.0s] */
+      /* Update absolute timer for sample time: [0.02s, 0.0s] */
       /* The "clockTick1" counts the number of times the code of this task has
-       * been executed. The resolution of this integer timer is 0.01, which is the step size
+       * been executed. The resolution of this integer timer is 0.02, which is the step size
        * of the task. Size of "clockTick1" ensures timer will not overflow during the
        * application lifespan selected.
        * Timer of this task consists of two 32 bit unsigned integers.
@@ -327,7 +326,7 @@ void raddrehzahl_filter_initialize(void)
                     (&raddrehzahl_filter_M->intgData));
   rtsiSetSolverName(&raddrehzahl_filter_M->solverInfo,"ode3");
   rtmSetTPtr(raddrehzahl_filter_M, &raddrehzahl_filter_M->Timing.tArray[0]);
-  raddrehzahl_filter_M->Timing.stepSize0 = 0.01;
+  raddrehzahl_filter_M->Timing.stepSize0 = 0.02;
 
   /* block I/O */
   (void) memset((static_cast<void *>(&raddrehzahl_filter_B)), 0,

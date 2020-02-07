@@ -7,9 +7,9 @@
  *
  * Code generation for model "PI_Laengsregler".
  *
- * Model version              : 1.31
+ * Model version              : 1.35
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Thu Feb  6 10:28:06 2020
+ * C++ source code generated on : Fri Feb  7 18:11:09 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -68,7 +68,7 @@ static void rt_ertODEUpdateContinuousStates(RTWSolverInfo *si )
   real_T *f2 = id->f[2];
   real_T hB[3];
   int_T i;
-  int_T nXc = 2;
+  int_T nXc = 1;
   rtsiSetSimTimeStep(si,MINOR_TIME_STEP);
 
   /* Save the state values at time t in y, we'll use x as ynew. */
@@ -127,7 +127,7 @@ static void rt_ertODEUpdateContinuousStates(RTWSolverInfo *si )
 void PI_Laengs_EnabledSubsystem_Init(B_EnabledSubsystem_PI_Laengsr_T *localB,
   P_EnabledSubsystem_PI_Laengsr_T *localP)
 {
-  /* SystemInitialize for Outport: '<S51>/Out1' */
+  /* SystemInitialize for Outport: '<S6>/Out1' */
   localB->In1 = localP->Out1_Y0;
 }
 
@@ -141,10 +141,10 @@ void PI_Laengsregle_EnabledSubsystem(boolean_T rtu_Enable, const
   B_EnabledSubsystem_PI_Laengsr_T *localB)
 {
   /* Outputs for Enabled SubSystem: '<S4>/Enabled Subsystem' incorporates:
-   *  EnablePort: '<S51>/Enable'
+   *  EnablePort: '<S6>/Enable'
    */
   if (rtu_Enable) {
-    /* Inport: '<S51>/In1' */
+    /* Inport: '<S6>/In1' */
     localB->In1 = *rtu_In1;
   }
 
@@ -174,8 +174,8 @@ void PI_Laengsregler_step(void)
   boolean_T rtb_SourceBlock_o1;
   boolean_T rtb_SourceBlock_o1_k;
   SL_Bus_PI_Laengsregler_std_msgs_Int16 rtb_BusAssignment;
+  real_T rtb_Switch3;
   real_T rtb_Saturation;
-  real_T tmp;
   if (rtmIsMajorTimeStep(PI_Laengsregler_M)) {
     /* set solver stop time */
     if (!(PI_Laengsregler_M->Timing.clockTick0+1)) {
@@ -209,6 +209,10 @@ void PI_Laengsregler_step(void)
     /* End of Outputs for SubSystem: '<S4>/Enabled Subsystem' */
     /* End of Outputs for SubSystem: '<Root>/Subscribe' */
 
+    /* DataTypeConversion: '<S2>/Data Type Conversion' */
+    PI_Laengsregler_B.DataTypeConversion =
+      PI_Laengsregler_B.EnabledSubsystem.In1.Data;
+
     /* Outputs for Atomic SubSystem: '<Root>/Subscribe1' */
     /* MATLABSystem: '<S5>/SourceBlock' */
     rtb_SourceBlock_o1 = Sub_PI_Laengsregler_128.getLatestMessage
@@ -222,11 +226,9 @@ void PI_Laengsregler_step(void)
     /* End of Outputs for SubSystem: '<Root>/Subscribe1' */
 
     /* Sum: '<S2>/Add' incorporates:
-     *  DataTypeConversion: '<S2>/Data Type Conversion'
      *  DataTypeConversion: '<S2>/Data Type Conversion1'
      */
-    PI_Laengsregler_B.Add = static_cast<real_T>
-      (PI_Laengsregler_B.EnabledSubsystem.In1.Data) -
+    PI_Laengsregler_B.Add = PI_Laengsregler_B.DataTypeConversion -
       PI_Laengsregler_B.EnabledSubsystem_n.In1.Data;
 
     /* Gain: '<S2>/Gain' */
@@ -250,25 +252,82 @@ void PI_Laengsregler_step(void)
   }
 
   /* End of Saturate: '<S2>/Saturation' */
+  if (rtmIsMajorTimeStep(PI_Laengsregler_M)) {
+    /* Saturate: '<S2>/Begrenzung auf maximale Geschwindigkeit ' */
+    if (PI_Laengsregler_B.DataTypeConversion >
+        PI_Laengsregler_P.BegrenzungaufmaximaleGeschwindi) {
+      rtb_Switch3 = PI_Laengsregler_P.BegrenzungaufmaximaleGeschwindi;
+    } else if (PI_Laengsregler_B.DataTypeConversion <
+               PI_Laengsregler_P.BegrenzungaufmaximaleGeschwin_p) {
+      rtb_Switch3 = PI_Laengsregler_P.BegrenzungaufmaximaleGeschwin_p;
+    } else {
+      rtb_Switch3 = PI_Laengsregler_B.DataTypeConversion;
+    }
 
-  /* DataTypeConversion: '<Root>/Data Type Conversion' incorporates:
-   *  Gain: '<S2>/Getriebe'
-   *  Gain: '<S2>/Radumfang'
-   */
-  tmp = floor(PI_Laengsregler_P.Radumfang_Gain * rtb_Saturation *
-              PI_Laengsregler_P.Getriebe_Gain);
-  if (rtIsNaN(tmp) || rtIsInf(tmp)) {
-    tmp = 0.0;
+    /* End of Saturate: '<S2>/Begrenzung auf maximale Geschwindigkeit ' */
+
+    /* Gain: '<S2>/Getriebe1' incorporates:
+     *  Gain: '<S2>/Radumfang1'
+     */
+    PI_Laengsregler_B.Saturation2 = PI_Laengsregler_P.Radumfang1_Gain *
+      rtb_Switch3 * PI_Laengsregler_P.Getriebe1_Gain;
+
+    /* Saturate: '<S2>/Saturation2' */
+    if (PI_Laengsregler_B.Saturation2 > PI_Laengsregler_P.Saturation2_UpperSat)
+    {
+      /* Gain: '<S2>/Getriebe1' */
+      PI_Laengsregler_B.Saturation2 = PI_Laengsregler_P.Saturation2_UpperSat;
+    } else {
+      if (PI_Laengsregler_B.Saturation2 < PI_Laengsregler_P.Saturation2_LowerSat)
+      {
+        /* Gain: '<S2>/Getriebe1' */
+        PI_Laengsregler_B.Saturation2 = PI_Laengsregler_P.Saturation2_LowerSat;
+      }
+    }
+
+    /* End of Saturate: '<S2>/Saturation2' */
+  }
+
+  /* Switch: '<S2>/Switch3' */
+  if (PI_Laengsregler_B.DataTypeConversion > PI_Laengsregler_P.Switch3_Threshold)
+  {
+    /* Gain: '<S2>/Getriebe' incorporates:
+     *  Gain: '<S2>/Radumfang'
+     */
+    rtb_Switch3 = PI_Laengsregler_P.Radumfang_Gain * rtb_Saturation *
+      PI_Laengsregler_P.Getriebe_Gain;
+
+    /* Saturate: '<S2>/Saturation1' */
+    if (rtb_Switch3 > PI_Laengsregler_P.Saturation1_UpperSat) {
+      rtb_Switch3 = PI_Laengsregler_P.Saturation1_UpperSat;
+    } else {
+      if (rtb_Switch3 < PI_Laengsregler_P.Saturation1_LowerSat) {
+        rtb_Switch3 = PI_Laengsregler_P.Saturation1_LowerSat;
+      }
+    }
+
+    /* End of Saturate: '<S2>/Saturation1' */
   } else {
-    tmp = fmod(tmp, 65536.0);
+    rtb_Switch3 = PI_Laengsregler_B.Saturation2;
+  }
+
+  /* End of Switch: '<S2>/Switch3' */
+
+  /* DataTypeConversion: '<Root>/Data Type Conversion' */
+  rtb_Switch3 = floor(rtb_Switch3);
+  if (rtIsNaN(rtb_Switch3) || rtIsInf(rtb_Switch3)) {
+    rtb_Switch3 = 0.0;
+  } else {
+    rtb_Switch3 = fmod(rtb_Switch3, 65536.0);
   }
 
   /* BusAssignment: '<Root>/Bus Assignment' incorporates:
    *  DataTypeConversion: '<Root>/Data Type Conversion'
    */
-  rtb_BusAssignment.Data = static_cast<int16_T>((tmp < 0.0 ? static_cast<int32_T>
-    (static_cast<int16_T>(-static_cast<int16_T>(static_cast<uint16_T>(-tmp)))) :
-    static_cast<int32_T>(static_cast<int16_T>(static_cast<uint16_T>(tmp)))));
+  rtb_BusAssignment.Data = static_cast<int16_T>((rtb_Switch3 < 0.0 ?
+    static_cast<int32_T>(static_cast<int16_T>(-static_cast<int16_T>
+    (static_cast<uint16_T>(-rtb_Switch3)))) : static_cast<int32_T>
+    (static_cast<int16_T>(static_cast<uint16_T>(rtb_Switch3)))));
 
   /* Outputs for Atomic SubSystem: '<Root>/Publish' */
   /* MATLABSystem: '<S3>/SinkBlock' */
@@ -291,12 +350,6 @@ void PI_Laengsregler_step(void)
   }
 
   /* End of Switch: '<S2>/Switch' */
-  if (rtmIsMajorTimeStep(PI_Laengsregler_M)) {
-    /* Gain: '<S33>/Integral Gain' */
-    PI_Laengsregler_B.IntegralGain = PI_Laengsregler_P.ir *
-      PI_Laengsregler_B.Add;
-  }
-
   if (rtmIsMajorTimeStep(PI_Laengsregler_M)) {
     rt_ertODEUpdateContinuousStates(&PI_Laengsregler_M->solverInfo);
 
@@ -342,9 +395,6 @@ void PI_Laengsregler_derivatives(void)
 
   /* Derivatives for Integrator: '<S2>/Integrator' */
   _rtXdot->Integrator_CSTATE = PI_Laengsregler_B.Switch;
-
-  /* Derivatives for Integrator: '<S36>/Integrator' */
-  _rtXdot->Integrator_CSTATE_d = PI_Laengsregler_B.IntegralGain;
 }
 
 /* Model initialize function */
@@ -354,6 +404,10 @@ void PI_Laengsregler_initialize(void)
 
   /* initialize non-finites */
   rt_InitInfAndNaN(sizeof(real_T));
+
+  /* non-finite (run-time) assignments */
+  PI_Laengsregler_P.Saturation1_UpperSat = rtInf;
+  PI_Laengsregler_P.Saturation2_LowerSat = rtMinusInf;
 
   {
     /* Setup solver object */
@@ -468,10 +522,6 @@ void PI_Laengsregler_initialize(void)
 
   /* InitializeConditions for Integrator: '<S2>/Integrator' */
   PI_Laengsregler_X.Integrator_CSTATE = PI_Laengsregler_P.Integrator_IC;
-
-  /* InitializeConditions for Integrator: '<S36>/Integrator' */
-  PI_Laengsregler_X.Integrator_CSTATE_d =
-    PI_Laengsregler_P.PIDController_InitialConditionF;
 
   /* SystemInitialize for Atomic SubSystem: '<Root>/Subscribe' */
   /* SystemInitialize for Enabled SubSystem: '<S4>/Enabled Subsystem' */
