@@ -50,7 +50,7 @@ void init_aktorik(ros::NodeHandle *aktorik_node)
   aktorik_node->advertise(drive_mode_pub);
   
   motor.attach(6); //Motor an Pin zuweisen
-  servo.attach(5); //Servo an Pin zuweisen
+  servo.attach(48); //Servo an Pin zuweisen
 
   //Setzen der Lichter als Ausgang
   pinMode(frontlicht, OUTPUT);              
@@ -60,7 +60,7 @@ void init_aktorik(ros::NodeHandle *aktorik_node)
   pinMode(rueckfahrlicht, OUTPUT);          
   pinMode(blaues_licht, OUTPUT);
   
-  pinMode(MUX_Select, OUTPUT);
+  //pinMode(MUX_Select, OUTPUT);
   pinMode(tiefpass_pwm_motor_voltage, INPUT);
   pinMode(tiefpass_rcmode_voltage, INPUT);
 
@@ -85,7 +85,7 @@ bool aktorik()
   if (analogvalue_rcmode > rcmode_schwellenwert)
   {                                    //RC-Mode
     state_light_rem = 2;
-    digitalWrite(MUX_Select, LOW);     //Multiplexer auf RCmode umschalten
+ //   digitalWrite(MUX_Select, LOW);     //Multiplexer auf RCmode umschalten
     rc_mode = true;
     motor_bewegung_RC_mode();
   }
@@ -93,7 +93,7 @@ bool aktorik()
   else 
   {                                     //autonomer Betrieb
     state_light_rem = 0;                //blaue LED ausschalten
-    digitalWrite(MUX_Select, HIGH);     //Multiplexer auf autonomen Betrieb umschalten
+  //  digitalWrite(MUX_Select, HIGH);     //Multiplexer auf autonomen Betrieb umschalten
     rc_mode = false;
   }
 
@@ -143,12 +143,12 @@ void motor_cb(const std_msgs::Int16& cmd_msg)//Callback - Funktion für Motorauf
 
 void lichtLinks_cb(const std_msgs::UInt8& light_state)
 {
-  state_light_r = light_state.data;
+  state_light_l = light_state.data;
 }
 
 void lichtRechts_cb(const std_msgs::UInt8& light_state)
 {
-  state_light_l = light_state.data;
+  state_light_r = light_state.data;
 }
 
 void lichtBremse_cb(const std_msgs::UInt8& light_state)
@@ -184,7 +184,7 @@ void motor_bewegung(int16_t motor_drehzahl)
   }
   else//vorwärts
   {  
-  motor_uebertragung = (int) (0.236 * motor_drehzahl) + 96;
+  motor_uebertragung = (int) (0.236 * motor_drehzahl) + 93; //96 raus!!!! 
   }
   /* 
    * Übergangsbereich von 91 bis 95 wird nicht betrachtet

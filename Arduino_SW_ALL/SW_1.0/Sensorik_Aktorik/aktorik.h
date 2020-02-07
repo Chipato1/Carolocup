@@ -24,7 +24,7 @@
 #define tiefpass_rcmode_voltage       A12
 #define tiefpass_pwm_motor_voltage_nr 13
 #define tiefpass_rcmode_voltage_nr    12
-#define MUX_Select                    48
+//#define MUX_Select                    48
 #define frontlicht                    34
 #define blinker_links                 38
 #define blinker_rechts                40

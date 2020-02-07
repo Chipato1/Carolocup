@@ -3,7 +3,7 @@
 
 #define RPM_inputPin_Left   2
 #define RPM_inputPin_Right  3
-#define ticks_per_cycle     4
+#define ticks_per_cycle     8
 
 
 float rpm_T1_Left, rpm_T2_Left, rpm_value_Left;
