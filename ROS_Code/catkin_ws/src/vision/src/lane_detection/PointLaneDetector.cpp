@@ -1,5 +1,4 @@
 #include <vision/lane_detection/PointLaneDetector.hpp>
-#define WINDOWS_DEBUG
 
 #include <opencv2/core/utility.hpp>
 #include <opencv2/imgproc.hpp>
@@ -74,7 +73,9 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 	this->ML_MAX_X	 			= 	config.count("ML_MAX_X") 	 		? stoi(config["ML_MAX_X"])				: 850;
 	this->RL_MIN_X	 			= 	config.count("RL_MIN_X") 	 		? stoi(config["RL_MIN_X"])				: 1100;
 	this->RL_MAX_X	 			= 	config.count("RL_MAX_X") 	 		? stoi(config["RL_MAX_X"])				: 1300;
-	this->ipmScaling			= 	config.count("ipm_scaling") 	 	? stod(config["ipm_scaling"])			: 1;	
+	this->ipmScaling			= 	config.count("ipm_scaling") 	 	? stod(config["ipm_scaling"])			: 1;
+    this->ipmSizeX            =     config.count("ipm_Size_x")          ? stod(config["ipm_Size_x"])            : 1200;
+     this->ipmSizeY            =     config.count("ipm_Size_y")          ? stod(config["ipm_Size_y"])            : 2400;
 
 
 	this->LANE_THRES_MIN 		= 	this->LANE_THRES_MIN 	*  this->ipmScaling;
@@ -89,11 +90,11 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 
 
 	this->canny = cuda::createCannyEdgeDetector(low_thresh, high_thresh, aperture_size, false);
-	this->hough = cuda::createHoughSegmentDetector(1.0f, (float) (CV_PI / 180.0f), 50, 5);
+	this->hough = cuda::createHoughSegmentDetector(1.0f, (float) (CV_PI / 180.0f),50, 5);
 
 	
 
-	this->ipmSize = Size(1200 * this->ipmScaling, 2400 * this->ipmScaling);
+	this->ipmSize = Size(ipmSizeX * this->ipmScaling, ipmSizeY * this->ipmScaling);
 
 	double alpha_ = camera_angle_pitch;
 	double beta_ = camera_angle_roll;

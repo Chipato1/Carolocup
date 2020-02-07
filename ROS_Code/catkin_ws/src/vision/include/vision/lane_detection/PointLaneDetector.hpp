@@ -83,7 +83,9 @@ private:
 	int lastMiddleIterator = 0;
 	int lastRightIterator = 0;
 
-	double ipmScaling = 1; 
+	double ipmScaling = 1;
+    double ipmSizeX = 1200;
+    double ipmSizeY = 2400;
 
 	//MODELLPARAMETER
 	//Grad des Modells (Klothoide)

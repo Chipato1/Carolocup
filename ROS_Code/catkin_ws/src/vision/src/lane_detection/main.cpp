@@ -12,7 +12,7 @@
 #include <ros/ros.h>
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
-
+#include <opencv2/videoio.hpp>
 #include <chrono>
 #include <thread>
 
@@ -103,27 +103,36 @@ void publishHough() {
 		std::vector<cv::Vec4i> houghPointsResult;
 		if (!detector->houghLinesGPU.empty()){
 			houghPointsResult.resize(detector->houghLinesGPU.cols);
+			cv::Mat test;
+			detector->houghLinesGPU.download(test);
+			
+			
 			detector->houghLinesCPU = cv::Mat(1, detector->houghLinesGPU.cols, CV_32SC4, &houghPointsResult[0]);
 			detector->houghLinesGPU.download(detector->houghLinesCPU);
+
 			cv::Vec4i l;
 			vision::HoughPointsArray msg;
 			vision::HoughPoints houghData;
 			
 			for (size_t i = 0; i < houghPointsResult.size(); i++) {
+				//std::cout << i << ":" << houghPointsResult[i] << std::endl;
 				l = houghPointsResult[i];
 				houghData.x1 = l[0]; 
 				houghData.y1 = l[1]; 
 				houghData.x2 = l[2];
 				houghData.y2 = l[3];
+				msg.points.push_back(houghData);	
 			}
 
-			msg.points.push_back(houghData); 
+			 
 			houghPublisher.publish(msg);
 		}
 		
 		detector->houghZumutung.unlock();
 	}
 }
+
+cv::VideoWriter writer("/home/xavier/testVideo1.mp4", -1,-1, cv::Size(1600,1200), false);
 
 void imageCallback(const sensor_msgs::ImageConstPtr &msg,
 				   const sensor_msgs::CameraInfoConstPtr &info_msg) {
@@ -159,6 +168,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr &msg,
 	
 	// Create cv::Mat views onto both buffers
 	cv::Mat image = cv_bridge::toCvShare(msg, "mono8")->image;
+	writer.write(image);
 
 	// Allocate new rectified image message
 	
@@ -220,6 +230,7 @@ int main(int argc, char **argv)
 		ros::spinOnce();
 		rate.sleep();
 	}
-
+std::cout << "Writing video";
+	writer.release();
 	return 0;
 }

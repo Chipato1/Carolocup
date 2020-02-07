@@ -4,12 +4,17 @@
 using namespace cv;
 using namespace std;
 
-float roiHeight;
-float roiWidth;
+double roiHeight;
+double roiWidth;
 cv::Mat cdst;
 vector<Vec4i> perpendicularLines;
 vector<Vec4i> lines;
-int validation = 0;
+static int validation = 0;
+
+//config details
+double ipmScaling;
+double ipmSizeX;
+double ipmSizeY;
 
 void StoplineDetector::failureReport(string i) {
     cout << "Failed due to: " << i << endl;
@@ -41,21 +46,23 @@ vector<Vec4i> StoplineDetector::getPossibleEventLine(vector<Vec4i> & detectedLin
     
     for( size_t i = 0; i < detectedLines.size(); i++ )
     {
+	
         l = detectedLines[i];
         // draw the lines
 
         p1=Point(l[0], l[1]);
         p2=Point(l[2], l[3]);
         //calculate angle in radian,  if you need it in degrees just do angle * 180 / PI
-        angle = atan2(p1.y - p2.y, p1.x - p2.x) * (180/CV_PI);
+        angle = abs(atan2(p1.y - p2.y, p1.x - p2.x) * (180/CV_PI));
         
-        if (angle > 170 || angle < 10) {
+        if (angle > 160 || angle < 10) {
             possibleStoppLine.push_back(detectedLines.at(i));
         }
         
         if (angle < 100 && angle > 80) {
             perpendicularLines.push_back(detectedLines.at(i));
         }
+	std::cout << "Winkel spur " << i << " : " << angle << std::endl;
     }
     
     return possibleStoppLine;
@@ -82,8 +89,8 @@ vector<Vec4i> StoplineDetector::checkLineWidth (vector<Vec4i> lines) {
                   p3 = Point(l2[2], l2[3]);
                   distance1 = getDistanceBetweenPoints(p1, p2);
                   distance2 = getDistanceBetweenPoints(p1, p3);
-
-                  if ((distance1 > 40 && distance1 < 100) || (distance2 > 40 && distance2 < 100)) {
+		cout << "d1: " << distance1 << "  d2: " << distance2 << endl;
+                  if ((distance1 > 30 && distance1 < 150) || (distance2 > 30 && distance2 < 150)) {
                       resultingLines.push_back(lines[q]);
                       resultingLines.push_back(lines[i]);
                   }
@@ -94,53 +101,66 @@ vector<Vec4i> StoplineDetector::checkLineWidth (vector<Vec4i> lines) {
         return resultingLines;
 }
 
-cv::Mat StoplineDetector::defineROI (cv::Mat &image) {
-
-    Rect region_of_interest = Rect(image.size().width/4, 0, image.size().width*3/4, image.size().height);
-    roiWidth = region_of_interest.size().width;
-    roiHeight = region_of_interest.size().height;
-    return image(region_of_interest);
-}
-
  Vec4i StoplineDetector::getStopLine (vector<Vec4i> lines) {
     Vec4i i;
-     vector<double> distance;
+    vector<double> distance;
+    
+    Vec4i l1;
+    Point p1;
+    Point p2;
+    Point carCenter(roiWidth/2, roiHeight);
+
      
-     Vec4i l1;
-     Point p1;
-     Point p2;
-     Point carCenter(roiWidth/2, roiHeight);
-     double distance1;
-     double distance2;
-     double min = 0;
+    double distance1;
+    double distance2;
+    double min = 0;
      
-     Vec4i resultLine;
+    
+    Vec4i resultLine;
+    
+    resultLine = lines[0];
      
-     p1 = Point(l1[0], l1[1]);
-     min = getDistanceBetweenPoints(p1, carCenter);
-     resultLine = lines[0];
+     if (lines.size() == 1) {
+         return resultLine;
+     } else {
      
-     for (size_t q = 0; q < lines.size()-1; q++) {
-         l1 = lines[q];
-         p1 = Point(l1[0], l1[1]);
-         p2 = Point(l1[2], l1[3]);
+        p1 = Point(resultLine[0], resultLine[1]);
+        p2 = Point(resultLine[2], resultLine[3]);
          
-         distance1 = getDistanceBetweenPoints(p1, carCenter);
-         distance2 = getDistanceBetweenPoints(p2, carCenter);
-         
-         
-         if (distance1 < min){
-             min = distance1;
-             resultLine = lines[q];
+         if (getDistanceBetweenPoints(p1, carCenter) > getDistanceBetweenPoints(p2, carCenter)) {
+             min = getDistanceBetweenPoints(p1, carCenter);
+         } else{
+             min = getDistanceBetweenPoints(p2, carCenter);
          }
+
          
-         if (distance2 < min) {
-             min = distance2;
-             resultLine = lines[q];
-         }
+        for (size_t q = 1; q < lines.size(); q++) {
+            l1 = lines[q];
+            p1 = Point(l1[0], l1[1]);
+            p2 = Point(l1[2], l1[3]);
+            
+            distance1 = getDistanceBetweenPoints(p1, carCenter);
+            distance2 = getDistanceBetweenPoints(p2, carCenter);
+            
+            
+            if (distance1 < min){
+                min = distance1;
+                resultLine = lines[q];
+            }
+            
+            if (distance2 < min) {
+                min = distance2;
+                resultLine = lines[q];
+            }
+        }
      }
-      
-     return resultLine;
+     
+	cout << "Yposition: " << abs(resultLine[1]-roiHeight) << " Xpos: " << abs(resultLine[0]-carCenter.x) <<endl;
+     if ((abs(resultLine[0]-carCenter.x) < 200 && abs(resultLine[1]-roiHeight) < 1200)  || (abs(resultLine[2]-carCenter.x) < 200 && abs(resultLine[3]-roiHeight) < 1200)) {
+         return resultLine;
+     }
+
+     return {};
 }
 
 vector<Vec4i> StoplineDetector::checkOrthogonal(vector<Vec4i> lines, vector<Vec4i> pLines) {
@@ -172,7 +192,8 @@ vector<Vec4i> StoplineDetector::checkOrthogonal(vector<Vec4i> lines, vector<Vec4
             angle = abs(atan2(y2-y1, x2-x1) - atan2(y4-y3,x4-x3));
             
             angle = angle *180/CV_PI;
-
+	    //cout << "orth: " << angle << endl;
+	    //cout << "x1: "  << x1 << " x2: " << x2 << " x3: " << x3 << " x4: " << x4 << endl; 
             if (angle > 80 && angle < 100 && (x1 < x3 || x2 < x4)) {
                 resultingLines.push_back(lines[i]);
             }
@@ -182,9 +203,25 @@ vector<Vec4i> StoplineDetector::checkOrthogonal(vector<Vec4i> lines, vector<Vec4
     return resultingLines;
 }
 
+double calculateDistance(Vec4i stoppLine) {
+    
+    return (double)(stoppLine[1]/ipmScaling);
+}
 
+void readConfigDetails(std::map<std::string, std::string> config) {
+    ipmSizeX         =     config.count("ipm_Size_x")          ? stod(config["ipm_Size_x"])        : 1200;
+    ipmSizeY         =     config.count("ipm_Size_y")          ? stod(config["ipm_Size_y"])        : 2400;
+    ipmScaling             =     config.count("ipm_scaling")             ? stod(config["ipm_scaling"])           : 1;
+}
 //call by reference
-bool StoplineDetector::detect(const vision::HoughPointsArray::ConstPtr &imageArray, int pointerSize) {
+double StoplineDetector::detect(const vision::HoughPointsArray::ConstPtr &imageArray, int pointerSize, std::map<std::string, std::string> config) {
+    cout << "-----------------------New Message---------------------------------" << endl;
+    //read config details
+    readConfigDetails(config);
+    
+    roiHeight = ipmSizeY;
+    roiWidth = ipmSizeX*3/4;
+    
 	vector<Vec4i> lines;
 	Vec4i l;
 	for(int i = 0; i < pointerSize; i++){
@@ -196,15 +233,15 @@ bool StoplineDetector::detect(const vision::HoughPointsArray::ConstPtr &imageArr
 		lines.push_back(l);
 	} 
  
-
+	//std::cout << "Detected " << lines.size() << " line(s)" << std::endl;
     if (!lines.empty()) {
+	//std::cout << "Suche winkel" << std::endl;
         lines = getPossibleEventLine(lines);
     }
     else {
 if (validation > 0)
 	validation--;
-           failureReport("1");
-           return false;
+           return -1.0;
     }
     
     //eigentlich kann man wenn hier nichts gefunden wird sofort abbrechen !
@@ -214,8 +251,7 @@ if (validation > 0)
     else{
 if (validation > 0)
 	validation--;
-           failureReport("2");
-          return false;
+          return -1.0;
     }
     
 //    Check if stoppline is orthogonal to perpendicular
@@ -224,8 +260,7 @@ if (validation > 0)
     } else{
 if (validation > 0)
 	validation--;
-           failureReport("4");
-           return false;
+           return -1.0;
     }
     
     Vec4i stoppLine;
@@ -235,16 +270,19 @@ if (validation > 0)
     else{
 if (validation > 0)
 	validation--;
-           failureReport("3");
-           return false;
+           return -1.0;
     }
     
-
-    validation++;
-	
-
-    if (validation > 4) {
-   	return true;
-	validation = 0;
+    if (stoppLine[0] != 0 && stoppLine[1] != 0 && stoppLine[2] != 0 && stoppLine[3] != 0) {
+        validation++;
+    }else {
+        return -1.0;
     }
+
+	cout << "validation: " << validation << endl;
+    if (validation > 1) {
+        return calculateDistance(stoppLine);
+    }
+    
+    return -1.0;
 }

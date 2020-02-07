@@ -1,0 +1,2 @@
+bool stoplineDetected
+double distance
