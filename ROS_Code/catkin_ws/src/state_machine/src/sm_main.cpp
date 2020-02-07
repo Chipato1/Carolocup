@@ -1,4 +1,5 @@
 #include "sm_main.h"
+#include <std_msgs/Float64.h>
 
 /*int handleStateINIT()
 {
@@ -61,7 +62,7 @@ void sm_step()
 		sm_switch_state(RC_MODE);
 	}
 	
-	std::cout << stateInformatio_i.currentState << std::endl;
+	std::cout << stateInformation_i.currentState << std::endl;
 
 	switch(stateInformation_i.currentState)
 	{
@@ -601,63 +602,92 @@ void se_init()
 	se_currentSpeed = 0;
 	se_currentDistance = 0;
 	
-	se_currentClothoideRight = {0, 0, 0, 0};
-	se_currentClothoideLeft = {0, 0, 0, 0};
+	se_currentClothoideRight[0] = 0;
+	se_currentClothoideRight[1] = 0;
+	se_currentClothoideRight[2] = 0;
+	se_currentClothoideRight[3] = 0;
+
+	se_currentClothoideLeft[0] = 0;
+	se_currentClothoideLeft[1] = 0;
+	se_currentClothoideLeft[2] = 0;
+	se_currentClothoideLeft[3] = 0;
 
 	// todo initialize buffers
 }
 
 double getMidValue(double val1, double val2)
 {
+	std::cout << "porn" << (val2 + val1) / 2 << "\n";
+	std::cout << (val1 + ((val2 - val1) / 2)) << "\n";
 	return (val1 + ((val2 - val1) / 2));
 }
 
 /* Topic Callbacks */
 void se_cb_sub_visionResult(const vision::VisionResultMsg::ConstPtr& msg)
 {
-	visionResult = *msg;
+	std::cout << "visionResult received ";
 	
-	double new_r_delta;
-	double new_r_phi;
-	double new_r_c0;
-	double new_r_c1;
+	float new_r_delta;
+	float new_r_phi;
+	float new_r_c0;
+	float new_r_c1;
 	
 	double new_l_delta;
 	double new_l_phi;
 	double new_l_c0;
 	double new_l_c1;
+	std_msgs::Float64 test_float;
+
 	
-	if (visionResult.solvedLL1)
+	if (msg->foundLL && msg->solvedLL1)
+		std::cout << "WAS HERE 1"<< "\n";
 	{
-		if (visionResult.solvedML1)
+		if (msg->foundML && msg->solvedML1)
 		{
-			new_l_c1 = getMidValue(visionResult.leftLane1[0], visionResult.middleLane1[0]);
-			new_l_c0 = getMidValue(visionResult.leftLane1[1], visionResult.middleLane1[1]);
-			new_l_phi = getMidValue(visionResult.leftLane1[2], visionResult.middleLane1[2]);
-			new_l_delta = getMidValue(visionResult.leftLane1[3], visionResult.middleLane1[3]);
-			
+			std::cout << "WAS HERE 2"<< "\n";
+			new_l_c1 = getMidValue(msg->leftLane1[0], msg->middleLane1[0]);
+			new_l_c0 = getMidValue(msg->leftLane1[1], msg->middleLane1[1]);
+			new_l_phi = getMidValue(msg->leftLane1[2], msg->middleLane1[2]);
+			new_l_delta = getMidValue(msg->leftLane1[3], msg->middleLane1[3]);
+
 			se_currentClothoideLeft[0] = new_l_c1;
 			se_currentClothoideLeft[1] = new_l_c0;
 			se_currentClothoideLeft[2] = new_l_phi;
 			se_currentClothoideLeft[3] = new_l_delta;
 		}
+
 	}
-	
-	if (visionResult.solvedML1)
+
+	if (msg->foundML && msg->solvedML1)
 	{
-		if (visionResult.solvedRL1)
+		std::cout << "WAS HERE 1"<< "\n";
+		if (msg->foundRL && msg->solvedRL1)
 		{
-			new_r_c1 = getMidValue(visionResult.leftLane1[0], visionResult.middleLane1[0]);
-			new_r_c0 = getMidValue(visionResult.leftLane1[1], visionResult.middleLane1[1]);
-			new_r_phi = getMidValue(visionResult.leftLane1[2], visionResult.middleLane1[2]);
-			new_r_delta = getMidValue(visionResult.leftLane1[3], visionResult.middleLane1[3]);
+			std::cout << "WAS HERE 2"<< "\n";
+			new_r_c1 = msg->rightLane1[0];//getMidValue(msg->middleLane1[0], msg->rightLane1[0]);
+			new_r_c0 = msg->rightLane1[1];//getMidValue(msg->middleLane1[1], msg->rightLane1[1]);
+			new_r_phi = msg->rightLane1[2];//getMidValue(msg->middleLane1[2], msg->rightLane1[2]);
+			new_r_delta = msg->rightLane1[3];//getMidValue(msg->middleLane1[3], msg->rightLane1[3]);
 			
-			se_currentClothoideRight[0] = new_l_c1;
-			se_currentClothoideRight[1] = new_l_c0;
-			se_currentClothoideRight[2] = new_l_phi;
-			se_currentClothoideRight[3] = new_l_delta;
+			se_currentClothoideRight[0] = new_r_c1;
+			se_currentClothoideRight[1] = new_r_c0;
+			se_currentClothoideRight[2] = new_r_phi;
+			se_currentClothoideRight[3] = new_r_delta;
+		}
+		else
+		{
+			std::cout << "no clothoide ";
 		}
 	}
+	/*
+	std::cout << new_r_c1;
+	std::cout << " _ ";
+	std::cout << new_r_c0;
+	std::cout << " _ ";
+	std::cout << new_r_phi;
+	std::cout << " _ ";
+	std::cout << new_r_delta;
+	std::cout << " _ ";*/
 }
 
 void se_cb_sub_currentSpeed(const std_msgs::Float32::ConstPtr& msg)
