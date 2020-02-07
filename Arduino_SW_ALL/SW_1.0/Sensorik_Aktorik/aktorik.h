@@ -7,6 +7,7 @@
 #include <std_msgs/UInt8.h>
 #include <std_msgs/UInt16.h>
 #include <std_msgs/Int16.h>
+#include <std_msgs/UInt64.h>
 #include <std_msgs/Float32.h>
 #include <std_msgs/Bool.h>
 
@@ -53,6 +54,6 @@ void set_output(short state, short port);
 
 void rc_publish();
 void drive_mode_publish();
-void test_publish();
+void t_test_publish(unsigned long value);
 
 #endif

@@ -7,9 +7,9 @@
  *
  * Code generation for model "PI_Laengsregler".
  *
- * Model version              : 1.34
+ * Model version              : 1.35
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Thu Feb  6 20:42:28 2020
+ * C++ source code generated on : Fri Feb  7 18:11:09 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -289,8 +289,8 @@ void PI_Laengsregler_step(void)
   }
 
   /* Switch: '<S2>/Switch3' */
-  if (PI_Laengsregler_B.DataTypeConversion >=
-      PI_Laengsregler_P.Switch3_Threshold) {
+  if (PI_Laengsregler_B.DataTypeConversion > PI_Laengsregler_P.Switch3_Threshold)
+  {
     /* Gain: '<S2>/Getriebe' incorporates:
      *  Gain: '<S2>/Radumfang'
      */

@@ -3,6 +3,8 @@
 #include "aktorik.h"
 #include "serial.h"
 
+unsigned long start_loop_time = 0;
+
 bool enable_rpm = true;
 
 float rpm;
@@ -23,20 +25,28 @@ void setup()
 
 void loop() 
 {
+  t_test_publish(0);
+  //t_test_publish(millis());
   //Aktorik Teil -> hier kann der Rückgabewert ausgelesen werden
   //Der Wert sagt ob der RC mode aktiviert ist 
-  aktorik();
-  rc_publish();
-  drive_mode_publish();
+  //aktorik();
+  //t_test_publish(millis());
+  //rc_publish();
+  //drive_mode_publish();
 
-  tof = read_TOF();
-  tof_publish(tof[0], tof[1], tof[2], tof[3], tof[4]);
+  //tof = read_TOF();
+  //tof_publish(tof[0], tof[1], tof[2], tof[3], tof[4]);
     
-  if (enable_rpm){
-    rpm = read_RPM();
-    rpm_publish(rpm);
-  }
-  enable_rpm = !enable_rpm;
+  //if (enable_rpm){
+  //  rpm = read_RPM();
+  //  rpm_publish(rpm);
+  //}
+  //enable_rpm = !enable_rpm;
+
+  //long time_loop = (long) millis() - (long) start_loop_time;
+  //test_publish((unsigned long) time_loop);
+  //test_publish(millis());
+  //start_loop_time = millis();
   
   arduino_node.spinOnce();
 }
