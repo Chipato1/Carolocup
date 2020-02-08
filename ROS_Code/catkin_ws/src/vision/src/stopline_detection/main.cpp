@@ -38,8 +38,9 @@ std::map<std::string, std::string> readConfigFile() {
 
 StoplineDetector stoplineDetector;
 ros::Publisher stoplinePublisher;
-StoplineMsg stop_Msg;
+vision::StoplineMsg stop_Msg;
 double result;
+std::map<std::string, std::string> config;
 void imageCallback(const vision::HoughPointsArray::ConstPtr& msg){
     //cv::Mat image = cv::imread("/Users/beni/Desktop/Studium/Studienarbeit/OpenCV/OpenCVTest/OpenCVTest/images");
     result = stoplineDetector.detect(msg, msg->points.size(), config);
@@ -63,7 +64,7 @@ int main(int argc, char** argv) {
 	std::cout << "Success!" << std::endl;
 	std::cout << "Trying to load config file config.cfg" << std::endl;
 	//Config Datei lesen und DrivingVision-Klasse erstellen
-	std::map<std::string, std::string> config = readConfigFile();
+	config = readConfigFile();
 	std::cout << "Success!" << std::endl;
 
 	ros::NodeHandle nh;

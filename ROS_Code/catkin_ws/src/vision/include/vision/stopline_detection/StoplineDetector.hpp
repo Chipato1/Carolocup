@@ -17,14 +17,14 @@ using namespace std;
 class StoplineDetector
 {
 public:
-    bool detect(const vision::HoughPointsArray::ConstPtr& imageArray, int pointerSize);
+    double detect(const vision::HoughPointsArray::ConstPtr &imageArray, int pointerSize, std::map<std::string, std::string> config);
     double getDistanceBetweenPoints(Point p1, Point p2);
     vector<Vec4i> getPossibleEventLine(vector<Vec4i> & detectedLines);
     vector<Vec4i> checkLineWidth (vector<Vec4i> lines);
     cv::Mat defineROI (cv::Mat &image);
     Vec4i getStopLine (vector<Vec4i> lines);
     vector<Vec4i> checkOrthogonal(vector<Vec4i> lines, vector<Vec4i> pLines);
-    bool StoplineDetector::lineIsWithinArea(Vec4i line, Point carCenter);
+    bool lineIsWithinArea(Vec4i line, Point carCenter);
     
     //Debug Function
     void failureReport(string i);

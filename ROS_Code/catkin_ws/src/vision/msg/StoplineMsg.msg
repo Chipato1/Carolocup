@@ -1,2 +1,2 @@
 bool stoplineDetected
-double distance
+float64 distance
