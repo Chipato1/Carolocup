@@ -1,23 +1,61 @@
-#include  <vision/startbox_detection/StartboxDetector.hpp>
+//Reference:https://www.learnopencv.com/opencv-qr-code-scanner-c-and-python/
 
+#include <vision/startbox_detection/StartboxDetector.hpp>
+
+
+using namespace std;
 using namespace cv;
+using namespace zbar;
 
-StartboxDetector::StartboxDetector() {
-    qrDecoder = QRCodeDetector();
+
+
+// Find and decode barcodes and QR codes
+void StartboxDetector::decode(Mat& im, vector<decodedObject>& decodedObjects)
+{
+
+    // Create zbar scanner
+    ImageScanner scanner;
+
+    // disable all
+    scanner.set_config(ZBAR_NONE, ZBAR_CFG_ENABLE, 0);
+
+    // enable qr
+    scanner.set_config(ZBAR_QRCODE, ZBAR_CFG_ENABLE, 1);
+
+    // Convert image to grayscale
+    Mat imGray;
+    //cvtColor(im, imGray, COLOR_BGR2GRAY);
+    imGray = im;
+    // Wrap image data in a zbar image
+    Image image(im.cols, im.rows, "Y800", (uchar*)imGray.data, im.cols * im.rows);
+
+    // Scan the image for barcodes and QRCodes
+    int n = scanner.scan(image);
+
+    // Print results
+    for (Image::SymbolIterator symbol = image.symbol_begin(); symbol != image.symbol_end(); ++symbol)
+    {
+        decodedObject obj;
+
+        obj.type = symbol->get_type_name();
+        obj.data = symbol->get_data();
+
+        // Print type and data
+        cout << "Type : " << obj.type << endl;
+        cout << "Data : " << obj.data << endl << endl;
+        decodedObjects.push_back(obj);
+    }
 }
 
-bool StartboxDetector::checkQRCode(cv::Mat inputImage) {
-    cv::resize(inputImage, inputImage, cv::Size(800,600));
-	cv::Mat outputImage;
-    cv::threshold(inputImage, outputImage, 70, 255, cv::THRESH_BINARY);
-    //Detect and Decode the QRCode in the image
-    extractedData = qrDecoder.detectAndDecode(outputImage);
-       
-    if(extractedData.length()>0)
-     {  
-             return true;
-     }
-    return false;
-}
+void StartboxDetector::checkQRCode(cv::Mat inputImage)
+{
 
-       
+
+    // Variable for decoded objects
+    vector<decodedObject> decodedObjects;
+
+    // Find and decode barcodes and QR codes
+    decode(inputImage, decodedObjects);
+
+    //return true;
+}
