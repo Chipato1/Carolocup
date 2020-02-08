@@ -19,7 +19,7 @@
 #define servo_Steigung_kleinerNull    1.11111
 #define servo_Steigung_groesserNull   1.4
 #define servo_nullstellung_PWM        88
-#define interval 1000
+#define interval 500
 
 #define pwm_fernbedienung_servo       8
 #define pwm_fernbedienung_motor       4
@@ -31,9 +31,9 @@
 #define bremslicht                    36
 #define rueckfahrlicht                32
 #define blaues_licht                  42
-#define drive_mode_off                41
-#define drive_mode_freeDrive          43
-#define drive_mode_obstacleAvoidance  45
+#define drive_mode_off                43
+#define drive_mode_freeDrive          45
+#define drive_mode_obstacleAvoidance  47
 
 void init_aktorik(ros::NodeHandle *aktorik_node);
 bool aktorik();

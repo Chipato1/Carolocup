@@ -11,7 +11,8 @@ float rpm_T1_Right, rpm_T2_Right, rpm_value_Right;
 int rpm_count_Left;
 int rpm_count_Right;
 
-void init_rpm(){
+void init_rpm()
+{
   pinMode(RPM_inputPin_Left, INPUT_PULLUP);
   pinMode(RPM_inputPin_Right, INPUT_PULLUP);
   

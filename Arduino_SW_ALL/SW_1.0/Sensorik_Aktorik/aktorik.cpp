@@ -46,6 +46,8 @@ short state_light_rem = 0;
 uint16_t previousMillis = 0;
 boolean blinkstate = true;
 
+unsigned long rc_timer = 0;
+
 //int arr[] = {0, 0, 0, 0, 0, 0};
 int buff_rc[] = {0, 0, 0, 0, 0, 0};
 
@@ -101,6 +103,9 @@ bool aktorik()
   if (((buff_rc[0]+buff_rc[1]+buff_rc[2]+buff_rc[3]+buff_rc[4]+buff_rc[5])/6.0) > rcmode_schwellenwert)
   {                                    //RC-Mode
       state_light_rem = 2;
+	  
+	  if (!rc_mode)
+		  rc_timer = millis();
    
       rc_mode = true;
       motor_bewegung_RC_mode();
@@ -136,17 +141,17 @@ bool aktorik()
   }
 
 
-  if(digitalRead(drive_mode_off)==HIGH)
+  if(digitalRead(drive_mode_off) == HIGH)
   {
     drive_mode = 0;
   }
   
-  if(digitalRead(drive_mode_freeDrive)==HIGH)
+  if(digitalRead(drive_mode_freeDrive) == HIGH)
   {
     drive_mode = 1;
   }
 
-  if(digitalRead(drive_mode_obstacleAvoidance)==HIGH)
+  if(digitalRead(drive_mode_obstacleAvoidance) == HIGH)
   {
     drive_mode = 2;
   }
@@ -270,12 +275,14 @@ void motor_bewegung_RC_mode()
     }
     */
     eingelesenes_pwm_motor = pulseIn(pwm_fernbedienung_motor, HIGH);
+	
+	unsigned long currmills = millis();
     
-    if(eingelesenes_pwm_motor < 1200)
+    if(eingelesenes_pwm_motor < 1200 && rc_timer + 1000 > currmills)
     {
       motor_uebertragung_RC_mode = 87;
     }
-    else if(eingelesenes_pwm_motor > 1600)
+    else if(eingelesenes_pwm_motor > 1600 && rc_timer + 1000 > currmills)
     {
       motor_uebertragung_RC_mode = 100;
     }
@@ -318,19 +325,19 @@ void set_output(short state, short port)
   }
 }
 
-void rc_publish ()
+void rc_publish()
 { 
   rc_msg.data = rc_mode;
   rc_pub.publish(&rc_msg);
 }
 
-void drive_mode_publish ()
+void drive_mode_publish()
 { 
   drive_mode_msg.data = drive_mode;
   drive_mode_pub.publish(&drive_mode_msg);
 }
 
-void t_test_publish (unsigned long value)
+void t_test_publish(unsigned long value)
 { 
   test_msg.data = value;
   test_pub.publish(&test_msg);

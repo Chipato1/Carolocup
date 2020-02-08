@@ -26,11 +26,9 @@ void setup()
 
 void loop() 
 {
-
- 
   aktorik();
+  
   rc_publish();
-
   drive_mode_publish();
   
   //t_test_publish(0);
