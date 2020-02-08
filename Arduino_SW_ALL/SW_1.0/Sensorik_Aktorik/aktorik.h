@@ -21,10 +21,10 @@
 #define servo_nullstellung_PWM        88
 #define interval 1000
 
-#define tiefpass_pwm_motor_voltage    A13
-#define tiefpass_rcmode_voltage       A12
-#define tiefpass_pwm_motor_voltage_nr 13
-#define tiefpass_rcmode_voltage_nr    12
+#define pwm_fernbedienung_servo       8
+#define pwm_fernbedienung_motor       4
+#define tiefpass_rcmode_voltage       A13
+#define tiefpass_rcmode_voltage_nr    13
 #define frontlicht                    34
 #define blinker_links                 38
 #define blinker_rechts                40
@@ -48,7 +48,8 @@ void lichtRueck_cb(const std_msgs::UInt8& light_state);
 
 void servo_bewegung(float lenkwinkel_bogenmass);  //Funktion Servosteuerung im autonomen Betrieb
 void motor_bewegung(int16_t motor_drehzahl);      //Funktion Motorsteuerung im autonomen Betrieb
-void motor_bewegung_RC_mode ();                   //Funktion Motorsteuerung im RC - Mode
+void motor_bewegung_RC_mode ();                  //Funktion Motorsteuerung im RC - Mode
+void servo_bewegung_RC_mode ();
 void set_led_states();
 void set_output(short state, short port);
 

@@ -81,59 +81,19 @@ uint16_t* read_TOF()
   uint16_t distance_ToF_cross = threshold_cross;
   uint16_t distance_ToF_back = threshold_back;
 
-  ToF_front.rangingTest(&measure_front, false); // pass in 'true' to get debug data printout!
-  ToF_left.rangingTest(&measure_left, false); // pass in 'true' to get debug data printout!
-  ToF_right.rangingTest(&measure_right, false); // pass in 'true' to get debug data printout!
-  ToF_cross.rangingTest(&measure_cross, false); // pass in 'true' to get debug data printout!
+  
+  //ToF_front.rangingTest(&measure_front, false); // pass in 'true' to get debug data printout!
+  //ToF_left.rangingTest(&measure_left, false); // pass in 'true' to get debug data printout!
+  //ToF_right.rangingTest(&measure_right, false); // pass in 'true' to get debug data printout!
+  //ToF_cross.rangingTest(&measure_cross, false); // pass in 'true' to get debug data printout!
 
-  //read ToF_front
-  if (measure_front.RangeStatus != 4) {  // phase failures have incorrect data
-    distance_ToF_front = measure_front.RangeMilliMeter;
-    if(distance_ToF_front > threshold_front){
-      distance_ToF_front = threshold_front;
-    }
-  } else {
-    distance_ToF_front = threshold_front;
-  }
-  
-  //read ToF_left
-  if (measure_left.RangeStatus != 4) {  // phase failures have incorrect data
-    distance_ToF_left = measure_left.RangeMilliMeter;
-    if(distance_ToF_left > threshold_left){
-      distance_ToF_left = threshold_left;
-    }
-  } else {
-    distance_ToF_left = threshold_left;
-  }
-  
-  //read ToF_right
-  if (measure_right.RangeStatus != 4) {  // phase failures have incorrect data
-    distance_ToF_right = measure_right.RangeMilliMeter;
-    if(distance_ToF_right > threshold_right){
-      distance_ToF_right = threshold_right;
-    }
-  } else {
-    distance_ToF_right = threshold_right;
-  }
+  //ToF_front.getSingleRangingMeasurement(&measure_front, false);
+  //ToF_left.getSingleRangingMeasurement(&measure_left, false);
+  //ToF_right.getSingleRangingMeasurement(&measure_right, false);
+  //ToF_cross.getSingleRangingMeasurement(&measure_cross, false);
 
-  //read ToF_cross
-  if (measure_cross.RangeStatus != 4) {  // phase failures have incorrect data
-    distance_ToF_cross = measure_cross.RangeMilliMeter;
-    if(distance_ToF_cross > threshold_cross){
-      distance_ToF_cross = threshold_cross;
-    }
-  } else {
-    distance_ToF_cross = threshold_cross;
-  }
-  
-  //read ToF_back
-  if ((ToF_back.readRangeStatus() < VL6180X_ERROR_SYSERR_1) || (ToF_back.readRangeStatus() > VL6180X_ERROR_SYSERR_5)){ //no system error
-    distance_ToF_back = ToF_back.readRange();
-    if(distance_ToF_back > threshold_back){
-      distance_ToF_back = threshold_back;
-    }
-  }
-  
+  //distance_ToF_front = measure_front.RangeMilliMeter;
+
   tof_array[0] = distance_ToF_front;
   tof_array[1] = distance_ToF_left;
   tof_array[2] = distance_ToF_right;

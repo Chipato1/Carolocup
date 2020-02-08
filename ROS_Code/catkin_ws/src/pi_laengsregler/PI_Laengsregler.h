@@ -7,9 +7,9 @@
  *
  * Code generation for model "PI_Laengsregler".
  *
- * Model version              : 1.35
+ * Model version              : 1.37
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Fri Feb  7 18:11:09 2020
+ * C++ source code generated on : Sat Feb  8 16:46:29 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -157,7 +157,7 @@
 
 /* Block signals for system '<S4>/Enabled Subsystem' */
 typedef struct {
-  SL_Bus_PI_Laengsregler_std_msgs_Float32 In1;/* '<S6>/In1' */
+  SL_Bus_PI_Laengsregler_std_msgs_Float32 In1;/* '<S7>/In1' */
 } B_EnabledSubsystem_PI_Laengsr_T;
 
 /* Block signals (default storage) */
@@ -167,6 +167,7 @@ typedef struct {
   real_T Gain;                         /* '<S2>/Gain' */
   real_T Saturation2;                  /* '<S2>/Saturation2' */
   real_T Switch;                       /* '<S2>/Switch' */
+  SL_Bus_PI_Laengsregler_std_msgs_Bool In1;/* '<S9>/In1' */
   B_EnabledSubsystem_PI_Laengsr_T EnabledSubsystem_n;/* '<S5>/Enabled Subsystem' */
   B_EnabledSubsystem_PI_Laengsr_T EnabledSubsystem;/* '<S4>/Enabled Subsystem' */
 } B_PI_Laengsregler_T;
@@ -174,9 +175,11 @@ typedef struct {
 /* Block states (default storage) for system '<Root>' */
 typedef struct {
   ros_slros_internal_block_Publ_T obj; /* '<S3>/SinkBlock' */
+  ros_slros_internal_block_Subs_T obj_b;/* '<S6>/SourceBlock' */
   ros_slros_internal_block_Subs_T obj_o;/* '<S5>/SourceBlock' */
   ros_slros_internal_block_Subs_T obj_j;/* '<S4>/SourceBlock' */
-  boolean_T objisempty;                /* '<S5>/SourceBlock' */
+  boolean_T objisempty;                /* '<S6>/SourceBlock' */
+  boolean_T objisempty_i;              /* '<S5>/SourceBlock' */
   boolean_T objisempty_c;              /* '<S4>/SourceBlock' */
   boolean_T objisempty_f;              /* '<S3>/SinkBlock' */
 } DW_PI_Laengsregler_T;
@@ -196,6 +199,11 @@ typedef struct {
   boolean_T Integrator_CSTATE;         /* '<S2>/Integrator' */
 } XDis_PI_Laengsregler_T;
 
+/* Zero-crossing (trigger) state */
+typedef struct {
+  ZCSigState Integrator_Reset_ZCE;     /* '<S2>/Integrator' */
+} PrevZCX_PI_Laengsregler_T;
+
 #ifndef ODE3_INTG
 #define ODE3_INTG
 
@@ -210,21 +218,21 @@ typedef struct {
 /* Parameters for system: '<S4>/Enabled Subsystem' */
 struct P_EnabledSubsystem_PI_Laengsr_T_ {
   SL_Bus_PI_Laengsregler_std_msgs_Float32 Out1_Y0;/* Computed Parameter: Out1_Y0
-                                                   * Referenced by: '<S6>/Out1'
+                                                   * Referenced by: '<S7>/Out1'
                                                    */
 };
 
 /* Parameters (default storage) */
 struct P_PI_Laengsregler_T_ {
-  real_T ir;                           /* Variable: ir
-                                        * Referenced by: '<S2>/Gain1'
-                                        */
-  real_T pr;                           /* Variable: pr
-                                        * Referenced by: '<S2>/Gain'
-                                        */
-  SL_Bus_PI_Laengsregler_std_msgs_Float32 Constant_Value;/* Computed Parameter: Constant_Value
-                                                          * Referenced by: '<S4>/Constant'
-                                                          */
+  SL_Bus_PI_Laengsregler_std_msgs_Bool Out1_Y0;/* Computed Parameter: Out1_Y0
+                                                * Referenced by: '<S9>/Out1'
+                                                */
+  SL_Bus_PI_Laengsregler_std_msgs_Bool Constant_Value;/* Computed Parameter: Constant_Value
+                                                       * Referenced by: '<S6>/Constant'
+                                                       */
+  SL_Bus_PI_Laengsregler_std_msgs_Float32 Constant_Value_h;/* Computed Parameter: Constant_Value_h
+                                                            * Referenced by: '<S4>/Constant'
+                                                            */
   SL_Bus_PI_Laengsregler_std_msgs_Float32 Constant_Value_l;/* Computed Parameter: Constant_Value_l
                                                             * Referenced by: '<S5>/Constant'
                                                             */
@@ -246,10 +254,16 @@ struct P_PI_Laengsregler_T_ {
   real_T Switch1_Threshold;            /* Expression: 0
                                         * Referenced by: '<S2>/Switch1'
                                         */
+  real_T Gain_Gain;                    /* Expression: 1
+                                        * Referenced by: '<S2>/Gain'
+                                        */
   real_T Integrator_IC;                /* Expression: 0
                                         * Referenced by: '<S2>/Integrator'
                                         */
-  real_T Saturation_UpperSat;          /* Expression: 2.63
+  real_T Gain1_Gain;                   /* Expression: 4
+                                        * Referenced by: '<S2>/Gain1'
+                                        */
+  real_T Saturation_UpperSat;          /* Expression: 2.3
                                         * Referenced by: '<S2>/Saturation'
                                         */
   real_T Saturation_LowerSat;          /* Expression: 0
@@ -258,7 +272,7 @@ struct P_PI_Laengsregler_T_ {
   real_T BegrenzungaufmaximaleGeschwindi;/* Expression: 0
                                           * Referenced by: '<S2>/Begrenzung auf maximale Geschwindigkeit '
                                           */
-  real_T BegrenzungaufmaximaleGeschwin_p;/* Expression: -2.63
+  real_T BegrenzungaufmaximaleGeschwin_p;/* Expression: -2.3
                                           * Referenced by: '<S2>/Begrenzung auf maximale Geschwindigkeit '
                                           */
   real_T Radumfang1_Gain;              /* Expression: 1/0.175896
@@ -282,7 +296,7 @@ struct P_PI_Laengsregler_T_ {
   real_T Constant_Value_d;             /* Expression: 0
                                         * Referenced by: '<S2>/Constant'
                                         */
-  real_T Switch_Threshold;             /* Expression: 2.6
+  real_T Switch_Threshold;             /* Expression: 2.25
                                         * Referenced by: '<S2>/Switch'
                                         */
   P_EnabledSubsystem_PI_Laengsr_T EnabledSubsystem_n;/* '<S5>/Enabled Subsystem' */
@@ -419,7 +433,9 @@ extern "C" {
  * '<S3>'   : 'PI_Laengsregler/Publish'
  * '<S4>'   : 'PI_Laengsregler/Subscribe'
  * '<S5>'   : 'PI_Laengsregler/Subscribe1'
- * '<S6>'   : 'PI_Laengsregler/Subscribe/Enabled Subsystem'
- * '<S7>'   : 'PI_Laengsregler/Subscribe1/Enabled Subsystem'
+ * '<S6>'   : 'PI_Laengsregler/Subscribe2'
+ * '<S7>'   : 'PI_Laengsregler/Subscribe/Enabled Subsystem'
+ * '<S8>'   : 'PI_Laengsregler/Subscribe1/Enabled Subsystem'
+ * '<S9>'   : 'PI_Laengsregler/Subscribe2/Enabled Subsystem'
  */
 #endif                                 /* RTW_HEADER_PI_Laengsregler_h_ */

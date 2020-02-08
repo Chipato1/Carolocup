@@ -27,13 +27,16 @@ int test_value = 0;
 int16_t analogvalue_motor_rcmode; //eingelesener Pin - Wert am Tiefpass vom Motor
 int16_t analogvalue_rcmode;   //eingelesener Pin an Channel 4, um zu schauen ob im RC-Mode
 int16_t drive_mode;
-int motor_zaehler = 0;
+//int motor_zaehler = 0;
 int buff_rc_zaehler = 0;
 float wert_servo;
 float lenkwinkel_servosize;
 float lenkwinkel_grad;
 int16_t motor_uebertragung_RC_mode;
+int16_t servo_uebertragung_RC_mode;
 int16_t motor_uebertragung;
+int16_t eingelesenes_pwm_servo;
+int16_t eingelesenes_pwm_motor;
 
 short state_light_r = 0;
 short state_light_l = 0;
@@ -43,7 +46,7 @@ short state_light_rem = 0;
 uint16_t previousMillis = 0;
 boolean blinkstate = true;
 
-int arr[] = {0, 0, 0, 0, 0, 0};
+//int arr[] = {0, 0, 0, 0, 0, 0};
 int buff_rc[] = {0, 0, 0, 0, 0, 0};
 
 void init_aktorik(ros::NodeHandle *aktorik_node)
@@ -70,12 +73,15 @@ void init_aktorik(ros::NodeHandle *aktorik_node)
   pinMode(rueckfahrlicht, OUTPUT);          
   pinMode(blaues_licht, OUTPUT);
   
-  pinMode(tiefpass_pwm_motor_voltage, INPUT);
+  //pinMode(tiefpass_pwm_motor_voltage, INPUT);
   pinMode(tiefpass_rcmode_voltage, INPUT);
 
   pinMode(drive_mode_off, INPUT);
   pinMode(drive_mode_freeDrive, INPUT);
   pinMode(drive_mode_obstacleAvoidance, INPUT);
+
+  pinMode(pwm_fernbedienung_servo, INPUT);
+  pinMode(pwm_fernbedienung_motor, INPUT);
 
   //Alle Lichter ausschalten
   digitalWrite(blinker_links, LOW);            
@@ -87,8 +93,7 @@ void init_aktorik(ros::NodeHandle *aktorik_node)
 }
 
 bool aktorik()
-{  
-  int voltage_rcmode;
+{
   analogvalue_rcmode = analogRead(tiefpass_rcmode_voltage_nr);    //Einlesen des Pins vom Tiefpass vom channel 4
 
   buff_rc[buff_rc_zaehler] = analogvalue_rcmode;
@@ -99,6 +104,7 @@ bool aktorik()
    
       rc_mode = true;
       motor_bewegung_RC_mode();
+      servo_bewegung_RC_mode();
   }
   else 
   {
@@ -186,16 +192,19 @@ void lichtRemote_cb(const std_msgs::UInt8& light_state)
 
 void servo_bewegung(float lenkwinkel_bogenmass)
 {
-  lenkwinkel_grad = 20*(lenkwinkel_bogenmass/pi)*180;
+  lenkwinkel_grad = (lenkwinkel_bogenmass/pi)*180;
   if(lenkwinkel_grad<=0)
   {
-    lenkwinkel_servosize = lenkwinkel_grad + 91.5;
+    
+    lenkwinkel_servosize = 1.428 * lenkwinkel_grad + 107;
   }
   else
   {
-    lenkwinkel_servosize = lenkwinkel_grad + 91.5;
-  } 
-  servo.write(lenkwinkel_servosize); //Servo fährt in die ensprechende Stellung
+    lenkwinkel_servosize = 1.428 * lenkwinkel_grad + 107;
+  }
+
+  //if ((lenkwinkel_servosize < 107.4998)&&(lenkwinkel_servosize > 106.5002))
+  servo.write(lenkwinkel_servosize); //Servo fährt in die entsprechende Stellung
 }
 
 void motor_bewegung(int16_t motor_drehzahl)
@@ -224,8 +233,8 @@ void motor_bewegung(int16_t motor_drehzahl)
 
 void motor_bewegung_RC_mode()
 {
-  //test_value = 4;
-  //test_publish();
+  /*test_value = 4;
+    test_publish();
   
     analogvalue_motor_rcmode = analogRead(tiefpass_pwm_motor_voltage_nr);
     arr[motor_zaehler]=analogvalue_motor_rcmode;
@@ -259,23 +268,33 @@ void motor_bewegung_RC_mode()
     {
         motor_zaehler = 0;
     }
-  /*
-    if (analogvalue_motor_rcmode < tiefpass_untere_spannung) //rückwarts
-    {       
-        //motor_uebertragung_RC_mode = (analogvalue_motor_rcmode * 3.3333) - 9.99;
-        motor_uebertragung_RC_mode = 87;
-    }
-    else if (analogvalue_motor_rcmode > tiefpass_obere_spannung)//vorwärts
-    {   
-        //motor_uebertragung_RC_mode = (analogvalue_motor_rcmode * 2.222) + 36.06;
-        motor_uebertragung_RC_mode = 100;
-    }
-    else
+    */
+    eingelesenes_pwm_motor = pulseIn(pwm_fernbedienung_motor, HIGH);
+    
+    if(eingelesenes_pwm_motor < 1200)
     {
-      //motor.detach(6);
-      motor_uebertragung_RC_mode = 93;
-    }*/
-   // motor.write(motor_uebertragung_RC_mode); 
+      motor_uebertragung_RC_mode = 87;
+    }
+    else if(eingelesenes_pwm_motor > 1600)
+    {
+      motor_uebertragung_RC_mode = 100;
+    }
+    else 
+    {
+       motor_uebertragung_RC_mode = 93;
+    }
+    
+    motor.write(motor_uebertragung_RC_mode);
+    
+}
+
+void servo_bewegung_RC_mode()
+{
+  eingelesenes_pwm_servo = pulseIn(pwm_fernbedienung_servo, HIGH);
+
+  servo_uebertragung_RC_mode = 2 * (0.071 * eingelesenes_pwm_servo) - 104.15;
+
+  servo.write(servo_uebertragung_RC_mode);
 }
 
 void set_led_states()

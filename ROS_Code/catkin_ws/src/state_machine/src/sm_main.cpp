@@ -212,24 +212,19 @@ bool sm_isStateChanged()
 /* State specific handles */
 
 /* Template for handler:
-
 void sm_handle_<STATE>()
 {
 	if (sm_isStateChanged())
 	{
 		// initialize, is called once when the state has changed
 	}
-
 	// state procedure, is called with a fixed rate
-
 	if (<transition condition>)
 	{
 		sm_switch_state(<New State>);
-
 		// end procedure
 	}
 }
-
 */
 
 void sm_handle_INIT()
@@ -302,7 +297,7 @@ void sm_handle_DRIVE_RIGHT()
 	if (sm_isStateChanged())
 	{
 		se_setEnableLateralControl(SE_TRUE);
-		se_setTargetSpeed(0.3);
+		se_setTargetSpeed(-0.3);
 	}
 
 	se_setDeltaY(-se_currentClothoideRight[3]);
@@ -623,7 +618,7 @@ double getMidValue(double val1, double val2)
 /* Topic Callbacks */
 void se_cb_sub_visionResult(const vision::VisionResultMsg::ConstPtr& msg)
 {
-	std::cout << "visionResult received ";
+	std::cout << "vr - ";
 	
 	std_msgs::Float64 new_r_delta;
 	std_msgs::Float64 new_r_phi;
@@ -661,10 +656,10 @@ void se_cb_sub_visionResult(const vision::VisionResultMsg::ConstPtr& msg)
 
 	if (msg->foundML && msg->solvedML1)
 	{
-		std::cout << "ML detected" << "\n";
+		std::cout << "M - ";
 		if (msg->foundRL && msg->solvedRL1)
 		{
-			std::cout << "RL detected" << "\n";
+			std::cout << "R - ";
 
 			new_r_c1.data = msg->rightLane1[0];
 			new_r_c0.data = msg->rightLane1[1];
@@ -681,9 +676,43 @@ void se_cb_sub_visionResult(const vision::VisionResultMsg::ConstPtr& msg)
 			se_currentClothoideRight[2] = getMidValue(new_m_phi.data, new_r_phi.data);
 			se_currentClothoideRight[3] = getMidValue(new_m_delta.data, new_r_delta.data);
 
+			std::cout << "r: " << new_r_delta.data << " - m: " << new_m_delta.data << "\n -deltaY: " << se_currentClothoideRight[3] << "\n";
+
 			std::cout << se_currentClothoideRight[3] << "\n";
 		}
+		else
+		{
+			new_m_c1.data = msg->middleLane1[0];
+			new_m_c0.data = msg->middleLane1[1];
+			new_m_phi.data = msg->middleLane1[2];
+			new_m_delta.data = msg->middleLane1[3];
+			
+			se_currentClothoideRight[0] = new_m_c1.data;
+			se_currentClothoideRight[1] = new_m_c0.data;
+			se_currentClothoideRight[2] = new_m_phi.data;
+			se_currentClothoideRight[3] = -new_m_delta.data + 200;
+
+			std::cout << "m: " << new_m_delta.data << "\n -deltaY: " << se_currentClothoideRight[3] << "\n";
+		}
 	}
+	else if (msg->foundRL && msg->solvedRL1)
+	{
+		std::cout << "R - ";
+
+		new_r_c1.data = msg->rightLane1[0];
+		new_r_c0.data = msg->rightLane1[1];
+		new_r_phi.data = msg->rightLane1[2];
+		new_r_delta.data = msg->rightLane1[3];
+		
+		se_currentClothoideRight[0] = new_r_c1.data;
+		se_currentClothoideRight[1] = new_r_c0.data;
+		se_currentClothoideRight[2] = new_r_phi.data;
+		se_currentClothoideRight[3] = -new_r_delta.data - 200;
+
+		std::cout << "r: " << new_r_delta.data << "\n -deltaY: " << se_currentClothoideRight[3] << "\n";
+	}
+
+
 	/*
 	std::cout << new_r_c1;
 	std::cout << " _ ";
