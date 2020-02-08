@@ -55,14 +55,14 @@ vector<Vec4i> StoplineDetector::getPossibleEventLine(vector<Vec4i> & detectedLin
         //calculate angle in radian,  if you need it in degrees just do angle * 180 / PI
         angle = abs(atan2(p1.y - p2.y, p1.x - p2.x) * (180/CV_PI));
         
-        if (angle > 165 || angle < 15) {
+        if (angle > 165 || angle < 20) {
             possibleStoppLine.push_back(detectedLines.at(i));
         }
         
         if (angle < 100 && angle > 80) {
             perpendicularLines.push_back(detectedLines.at(i));
         }
-	std::cout << "Winkel spur " << i << " : " << angle << std::endl;
+	//std::cout << "Winkel spur " << i << " : " << angle << std::endl;
     }
     
     return possibleStoppLine;
@@ -95,7 +95,7 @@ vector<Vec4i> StoplineDetector::checkLineWidth (vector<Vec4i> lines) {
                   distance2 = getDistanceBetweenPoints(p1, p4);
                   distance3 = getDistanceBetweenPoints(p2, p3);
                   distance4 = getDistanceBetweenPoints(p2, p4);
-                  cout << "d1: " << distance1 << "  d2: " << distance2 << endl;
+                  //cout << "d1: " << distance1 << "  d2: " << distance2 << endl;
                   if ((distance1 > 30 && distance1 < 100) || (distance2 > 30 && distance2 < 100) || (distance3 > 30 && distance3 < 100) || (distance4 > 30 && distance4 < 100)) {
                       resultingLines.push_back(lines[q]);
                       resultingLines.push_back(lines[i]);
@@ -107,8 +107,8 @@ vector<Vec4i> StoplineDetector::checkLineWidth (vector<Vec4i> lines) {
         return resultingLines;
 }
 
-bool StoplineDetector::lineIsWithinArea(Vec4i line, Point carCenter) {
-    if ((abs(line[0]-carCenter.x) < 200 && abs(line[1]-roiHeight) < 1500)  || (abs(line[2]-carCenter.x) < 200 && abs(line[3]-roiHeight) < 1500)) {
+bool StoplineDetector::lineIsWithinArea(Vec4i line, Point carPoint) {
+    if ((abs(line[0]-carPoint.x) < 200 && abs(line[1]-roiHeight) < 1500)  || (abs(line[2]-carPoint.x) < 200 && abs(line[3]-roiHeight) < 1500)) {
         return true;
     }
     
@@ -122,7 +122,7 @@ bool StoplineDetector::lineIsWithinArea(Vec4i line, Point carCenter) {
     Vec4i l1;
     Point p1;
     Point p2;
-    Point carCenter(roiWidth/2, roiHeight);
+    Point carCenter(roiWidth/2, roiHeight-50);
 
      
     double distance1;
@@ -221,19 +221,19 @@ vector<Vec4i> StoplineDetector::checkOrthogonal(vector<Vec4i> lines, vector<Vec4
     return resultingLines;
 }
 
-double calculateDistance(Vec4i stoppLine) {
+double StoplineDetector::calculateDistance(Vec4i stoppLine) {
     
     return (double)((ipmSizeY-stoppLine[1])/ipmScaling);
 }
 
-int decreaseValidation(int validation) {
+int StoplineDetector::decreaseValidation(int validation) {
     if(validation > 0 )
         validation--;
     
     return validation;
 }
 
-void readConfigDetails(std::map<std::string, std::string> config) {
+void StoplineDetector::readConfigDetails(std::map<std::string, std::string> config) {
     ipmSizeX         =     config.count("ipm_Size_x")          ? stod(config["ipm_Size_x"])        : 1200;
     ipmSizeY         =     config.count("ipm_Size_y")          ? stod(config["ipm_Size_y"])        : 2400;
     ipmScaling             =     config.count("ipm_scaling")             ? stod(config["ipm_scaling"])           : 1;
@@ -303,6 +303,9 @@ double StoplineDetector::detect(const vision::HoughPointsArray::ConstPtr &imageA
 
 	cout << "validation: " << validation << endl;
     if (validation > 2) {
+	cout << "++++++++++StopLine detected++++++++++" << endl;
+	cout << "distance: " << calculateDistance(stoppLine) << endl;
+	validation = 0;
         return calculateDistance(stoppLine);
     }
     
