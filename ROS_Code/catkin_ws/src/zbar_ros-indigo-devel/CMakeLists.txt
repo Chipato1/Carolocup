@@ -1,13 +1,14 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(zbar_ros)
 
-find_package(catkin REQUIRED COMPONENTS roscpp cv_bridge nodelet roslint)
+find_package(catkin REQUIRED COMPONENTS roscpp cv_bridge nodelet roslint OpenCV)
 
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES barcode_reader_nodelet
   CATKIN_DEPENDS nodelet cv_bridge roscpp
 )
+add_compile_options(-std=c++11)
 
 include_directories(
   include

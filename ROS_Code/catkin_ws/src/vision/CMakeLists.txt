@@ -151,8 +151,8 @@ set(CMAKE_CXX_FLAGS "-Ofast -march=native -fopenmp -D_GLIBCXX_PARALLEL")
 add_executable(${PROJECT_NAME}_lanedetectionnode src/lane_detection/main.cpp src/lane_detection/PointLaneDetector.cpp src/lane_detection/VisionResult.cpp src/lane_detection/pinhole_camera_model.cpp)
 target_link_libraries( ${PROJECT_NAME}_lanedetectionnode ${catkin_LIBRARIES} ${OpenCV_LIBS} )
 
-add_executable(${PROJECT_NAME}_startboxdetectionnode src/startbox_detection/main.cpp src/startbox_detection/StartboxDetector.cpp)
-target_link_libraries( ${PROJECT_NAME}_startboxdetectionnode ${catkin_LIBRARIES} ${OpenCV_LIBS} )
+#add_executable(${PROJECT_NAME}_startboxdetectionnode src/startbox_detection/main.cpp src/startbox_detection/StartboxDetector.cpp)
+#target_link_libraries( ${PROJECT_NAME}_startboxdetectionnode ${catkin_LIBRARIES} ${OpenCV_LIBS} )
 
 add_executable(${PROJECT_NAME}_parkinglotdetectionnode src/parkinglot_detection/main.cpp src/parkinglot_detection/ParkinglotDetector.cpp)
 target_link_libraries( ${PROJECT_NAME}_parkinglotdetectionnode ${catkin_LIBRARIES} ${OpenCV_LIBS} )
