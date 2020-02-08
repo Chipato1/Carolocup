@@ -7,9 +7,9 @@
  *
  * Code generation for model "PI_Laengsregler".
  *
- * Model version              : 1.37
+ * Model version              : 1.38
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Sat Feb  8 16:46:29 2020
+ * C++ source code generated on : Sun Feb  9 00:15:30 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -224,6 +224,12 @@ struct P_EnabledSubsystem_PI_Laengsr_T_ {
 
 /* Parameters (default storage) */
 struct P_PI_Laengsregler_T_ {
+  real_T ir;                           /* Variable: ir
+                                        * Referenced by: '<S2>/Gain1'
+                                        */
+  real_T pr;                           /* Variable: pr
+                                        * Referenced by: '<S2>/Gain'
+                                        */
   SL_Bus_PI_Laengsregler_std_msgs_Bool Out1_Y0;/* Computed Parameter: Out1_Y0
                                                 * Referenced by: '<S9>/Out1'
                                                 */
@@ -254,14 +260,8 @@ struct P_PI_Laengsregler_T_ {
   real_T Switch1_Threshold;            /* Expression: 0
                                         * Referenced by: '<S2>/Switch1'
                                         */
-  real_T Gain_Gain;                    /* Expression: 1
-                                        * Referenced by: '<S2>/Gain'
-                                        */
   real_T Integrator_IC;                /* Expression: 0
                                         * Referenced by: '<S2>/Integrator'
-                                        */
-  real_T Gain1_Gain;                   /* Expression: 4
-                                        * Referenced by: '<S2>/Gain1'
                                         */
   real_T Saturation_UpperSat;          /* Expression: 2.3
                                         * Referenced by: '<S2>/Saturation'
@@ -290,6 +290,9 @@ struct P_PI_Laengsregler_T_ {
   real_T Switch3_Threshold;            /* Expression: 0
                                         * Referenced by: '<S2>/Switch3'
                                         */
+  real_T AUSGLEICHWEILIRGENDJEMANDDASGET;/* Expression: 7
+                                          * Referenced by: '<S2>/AUSGLEICH WEIL IRGENDJEMAND DAS GETRIEBE VERPFUSCHT HAT!!!'
+                                          */
   real_T Constant1_Value;              /* Expression: 0
                                         * Referenced by: '<S2>/Constant1'
                                         */

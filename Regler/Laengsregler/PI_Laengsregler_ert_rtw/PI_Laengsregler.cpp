@@ -7,9 +7,9 @@
  *
  * Code generation for model "PI_Laengsregler".
  *
- * Model version              : 1.37
+ * Model version              : 1.38
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Sat Feb  8 16:46:29 2020
+ * C++ source code generated on : Sun Feb  9 00:15:30 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -179,7 +179,7 @@ void PI_Laengsregler_step(void)
   SL_Bus_PI_Laengsregler_std_msgs_Bool b_varargout_2;
   boolean_T b_varargout_1;
   SL_Bus_PI_Laengsregler_std_msgs_Int16 rtb_BusAssignment;
-  real_T rtb_Switch3;
+  real_T rtb_AUSGLEICHWEILIRGENDJEMANDDA;
   real_T rtb_Saturation;
   if (rtmIsMajorTimeStep(PI_Laengsregler_M)) {
     /* set solver stop time */
@@ -237,7 +237,7 @@ void PI_Laengsregler_step(void)
       PI_Laengsregler_B.EnabledSubsystem_n.In1.Data;
 
     /* Gain: '<S2>/Gain' */
-    PI_Laengsregler_B.Gain = PI_Laengsregler_P.Gain_Gain * PI_Laengsregler_B.Add;
+    PI_Laengsregler_B.Gain = PI_Laengsregler_P.pr * PI_Laengsregler_B.Add;
 
     /* Outputs for Atomic SubSystem: '<Root>/Subscribe2' */
     /* MATLABSystem: '<S6>/SourceBlock' incorporates:
@@ -275,8 +275,8 @@ void PI_Laengsregler_step(void)
    *  Gain: '<S2>/Gain1'
    *  Integrator: '<S2>/Integrator'
    */
-  rtb_Saturation = PI_Laengsregler_P.Gain1_Gain *
-    PI_Laengsregler_X.Integrator_CSTATE + PI_Laengsregler_B.Gain;
+  rtb_Saturation = PI_Laengsregler_P.ir * PI_Laengsregler_X.Integrator_CSTATE +
+    PI_Laengsregler_B.Gain;
 
   /* Saturate: '<S2>/Saturation' */
   if (rtb_Saturation > PI_Laengsregler_P.Saturation_UpperSat) {
@@ -292,12 +292,14 @@ void PI_Laengsregler_step(void)
     /* Saturate: '<S2>/Begrenzung auf maximale Geschwindigkeit ' */
     if (PI_Laengsregler_B.DataTypeConversion >
         PI_Laengsregler_P.BegrenzungaufmaximaleGeschwindi) {
-      rtb_Switch3 = PI_Laengsregler_P.BegrenzungaufmaximaleGeschwindi;
+      rtb_AUSGLEICHWEILIRGENDJEMANDDA =
+        PI_Laengsregler_P.BegrenzungaufmaximaleGeschwindi;
     } else if (PI_Laengsregler_B.DataTypeConversion <
                PI_Laengsregler_P.BegrenzungaufmaximaleGeschwin_p) {
-      rtb_Switch3 = PI_Laengsregler_P.BegrenzungaufmaximaleGeschwin_p;
+      rtb_AUSGLEICHWEILIRGENDJEMANDDA =
+        PI_Laengsregler_P.BegrenzungaufmaximaleGeschwin_p;
     } else {
-      rtb_Switch3 = PI_Laengsregler_B.DataTypeConversion;
+      rtb_AUSGLEICHWEILIRGENDJEMANDDA = PI_Laengsregler_B.DataTypeConversion;
     }
 
     /* End of Saturate: '<S2>/Begrenzung auf maximale Geschwindigkeit ' */
@@ -306,7 +308,7 @@ void PI_Laengsregler_step(void)
      *  Gain: '<S2>/Radumfang1'
      */
     PI_Laengsregler_B.Saturation2 = PI_Laengsregler_P.Radumfang1_Gain *
-      rtb_Switch3 * PI_Laengsregler_P.Getriebe1_Gain;
+      rtb_AUSGLEICHWEILIRGENDJEMANDDA * PI_Laengsregler_P.Getriebe1_Gain;
 
     /* Saturate: '<S2>/Saturation2' */
     if (PI_Laengsregler_B.Saturation2 > PI_Laengsregler_P.Saturation2_UpperSat)
@@ -330,40 +332,49 @@ void PI_Laengsregler_step(void)
     /* Gain: '<S2>/Getriebe' incorporates:
      *  Gain: '<S2>/Radumfang'
      */
-    rtb_Switch3 = PI_Laengsregler_P.Radumfang_Gain * rtb_Saturation *
-      PI_Laengsregler_P.Getriebe_Gain;
+    rtb_AUSGLEICHWEILIRGENDJEMANDDA = PI_Laengsregler_P.Radumfang_Gain *
+      rtb_Saturation * PI_Laengsregler_P.Getriebe_Gain;
 
     /* Saturate: '<S2>/Saturation1' */
-    if (rtb_Switch3 > PI_Laengsregler_P.Saturation1_UpperSat) {
-      rtb_Switch3 = PI_Laengsregler_P.Saturation1_UpperSat;
+    if (rtb_AUSGLEICHWEILIRGENDJEMANDDA > PI_Laengsregler_P.Saturation1_UpperSat)
+    {
+      rtb_AUSGLEICHWEILIRGENDJEMANDDA = PI_Laengsregler_P.Saturation1_UpperSat;
     } else {
-      if (rtb_Switch3 < PI_Laengsregler_P.Saturation1_LowerSat) {
-        rtb_Switch3 = PI_Laengsregler_P.Saturation1_LowerSat;
+      if (rtb_AUSGLEICHWEILIRGENDJEMANDDA <
+          PI_Laengsregler_P.Saturation1_LowerSat) {
+        rtb_AUSGLEICHWEILIRGENDJEMANDDA = PI_Laengsregler_P.Saturation1_LowerSat;
       }
     }
 
     /* End of Saturate: '<S2>/Saturation1' */
   } else {
-    rtb_Switch3 = PI_Laengsregler_B.Saturation2;
+    rtb_AUSGLEICHWEILIRGENDJEMANDDA = PI_Laengsregler_B.Saturation2;
   }
 
   /* End of Switch: '<S2>/Switch3' */
 
+  /* Gain: '<S2>/AUSGLEICH WEIL IRGENDJEMAND DAS GETRIEBE VERPFUSCHT HAT!!!' */
+  rtb_AUSGLEICHWEILIRGENDJEMANDDA *=
+    PI_Laengsregler_P.AUSGLEICHWEILIRGENDJEMANDDASGET;
+
   /* DataTypeConversion: '<Root>/Data Type Conversion' */
-  rtb_Switch3 = floor(rtb_Switch3);
-  if (rtIsNaN(rtb_Switch3) || rtIsInf(rtb_Switch3)) {
-    rtb_Switch3 = 0.0;
+  rtb_AUSGLEICHWEILIRGENDJEMANDDA = floor(rtb_AUSGLEICHWEILIRGENDJEMANDDA);
+  if (rtIsNaN(rtb_AUSGLEICHWEILIRGENDJEMANDDA) || rtIsInf
+      (rtb_AUSGLEICHWEILIRGENDJEMANDDA)) {
+    rtb_AUSGLEICHWEILIRGENDJEMANDDA = 0.0;
   } else {
-    rtb_Switch3 = fmod(rtb_Switch3, 65536.0);
+    rtb_AUSGLEICHWEILIRGENDJEMANDDA = fmod(rtb_AUSGLEICHWEILIRGENDJEMANDDA,
+      65536.0);
   }
 
   /* BusAssignment: '<Root>/Bus Assignment' incorporates:
    *  DataTypeConversion: '<Root>/Data Type Conversion'
    */
-  rtb_BusAssignment.Data = static_cast<int16_T>((rtb_Switch3 < 0.0 ?
-    static_cast<int32_T>(static_cast<int16_T>(-static_cast<int16_T>
-    (static_cast<uint16_T>(-rtb_Switch3)))) : static_cast<int32_T>
-    (static_cast<int16_T>(static_cast<uint16_T>(rtb_Switch3)))));
+  rtb_BusAssignment.Data = static_cast<int16_T>((rtb_AUSGLEICHWEILIRGENDJEMANDDA
+    < 0.0 ? static_cast<int32_T>(static_cast<int16_T>(-static_cast<int16_T>(
+    static_cast<uint16_T>(-rtb_AUSGLEICHWEILIRGENDJEMANDDA)))) :
+    static_cast<int32_T>(static_cast<int16_T>(static_cast<uint16_T>
+    (rtb_AUSGLEICHWEILIRGENDJEMANDDA)))));
 
   /* Outputs for Atomic SubSystem: '<Root>/Publish' */
   /* MATLABSystem: '<S3>/SinkBlock' */
@@ -406,9 +417,9 @@ void PI_Laengsregler_step(void)
       (&PI_Laengsregler_M->solverInfo);
 
     {
-      /* Update absolute timer for sample time: [0.02s, 0.0s] */
+      /* Update absolute timer for sample time: [0.05s, 0.0s] */
       /* The "clockTick1" counts the number of times the code of this task has
-       * been executed. The resolution of this integer timer is 0.02, which is the step size
+       * been executed. The resolution of this integer timer is 0.05, which is the step size
        * of the task. Size of "clockTick1" ensures timer will not overflow during the
        * application lifespan selected.
        * Timer of this task consists of two 32 bit unsigned integers.
@@ -478,7 +489,7 @@ void PI_Laengsregler_initialize(void)
                     (&PI_Laengsregler_M->intgData));
   rtsiSetSolverName(&PI_Laengsregler_M->solverInfo,"ode3");
   rtmSetTPtr(PI_Laengsregler_M, &PI_Laengsregler_M->Timing.tArray[0]);
-  PI_Laengsregler_M->Timing.stepSize0 = 0.02;
+  PI_Laengsregler_M->Timing.stepSize0 = 0.05;
 
   /* block I/O */
   (void) memset((static_cast<void *>(&PI_Laengsregler_B)), 0,

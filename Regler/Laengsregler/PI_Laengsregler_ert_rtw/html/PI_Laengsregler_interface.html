@@ -144,7 +144,7 @@ Output entry point of generated code
 Timing
 </td>
 <td width="75%" align="left" valign="top">
-Must be called periodically, every 0.02 seconds
+Must be called periodically, every 0.05 seconds
 </td>
 
 </tr>
@@ -290,6 +290,36 @@ Dimension
 </b>
 
 </th>
+
+</tr>
+<tr class="even">
+<td width="42%" align="left" valign="top">
+ir
+</td>
+<td width="26%" align="left" valign="top">
+PI_Laengsregler_P.ir
+</td>
+<td width="21%" align="left" valign="top">
+real_T
+</td>
+<td width="10%" align="right" valign="top">
+1
+</td>
+
+</tr>
+<tr class="odd">
+<td width="42%" align="left" valign="top">
+pr
+</td>
+<td width="26%" align="left" valign="top">
+PI_Laengsregler_P.pr
+</td>
+<td width="21%" align="left" valign="top">
+real_T
+</td>
+<td width="10%" align="right" valign="top">
+1
+</td>
 
 </tr>
 <tr class="even">
@@ -444,40 +474,10 @@ real_T
 </tr>
 <tr class="even">
 <td width="42%" align="left" valign="top">
-&lt;S2&gt;/Gain
-</td>
-<td width="26%" align="left" valign="top">
-PI_Laengsregler_P.Gain_Gain
-</td>
-<td width="21%" align="left" valign="top">
-real_T
-</td>
-<td width="10%" align="right" valign="top">
-1
-</td>
-
-</tr>
-<tr class="odd">
-<td width="42%" align="left" valign="top">
 &lt;S2&gt;/Integrator
 </td>
 <td width="26%" align="left" valign="top">
 PI_Laengsregler_P.Integrator_IC
-</td>
-<td width="21%" align="left" valign="top">
-real_T
-</td>
-<td width="10%" align="right" valign="top">
-1
-</td>
-
-</tr>
-<tr class="even">
-<td width="42%" align="left" valign="top">
-&lt;S2&gt;/Gain1
-</td>
-<td width="26%" align="left" valign="top">
-PI_Laengsregler_P.Gain1_Gain
 </td>
 <td width="21%" align="left" valign="top">
 real_T
@@ -624,6 +624,21 @@ real_T
 </tr>
 <tr class="even">
 <td width="42%" align="left" valign="top">
+&lt;S2&gt;/AUSGLEICH WEIL IRGENDJEMAND DAS GETRIEBE VERPFUSCHT HAT!!!
+</td>
+<td width="26%" align="left" valign="top">
+PI_Laengsregler_P.AUSGLEICHWEILIRGENDJEMANDDASGET
+</td>
+<td width="21%" align="left" valign="top">
+real_T
+</td>
+<td width="10%" align="right" valign="top">
+1
+</td>
+
+</tr>
+<tr class="odd">
+<td width="42%" align="left" valign="top">
 &lt;S2&gt;/Constant1
 </td>
 <td width="26%" align="left" valign="top">
@@ -637,7 +652,7 @@ real_T
 </td>
 
 </tr>
-<tr class="odd">
+<tr class="even">
 <td width="42%" align="left" valign="top">
 &lt;S2&gt;/Constant
 </td>
@@ -652,7 +667,7 @@ real_T
 </td>
 
 </tr>
-<tr class="even">
+<tr class="odd">
 <td width="42%" align="left" valign="top">
 &lt;S2&gt;/Switch
 </td>
@@ -667,7 +682,7 @@ real_T
 </td>
 
 </tr>
-<tr class="odd">
+<tr class="even">
 <td width="42%" align="left" valign="top">
 &lt;S7&gt;/Out1
 </td>
@@ -682,7 +697,7 @@ SL_Bus_PI_Laengsregler_std_msgs_Float32
 </td>
 
 </tr>
-<tr class="even">
+<tr class="odd">
 <td width="42%" align="left" valign="top">
 &lt;S7&gt;/Out1
 </td>
