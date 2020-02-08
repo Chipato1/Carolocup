@@ -1,0 +1,8 @@
+prefix=/home/robert/catkin_ws/install
+
+Name: raddrehzahl_filter
+Description: Description of raddrehzahl_filter
+Version: 1.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: roscpp std_msgs
