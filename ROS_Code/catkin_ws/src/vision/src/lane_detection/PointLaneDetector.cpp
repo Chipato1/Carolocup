@@ -1,5 +1,4 @@
 #include <vision/lane_detection/PointLaneDetector.hpp>
-#define WINDOWS_DEBUG
 
 #include <opencv2/core/utility.hpp>
 #include <opencv2/imgproc.hpp>
@@ -85,8 +84,14 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 
 	this->ipmScaling			= 	config.count("ipm_scaling") 	 	? stod(config["ipm_scaling"])			: 1;
 	this->ipm_size_x			= 	config.count("ipm_size_x") 	 		? stod(config["ipm_size_x"])			: 1200;	
-	this->ipm_size_y			= 	config.count("ipm_size_y") 	 		? stod(config["ipm_size_y"])			: 2400;		
+	this->ipm_size_y			= 	config.count("ipm_size_y") 	 		? stod(config["ipm_size_y"])			: 2400;
 
+	this->thresh_mode			=	config.count("thresh_mode")			? stod(config["thresh_mode"])			: 0;
+	this->thresh_refresh		=	config.count("thresh_refresh")		? stod(config["thresh_refresh"])			: 100;
+	this->thresholdRefreshCounter = this->thresh_refresh;
+	this->thresh_otsu_correction=	config.count("thresh_otsu_correction") ? stod(config["thresh_otsu_correction"]) : 50;
+	this->thresh_target_percentage = config.count("thresh_target_percentage") ? stod(config["thresh_target_percentage"]) : 0.05;
+	this->thresh_target_acc_percentage = config.count("thresh_target_acc_percentage") ? stod(config["thresh_target_acc_percentage"]) : 0.005;
 
 	this->LANE_THRES_MIN 		= 	this->LANE_THRES_MIN 	*  this->ipmScaling;
 	this->LANE_THRES_MAX 		= 	this->LANE_THRES_MAX 	*  this->ipmScaling;
@@ -107,7 +112,7 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 
 
 	this->canny = cuda::createCannyEdgeDetector(low_thresh, high_thresh, aperture_size, false);
-	this->hough = cuda::createHoughSegmentDetector(1.0f, (float) (CV_PI / 180.0f), 50, 5);
+	this->hough = cuda::createHoughSegmentDetector(1.0f, (float) (CV_PI / 180.0f),50, 5);
 
 	
 
@@ -292,9 +297,11 @@ void PointLaneDetector::drawResult(cv::Mat im, cv::Mat x1, cv::Mat x2, cv::Scala
 
 //Detectes the driving lanes for one frame
 void PointLaneDetector::calculateFrame(cv::Mat& frame) {
-	this->doGPUTransform(frame);
-	this->calculateAlgorithm();
-	this->debugDraw(this->edge);
+	if (!frame.empty()) {
+		this->doGPUTransform(frame);
+		this->calculateAlgorithm();
+		this->debugDraw(this->edge);
+	}
 }
 
 
@@ -307,8 +314,44 @@ void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 	cv::cuda::warpPerspective(this->undistortGPU, this->ipmGPU, this->transformationMat, this->ipmSize, INTER_CUBIC | WARP_INVERSE_MAP);
 	this->ipmGPU.download(this->ipm);
 	
-	cv::cuda::threshold(this->ipmGPU, this->thresholdGPU, this->thres_cut, 255, 0);
-	this->thresholdGPU.download(this->threshold);
+
+	switch (this->thresh_mode)
+	{
+	case 0:
+		cv::cuda::threshold(this->ipmGPU, this->thresholdGPU, this->thres_cut, 255, cv::THRESH_BINARY);
+		this->thresholdGPU.download(this->threshold);
+		break;
+
+	case 1:
+		if (thresholdRefreshCounter >= this->thresh_refresh) {
+			this->thres_cut = cv::threshold(frame, this->threshold, 0, 255, THRESH_OTSU) + 50;
+			this->thresholdGPU.upload(this->threshold);
+			thresholdRefreshCounter = 0;
+		}
+		else {
+			cv::cuda::threshold(this->ipmGPU, this->thresholdGPU, this->thres_cut, 255, cv::THRESH_BINARY);
+			this->thresholdGPU.download(this->threshold);
+		}
+		thresholdRefreshCounter++;
+		break;
+	case 2:
+		if (thresholdRefreshCounter >= this->thresh_refresh) {
+			this->calculateThreshold(frame);
+			thresholdRefreshCounter = 0;
+		}
+		else {
+			cv::cuda::threshold(this->ipmGPU, this->thresholdGPU, this->thres_cut, 255, cv::THRESH_BINARY);
+			this->thresholdGPU.download(this->threshold);
+		}
+		thresholdRefreshCounter++;
+		break;
+	default:
+		cv::cuda::threshold(this->ipmGPU, this->thresholdGPU, this->thres_cut, 255, cv::THRESH_BINARY);
+		this->thresholdGPU.download(this->threshold);
+		break;
+	}
+
+
 
 	this->canny->detect(this->thresholdGPU, this->edgeGPU);
 	this->edgeGPU.download(edge);
@@ -375,6 +418,41 @@ void PointLaneDetector::clear() {
 	oldLeftRel = -1;
 	oldMiddleRel = -1;
 	oldRIghtRel = -1;
+}
+
+void PointLaneDetector::calculateThreshold(cv::Mat & frame)
+{
+		cv::cuda::GpuMat thresholdTest;
+		int thres = 128;
+		double comp = 0.0;
+		double dest = this->thresh_target_percentage;
+		int i = 0;
+		do {
+			cv::cuda::threshold(ipmGPU, thresholdTest, thres, 255, THRESH_BINARY);
+			double nonZero = cv::cuda::countNonZero(thresholdTest);
+			comp = nonZero / ((double)this->ipm_size_x * (double)this->ipm_size_y);
+			if (comp < dest) {
+				thres = thres - 500 * abs(comp-dest);
+				if (thres <= 30) {
+					thres = 30;
+					break;
+				}
+			}
+			else {
+				thres = thres + 500 * abs(comp - dest);
+				if (thres >= 225) {
+					thres = 225;
+					break;
+				}
+			}
+			i++;
+			if (i > 20) {
+				break;
+			}
+		} while (abs(comp - dest) >= this->thresh_target_acc_percentage);
+		this->thres_cut = thres;
+		this->thresholdGPU = thresholdTest;
+		this->thresholdGPU.download(this->threshold);
 }
 
 double PointLaneDetector::imToReX(int x)

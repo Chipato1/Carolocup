@@ -58,6 +58,7 @@ find_package(catkin REQUIRED COMPONENTS
    VisionResultMsg.msg
    HoughPoints.msg
    HoughPointsArray.msg
+   StoplineMsg.msg
  )
 
 ## Generate services in the 'srv' folder

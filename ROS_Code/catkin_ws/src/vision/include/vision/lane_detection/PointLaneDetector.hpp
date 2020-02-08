@@ -30,6 +30,7 @@ public:
 	std::function <void (std::vector<cv::Vec4i> data)> houghCallback;
 	std::mutex houghMutex;
 	std::mutex houghZumutung;
+	std::mutex otsuLock;
 
 	cv::cuda::GpuMat map1GPU;
 	cv::cuda::GpuMat map2GPU;
@@ -56,6 +57,13 @@ private:
 	double calculateVariance(cv::Mat& lane, std::vector<cv::Point> pts);
 	void drawResult(cv::Mat im, cv::Mat x1, cv::Mat x2, cv::Scalar color, double intersect);
 	void clear();
+	void calculateThreshold(cv::Mat&);
+	int thresholdRefreshCounter = 0;
+	int thresh_mode = 0;
+	int thresh_refresh = 100;
+	int thresh_otsu_correction = 50;
+	double thresh_target_percentage = 0.05;
+	double thresh_target_acc_percentage = 0.005;
 
 	cv::Size ipmSize;
 
