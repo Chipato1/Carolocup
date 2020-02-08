@@ -201,7 +201,9 @@ void servo_bewegung(float lenkwinkel_bogenmass)
   else
   {
     lenkwinkel_servosize = 1.428 * lenkwinkel_grad + 107;
-  } 
+  }
+
+  //if ((lenkwinkel_servosize < 107.4998)&&(lenkwinkel_servosize > 106.5002))
   servo.write(lenkwinkel_servosize); //Servo fährt in die entsprechende Stellung
 }
 
