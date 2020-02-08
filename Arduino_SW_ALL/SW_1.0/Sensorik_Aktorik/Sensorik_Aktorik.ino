@@ -3,6 +3,8 @@
 #include "aktorik.h"
 #include "serial.h"
 
+unsigned long start_loop_time = 0;
+
 bool enable_rpm = true;
 
 float rpm;
@@ -13,24 +15,32 @@ ros::NodeHandle arduino_node;
 void setup() 
 {  
   arduino_node.initNode();
-  
+  //arduino_node.getHardware()->setBaud(115200); //experiment :D
   init_aktorik(&arduino_node);
   init_sensorik(&arduino_node); 
-  
-  init_tof(); //hat einen Rückgabewert, der angibt, ob die Initialisierung erfolgreich war
+  arduino_node.loginfo("Program info xxx");
+  //init_tof(); 
   init_rpm();
 }
 
 void loop() 
 {
-  //Aktorik Teil -> hier kann der Rückgabewert ausgelesen werden
-  //Der Wert sagt ob der RC mode aktiviert ist 
+
+ 
   aktorik();
   rc_publish();
-  drive_mode_publish();
 
+  drive_mode_publish();
+  
+  //t_test_publish(0);
+  //t_test_publish(millis());
+  
   tof = read_TOF();
-  tof_publish(tof[0], tof[1], tof[2], tof[3], tof[4]);
+
+  //t_test_publish(millis());
+    
+  //tof_publish(tof[0], tof[1], tof[2], tof[3], tof[4]);
+
     
   if (enable_rpm){
     rpm = read_RPM();

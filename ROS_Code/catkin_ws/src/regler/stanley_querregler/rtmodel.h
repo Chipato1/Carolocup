@@ -7,9 +7,9 @@
  *
  * Code generation for model "Stanley_Querregler".
  *
- * Model version              : 1.21
+ * Model version              : 1.22
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Thu Feb  6 20:10:43 2020
+ * C++ source code generated on : Fri Feb  7 23:34:38 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -23,7 +23,7 @@
  * Code generation for Simulink model "Stanley_Querregler".
  *
  * Simulink Coder version                : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Thu Feb  6 20:10:43 2020
+ * C++ source code generated on : Fri Feb  7 23:34:38 2020
  *
  * Note that the generated code is not dependent on this header file.
  * The file is used in cojuction with the automatic build procedure.
