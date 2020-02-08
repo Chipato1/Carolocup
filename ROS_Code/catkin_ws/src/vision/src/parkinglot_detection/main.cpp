@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
 
 	ros::NodeHandle nh;
 	//image_transport::ImageTransport it(nh);
-	parkinglotPublisher = nh.advertise<vision::ParkinglotMsg>(("Parkinglot", 1);
+	parkinglotPublisher = nh.advertise<vision::ParkinglotMsg>("Parkinglot", 1);
 	ros::Subscriber sub = nh.subscribe("HoughResult" , 1, imageCallback);
 	ros::spin();
 

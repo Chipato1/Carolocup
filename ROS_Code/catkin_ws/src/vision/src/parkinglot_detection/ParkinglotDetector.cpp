@@ -1,4 +1,4 @@
-#include  <vision/parkinglot_detection/ParkinglotDetector.hpp>
+#include <vision/parkinglot_detection/ParkinglotDetector.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -9,6 +9,7 @@
 #include <cmath>
 #include <chrono>
 #include <include/vision/parkinglot_detection/ParkinglotDetector.hpp>
+#include <string>
 
 using namespace cv;
 using namespace std;
@@ -18,11 +19,11 @@ double imgHeight = 2400;
 
 
 
- cv::Mat  ParkinglotDetector:: blankimage() {
-    //cv::Mat blankImage;
-    cv::Mat blankImage = Mat(roiHeight, roiWidth, CV_8UC3, Scalar(0, 0, 0));
-    return blankImage;
-}
+// cv::Mat  ParkinglotDetector:: blankimage() {
+//    //cv::Mat blankImage;
+//    cv::Mat blankImage = Mat(roiHeight, roiWidth, CV_8UC3, Scalar(0, 0, 0));
+//    return blankImage;
+//}
 
 
 
@@ -160,13 +161,6 @@ void ParkinglotDetector :: failure(string i)
 
 
 
-double StoplineDetector::getDistanceBetweenPoints(Point p1, Point p2) {
-    return abs(cv::norm(p1 - p2));
-}
-
-
-
-
 
 ParkinglotDetector::ParkinglotDetector() {
 
@@ -189,7 +183,7 @@ double ParkinglotDetector::detectParkinglots(vector<Vec4i> hough_lines, std::map
     }
 
  	
-    getPossibleLines(hough_lines, result_lines, 45 - 0, 60 + 0);
+    getPossibleLines(hough_lines, result_lines, 45 - 10, 60 + 10);
     
     double parkinglotStartingPoint_y = getParkingLotStartingPosition_Y(result_lines);
     if (parkinglotStartingPoint_y == -1)
