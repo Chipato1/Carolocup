@@ -7,9 +7,9 @@
  *
  * Code generation for model "PI_Laengsregler".
  *
- * Model version              : 1.36
+ * Model version              : 1.37
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Fri Feb  7 23:32:50 2020
+ * C++ source code generated on : Sat Feb  8 16:46:29 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -29,6 +29,9 @@ X_PI_Laengsregler_T PI_Laengsregler_X;
 
 /* Block states (default storage) */
 DW_PI_Laengsregler_T PI_Laengsregler_DW;
+
+/* Previous zero-crossings (trigger) states */
+PrevZCX_PI_Laengsregler_T PI_Laengsregler_PrevZCX;
 
 /* Real-time model */
 RT_MODEL_PI_Laengsregler_T PI_Laengsregler_M_ = RT_MODEL_PI_Laengsregler_T();
@@ -127,7 +130,7 @@ static void rt_ertODEUpdateContinuousStates(RTWSolverInfo *si )
 void PI_Laengs_EnabledSubsystem_Init(B_EnabledSubsystem_PI_Laengsr_T *localB,
   P_EnabledSubsystem_PI_Laengsr_T *localP)
 {
-  /* SystemInitialize for Outport: '<S6>/Out1' */
+  /* SystemInitialize for Outport: '<S7>/Out1' */
   localB->In1 = localP->Out1_Y0;
 }
 
@@ -141,10 +144,10 @@ void PI_Laengsregle_EnabledSubsystem(boolean_T rtu_Enable, const
   B_EnabledSubsystem_PI_Laengsr_T *localB)
 {
   /* Outputs for Enabled SubSystem: '<S4>/Enabled Subsystem' incorporates:
-   *  EnablePort: '<S6>/Enable'
+   *  EnablePort: '<S7>/Enable'
    */
   if (rtu_Enable) {
-    /* Inport: '<S6>/In1' */
+    /* Inport: '<S7>/In1' */
     localB->In1 = *rtu_In1;
   }
 
@@ -171,8 +174,10 @@ void PI_Laengsregler_step(void)
   /* local block i/o variables */
   SL_Bus_PI_Laengsregler_std_msgs_Float32 rtb_SourceBlock_o2;
   SL_Bus_PI_Laengsregler_std_msgs_Float32 rtb_SourceBlock_o2_c;
-  boolean_T rtb_SourceBlock_o1;
+  boolean_T rtb_SourceBlock_o1_i;
   boolean_T rtb_SourceBlock_o1_k;
+  SL_Bus_PI_Laengsregler_std_msgs_Bool b_varargout_2;
+  boolean_T b_varargout_1;
   SL_Bus_PI_Laengsregler_std_msgs_Int16 rtb_BusAssignment;
   real_T rtb_Switch3;
   real_T rtb_Saturation;
@@ -215,11 +220,11 @@ void PI_Laengsregler_step(void)
 
     /* Outputs for Atomic SubSystem: '<Root>/Subscribe1' */
     /* MATLABSystem: '<S5>/SourceBlock' */
-    rtb_SourceBlock_o1 = Sub_PI_Laengsregler_128.getLatestMessage
+    rtb_SourceBlock_o1_i = Sub_PI_Laengsregler_128.getLatestMessage
       (&rtb_SourceBlock_o2);
 
     /* Outputs for Enabled SubSystem: '<S5>/Enabled Subsystem' */
-    PI_Laengsregle_EnabledSubsystem(rtb_SourceBlock_o1, &rtb_SourceBlock_o2,
+    PI_Laengsregle_EnabledSubsystem(rtb_SourceBlock_o1_i, &rtb_SourceBlock_o2,
       &PI_Laengsregler_B.EnabledSubsystem_n);
 
     /* End of Outputs for SubSystem: '<S5>/Enabled Subsystem' */
@@ -232,15 +237,46 @@ void PI_Laengsregler_step(void)
       PI_Laengsregler_B.EnabledSubsystem_n.In1.Data;
 
     /* Gain: '<S2>/Gain' */
-    PI_Laengsregler_B.Gain = PI_Laengsregler_P.pr * PI_Laengsregler_B.Add;
+    PI_Laengsregler_B.Gain = PI_Laengsregler_P.Gain_Gain * PI_Laengsregler_B.Add;
+
+    /* Outputs for Atomic SubSystem: '<Root>/Subscribe2' */
+    /* MATLABSystem: '<S6>/SourceBlock' incorporates:
+     *  Inport: '<S9>/In1'
+     */
+    b_varargout_1 = Sub_PI_Laengsregler_359.getLatestMessage(&b_varargout_2);
+
+    /* Outputs for Enabled SubSystem: '<S6>/Enabled Subsystem' incorporates:
+     *  EnablePort: '<S9>/Enable'
+     */
+    if (b_varargout_1) {
+      PI_Laengsregler_B.In1 = b_varargout_2;
+    }
+
+    /* End of MATLABSystem: '<S6>/SourceBlock' */
+    /* End of Outputs for SubSystem: '<S6>/Enabled Subsystem' */
+    /* End of Outputs for SubSystem: '<Root>/Subscribe2' */
+  }
+
+  /* Integrator: '<S2>/Integrator' */
+  if (rtmIsMajorTimeStep(PI_Laengsregler_M)) {
+    b_varargout_1 = (((PI_Laengsregler_PrevZCX.Integrator_Reset_ZCE == POS_ZCSIG)
+                      != static_cast<int32_T>(PI_Laengsregler_B.In1.Data)) &&
+                     (PI_Laengsregler_PrevZCX.Integrator_Reset_ZCE !=
+                      UNINITIALIZED_ZCSIG));
+    PI_Laengsregler_PrevZCX.Integrator_Reset_ZCE = PI_Laengsregler_B.In1.Data;
+
+    /* evaluate zero-crossings */
+    if (b_varargout_1) {
+      PI_Laengsregler_X.Integrator_CSTATE = PI_Laengsregler_P.Integrator_IC;
+    }
   }
 
   /* Sum: '<S2>/Add1' incorporates:
    *  Gain: '<S2>/Gain1'
    *  Integrator: '<S2>/Integrator'
    */
-  rtb_Saturation = PI_Laengsregler_P.ir * PI_Laengsregler_X.Integrator_CSTATE +
-    PI_Laengsregler_B.Gain;
+  rtb_Saturation = PI_Laengsregler_P.Gain1_Gain *
+    PI_Laengsregler_X.Integrator_CSTATE + PI_Laengsregler_B.Gain;
 
   /* Saturate: '<S2>/Saturation' */
   if (rtb_Saturation > PI_Laengsregler_P.Saturation_UpperSat) {
@@ -370,9 +406,9 @@ void PI_Laengsregler_step(void)
       (&PI_Laengsregler_M->solverInfo);
 
     {
-      /* Update absolute timer for sample time: [0.05s, 0.0s] */
+      /* Update absolute timer for sample time: [0.02s, 0.0s] */
       /* The "clockTick1" counts the number of times the code of this task has
-       * been executed. The resolution of this integer timer is 0.05, which is the step size
+       * been executed. The resolution of this integer timer is 0.02, which is the step size
        * of the task. Size of "clockTick1" ensures timer will not overflow during the
        * application lifespan selected.
        * Timer of this task consists of two 32 bit unsigned integers.
@@ -442,7 +478,7 @@ void PI_Laengsregler_initialize(void)
                     (&PI_Laengsregler_M->intgData));
   rtsiSetSolverName(&PI_Laengsregler_M->solverInfo,"ode3");
   rtmSetTPtr(PI_Laengsregler_M, &PI_Laengsregler_M->Timing.tArray[0]);
-  PI_Laengsregler_M->Timing.stepSize0 = 0.05;
+  PI_Laengsregler_M->Timing.stepSize0 = 0.02;
 
   /* block I/O */
   (void) memset((static_cast<void *>(&PI_Laengsregler_B)), 0,
@@ -459,16 +495,19 @@ void PI_Laengsregler_initialize(void)
                 sizeof(DW_PI_Laengsregler_T));
 
   {
-    char_T tmp[14];
-    char_T tmp_0[17];
+    char_T tmp[8];
+    char_T tmp_0[14];
+    char_T tmp_1[17];
     int32_T i;
-    static const char_T tmp_1[16] = { '/', 't', 'r', 'j', '_', 't', 'a', 'r',
+    static const char_T tmp_2[16] = { '/', 't', 'r', 'j', '_', 't', 'a', 'r',
       'g', 'e', 't', 'S', 'p', 'e', 'e', 'd' };
 
-    static const char_T tmp_2[13] = { '/', 'c', 't', 'l', '_', 'v', 'e', 'l',
+    static const char_T tmp_3[13] = { '/', 'c', 't', 'l', '_', 'v', 'e', 'l',
       'o', 'c', 'i', 't', 'y' };
 
-    static const char_T tmp_3[13] = { '/', 'c', 't', 'l', '_', 'm', 'o', 't',
+    static const char_T tmp_4[7] = { '/', 'a', 'k', 't', '_', 'r', 'c' };
+
+    static const char_T tmp_5[13] = { '/', 'c', 't', 'l', '_', 'm', 'o', 't',
       'o', 'r', 'R', 'p', 'm' };
 
     /* Start for Atomic SubSystem: '<Root>/Subscribe' */
@@ -477,11 +516,11 @@ void PI_Laengsregler_initialize(void)
     PI_Laengsregler_DW.objisempty_c = true;
     PI_Laengsregler_DW.obj_j.isInitialized = 1;
     for (i = 0; i < 16; i++) {
-      tmp_0[i] = tmp_1[i];
+      tmp_1[i] = tmp_2[i];
     }
 
-    tmp_0[16] = '\x00';
-    Sub_PI_Laengsregler_80.createSubscriber(tmp_0, 1);
+    tmp_1[16] = '\x00';
+    Sub_PI_Laengsregler_80.createSubscriber(tmp_1, 1);
     PI_Laengsregler_DW.obj_j.isSetupComplete = true;
 
     /* End of Start for MATLABSystem: '<S4>/SourceBlock' */
@@ -490,18 +529,34 @@ void PI_Laengsregler_initialize(void)
     /* Start for Atomic SubSystem: '<Root>/Subscribe1' */
     /* Start for MATLABSystem: '<S5>/SourceBlock' */
     PI_Laengsregler_DW.obj_o.matlabCodegenIsDeleted = false;
-    PI_Laengsregler_DW.objisempty = true;
+    PI_Laengsregler_DW.objisempty_i = true;
     PI_Laengsregler_DW.obj_o.isInitialized = 1;
     for (i = 0; i < 13; i++) {
-      tmp[i] = tmp_2[i];
+      tmp_0[i] = tmp_3[i];
     }
 
-    tmp[13] = '\x00';
-    Sub_PI_Laengsregler_128.createSubscriber(tmp, 1);
+    tmp_0[13] = '\x00';
+    Sub_PI_Laengsregler_128.createSubscriber(tmp_0, 1);
     PI_Laengsregler_DW.obj_o.isSetupComplete = true;
 
     /* End of Start for MATLABSystem: '<S5>/SourceBlock' */
     /* End of Start for SubSystem: '<Root>/Subscribe1' */
+
+    /* Start for Atomic SubSystem: '<Root>/Subscribe2' */
+    /* Start for MATLABSystem: '<S6>/SourceBlock' */
+    PI_Laengsregler_DW.obj_b.matlabCodegenIsDeleted = false;
+    PI_Laengsregler_DW.objisempty = true;
+    PI_Laengsregler_DW.obj_b.isInitialized = 1;
+    for (i = 0; i < 7; i++) {
+      tmp[i] = tmp_4[i];
+    }
+
+    tmp[7] = '\x00';
+    Sub_PI_Laengsregler_359.createSubscriber(tmp, 1);
+    PI_Laengsregler_DW.obj_b.isSetupComplete = true;
+
+    /* End of Start for MATLABSystem: '<S6>/SourceBlock' */
+    /* End of Start for SubSystem: '<Root>/Subscribe2' */
 
     /* Start for Atomic SubSystem: '<Root>/Publish' */
     /* Start for MATLABSystem: '<S3>/SinkBlock' */
@@ -509,16 +564,18 @@ void PI_Laengsregler_initialize(void)
     PI_Laengsregler_DW.objisempty_f = true;
     PI_Laengsregler_DW.obj.isInitialized = 1;
     for (i = 0; i < 13; i++) {
-      tmp[i] = tmp_3[i];
+      tmp_0[i] = tmp_5[i];
     }
 
-    tmp[13] = '\x00';
-    Pub_PI_Laengsregler_79.createPublisher(tmp, 1);
+    tmp_0[13] = '\x00';
+    Pub_PI_Laengsregler_79.createPublisher(tmp_0, 1);
     PI_Laengsregler_DW.obj.isSetupComplete = true;
 
     /* End of Start for MATLABSystem: '<S3>/SinkBlock' */
     /* End of Start for SubSystem: '<Root>/Publish' */
   }
+
+  PI_Laengsregler_PrevZCX.Integrator_Reset_ZCE = UNINITIALIZED_ZCSIG;
 
   /* InitializeConditions for Integrator: '<S2>/Integrator' */
   PI_Laengsregler_X.Integrator_CSTATE = PI_Laengsregler_P.Integrator_IC;
@@ -538,6 +595,14 @@ void PI_Laengsregler_initialize(void)
 
   /* End of SystemInitialize for SubSystem: '<S5>/Enabled Subsystem' */
   /* End of SystemInitialize for SubSystem: '<Root>/Subscribe1' */
+
+  /* SystemInitialize for Atomic SubSystem: '<Root>/Subscribe2' */
+  /* SystemInitialize for Enabled SubSystem: '<S6>/Enabled Subsystem' */
+  /* SystemInitialize for Outport: '<S9>/Out1' */
+  PI_Laengsregler_B.In1 = PI_Laengsregler_P.Out1_Y0;
+
+  /* End of SystemInitialize for SubSystem: '<S6>/Enabled Subsystem' */
+  /* End of SystemInitialize for SubSystem: '<Root>/Subscribe2' */
 }
 
 /* Model terminate function */
@@ -554,6 +619,12 @@ void PI_Laengsregler_terminate(void)
   matlabCodegenHandle_matlabCod_l(&PI_Laengsregler_DW.obj_o);
 
   /* End of Terminate for SubSystem: '<Root>/Subscribe1' */
+
+  /* Terminate for Atomic SubSystem: '<Root>/Subscribe2' */
+  /* Terminate for MATLABSystem: '<S6>/SourceBlock' */
+  matlabCodegenHandle_matlabCod_l(&PI_Laengsregler_DW.obj_b);
+
+  /* End of Terminate for SubSystem: '<Root>/Subscribe2' */
 
   /* Terminate for Atomic SubSystem: '<Root>/Publish' */
   /* Terminate for MATLABSystem: '<S3>/SinkBlock' */

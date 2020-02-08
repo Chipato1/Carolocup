@@ -7,9 +7,9 @@
  *
  * Code generation for model "PI_Laengsregler".
  *
- * Model version              : 1.36
+ * Model version              : 1.37
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Fri Feb  7 23:32:50 2020
+ * C++ source code generated on : Sat Feb  8 16:46:29 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -23,7 +23,7 @@
  * Code generation for Simulink model "PI_Laengsregler".
  *
  * Simulink Coder version                : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Fri Feb  7 23:32:50 2020
+ * C++ source code generated on : Sat Feb  8 16:46:29 2020
  *
  * Note that the generated code is not dependent on this header file.
  * The file is used in cojuction with the automatic build procedure.

@@ -7,9 +7,9 @@
  *
  * Code generation for model "PI_Laengsregler".
  *
- * Model version              : 1.36
+ * Model version              : 1.37
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Fri Feb  7 23:32:50 2020
+ * C++ source code generated on : Sat Feb  8 16:46:29 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -37,6 +37,15 @@ typedef struct {
 typedef struct {
   real32_T Data;
 } SL_Bus_PI_Laengsregler_std_msgs_Float32;
+
+#endif
+
+#ifndef DEFINED_TYPEDEF_FOR_SL_Bus_PI_Laengsregler_std_msgs_Bool_
+#define DEFINED_TYPEDEF_FOR_SL_Bus_PI_Laengsregler_std_msgs_Bool_
+
+typedef struct {
+  boolean_T Data;
+} SL_Bus_PI_Laengsregler_std_msgs_Bool;
 
 #endif
 
