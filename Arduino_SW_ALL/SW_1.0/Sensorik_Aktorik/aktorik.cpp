@@ -14,6 +14,7 @@ ros::Subscriber<std_msgs::UInt8> sub_light_l("trj_flashLeft", lichtLinks_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_r("trj_flashRight", lichtRechts_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_b("trj_brakeLight", lichtBremse_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_rem("trj_remoteLight", lichtRemote_cb);
+ros::Subscriber<std_msgs::UInt8> sub_light_rem("trj_reverseLight", lichtRueck_cb);
 
 ros::Publisher rc_pub("akt_rc", &rc_msg);
 ros::Publisher drive_mode_pub("akt_autoDriveMode", &drive_mode_msg);
@@ -42,6 +43,7 @@ short state_light_r = 0;
 short state_light_l = 0;
 short state_light_b = 0;
 short state_light_rem = 0;
+short state_light_rueck = 0;
 
 uint16_t previousMillis = 0;
 boolean blinkstate = true;
@@ -59,6 +61,7 @@ void init_aktorik(ros::NodeHandle *aktorik_node)
   aktorik_node->subscribe(sub_light_r);
   aktorik_node->subscribe(sub_light_b);
   aktorik_node->subscribe(sub_light_rem);
+  aktorik_node->subscribe(sub_light_rueck);
 
   aktorik_node->advertise(rc_pub);
   aktorik_node->advertise(drive_mode_pub);
@@ -193,6 +196,12 @@ void lichtRemote_cb(const std_msgs::UInt8& light_state)
   state_light_rem = light_state.data;
 }
 
+
+void lichtRueck_cb(const std_msgs::UInt8& light_state)
+{
+  state_light_rueck = light_state.data;
+}
+
 void servo_bewegung(float lenkwinkel_bogenmass)
 {
   lenkwinkel_grad = (lenkwinkel_bogenmass/pi)*180;
@@ -305,6 +314,7 @@ void set_led_states()
   set_output(state_light_r, blinker_rechts);
   set_output(state_light_b, bremslicht);
   set_output(state_light_rem, blaues_licht);
+  set_output(state_light_rueck, rueckfahrlicht);
 }
 
 void set_output(short state, short port)
