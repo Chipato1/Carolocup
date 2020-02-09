@@ -61,7 +61,7 @@ namespace zbar_ros
     if (!camera_sub_ && barcode_pub_.getNumSubscribers() > 0)
     {
       NODELET_INFO("Connecting to camera topic.");
-      camera_sub_ = nh_.subscribe("camera/image_raw", 10, &BarcodeReaderNodelet::imageCb, this);
+      camera_sub_ = nh_.subscribe("image", 10, &BarcodeReaderNodelet::imageCb, this);
     }
   }
 
@@ -112,6 +112,7 @@ namespace zbar_ros
 
       // publish barcode
       std_msgs::String barcode_string;
+	std::cout << "TEST" << barcode_string;
       barcode_string.data = barcode;
       barcode_pub_.publish(barcode_string);
     }
