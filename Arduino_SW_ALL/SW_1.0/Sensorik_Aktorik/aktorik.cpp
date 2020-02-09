@@ -203,15 +203,21 @@ void lichtRueck_cb(const std_msgs::UInt8& light_state)
 
 void servo_bewegung(float lenkwinkel_bogenmass)
 {
+  //+-137 ist maximalwert für Servo
   lenkwinkel_grad = (lenkwinkel_bogenmass/pi)*180;
-  if(lenkwinkel_grad<=0)
+  if(lenkwinkel_grad<=0){
   {
-    
     lenkwinkel_servosize = 1.428 * lenkwinkel_grad + 107;
+    if(lenkwinkel_servosize > 137){
+      lenkwinkel_servosize = 137;
+    }
   }
   else
   {
     lenkwinkel_servosize = 1.428 * lenkwinkel_grad + 107;
+    if(lenkwinkel_servosize < -137){
+      lenkwinkel_servosize = -137;
+    }
   }
 
   //if ((lenkwinkel_servosize < 107.4998)&&(lenkwinkel_servosize > 106.5002))
