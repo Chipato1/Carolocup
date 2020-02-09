@@ -35,7 +35,7 @@
 #include "ros/ros.h"
 #include <opencv2/core.hpp>
 #include "cv_bridge/cv_bridge.h"
-#include "zbar.h"
+#include "/home/xavier/Downloads/ZBar/ZBar-arm64-master/Headers/ZBarSDK/zbar.h"
 #include "boost/unordered_map.hpp"
 #include <string>
 #include "nodelet/nodelet.h"
