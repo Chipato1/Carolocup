@@ -238,8 +238,8 @@ void printLane(cv::Mat& frame, std::array <double, 4> lane, std::string prefix, 
 	std::string t1 = prefix + " Winkel: " + std::to_string(atan(lane[2]) * 180 / 3.1415) + " Grad";
 	std::string t2 = prefix + " Delta: " + std::to_string(lane[3]) + " mm";
 	//std::cout << t1 + t2 << std::endl;
-	cv::putText(frame, (t1), pos, cv::FONT_HERSHEY_PLAIN, 3, Scalar(255, 255, 255, 255));
-	cv::putText(frame, (t2), cv::Point(pos.x, pos.y + 100), cv::FONT_HERSHEY_PLAIN, 3, Scalar(255, 255, 255, 255));
+	//cv::putText(frame, (t1), pos, cv::FONT_HERSHEY_PLAIN, 3, Scalar(255, 255, 255, 255));
+	//cv::putText(frame, (t2), cv::Point(pos.x, pos.y + 100), cv::FONT_HERSHEY_PLAIN, 3, Scalar(255, 255, 255, 255));
 }
 
 void PointLaneDetector::debugDraw(cv::Mat& frame) {
