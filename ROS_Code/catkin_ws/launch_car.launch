@@ -1,9 +1,9 @@
 <launch>
   <!-- starts roscore -->
-  <machine name="local_alt" address="localhost" default="true" ros-root="/u/user/ros/ros/" ros-package-path="/u/user/ros/ros-pkg" />
+
 
   <!-- camera -->
-  <include file="roslaunch src/ueye_cam/launch/mono8.launch" />
+  <include file="src/ueye_cam/launch/mono8.launch" />
   <node name="vision_lanedetectionnode" pkg="vision" type="vision_lanedetectionnode" respawn="true" />
   <node name="vision_startboxdetectionnode" pkg="vision" type="vision_startboxdetectionnode" respawn="true" />
   <node name="vision_stoplinedetectionnode" pkg="vision" type="vision_stoplinedetectionnode" respawn="true" />
@@ -19,3 +19,100 @@
   <!--  -->
   <node name="state_machine_node" pkg="state_machine" type="state_machine_node" respawn="true" />
 </launch>
+
+xavier@xavier-desktop:~/Carolocup/ROS_Code/catkin_ws$ roslaunch launch_car.launch
+... logging to /home/xavier/.ros/log/a626d188-4b8d-11ea-87d7-00044bcbe53f/roslaunch-xavier-desktop-18727.log
+Checking log directory for disk usage. This may take awhile.
+Press Ctrl-C to interrupt
+Done checking log file disk usage. Usage is <1GB.
+
+started roslaunch server http://xavier-desktop:37703/
+
+SUMMARY
+========
+
+PARAMETERS
+ * /rosdistro: melodic
+ * /rosversion: 1.14.3
+ * /ueye_cam_nodelet/camera_id: 0
+ * /ueye_cam_nodelet/camera_intrinsics_file: 
+ * /ueye_cam_nodelet/camera_name: camera
+ * /ueye_cam_nodelet/camera_parameters_file: 
+ * /ueye_cam_nodelet/camera_topic: image_raw
+ * /ueye_cam_nodelet/color_mode: mono8
+ * /ueye_cam_nodelet/ext_trigger_mode: False
+
+NODES
+  /
+    check_ueye_api (ueye_cam/check_ueye_api)
+    nodelet_manager (nodelet/nodelet)
+    pi_laengsregler_node (pi_laengsregler/pi_laengsregler_node)
+    raddrehzahl_filter_node (raddrehzahl_filter/raddrehzahl_filter_node)
+    serial_node.py (rosserial_arduino/serial_node.py)
+    stanley_querregler_node (stanley_querregler/stanley_querregler_node)
+    state_machine_node (state_machine/state_machine_node)
+    ueye_cam_nodelet (nodelet/nodelet)
+    vision_lanedetectionnode (vision/vision_lanedetectionnode)
+    vision_startboxdetectionnode (vision/vision_startboxdetectionnode)
+    vision_stoplinedetectionnode (vision/vision_stoplinedetectionnode)
+
+WARNING: WARN: illegal <node> name 'serial_node.py'.
+http://ros.org/wiki/Names
+This will likely cause problems with other ROS tools.
+Node xml is <node args="_port:=/dev/ttyACM0" name="serial_node.py" pkg="rosserial_arduino" respawn="true" type="serial_node.py"/>
+auto-starting new master
+process[master]: started with pid [18737]
+ROS_MASTER_URI=http://localhost:11311
+
+setting /run_id to a626d188-4b8d-11ea-87d7-00044bcbe53f
+process[rosout-1]: started with pid [18748]
+started core service [/rosout]
+process[check_ueye_api-2]: started with pid [18754]
+process[nodelet_manager-3]: started with pid [18756]
+process[ueye_cam_nodelet-4]: started with pid [18757]
+process[vision_lanedetectionnode-5]: started with pid [18762]
+process[vision_startboxdetectionnode-6]: started with pid [18768]
+process[vision_stoplinedetectionnode-7]: started with pid [18770]
+process[raddrehzahl_filter_node-8]: started with pid [18771]
+process[stanley_querregler_node-9]: started with pid [18772]
+process[pi_laengsregler_node-10]: started with pid [18778]
+process[serial_node.py-11]: started with pid [18791]
+process[state_machine_node-12]: started with pid [18800]
+[ INFO] [1581288235.849718096]: Initializing nodelet with 8 worker threads.
+[ERROR] [1581288235.966539504]: No UEye cameras are connected
+
+[ERROR] [1581288235.966689168]: Hint: make sure that the IDS camera daemon (/etc/init.d/ueyeusbdrc) is running
+
+[ERROR] [1581288235.966849296]: Failed to initialize [camera]
+/home/xavier/Carolocup/ROS_Code/catkin_ws/src/rosserial/rosserial_arduino/nodes/serial_node.py:45: UserWarning: 'serial_node.py' is not a legal ROS base name. This may cause problems with other ROS tools.
+  rospy.init_node("serial_node")
+[ERROR] [1581288236.467483]: Error opening serial: [Errno 2] could not open port /dev/ttyACM0: [Errno 2] No such file or directory: '/dev/ttyACM0'
+[ERROR] [1581288239.474926]: Error opening serial: [Errno 2] could not open port /dev/ttyACM0: [Errno 2] No such file or directory: '/dev/ttyACM0'
+[ERROR] [1581288242.485913]: Error opening serial: [Errno 2] could not open port /dev/ttyACM0: [Errno 2] No such file or directory: '/dev/ttyACM0'
+[ERROR] [1581288245.496100]: Error opening serial: [Errno 2] could not open port /dev/ttyACM0: [Errno 2] No such file or directory: '/dev/ttyACM0'
+^C[state_machine_node-12] killing on exit
+[serial_node.py-11] killing on exit
+[pi_laengsregler_node-10] killing on exit
+[stanley_querregler_node-9] killing on exit
+[raddrehzahl_filter_node-8] killing on exit
+[vision_stoplinedetectionnode-7] killing on exit
+[vision_startboxdetectionnode-6] killing on exit
+[vision_lanedetectionnode-5] killing on exit
+[ueye_cam_nodelet-4] killing on exit
+[nodelet_manager-3] killing on exit
+terminate called after throwing an instance of 'boost::exception_detail::clone_impl<boost::exception_detail::error_info_injector<boost::lock_error> >'
+  what():  boost: mutex lock failed in pthread_mutex_lock: Invalid argument
+terminate called after throwing an instance of 'boost::exception_detail::clone_impl<boost::exception_detail::error_info_injector<boost::lock_error> >'
+  what():  boost: mutex lock failed in pthread_mutex_lock: Invalid argument
+terminate called after throwing an instance of 'boost::exception_detail::clone_impl<boost::exception_detail::error_info_injector<boost::lock_error> >'
+  what():  boost: mutex lock failed in pthread_mutex_lock: Invalid argument
+[check_ueye_api-2] killing on exit
+terminate called after throwing an instance of 'boost::exception_detail::clone_impl<boost::exception_detail::error_info_injector<boost::lock_error> >'
+  what():  boost: mutex lock failed in pthread_mutex_lock: Invalid argument
+terminate called without an active exception
+[rosout-1] killing on exit
+[master] killing on exit
+shutting down processing monitor...
+... shutting down processing monitor complete
+done
+
