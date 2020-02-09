@@ -16,6 +16,8 @@
 #include <math.h>
 #include <numeric>
 
+#define WINDOWS_DEBUG
+
 
 using namespace cv;
 using namespace cv::cuda;
