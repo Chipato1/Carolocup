@@ -102,25 +102,23 @@ bool aktorik()
   
   if (((buff_rc[0]+buff_rc[1]+buff_rc[2]+buff_rc[3]+buff_rc[4]+buff_rc[5])/6.0) > rcmode_schwellenwert)
   {                                    //RC-Mode
-      state_light_rem = 2;
-	  
+    state_light_rem = 2;
 	  if (!rc_mode)
-		  rc_timer = millis();
-   
-      rc_mode = true;
-      motor_bewegung_RC_mode();
-      servo_bewegung_RC_mode();
+    {
+      rc_timer = millis();
+    }
+    rc_mode = true;
+    motor_bewegung_RC_mode();
+    servo_bewegung_RC_mode();
   }
-  else 
+  else //autonom
   {
     if (rc_mode)
     {
       motor_bewegung(0);
     }
-
     //autonomer Betrieb
     state_light_rem = 0;                //blaue LED ausschalten
-    
     rc_mode = false;
   }
 
@@ -230,9 +228,6 @@ void motor_bewegung(int16_t motor_drehzahl)
     //test_publish();
     motor_uebertragung = (int) (0.236 * motor_drehzahl) + 93; //96 raus!!!! 
   }
-  /* 
-   * Übergangsbereich von 91 bis 95 wird nicht betrachtet
-   */
  motor.write(motor_uebertragung);
 }
 
