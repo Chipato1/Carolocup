@@ -1,14 +1,13 @@
-//#include "tof.h"
+#include "tof.h"
 #include "rpm.h"
 #include "aktorik.h"
 #include "serial.h"
 
 unsigned long start_loop_time = 0;
 
-//int enable_rpm = 0;
 
 float rpm;
-//uint16_t* tof;
+uint16_t* tof;
 
 ros::NodeHandle arduino_node;
 
@@ -21,7 +20,6 @@ void setup()
   arduino_node.loginfo("Program info xxx");
   //init_tof(); 
   init_rpm();
-
 }
 
 void loop() 
@@ -34,23 +32,13 @@ void loop()
   //t_test_publish(0);
   //t_test_publish(millis());
   
-  //tof = read_TOF();
-
   //t_test_publish(millis());
-    
+  
+  //tof = read_TOF();
   //tof_publish(tof[0], tof[1], tof[2], tof[3], tof[4]);
 
-    
-  //if (enable_rpm >= 1){
   rpm = read_RPM();
-    if (rpm != 0)
-    {
-      rpm_publish(rpm);
-    }
-    //enable_rpm = 0;
-  //}
-  //enable_rpm++;
-  
+  if (rpm != 0){rpm_publish(rpm);}  
   
   arduino_node.spinOnce();
 }
