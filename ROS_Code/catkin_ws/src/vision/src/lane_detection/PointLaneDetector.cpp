@@ -654,9 +654,11 @@ void PointLaneDetector::prepareInterpolation(int i) {
 }
 
 bool PointLaneDetector::solveSingleLane(cv::Mat& lane, cv::Mat A, cv::Mat B, int start, int end, bool foundLane) {
-	if (!foundLane || end - start < grade) {
+	if (!foundLane || end - start < grade || end-start < 8) {
 		return false;
 	}
+
+
 	Range rowRange = Range(start, end);
 	Range colRange = Range(0, this->grade);
 	Range zeroOneRange = Range(0, 1);
