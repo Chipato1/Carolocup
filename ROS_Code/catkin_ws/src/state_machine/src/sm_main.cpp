@@ -297,7 +297,7 @@ void sm_handle_DRIVE_RIGHT()
 	if (sm_isStateChanged())
 	{
 		se_setEnableLateralControl(SE_TRUE);
-		se_setTargetSpeed(-0.3);
+		se_setTargetSpeed(0.3);
 	}
 
 	se_setDeltaY(-se_currentClothoideRight[3]);
@@ -576,6 +576,7 @@ void se_init()
 	se_sub_tof_b = n.subscribe("sns_distanceBack", 50, se_cb_sub_tof_b);
 
 	se_sub_rc_mode = n.subscribe("akt_rc", 50, se_cb_sub_rc_mode);
+	se_sub_autoDriveMode = n.subscribe("akt_autoDriveMode", 50, se_cb_sub_autoDriveMode);
 
 	// Publishers
 
@@ -592,7 +593,7 @@ void se_init()
 	// State
 
 	se_rc_mode_activated = SE_FALSE;
-	se_currentAutoDriveMode = SE_AUTO_DRIVE_MODE_FREEDRIVE; // change later
+	se_currentAutoDriveMode = SE_AUTO_DRIVE_MODE_OFF;
 
 	se_currentSpeed = 0;
 	se_currentDistance = 0;
@@ -764,7 +765,7 @@ void se_cb_sub_rc_mode(const std_msgs::Bool::ConstPtr& msg)
 	se_rc_mode_activated = msg->data;
 }
 
-void se_cb_sub_autoDriveMode(const std_msgs::UInt8::ConstPtr& msg)
+void se_cb_sub_autoDriveMode(const std_msgs::Int16::ConstPtr& msg)
 {
 	se_currentAutoDriveMode = msg->data;
 }

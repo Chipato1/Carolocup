@@ -1,20 +1,20 @@
 roscore
 roslaunch src/ueye_cam/launch/mono8.launch
 rosrun vision vision_lanedetectionnode
+rosrun vision vision_startboxdetectionnode
+rosrun vision vision_stoplinedetectionnode
 
 rosrun raddrehzahl_filter raddrehzahl_filter_node
 rosrun stanley_querregler stanley_querregler_node
 rosrun pi_laengsregler pi_laengsregler_node
 
+// 5s
+
 rosrun rosserial_arduino serial_node.py _port:=/dev/ttyACM0
+
+// 5s
 
 rosrun state_machine state_machine_node
 
-
-
 // zum Anhalten
 rostopic pub /trj_targetSpeed std_msgs/Float32 "data: 0.0"
-
-
-rosrun vision vision_startboxdetectionnode
-rosrun vision vision_stoplinedetectionnode

@@ -358,7 +358,7 @@ void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 			thresholdRefreshCounter = 0;
 		}
 		else {
-			cv::cuda::threshold(this->ipmGPU, this->thresholdGPU, this->thres_cut, 255, cv::THRESH_BINARY);
+			cv::cuda::threshold(this->ipmGPU, this->thresholdGPU, this->thres_cut-this->thresh_otsu_correction, 255, cv::THRESH_BINARY);
 			this->thresholdGPU.download(this->threshold);
 		}
 		thresholdRefreshCounter++;

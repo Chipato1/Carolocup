@@ -14,6 +14,7 @@ ros::Subscriber<std_msgs::UInt8> sub_light_l("trj_flashLeft", lichtLinks_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_r("trj_flashRight", lichtRechts_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_b("trj_brakeLight", lichtBremse_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_rem("trj_remoteLight", lichtRemote_cb);
+ros::Subscriber<std_msgs::UInt8> sub_light_rem("trj_reverseLight", lichtRueck_cb);
 
 ros::Publisher rc_pub("akt_rc", &rc_msg);
 ros::Publisher drive_mode_pub("akt_autoDriveMode", &drive_mode_msg);
@@ -42,6 +43,7 @@ short state_light_r = 0;
 short state_light_l = 0;
 short state_light_b = 0;
 short state_light_rem = 0;
+short state_light_rueck = 0;
 
 uint16_t previousMillis = 0;
 boolean blinkstate = true;
@@ -59,6 +61,7 @@ void init_aktorik(ros::NodeHandle *aktorik_node)
   aktorik_node->subscribe(sub_light_r);
   aktorik_node->subscribe(sub_light_b);
   aktorik_node->subscribe(sub_light_rem);
+  aktorik_node->subscribe(sub_light_rueck);
 
   aktorik_node->advertise(rc_pub);
   aktorik_node->advertise(drive_mode_pub);
@@ -102,25 +105,23 @@ bool aktorik()
   
   if (((buff_rc[0]+buff_rc[1]+buff_rc[2]+buff_rc[3]+buff_rc[4]+buff_rc[5])/6.0) > rcmode_schwellenwert)
   {                                    //RC-Mode
-      state_light_rem = 2;
-	  
+    state_light_rem = 2;
 	  if (!rc_mode)
-		  rc_timer = millis();
-   
-      rc_mode = true;
-      motor_bewegung_RC_mode();
-      servo_bewegung_RC_mode();
+    {
+      rc_timer = millis();
+    }
+    rc_mode = true;
+    motor_bewegung_RC_mode();
+    servo_bewegung_RC_mode();
   }
-  else 
+  else //autonom
   {
     if (rc_mode)
     {
       motor_bewegung(0);
     }
-
     //autonomer Betrieb
     state_light_rem = 0;                //blaue LED ausschalten
-    
     rc_mode = false;
   }
 
@@ -195,6 +196,12 @@ void lichtRemote_cb(const std_msgs::UInt8& light_state)
   state_light_rem = light_state.data;
 }
 
+
+void lichtRueck_cb(const std_msgs::UInt8& light_state)
+{
+  state_light_rueck = light_state.data;
+}
+
 void servo_bewegung(float lenkwinkel_bogenmass)
 {
   lenkwinkel_grad = (lenkwinkel_bogenmass/pi)*180;
@@ -230,9 +237,6 @@ void motor_bewegung(int16_t motor_drehzahl)
     //test_publish();
     motor_uebertragung = (int) (0.236 * motor_drehzahl) + 93; //96 raus!!!! 
   }
-  /* 
-   * Übergangsbereich von 91 bis 95 wird nicht betrachtet
-   */
  motor.write(motor_uebertragung);
 }
 
@@ -280,15 +284,18 @@ void motor_bewegung_RC_mode()
     
     if(eingelesenes_pwm_motor < 1200 && rc_timer + 1000 > currmills)
     {
-      motor_uebertragung_RC_mode = 87;
+      motor_uebertragung_RC_mode = 87;//Rückwärts
+      digitalWrite(rueckfahrlicht, HIGH);
     }
     else if(eingelesenes_pwm_motor > 1600 && rc_timer + 1000 > currmills)
     {
-      motor_uebertragung_RC_mode = 100;
+      motor_uebertragung_RC_mode = 100;//Vorwärts
+      digitalWrite(rueckfahrlicht, LOW);
     }
     else 
     {
-       motor_uebertragung_RC_mode = 93;
+       motor_uebertragung_RC_mode = 93; // Null
+       digitalWrite(rueckfahrlicht, LOW);
     }
     
     motor.write(motor_uebertragung_RC_mode);
@@ -310,6 +317,7 @@ void set_led_states()
   set_output(state_light_r, blinker_rechts);
   set_output(state_light_b, bremslicht);
   set_output(state_light_rem, blaues_licht);
+  set_output(state_light_rueck, rueckfahrlicht);
 }
 
 void set_output(short state, short port)
