@@ -7,9 +7,9 @@
  *
  * Code generation for model "PI_Laengsregler".
  *
- * Model version              : 1.37
+ * Model version              : 1.40
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Sat Feb  8 16:46:29 2020
+ * C++ source code generated on : Sat Feb  8 22:01:14 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -24,28 +24,14 @@
 /* Block parameters (default storage) */
 P_PI_Laengsregler_T PI_Laengsregler_P = {
   /* Computed Parameter: Out1_Y0
-   * Referenced by: '<S9>/Out1'
-   */
-  {
-    false                              /* Data */
-  },
-
-  /* Computed Parameter: Constant_Value
-   * Referenced by: '<S6>/Constant'
-   */
-  {
-    false                              /* Data */
-  },
-
-  /* Computed Parameter: Constant_Value_h
-   * Referenced by: '<S4>/Constant'
+   * Referenced by: '<S4>/Out1'
    */
   {
     0.0F                               /* Data */
   },
 
-  /* Computed Parameter: Constant_Value_l
-   * Referenced by: '<S5>/Constant'
+  /* Computed Parameter: Constant_Value
+   * Referenced by: '<S3>/Constant'
    */
   {
     0.0F                               /* Data */
@@ -58,127 +44,28 @@ P_PI_Laengsregler_T PI_Laengsregler_P = {
     0                                  /* Data */
   },
 
+  /* Expression: 2.63
+   * Referenced by: '<Root>/Saturation'
+   */
+  2.63,
+
+  /* Expression: -2.63
+   * Referenced by: '<Root>/Saturation'
+   */
+  -2.63,
+
   /* Expression: 1/0.175896
-   * Referenced by: '<S2>/Radumfang'
+   * Referenced by: '<Root>/Radumfang'
    */
   5.6851776049483789,
 
   /* Expression: 7
-   * Referenced by: '<S2>/Getriebe'
+   * Referenced by: '<Root>/Getriebe'
    */
   7.0,
-
-  /* Expression: inf
-   * Referenced by: '<S2>/Saturation1'
-   */
-  0.0,
-
-  /* Expression: 0
-   * Referenced by: '<S2>/Saturation1'
-   */
-  0.0,
-
-  /* Expression: 0
-   * Referenced by: '<S2>/Switch1'
-   */
-  0.0,
-
-  /* Expression: 1
-   * Referenced by: '<S2>/Gain'
-   */
-  1.0,
-
-  /* Expression: 0
-   * Referenced by: '<S2>/Integrator'
-   */
-  0.0,
-
-  /* Expression: 4
-   * Referenced by: '<S2>/Gain1'
-   */
-  4.0,
-
-  /* Expression: 2.3
-   * Referenced by: '<S2>/Saturation'
-   */
-  2.3,
-
-  /* Expression: 0
-   * Referenced by: '<S2>/Saturation'
-   */
-  0.0,
-
-  /* Expression: 0
-   * Referenced by: '<S2>/Begrenzung auf maximale Geschwindigkeit '
-   */
-  0.0,
-
-  /* Expression: -2.3
-   * Referenced by: '<S2>/Begrenzung auf maximale Geschwindigkeit '
-   */
-  -2.3,
-
-  /* Expression: 1/0.175896
-   * Referenced by: '<S2>/Radumfang1'
-   */
-  5.6851776049483789,
 
   /* Expression: 7
-   * Referenced by: '<S2>/Getriebe1'
+   * Referenced by: '<Root>/Ausgleich für Servo Look-up'
    */
-  7.0,
-
-  /* Expression: 0
-   * Referenced by: '<S2>/Saturation2'
-   */
-  0.0,
-
-  /* Expression: -inf
-   * Referenced by: '<S2>/Saturation2'
-   */
-  0.0,
-
-  /* Expression: 0
-   * Referenced by: '<S2>/Switch3'
-   */
-  0.0,
-
-  /* Expression: 0
-   * Referenced by: '<S2>/Constant1'
-   */
-  0.0,
-
-  /* Expression: 0
-   * Referenced by: '<S2>/Constant'
-   */
-  0.0,
-
-  /* Expression: 2.25
-   * Referenced by: '<S2>/Switch'
-   */
-  2.25,
-
-  /* Start of '<S5>/Enabled Subsystem' */
-  {
-    /* Computed Parameter: Out1_Y0
-     * Referenced by: '<S8>/Out1'
-     */
-    {
-      0.0F                             /* Data */
-    }
-  }
-  ,
-
-  /* End of '<S5>/Enabled Subsystem' */
-
-  /* Start of '<S4>/Enabled Subsystem' */
-  {
-    /* Computed Parameter: Out1_Y0
-     * Referenced by: '<S7>/Out1'
-     */
-    {
-      0.0F                             /* Data */
-    }
-  }
-  /* End of '<S4>/Enabled Subsystem' */
+  7.0
 };

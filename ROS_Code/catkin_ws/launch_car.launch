@@ -1,0 +1,20 @@
+<launch>
+  <!-- starts roscore -->
+
+  <!-- camera -->
+  <include file="src/ueye_cam/launch/mono8.launch" />
+  <node name="vision_lanedetectionnode" pkg="vision" type="vision_lanedetectionnode" respawn="true" />
+  <node name="vision_startboxdetectionnode" pkg="vision" type="vision_startboxdetectionnode" respawn="true" />
+  <node name="vision_stoplinedetectionnode" pkg="vision" type="vision_stoplinedetectionnode" respawn="true" />
+
+  <!-- control-loop -->
+  <node name="raddrehzahl_filter_node" pkg="raddrehzahl_filter" type="raddrehzahl_filter_node" respawn="true" />
+  <node name="stanley_querregler_node" pkg="stanley_querregler" type="stanley_querregler_node" respawn="true" />
+  <node name="pi_laengsregler_node" pkg="pi_laengsregler" type="pi_laengsregler_node" respawn="true" />
+
+  <!-- rosserial -->
+  <node name="serial_node" pkg="rosserial_arduino" type="serial_node" args="_port:=/dev/ttyACM0" respawn="true" />
+
+  <!--  -->
+  <node name="state_machine_node" pkg="state_machine" type="state_machine_node" respawn="true" />
+</launch>
