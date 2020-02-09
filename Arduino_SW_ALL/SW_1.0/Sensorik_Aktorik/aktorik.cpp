@@ -14,7 +14,7 @@ ros::Subscriber<std_msgs::UInt8> sub_light_l("trj_flashLeft", lichtLinks_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_r("trj_flashRight", lichtRechts_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_b("trj_brakeLight", lichtBremse_cb);
 ros::Subscriber<std_msgs::UInt8> sub_light_rem("trj_remoteLight", lichtRemote_cb);
-ros::Subscriber<std_msgs::UInt8> sub_light_rem("trj_reverseLight", lichtRueck_cb);
+ros::Subscriber<std_msgs::UInt8> sub_light_rueck("trj_reverseLight", lichtRueck_cb);
 
 ros::Publisher rc_pub("akt_rc", &rc_msg);
 ros::Publisher drive_mode_pub("akt_autoDriveMode", &drive_mode_msg);
@@ -28,7 +28,6 @@ int test_value = 0;
 int16_t analogvalue_motor_rcmode; //eingelesener Pin - Wert am Tiefpass vom Motor
 int16_t analogvalue_rcmode;   //eingelesener Pin an Channel 4, um zu schauen ob im RC-Mode
 int16_t drive_mode;
-//int motor_zaehler = 0;
 int buff_rc_zaehler = 0;
 float wert_servo;
 float lenkwinkel_servosize;

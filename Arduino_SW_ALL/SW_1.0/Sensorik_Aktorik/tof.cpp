@@ -1,23 +1,28 @@
 #include "tof.h"
 
-VL53L0X_RangingMeasurementData_t measure_front;
-VL53L0X_RangingMeasurementData_t measure_left;
-VL53L0X_RangingMeasurementData_t measure_right;
-VL53L0X_RangingMeasurementData_t measure_cross;
-
-static uint16_t tof_array[5];
-
-bool init_tof()
+static uint16_t tof_array[5] = {threshold_front,
+                                threshold_left,
+                                threshold_right,
+                                threshold_cross,
+                                threshold_back};
+void init_tof()
 {
-  bool return_value = true;
-  bool value;
-  
+  Wire.begin();
+
+  //configure interrupt pins
+  pinMode(ToF_front_GPIO,INPUT);
+  pinMode(ToF_left_GPIO,INPUT);
+  pinMode(ToF_right_GPIO,INPUT);
+  pinMode(ToF_cross_GPIO,INPUT);
+  pinMode(ToF_back_GPIO,INPUT);
+
+  //configure shutdown pins
   pinMode(ToF_front_SHT,OUTPUT);
   pinMode(ToF_left_SHT,OUTPUT);
   pinMode(ToF_right_SHT,OUTPUT);
   pinMode(ToF_cross_SHT,OUTPUT);
   pinMode(ToF_back_SHT,OUTPUT);
-  delay(1);
+  
   //reset all
   digitalWrite(ToF_front_SHT,LOW);
   digitalWrite(ToF_left_SHT,LOW);
@@ -38,67 +43,70 @@ bool init_tof()
   digitalWrite(ToF_right_SHT,LOW);
   digitalWrite(ToF_cross_SHT,LOW);
   digitalWrite(ToF_back_SHT,LOW);
-  delay(1);
-  
-  //init ToF_front
+  delay(1);  
+
+  // set I2C addresses
   digitalWrite(ToF_front_SHT,HIGH);
-  value = ToF_front.begin(ToF_front_ADDRESS);
-  return_value = return_value && value;
-  
-  //init ToF_left
+  ToF_front.setAddress(ToF_front_ADDRESS);
   digitalWrite(ToF_left_SHT,HIGH);
-  value = ToF_left.begin(ToF_left_ADDRESS);
-  return_value = return_value && value;
-  
-  //init ToF_right
+  ToF_left.setAddress(ToF_left_ADDRESS);
   digitalWrite(ToF_right_SHT,HIGH);
-  value = ToF_right.begin(ToF_right_ADDRESS);
-  return_value = return_value && value;
-  
-  //init ToF_cross
+  ToF_right.setAddress(ToF_right_ADDRESS);
   digitalWrite(ToF_cross_SHT,HIGH);
-  value = ToF_cross.begin(ToF_cross_ADDRESS);
-  return_value = return_value && value;
-
-  //init ToF_back
+  ToF_cross.setAddress(ToF_cross_ADDRESS);
   digitalWrite(ToF_back_SHT,HIGH);
-  value = ToF_back.begin();
-  return_value = return_value && value;
+  ToF_back.setAddress(ToF_back_ADDRESS);
   
-  return return_value;
-}
+  ToF_front.init();
+  ToF_left.init();
+  ToF_right.init();
+  ToF_cross.init();
+  ToF_back.init();
 
-bool init_tof_sensor(Adafruit_VL53L0X *ToF, int adress){
-  digitalWrite(ToF,HIGH);
-  return ToF_front.begin(adress);
+  ToF_front.setTimeout(500);
+  ToF_left.setTimeout(500);
+  ToF_right.setTimeout(500);
+  ToF_cross.setTimeout(500);
+  ToF_back.setTimeout(500);
+
+  ToF_front.startContinuous(50);
+  ToF_left.startContinuous(50);
+  ToF_right.startContinuous(50);
+  ToF_cross.startContinuous(50);
+  ToF_back.startContinuous(50);
 }
 
 uint16_t* read_TOF()
 {  
-  uint16_t distance_ToF_front = threshold_front;
-  uint16_t distance_ToF_left = threshold_left;
-  uint16_t distance_ToF_right = threshold_right;
-  uint16_t distance_ToF_cross = threshold_cross;
-  uint16_t distance_ToF_back = threshold_back;
+  if(digitalRead(ToF_front_GPIO)==LOW)
+  {
+    tof_array[0] = ToF_front.readReg16Bit(ToF_front.RESULT_RANGE_STATUS + 10);
+    ToF_front.writeReg(ToF_front.SYSTEM_INTERRUPT_CLEAR, 0x01);
+  }
 
+  if(digitalRead(ToF_left_GPIO)==LOW)
+  {
+    tof_array[1] = ToF_left.readReg16Bit(ToF_left.RESULT_RANGE_STATUS + 10);
+    ToF_left.writeReg(ToF_left.SYSTEM_INTERRUPT_CLEAR, 0x01);
+  }
+
+  if(digitalRead(ToF_right_GPIO)==LOW)
+  {
+    tof_array[2] = ToF_right.readReg16Bit(ToF_right.RESULT_RANGE_STATUS + 10);
+    ToF_right.writeReg(ToF_right.SYSTEM_INTERRUPT_CLEAR, 0x01);
+  }
+
+  if(digitalRead(ToF_cross_GPIO)==LOW)
+  {
+    tof_array[3] = ToF_cross.readReg16Bit(ToF_cross.RESULT_RANGE_STATUS + 10);
+    ToF_cross.writeReg(ToF_cross.SYSTEM_INTERRUPT_CLEAR, 0x01);
+  }
   
-  //ToF_front.rangingTest(&measure_front, false); // pass in 'true' to get debug data printout!
-  //ToF_left.rangingTest(&measure_left, false); // pass in 'true' to get debug data printout!
-  //ToF_right.rangingTest(&measure_right, false); // pass in 'true' to get debug data printout!
-  //ToF_cross.rangingTest(&measure_cross, false); // pass in 'true' to get debug data printout!
-
-  //ToF_front.getSingleRangingMeasurement(&measure_front, false);
-  //ToF_left.getSingleRangingMeasurement(&measure_left, false);
-  //ToF_right.getSingleRangingMeasurement(&measure_right, false);
-  //ToF_cross.getSingleRangingMeasurement(&measure_cross, false);
-
-  //distance_ToF_front = measure_front.RangeMilliMeter;
-
-  tof_array[0] = distance_ToF_front;
-  tof_array[1] = distance_ToF_left;
-  tof_array[2] = distance_ToF_right;
-  tof_array[3] = distance_ToF_cross;
-  tof_array[4] = distance_ToF_back;
-
+  if(digitalRead(ToF_back_GPIO)==LOW)
+  {
+    tof_array[4] = ToF_back.readReg16Bit(ToF_back.RESULT_RANGE_STATUS + 10);
+    ToF_back.writeReg(ToF_back.SYSTEM_INTERRUPT_CLEAR, 0x01);
+  }
+  
   return tof_array;
 }
