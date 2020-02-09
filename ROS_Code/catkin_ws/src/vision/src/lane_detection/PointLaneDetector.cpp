@@ -110,7 +110,11 @@ PointLaneDetector::PointLaneDetector(std::map<std::string, std::string>& config)
 	this->ML_MAX_Y	 			= 	this->ML_MAX_Y 			*  this->ipmScaling;
 	this->RL_MIN_Y	 			= 	this->RL_MIN_Y 			*  this->ipmScaling;
 	this->RL_MAX_Y	 			= 	this->RL_MAX_Y 			*  this->ipmScaling;
-	
+
+	this->ignoreXMin = (config.count("ignoreXMin") ? stod(config["ignoreXMin"]) : 0) * ipmScaling;
+	this->ignoreXMax = (config.count("ignoreXMax") ? stod(config["ignoreXMax"]) : 0)* ipmScaling;
+	this->ignoreYMin = (config.count("ignoreYMin") ? stod(config["ignoreYMin"]) : 0)* ipmScaling;
+	this->ignoreYMax = (config.count("ignoreYMax") ? stod(config["ignoreYMax"]) : 0)* ipmScaling;
 
 
 	this->canny = cuda::createCannyEdgeDetector(low_thresh, high_thresh, aperture_size, false);
@@ -241,15 +245,26 @@ void printLane(cv::Mat& frame, std::array <double, 4> lane, std::string prefix, 
 void PointLaneDetector::debugDraw(cv::Mat& frame) {
 	cv::cvtColor(frame, this->debugImage, COLOR_GRAY2BGR);
 	
-	printLane(this->debugImage,this->vRes.leftLane1, "Links", cv::Point(100,100));
-	printLane(this->debugImage, this->vRes.middleLane1, "Mitte", cv::Point(100, 300));
-	printLane(this->debugImage, this->vRes.rightLane1, "Rechts", cv::Point(100, 500));
+	if (vRes.solvedLL1) {
+		printLane(this->debugImage, this->vRes.leftLane1, "Links", cv::Point(100, 100));
+		drawResult(this->debugImage, this->leftLane1, this->leftLane2, Scalar(255, 0, 0), this->vRes.clothoideCutDistanceL_mm);
+	}
+
+	if (vRes.solvedML1) {
+		printLane(this->debugImage, this->vRes.middleLane1, "Mitte", cv::Point(100, 300));
+		drawResult(this->debugImage, this->middleLane1, this->middleLane2, Scalar(255, 255, 255), this->vRes.clothoideCutDistanceM_mm);
+	}
+
+	if (vRes.solvedRL1) {
+		printLane(this->debugImage, this->vRes.rightLane1, "Rechts", cv::Point(100, 500));
+		drawResult(this->debugImage, this->rightLane1, this->rightLane2, Scalar(0, 0, 255), this->vRes.clothoideCutDistanceR_mm);
+	}
 
 
 	
-	drawResult(this->debugImage, this->leftLane1, this->leftLane2, Scalar(255, 0, 0), this->vRes.clothoideCutDistanceL_mm);
-	drawResult(this->debugImage, this->middleLane1, this->middleLane2, Scalar(255, 255, 255), this->vRes.clothoideCutDistanceM_mm);
-	drawResult(this->debugImage, this->rightLane1, this->rightLane2, Scalar(0, 0, 255), this->vRes.clothoideCutDistanceR_mm);
+	
+	
+	
 
 	for (int x = 0; x < this->vRes.lanePoints.size(); x++) {
 		for (int y = 0; y < this->vRes.lanePoints.at(x).size(); y++) {
