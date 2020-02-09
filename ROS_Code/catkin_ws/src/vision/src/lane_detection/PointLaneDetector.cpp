@@ -341,8 +341,9 @@ void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 
 	case 1:
 		if (thresholdRefreshCounter >= this->thresh_refresh) {
-			this->thres_cut = cv::threshold(frame, this->threshold, 0, 255, THRESH_OTSU) + 50;
+			this->thres_cut = cv::threshold(ipm, this->threshold, 0, 255, THRESH_OTSU) + 50;
 			this->thresholdGPU.upload(this->threshold);
+			std::cout << "Recalculating...";
 			thresholdRefreshCounter = 0;
 		}
 		else {
