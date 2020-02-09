@@ -275,15 +275,15 @@ void motor_bewegung_RC_mode()
     
     if(eingelesenes_pwm_motor < 1200 && rc_timer + 1000 > currmills)
     {
-      motor_uebertragung_RC_mode = 87;
+      motor_uebertragung_RC_mode = 87;//Rückwärts
     }
     else if(eingelesenes_pwm_motor > 1600 && rc_timer + 1000 > currmills)
     {
-      motor_uebertragung_RC_mode = 100;
+      motor_uebertragung_RC_mode = 100;//Vorwärts
     }
     else 
     {
-       motor_uebertragung_RC_mode = 93;
+       motor_uebertragung_RC_mode = 93; // Null
     }
     
     motor.write(motor_uebertragung_RC_mode);
