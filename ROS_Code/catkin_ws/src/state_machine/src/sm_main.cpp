@@ -335,7 +335,7 @@ void sm_handle_DRIVE_RIGHT()
 	
 	avg /= SE_SENSOR_BUFFER_LENGTH;
 
-	se_setDeltaY(-avg);//se_currentClothoideRight[3][se_clothoideBufferIterator]);
+	se_setDeltaY(-se_currentClothoideRight[3][se_clothoideBufferIterator]);
 
 	if (!se_isTrackAvailable())
 	{
@@ -656,7 +656,7 @@ void se_init()
 
 double getMidValue(double val1, double val2)
 {
-	return (val1 + ((val2 - val1) / 2));
+	return ((val2 + val1) / 2);
 }
 
 /* Topic Callbacks */
@@ -705,19 +705,19 @@ void se_cb_sub_visionResult(const vision::VisionResultMsg::ConstPtr& msg)
 		{
 			//std::cout << "R - ";
 
-			new_r_c1.data = msg->rightLane1[0];
+			/*new_r_c1.data = msg->rightLane1[0];
 			new_r_c0.data = msg->rightLane1[1];
-			new_r_phi.data = msg->rightLane1[2];
+			new_r_phi.data = msg->rightLane1[2];*/
 			new_r_delta.data = msg->rightLane1[3];
 
-			new_m_c1.data = msg->middleLane1[0];
+			/*new_m_c1.data = msg->middleLane1[0];
 			new_m_c0.data = msg->middleLane1[1];
-			new_m_phi.data = msg->middleLane1[2];
+			new_m_phi.data = msg->middleLane1[2];*/
 			new_m_delta.data = msg->middleLane1[3];
 			
-			se_currentClothoideRight[0][se_clothoideBufferIterator] = getMidValue(new_m_c1.data, new_r_c1.data);
+			/*se_currentClothoideRight[0][se_clothoideBufferIterator] = getMidValue(new_m_c1.data, new_r_c1.data);
 			se_currentClothoideRight[1][se_clothoideBufferIterator] = getMidValue(new_m_c0.data, new_r_c0.data);
-			se_currentClothoideRight[2][se_clothoideBufferIterator] = getMidValue(new_m_phi.data, new_r_phi.data);
+			se_currentClothoideRight[2][se_clothoideBufferIterator] = getMidValue(new_m_phi.data, new_r_phi.data);*/
 			se_currentClothoideRight[3][se_clothoideBufferIterator] = getMidValue(new_m_delta.data, new_r_delta.data);
 
 			//std::cout << "r: " << new_r_delta.data << " - m: " << new_m_delta.data << "\n -deltaY: " << se_currentClothoideRight[3] << "\n";
@@ -726,29 +726,29 @@ void se_cb_sub_visionResult(const vision::VisionResultMsg::ConstPtr& msg)
 		}
 		else
 		{
-			new_m_c1.data = msg->middleLane1[0];
+			/*new_m_c1.data = msg->middleLane1[0];
 			new_m_c0.data = msg->middleLane1[1];
-			new_m_phi.data = msg->middleLane1[2];
+			new_m_phi.data = msg->middleLane1[2];*/
 			new_m_delta.data = msg->middleLane1[3];
 
 			if (new_r_delta.data > 0)
 			{
-				new_r_c1.data = new_m_c1.data;
+				/*new_r_c1.data = new_m_c1.data;
 				new_r_c0.data = new_m_c0.data;
-				new_r_phi.data = new_m_phi.data;
+				new_r_phi.data = new_m_phi.data;*/
 				new_r_delta.data = new_m_delta.data;
 
-				se_currentClothoideRight[0][se_clothoideBufferIterator] = new_r_c1.data;
+				/*se_currentClothoideRight[0][se_clothoideBufferIterator] = new_r_c1.data;
 				se_currentClothoideRight[1][se_clothoideBufferIterator] = new_r_c0.data;
-				se_currentClothoideRight[2][se_clothoideBufferIterator] = new_r_phi.data;
-				se_currentClothoideRight[3][se_clothoideBufferIterator] = -new_r_delta.data - 200;
+				se_currentClothoideRight[2][se_clothoideBufferIterator] = new_r_phi.data;*/
+				se_currentClothoideRight[3][se_clothoideBufferIterator] = getMidValue(new_r_delta.data, new_r_delta.data - 400);
 			}
 			else
 			{
-				se_currentClothoideRight[0][se_clothoideBufferIterator] = new_m_c1.data;
+				/*se_currentClothoideRight[0][se_clothoideBufferIterator] = new_m_c1.data;
 				se_currentClothoideRight[1][se_clothoideBufferIterator] = new_m_c0.data;
-				se_currentClothoideRight[2][se_clothoideBufferIterator] = new_m_phi.data;
-				se_currentClothoideRight[3][se_clothoideBufferIterator] = -new_m_delta.data + 200;
+				se_currentClothoideRight[2][se_clothoideBufferIterator] = new_m_phi.data;*/
+				se_currentClothoideRight[3][se_clothoideBufferIterator] = getMidValue(new_r_delta.data, new_m_delta.data + 400);
 			}
 
 			//std::cout << "m: " << new_m_delta.data << "\n -deltaY: " << se_currentClothoideRight[3] << "\n";
@@ -758,43 +758,43 @@ void se_cb_sub_visionResult(const vision::VisionResultMsg::ConstPtr& msg)
 	{
 		//std::cout << "R - ";
 
-		new_r_c1.data = msg->rightLane1[0];
+		/*new_r_c1.data = msg->rightLane1[0];
 		new_r_c0.data = msg->rightLane1[1];
-		new_r_phi.data = msg->rightLane1[2];
+		new_r_phi.data = msg->rightLane1[2];*/
 		new_r_delta.data = msg->rightLane1[3];
 
 		if (new_r_delta.data < 0)
 		{
-			new_m_c1.data = new_r_c1.data;
+			/*new_m_c1.data = new_r_c1.data;
 			new_m_c0.data = new_r_c0.data;
-			new_m_phi.data = new_r_phi.data;
+			new_m_phi.data = new_r_phi.data;*/
 			new_m_delta.data = new_r_delta.data;
 
-			se_currentClothoideRight[0][se_clothoideBufferIterator] = new_m_c1.data;
+			/*se_currentClothoideRight[0][se_clothoideBufferIterator] = new_m_c1.data;
 			se_currentClothoideRight[1][se_clothoideBufferIterator] = new_m_c0.data;
-			se_currentClothoideRight[2][se_clothoideBufferIterator] = new_m_phi.data;
-			se_currentClothoideRight[3][se_clothoideBufferIterator] = -new_m_delta.data + 200;
+			se_currentClothoideRight[2][se_clothoideBufferIterator] = new_m_phi.data;*/
+			se_currentClothoideRight[3][se_clothoideBufferIterator] = getMidValue(new_m_delta.data, new_m_delta.data + 400);
 		}
 		else
 		{
-			se_currentClothoideRight[0][se_clothoideBufferIterator] = new_r_c1.data;
+			/*se_currentClothoideRight[0][se_clothoideBufferIterator] = new_r_c1.data;
 			se_currentClothoideRight[1][se_clothoideBufferIterator] = new_r_c0.data;
-			se_currentClothoideRight[2][se_clothoideBufferIterator] = new_r_phi.data;
-			se_currentClothoideRight[3][se_clothoideBufferIterator] = -new_r_delta.data - 200;
+			se_currentClothoideRight[2][se_clothoideBufferIterator] = new_r_phi.data;*/
+			se_currentClothoideRight[3][se_clothoideBufferIterator] = getMidValue(new_r_delta.data, new_r_delta.data - 400);
 		}
 
 		//std::cout << "r: " << new_r_delta.data << "\n -deltaY: " << se_currentClothoideRight[3] << "\n";
 	}
 	
-	if (msg->foundRL || msg->foundML)// || msg->foundLL)
+	if ((msg->foundRL && msg->solvedRL1) || (msg->foundML && msg->solvedML1))// || msg->foundLL)
 	{
 		se_iterationsSinceLastVisionResult = 0;
-	}
 
-	se_clothoideBufferIterator++;
-	if (se_clothoideBufferIterator > SE_SENSOR_BUFFER_LENGTH)
-	{
-		se_clothoideBufferIterator = 0;
+		se_clothoideBufferIterator++;
+		if (se_clothoideBufferIterator > SE_SENSOR_BUFFER_LENGTH)
+		{
+			se_clothoideBufferIterator = 0;
+		}
 	}
 
 	/*
