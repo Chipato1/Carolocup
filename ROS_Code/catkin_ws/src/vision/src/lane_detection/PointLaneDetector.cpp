@@ -619,16 +619,17 @@ void PointLaneDetector::prepareInterpolation(int i) {
 		if (foundML && middleIndex >= 0) {
 			double dx = ((double)laneMiddles.at(middleIndex).x - (double)this->middleLaneStartPoint.x);
 			double dy = ((double)laneMiddles.at(middleIndex).y - (double)this->middleLaneStartPoint.y);
-			double rel = oldMiddleRel - (dx / dy);
+			double angle = atan(dx / dy);
+			double rel = angle - oldMiddleRel;
 
-			if ((*iteratorMiddle < 300 && numberOfMiddlePoints == 1) || (*iteratorMiddle < 300 && rel < 0.5 && rel > -0.5) || (*iteratorMiddle >= 300 && rel < 0.15 && rel > -0.15)) {
+			if ((*iteratorMiddle < 300 && numberOfMiddlePoints == 1) || (*iteratorMiddle < 300 && rel < 0.1 && rel > -0.1) || (*iteratorMiddle >= 300 && rel < 0.08 && rel > -0.08)) {
 				lastMiddleIterator = i;
 				vRes.lanePoints.at(1).push_back(laneMiddles.at(middleIndex));
 				calculateSolveMatrix(laneMiddles.at(middleIndex), mA, mB, numberOfMiddlePoints);
 				middleLaneStartPoint = laneMiddles.at(middleIndex);
 				
 				numberOfMiddlePoints++;
-				oldMiddleRel = (dx / dy);
+				oldMiddleRel = atan(dx / dy);
 				
 			}
 		}
@@ -638,13 +639,14 @@ void PointLaneDetector::prepareInterpolation(int i) {
 		if (foundRL && rightIndex >= 0) {
 			double dx = ((double)laneMiddles.at(rightIndex).x - (double)this->rightLaneStartPoint.x);
 			double dy = ((double)laneMiddles.at(rightIndex).y - (double)this->rightLaneStartPoint.y);
-			double rel = oldRIghtRel - (dx / dy);
-			if ((*iteratorRight < 300 && numberOfRightPoints == 1) || (*iteratorRight < 300 && rel < 0.5 && rel > -0.5) || (*iteratorRight >= 300 && rel < 0.15 && rel > -0.15)) {
+			double angle = atan(dx / dy);
+			double rel = angle - oldRIghtRel;
+			if ((*iteratorRight < 300 && numberOfRightPoints == 1) || (*iteratorRight < 300 && rel < 0.1 && rel > -0.1) || (*iteratorRight >= 300 && rel < 0.08 && rel > -0.08)) {
 				lastRightIterator = i;
 				vRes.lanePoints.at(2).push_back(laneMiddles.at(rightIndex));
 				calculateSolveMatrix(laneMiddles.at(rightIndex), rA, rB, numberOfRightPoints);
 				rightLaneStartPoint = laneMiddles.at(rightIndex);
-				oldRIghtRel = (dx / dy);
+				oldRIghtRel = atan(dx / dy);
 				numberOfRightPoints++;
 			}
 		}
