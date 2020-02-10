@@ -38,26 +38,29 @@ std::map<std::string, std::string> readConfigFile() {
 
 cv::Mat image;
 StartboxDetector detector = StartboxDetector();
-ros::Rate qrRate(15.);
+ros::Rate* qrRate;
 bool detectQRCode(vision::SetBool::Request  &req, vision::SetBool::Response &res) {
 	bool status = false;
+	ROS_INFO("TEST1");
 	vector<decodedObject> decodedObjects;
-	for(int i = 0; i < 100; i++) {
+	for(int i = 0; i < 5; i++) {
 		
 		if(detector.checkQRCodeOpenCV(image)) {
 			res.success = true;
 			return true;
 		}
+ROS_INFO("TEST2");
 
-		detector.checkQRCode(image, decodedObjects)
+		detector.checkQRCode(image, decodedObjects);
 
 		if(decodedObjects.size() > 0) {
 			res.success = true;
 			return true;
 		}
-
-		qrRate.sleep();
+ROS_INFO("TEST3");
+		qrRate->sleep();
 	}
+	res.success = false;
 	return false;
 }
 
@@ -81,7 +84,7 @@ int main(int argc, char** argv) {
 	ros::NodeHandle nh;
 	image_transport::ImageTransport it(nh);
 	image_transport::Subscriber sub = it.subscribe("undistortresultimage" , 1, imageCallback);
-
+	qrRate = new ros::Rate(30.);
 
 	ros::ServiceServer service = nh.advertiseService("qr_detected", detectQRCode);
 

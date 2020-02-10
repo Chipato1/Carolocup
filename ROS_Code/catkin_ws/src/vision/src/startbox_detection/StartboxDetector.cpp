@@ -20,6 +20,9 @@ StartboxDetector::StartboxDetector() {
 }
 
 bool StartboxDetector::checkQRCodeOpenCV(cv::Mat inputImage) {
+	if(inputImage.empty()) {
+	return false;
+}
     cv::resize(inputImage, inputImage, cv::Size(800,600));
 	cv::Mat outputImage;
     cv::threshold(inputImage, outputImage, 70, 255, cv::THRESH_BINARY);
