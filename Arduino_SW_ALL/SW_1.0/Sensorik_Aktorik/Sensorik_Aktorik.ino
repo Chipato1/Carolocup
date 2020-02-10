@@ -4,12 +4,13 @@
 #include "serial.h"
 
 unsigned long start_loop_time = 0;
-
-
 float rpm;
 uint16_t* tof;
 
 ros::NodeHandle arduino_node;
+
+std_msgs::UInt16 arduino_watchdog_cnt = 0; //Carl 13.30
+ros::Publisher watchdog_pub("watchdog_value", &arduino_watchdog_cnt); //Carl 13.30
 
 void setup() 
 {  
@@ -36,6 +37,16 @@ void loop()
 
   rpm = read_RPM();
   if (rpm != 0){rpm_publish(rpm);}  
+
+
+  //   -> Carl 13.30
+  watchdog_pub.publish(&arduino_watchdog_cnt);
+  arduino_watchdog_cnt.data = arduino_watchdog_cnt.data + 1;
+  
+  if (arduino_watchdog_cnt.data == 101){
+    arduino_watchdog_cnt.data = 0;
+  }
+  // Carl 13.30 <-
   
   arduino_node.spinOnce();
 }
