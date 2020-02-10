@@ -39,19 +39,23 @@ std::map<std::string, std::string> readConfigFile() {
 cv::Mat image;
 StartboxDetector detector = StartboxDetector();
 ros::Rate* qrRate;
+std::mutex imageMutex;
 bool detectQRCode(vision::SetBool::Request  &req, vision::SetBool::Response &res) {
+	imageMutex.lock();
+	cv::Mat copyImage = image.clone();
+	imageMutex.unlock();
 	bool status = false;
 	ROS_INFO("TEST1");
 	vector<decodedObject> decodedObjects;
 	for(int i = 0; i < 5; i++) {
 		
-		if(detector.checkQRCodeOpenCV(image)) {
+		if(detector.checkQRCodeOpenCV(copyImage)) {
 			res.success = true;
 			return true;
 		}
 ROS_INFO("TEST2");
 
-		detector.checkQRCode(image, decodedObjects);
+		detector.checkQRCode(copyImage, decodedObjects);
 
 		if(decodedObjects.size() > 0) {
 			res.success = true;
@@ -65,7 +69,9 @@ ROS_INFO("TEST3");
 }
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
+	imageMutex.lock();
 	image = cv_bridge::toCvShare(msg, "mono8")->image;
+	imageMutex.unlock();
 	//---------------CODE HIER EINFÜGEN---------------------
     
 }
