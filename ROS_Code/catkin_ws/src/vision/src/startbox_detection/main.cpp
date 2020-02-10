@@ -11,6 +11,8 @@
 #include <image_transport/image_transport.h>
 #include <chrono>
 
+#include <condition_variable>
+
 std::map<std::string, std::string> readConfigFile() {
 	std::ifstream infile("/home/xavier/config/config.cfg");
 	std::map<std::string, std::string> my_map;
@@ -38,8 +40,9 @@ std::map<std::string, std::string> readConfigFile() {
 
 cv::Mat image;
 StartboxDetector detector = StartboxDetector();
-ros::Rate* qrRate;
 std::mutex imageMutex;
+std::mutex signalingMutex;
+std::condition_variable condition;
 bool detectQRCode(vision::SetBool::Request  &req, vision::SetBool::Response &res) {
 	imageMutex.lock();
 	cv::Mat copyImage = image.clone();
@@ -47,22 +50,22 @@ bool detectQRCode(vision::SetBool::Request  &req, vision::SetBool::Response &res
 	bool status = false;
 	ROS_INFO("TEST1");
 	vector<decodedObject> decodedObjects;
-	for(int i = 0; i < 5; i++) {
-		
-		//if(detector.checkQRCodeOpenCV(copyImage)) {
-		//	res.success = true;
-		//	return true;
-		//}
-ROS_INFO("TEST2");
+	for(int i = 0; i < 100; i++) {
+		std::unique_lock<std::mutex> lk(signalingMutex);
+		condition.wait(lk);
+		if(detector.checkQRCodeOpenCV(copyImage)) {
+			res.success = true;
+			return true;
+		}
+		ROS_INFO("TEST2");
 
-		//detector.checkQRCode(copyImage, decodedObjects);
+		detector.checkQRCode(copyImage, decodedObjects);
 
-		//if(decodedObjects.size() > 0) {
-		//	res.success = true;
-		//	return true;
-		//}
-ROS_INFO("TEST3");
-		qrRate->sleep();
+		if(decodedObjects.size() > 0) {
+			res.success = true;
+			return true;
+		}
+		ROS_INFO("TEST3");
 	}
 	res.success = false;
 	return false;
@@ -71,6 +74,8 @@ ROS_INFO("TEST3");
 void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 	imageMutex.lock();
 	image = cv_bridge::toCvShare(msg, "mono8")->image;
+	std::lock_guard<std::mutex> lk(signalingMutex);
+	condition.notify_one();
 	imageMutex.unlock();
 	//---------------CODE HIER EINFÜGEN---------------------
     
@@ -90,7 +95,6 @@ int main(int argc, char** argv) {
 	ros::NodeHandle nh;
 	image_transport::ImageTransport it(nh);
 	image_transport::Subscriber sub = it.subscribe("undistortresultimage" , 1, imageCallback);
-	qrRate = new ros::Rate(30.);
 
 	ros::ServiceServer service = nh.advertiseService("qr_detected", detectQRCode);
 
