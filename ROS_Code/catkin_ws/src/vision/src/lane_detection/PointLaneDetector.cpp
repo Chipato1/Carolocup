@@ -616,12 +616,12 @@ void PointLaneDetector::prepareInterpolation(int i) {
 			leftIndex = -1;
 		}
 
-		if (foundML && middleIndex >= 0 && distancesMiddle.at(middleIndex) < 420) {
+		if (foundML && middleIndex >= 0) {
 			double dx = abs(laneMiddles.at(middleIndex).x - this->middleLaneStartPoint.x);
 			double dy = abs(laneMiddles.at(middleIndex).y - this->middleLaneStartPoint.y);
 			double temp = (double)i - (double)lastMiddleIterator;
 			double rel = abs(oldMiddleRel - (dx / dy));
-			if (oldMiddleRel < 0 ||  rel < 0.3) {
+			if (oldMiddleRel < 0 ||  rel < 0.2) {
 				lastMiddleIterator = i;
 				vRes.lanePoints.at(1).push_back(laneMiddles.at(middleIndex));
 				calculateSolveMatrix(laneMiddles.at(middleIndex), mA, mB, numberOfMiddlePoints);
@@ -633,12 +633,12 @@ void PointLaneDetector::prepareInterpolation(int i) {
 		else {
 			middleIndex = -1;
 		}
-		if (foundRL && rightIndex >= 0 && distancesRight.at(rightIndex) < 420) {
-			int dx = laneMiddles.at(rightIndex).x - this->rightLaneStartPoint.x;
-			int dy = laneMiddles.at(rightIndex).y - this->rightLaneStartPoint.y;
+		if (foundRL && rightIndex >= 0) {
+			double dx = abs(laneMiddles.at(rightIndex).x - this->rightLaneStartPoint.x);
+			double dy = abs(laneMiddles.at(rightIndex).y - this->rightLaneStartPoint.y);
 			double temp = (double)i - (double)lastRightIterator;
 			double rel = abs(oldRIghtRel - (dx / dy));
-			if (oldRIghtRel < 0 || rel < 0.3) {
+			if (oldRIghtRel < 0 || rel < 0.2) {
 				lastRightIterator = i;
 				vRes.lanePoints.at(2).push_back(laneMiddles.at(rightIndex));
 				calculateSolveMatrix(laneMiddles.at(rightIndex), rA, rB, numberOfRightPoints);
