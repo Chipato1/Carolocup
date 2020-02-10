@@ -1,5 +1,6 @@
 #pragma once
-
+#include <vision/HoughPoints.h>
+#include <vision/HoughPointsArray.h>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -16,33 +17,18 @@ using namespace std;
 class StoplineDetector
 {
 public:
-    StoplineDetector(std::map<std::string, std::string> config);
-    double detect(vector<Vec4i> lines, int pointerSize);
-
-    double getYDistanceBetweenPoints(Point p1, Point p2);
+    double detect(const vision::HoughPointsArray::ConstPtr &imageArray, int pointerSize, std::map<std::string, std::string> config);
+    double getDistanceBetweenPoints(Point p1, Point p2);
     vector<Vec4i> getPossibleEventLine(vector<Vec4i> & detectedLines);
     vector<Vec4i> checkLineWidth (vector<Vec4i> lines);
+    cv::Mat defineROI (cv::Mat &image);
     Vec4i getStopLine (vector<Vec4i> lines);
     vector<Vec4i> checkOrthogonal(vector<Vec4i> lines, vector<Vec4i> pLines);
     bool lineIsWithinArea(Vec4i line, Point carCenter);
-    double calculateDistance(Vec4i);
     
     //Debug Function
     void failureReport(string i);
     void drawLine(vector<Vec4i> lines);
-
-    double roiCenterX;
     
-    vector<Vec4i> perpendicularLines;
-    vector<Vec4i> lines;
-    
-    cv::Mat img;
-
-    //config details
-    double ipmScaling;
-    double ipmSizeX;
-    double ipmSizeY;
-
-    int validation;
 
 };
