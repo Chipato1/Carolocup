@@ -42,7 +42,6 @@ vision::StoplineMsg stop_Msg;
 double result;
 std::map<std::string, std::string> config;
 void imageCallback(const vision::HoughPointsArray::ConstPtr& msg){
-    //cv::Mat image = cv::imread("/Users/beni/Desktop/Studium/Studienarbeit/OpenCV/OpenCVTest/OpenCVTest/images");
     result = stoplineDetector.detect(msg, msg->points.size(), config);
     
     if (result > 0 ) {
@@ -57,10 +56,10 @@ void imageCallback(const vision::HoughPointsArray::ConstPtr& msg){
 }
 
 int main(int argc, char** argv) {
-	std::cout << "Launching ROS Lane Detection node..." << std::endl;
+	std::cout << "Launching ROS Crossing detection node..." << std::endl;
 	std::cout << "Initializing ROS features with parameters: " << std::endl;
-	std::cout << "argc: " << argc << "; Node name: vision_stoplinedetectionnode" << std::endl;
-	ros::init(argc, argv, "vision_stoplinedetectionnode");
+	std::cout << "argc: " << argc << "; Node name: vision_crossingdetectionnode" << std::endl;
+	ros::init(argc, argv, "vision_crossingdetectionnode");
 	std::cout << "Success!" << std::endl;
 	std::cout << "Trying to load config file config.cfg" << std::endl;
 	//Config Datei lesen und DrivingVision-Klasse erstellen
@@ -71,7 +70,7 @@ int main(int argc, char** argv) {
 	//image_transport::ImageTransport it(nh);
 
     //TODO:funktioniert das wenn ein NodeHandel 2 verschiedene Topics subscripet und pushlished
-    stoplinePublisher = nh.advertise<vision::StoplineMsg>("Stoplines", 1);
+    stoplinePublisher = nh.advertise<vision::StoplineMsg>("Crossing", 1);
 	ros::Subscriber sub = nh.subscribe("HoughResult" , 1, imageCallback);
 	ros::spin();
 	return 0;
