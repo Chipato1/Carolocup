@@ -206,12 +206,13 @@ void servo_bewegung(float lenkwinkel_bogenmass)
   lenkwinkel_grad = (lenkwinkel_bogenmass/pi)*180;
   if(lenkwinkel_grad<=0)
   {
-    
-    lenkwinkel_servosize = 1.428 * lenkwinkel_grad + 107;
+    lenkwinkel_servosize = 1.3*lenkwinkel_grad + 100;
+    //lenkwinkel_servosize = 1.428 * lenkwinkel_grad + 107;
   }
   else
   {
-    lenkwinkel_servosize = 1.428 * lenkwinkel_grad + 107;
+    lenkwinkel_servosize = 1.3*lenkwinkel_grad + 100;
+    //lenkwinkel_servosize = 1.428 * lenkwinkel_grad + 107;
   }
 
   //if ((lenkwinkel_servosize < 107.4998)&&(lenkwinkel_servosize > 106.5002))
@@ -300,12 +301,16 @@ void motor_bewegung_RC_mode()
     motor.write(motor_uebertragung_RC_mode);
     
 }
+//1487 Nullstellung
+//1302 unten
 
+//+180
 void servo_bewegung_RC_mode()
 {
   eingelesenes_pwm_servo = pulseIn(pwm_fernbedienung_servo, HIGH);
 
-  servo_uebertragung_RC_mode = 2 * (0.071 * eingelesenes_pwm_servo) - 104.15;
+    servo_uebertragung_RC_mode = 0.144444 * eingelesenes_pwm_servo - 114.788;
+  //servo_uebertragung_RC_mode = 2 * (0.071 * eingelesenes_pwm_servo) - 104.15;
 
   servo.write(servo_uebertragung_RC_mode);
 }

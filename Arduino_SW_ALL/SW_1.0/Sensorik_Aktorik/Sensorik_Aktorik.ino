@@ -18,7 +18,7 @@ void setup()
   init_aktorik(&arduino_node);
   init_sensorik(&arduino_node); 
   arduino_node.loginfo("Program info xxx");
-  //init_tof(); 
+  init_tof(); 
   init_rpm();
 }
 
@@ -34,8 +34,8 @@ void loop()
   
   //t_test_publish(millis());
   
-  //tof = read_TOF();
-  //tof_publish(tof[0], tof[1], tof[2], tof[3], tof[4]);
+  tof = read_TOF();
+  tof_publish(tof[0], tof[1], tof[2], tof[3], tof[4]);
 
   rpm = read_RPM();
   if (rpm != 0){rpm_publish(rpm);}  
