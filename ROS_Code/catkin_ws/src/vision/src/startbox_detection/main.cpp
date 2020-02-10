@@ -41,6 +41,8 @@ StartboxDetector detector = StartboxDetector();
 bool detectQRCode(vision::SetBool::Request  &req, vision::SetBool::Response &res) {
 	vector<decodedObject> decodedObjects;
 	res.success = detector.checkQRCode(image, decodedObjects);
+	ROS_INFO("TEST");
+        std::cout << decodedObjects.size();
 	return true;
 }
 
@@ -63,7 +65,7 @@ int main(int argc, char** argv) {
 
 	ros::NodeHandle nh;
 	image_transport::ImageTransport it(nh);
-	image_transport::Subscriber sub = it.subscribe("camera/image_raw" , 1, imageCallback);
+	image_transport::Subscriber sub = it.subscribe("undistortresultimage" , 1, imageCallback);
 
 
 	ros::ServiceServer service = nh.advertiseService("qr_detected", detectQRCode);

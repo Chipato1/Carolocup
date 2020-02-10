@@ -30,8 +30,7 @@ bool StartboxDetector::checkQRCode(Mat &im, vector<decodedObject>&decodedObjects
   scanner.set_config(ZBAR_QRCODE, ZBAR_CFG_ENABLE, 1);
 
   // Convert image to grayscale
-  Mat imGray;
-  cvtColor(im, imGray,COLOR_BGR2GRAY);
+  Mat imGray = im;
 
   // Wrap image data in a zbar image
   Image image(im.cols, im.rows, "Y800", (uchar *)imGray.data, im.cols * im.rows);

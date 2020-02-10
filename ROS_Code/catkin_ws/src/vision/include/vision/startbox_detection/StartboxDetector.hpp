@@ -20,7 +20,7 @@ typedef struct
 class StartboxDetector
 {
 public:
-    bool StartboxDetector::checkQRCode(Mat &im, vector<decodedObject>&decodedObjects);
+    bool checkQRCode(Mat &im, vector<decodedObject>&decodedObjects);
     StartboxDetector();
     
 private:
