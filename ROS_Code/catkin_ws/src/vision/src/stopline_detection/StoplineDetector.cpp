@@ -15,6 +15,9 @@ static int validation = 0;
 double ipmScaling;
 double ipmSizeX;
 double ipmSizeY;
+bool stopplineDetected = false;
+std::chrono::time_point<std::chrono::system_clock> startStampDetected, endStampDetected;
+int elapsed_seconds;
 
 void StoplineDetector::failureReport(string i) {
     cout << "Failed due to: " << i << endl;
@@ -302,11 +305,23 @@ double StoplineDetector::detect(const vision::HoughPointsArray::ConstPtr &imageA
     }
 
 	cout << "validation: " << validation << endl;
-    if (validation > 2) {
-	cout << "++++++++++StopLine detected++++++++++" << endl;
-	cout << "distance: " << calculateDistance(stoppLine) << endl;
-	validation = 0;
+    if (validation > 2 && !stopplineDetected) {
+        cout << "++++++++++StopLine detected++++++++++" << endl;
+        cout << "distance: " << calculateDistance(stoppLine) << endl;
+        startStampDetected = std::chrono::system_clock::now();
+        validation = 0;
+        stopplineDetected = true;
         return calculateDistance(stoppLine);
+    }
+    else if (stopplineDetected) {
+        validation = 0;
+        endStampDetected = std::chrono::system_clock::now();
+        elapsed_seconds = std::chrono::duration_cast<std::chrono::seconds>(endHough-startHough).count();
+        cout << "seconds since last detected Line: " elapsed_seconds << endl;
+        
+        if (elapsed_seconds > 2) {
+            stopplineDetected = false;
+        }
     }
     
     return -1.0;
