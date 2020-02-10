@@ -160,6 +160,9 @@ target_link_libraries( ${PROJECT_NAME}_parkinglotdetectionnode ${catkin_LIBRARIE
 add_executable(${PROJECT_NAME}_stoplinedetectionnode src/stopline_detection/main.cpp src/stopline_detection/StoplineDetector.cpp)
 target_link_libraries( ${PROJECT_NAME}_stoplinedetectionnode ${catkin_LIBRARIES} ${OpenCV_LIBS} )
 
+add_executable(${PROJECT_NAME}_crossingdetectionnode src/crossing_detection/main.cpp src/crossing_detection/CrossingDetector.cpp)
+target_link_libraries( ${PROJECT_NAME}_crossing_detectionnode ${catkin_LIBRARIES} ${OpenCV_LIBS} )
+
 ## Copy the config.cfg file
 #add_custom_command(TARGET ${PROJECT_NAME}_lanedetectionnode POST_BUILD        # Adds a post-build event to MyTest
 #    COMMAND ${CMAKE_COMMAND} -E copy_if_different  # which executes "cmake - E copy_if_different..."
