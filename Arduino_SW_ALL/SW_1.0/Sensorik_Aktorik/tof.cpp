@@ -114,5 +114,11 @@ uint16_t* read_TOF()
     ToF_back.writeReg(ToF_back.SYSTEM_INTERRUPT_CLEAR, 0x01);
   }
   
+  if (tof_array[0] > threshold_front) tof_array[0] = threshold_front;
+  if (tof_array[1] > threshold_left) tof_array[1] = threshold_left;
+  if (tof_array[2] > threshold_right) tof_array[2] = threshold_right;
+  if (tof_array[3] > threshold_cross) tof_array[3] = threshold_cross;
+  if (tof_array[4] > threshold_back) tof_array[4] = threshold_back;
+  
   return tof_array;
 }
