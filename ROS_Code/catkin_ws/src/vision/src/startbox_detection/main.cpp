@@ -49,18 +49,18 @@ bool detectQRCode(vision::SetBool::Request  &req, vision::SetBool::Response &res
 	vector<decodedObject> decodedObjects;
 	for(int i = 0; i < 5; i++) {
 		
-		if(detector.checkQRCodeOpenCV(copyImage)) {
-			res.success = true;
-			return true;
-		}
+		//if(detector.checkQRCodeOpenCV(copyImage)) {
+		//	res.success = true;
+		//	return true;
+		//}
 ROS_INFO("TEST2");
 
-		detector.checkQRCode(copyImage, decodedObjects);
+		//detector.checkQRCode(copyImage, decodedObjects);
 
-		if(decodedObjects.size() > 0) {
-			res.success = true;
-			return true;
-		}
+		//if(decodedObjects.size() > 0) {
+		//	res.success = true;
+		//	return true;
+		//}
 ROS_INFO("TEST3");
 		qrRate->sleep();
 	}
