@@ -9,7 +9,7 @@
  *
  * Model version              : 1.26
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Mon Feb 10 22:08:05 2020
+ * C++ source code generated on : Mon Feb 10 22:48:00 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -95,10 +95,10 @@ P_Stanley_Querregler_T Stanley_Querregler_P = {
    */
   0.25,
 
-  /* Expression: [0.4, 0, 0]
+  /* Expression: [0.5, 0, 0]
    * Referenced by: '<S7>/ '
    */
-  { 0.4, 0.0, 0.0 },
+  { 0.5, 0.0, 0.0 },
 
   /* Expression: [0 1 0]
    * Referenced by: '<S7>/  '
