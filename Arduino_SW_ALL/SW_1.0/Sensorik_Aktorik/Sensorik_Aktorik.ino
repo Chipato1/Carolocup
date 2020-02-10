@@ -9,11 +9,14 @@ uint16_t* tof;
 
 ros::NodeHandle arduino_node;
 
-std_msgs::UInt16 arduino_watchdog_cnt = 0; //Carl 13.30
+std_msgs::UInt16 arduino_watchdog_cnt; //Carl 13.30
 ros::Publisher watchdog_pub("watchdog_value", &arduino_watchdog_cnt); //Carl 13.30
 
 void setup() 
 {  
+  arduino_node.advertise(watchdog_pub);//Carl 13.30
+  arduino_watchdog_cnt.data = 0;//Carl 13.30
+  
   arduino_node.initNode();
   arduino_node.getHardware()->setBaud(57600); //experiment :D
   init_aktorik(&arduino_node);
