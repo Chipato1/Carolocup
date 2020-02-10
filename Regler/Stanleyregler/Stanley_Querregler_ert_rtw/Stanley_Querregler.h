@@ -7,9 +7,9 @@
  *
  * Code generation for model "Stanley_Querregler".
  *
- * Model version              : 1.23
+ * Model version              : 1.25
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Sat Feb  8 16:52:37 2020
+ * C++ source code generated on : Mon Feb 10 17:21:29 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -59,9 +59,9 @@ typedef struct {
   real_T refPose[3];
   real_T currPose[3];
   char_T cv1[19];
+  real_T DataTypeConversion;           /* '<S7>/Data Type Conversion' */
   real_T b;
   SL_Bus_Stanley_Querregler_std_msgs_Bool In1;/* '<S8>/In1' */
-  real32_T Bogenma;                    /* '<S7>/Bogenmaﬂ' */
   B_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem_i;/* '<S6>/Enabled Subsystem' */
   B_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem_p;/* '<S5>/Enabled Subsystem' */
   B_EnabledSubsystem_Stanley_Qu_T EnabledSubsystem_g;/* '<S4>/Enabled Subsystem' */
@@ -128,6 +128,9 @@ struct P_Stanley_Querregler_T_ {
   real_T Kinematic_Wheelbase;          /* Expression: Wheelbase
                                         * Referenced by: '<S12>/Kinematic'
                                         */
+  real_T Lenkwinkel_Y0;                /* Computed Parameter: Lenkwinkel_Y0
+                                        * Referenced by: '<S7>/Lenkwinkel'
+                                        */
   real_T _Value[3];                    /* Expression: [0.4, 0, 0]
                                         * Referenced by: '<S7>/ '
                                         */
@@ -139,9 +142,6 @@ struct P_Stanley_Querregler_T_ {
                                         */
   real32_T Gain_Gain;                  /* Computed Parameter: Gain_Gain
                                         * Referenced by: '<S7>/Gain'
-                                        */
-  real32_T Lenkwinkel_Y0;              /* Computed Parameter: Lenkwinkel_Y0
-                                        * Referenced by: '<S7>/Lenkwinkel'
                                         */
   real32_T Gain1_Gain;                 /* Computed Parameter: Gain1_Gain
                                         * Referenced by: '<S7>/Gain1'
@@ -231,12 +231,6 @@ extern "C" {
 
 }
 #endif
-
-/*-
- * These blocks were eliminated from the model due to optimizations:
- *
- * Block '<Root>/Data Type Conversion' : Eliminate redundant data type conversion
- */
 
 /*-
  * The generated code includes comments that allow you to trace directly

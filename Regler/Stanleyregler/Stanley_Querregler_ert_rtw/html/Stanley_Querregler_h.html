@@ -29,11 +29,11 @@
 <tr name="9" id="9">
 <td><a id="l9" class='ln'>9</a></td><td><span class="ct"> *</span></td></tr>
 <tr name="10" id="10">
-<td><a id="l10" class='ln'>10</a></td><td><span class="ct"> * Model version              : 1.23</span></td></tr>
+<td><a id="l10" class='ln'>10</a></td><td><span class="ct"> * Model version              : 1.25</span></td></tr>
 <tr name="11" id="11">
 <td><a id="l11" class='ln'>11</a></td><td><span class="ct"> * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019</span></td></tr>
 <tr name="12" id="12">
-<td><a id="l12" class='ln'>12</a></td><td><span class="ct"> * C++ source code generated on : Sat Feb  8 16:52:37 2020</span></td></tr>
+<td><a id="l12" class='ln'>12</a></td><td><span class="ct"> * C++ source code generated on : Mon Feb 10 17:21:29 2020</span></td></tr>
 <tr name="13" id="13">
 <td><a id="l13" class='ln'>13</a></td><td><span class="ct"> *</span></td></tr>
 <tr name="14" id="14">
@@ -133,11 +133,11 @@
 <tr name="61" id="61">
 <td><a id="l61" class='ln'>61</a></td><td>  <a id="61c3" class="tk">char_T</a> <a id="61c10" class="tk">cv1</a>[19];</td></tr>
 <tr name="62" id="62">
-<td><a id="l62" class='ln'>62</a></td><td>  <a id="62c3" class="tk">real_T</a> <a id="62c10" class="tk">b</a>;</td></tr>
+<td><a id="l62" class='ln'>62</a></td><td>  <a id="62c3" class="tk">real_T</a> <a id="62c10" class="tk">DataTypeConversion</a>;           <span class="ct">/* '&lt;S7&gt;/Data Type Conversion' */</span></td></tr>
 <tr name="63" id="63">
-<td><a id="l63" class='ln'>63</a></td><td>  <a id="63c3" class="tk">SL_Bus_Stanley_Querregler_std_msgs_Bool</a> <a id="63c43" class="tk">In1</a>;<span class="ct">/* '&lt;S8&gt;/In1' */</span></td></tr>
+<td><a id="l63" class='ln'>63</a></td><td>  <a id="63c3" class="tk">real_T</a> <a id="63c10" class="tk">b</a>;</td></tr>
 <tr name="64" id="64">
-<td><a id="l64" class='ln'>64</a></td><td>  <a id="64c3" class="tk">real32_T</a> <a id="64c12" class="tk">Bogenma</a>;                    <span class="ct">/* '&lt;S7&gt;/Bogenmaß' */</span></td></tr>
+<td><a id="l64" class='ln'>64</a></td><td>  <a id="64c3" class="tk">SL_Bus_Stanley_Querregler_std_msgs_Bool</a> <a id="64c43" class="tk">In1</a>;<span class="ct">/* '&lt;S8&gt;/In1' */</span></td></tr>
 <tr name="65" id="65">
 <td><a id="l65" class='ln'>65</a></td><td>  <a id="65c3" class="tk">B_EnabledSubsystem_Stanley_Qu_T</a> <a id="65c35" class="tk">EnabledSubsystem_i</a>;<span class="ct">/* '&lt;S6&gt;/Enabled Subsystem' */</span></td></tr>
 <tr name="66" id="66">
@@ -271,33 +271,33 @@
 <tr name="130" id="130">
 <td><a id="l130" class='ln'>130</a></td><td><span class="ct">                                        */</span></td></tr>
 <tr name="131" id="131">
-<td><a id="l131" class='ln'>131</a></td><td>  <a id="131c3" class="tk">real_T</a> <a id="131c10" class="tk">_Value</a>[3];                    <span class="ct">/* Expression: [0.4, 0, 0]</span></td></tr>
+<td><a id="l131" class='ln'>131</a></td><td>  <a id="131c3" class="tk">real_T</a> <a id="131c10" class="tk">Lenkwinkel_Y0</a>;                <span class="ct">/* Computed Parameter: Lenkwinkel_Y0</span></td></tr>
 <tr name="132" id="132">
-<td><a id="l132" class='ln'>132</a></td><td><span class="ct">                                        * Referenced by: '&lt;S7&gt;/ '</span></td></tr>
+<td><a id="l132" class='ln'>132</a></td><td><span class="ct">                                        * Referenced by: '&lt;S7&gt;/Lenkwinkel'</span></td></tr>
 <tr name="133" id="133">
 <td><a id="l133" class='ln'>133</a></td><td><span class="ct">                                        */</span></td></tr>
 <tr name="134" id="134">
-<td><a id="l134" class='ln'>134</a></td><td>  <a id="134c3" class="tk">real_T</a> <a id="134c10" class="tk">_Value_m</a>[3];                  <span class="ct">/* Expression: [0 1 00000]</span></td></tr>
+<td><a id="l134" class='ln'>134</a></td><td>  <a id="134c3" class="tk">real_T</a> <a id="134c10" class="tk">_Value</a>[3];                    <span class="ct">/* Expression: [0.4, 0, 0]</span></td></tr>
 <tr name="135" id="135">
-<td><a id="l135" class='ln'>135</a></td><td><span class="ct">                                        * Referenced by: '&lt;S7&gt;/  '</span></td></tr>
+<td><a id="l135" class='ln'>135</a></td><td><span class="ct">                                        * Referenced by: '&lt;S7&gt;/ '</span></td></tr>
 <tr name="136" id="136">
 <td><a id="l136" class='ln'>136</a></td><td><span class="ct">                                        */</span></td></tr>
 <tr name="137" id="137">
-<td><a id="l137" class='ln'>137</a></td><td>  <a id="137c3" class="tk">real_T</a> <a id="137c10" class="tk">xytheta_Value</a>[3];             <span class="ct">/* Expression: [0 0 0000000]</span></td></tr>
+<td><a id="l137" class='ln'>137</a></td><td>  <a id="137c3" class="tk">real_T</a> <a id="137c10" class="tk">_Value_m</a>[3];                  <span class="ct">/* Expression: [0 1 00000]</span></td></tr>
 <tr name="138" id="138">
-<td><a id="l138" class='ln'>138</a></td><td><span class="ct">                                        * Referenced by: '&lt;S7&gt;/[x, y, theta]'</span></td></tr>
+<td><a id="l138" class='ln'>138</a></td><td><span class="ct">                                        * Referenced by: '&lt;S7&gt;/  '</span></td></tr>
 <tr name="139" id="139">
 <td><a id="l139" class='ln'>139</a></td><td><span class="ct">                                        */</span></td></tr>
 <tr name="140" id="140">
-<td><a id="l140" class='ln'>140</a></td><td>  <a id="140c3" class="tk">real32_T</a> <a id="140c12" class="tk">Gain_Gain</a>;                  <span class="ct">/* Computed Parameter: Gain_Gain</span></td></tr>
+<td><a id="l140" class='ln'>140</a></td><td>  <a id="140c3" class="tk">real_T</a> <a id="140c10" class="tk">xytheta_Value</a>[3];             <span class="ct">/* Expression: [0 0 0000000]</span></td></tr>
 <tr name="141" id="141">
-<td><a id="l141" class='ln'>141</a></td><td><span class="ct">                                        * Referenced by: '&lt;S7&gt;/Gain'</span></td></tr>
+<td><a id="l141" class='ln'>141</a></td><td><span class="ct">                                        * Referenced by: '&lt;S7&gt;/[x, y, theta]'</span></td></tr>
 <tr name="142" id="142">
 <td><a id="l142" class='ln'>142</a></td><td><span class="ct">                                        */</span></td></tr>
 <tr name="143" id="143">
-<td><a id="l143" class='ln'>143</a></td><td>  <a id="143c3" class="tk">real32_T</a> <a id="143c12" class="tk">Lenkwinkel_Y0</a>;              <span class="ct">/* Computed Parameter: Lenkwinkel_Y0</span></td></tr>
+<td><a id="l143" class='ln'>143</a></td><td>  <a id="143c3" class="tk">real32_T</a> <a id="143c12" class="tk">Gain_Gain</a>;                  <span class="ct">/* Computed Parameter: Gain_Gain</span></td></tr>
 <tr name="144" id="144">
-<td><a id="l144" class='ln'>144</a></td><td><span class="ct">                                        * Referenced by: '&lt;S7&gt;/Lenkwinkel'</span></td></tr>
+<td><a id="l144" class='ln'>144</a></td><td><span class="ct">                                        * Referenced by: '&lt;S7&gt;/Gain'</span></td></tr>
 <tr name="145" id="145">
 <td><a id="l145" class='ln'>145</a></td><td><span class="ct">                                        */</span></td></tr>
 <tr name="146" id="146">
@@ -481,81 +481,69 @@
 <tr name="235" id="235">
 <td><a id="l235" class='ln'>235</a></td><td><span class="ct">/*-</span></td></tr>
 <tr name="236" id="236">
-<td><a id="l236" class='ln'>236</a></td><td><span class="ct"> * These blocks were eliminated from the model due to optimizations:</span></td></tr>
+<td><a id="l236" class='ln'>236</a></td><td><span class="ct"> * The generated code includes comments that allow you to trace directly</span></td></tr>
 <tr name="237" id="237">
-<td><a id="l237" class='ln'>237</a></td><td><span class="ct"> *</span></td></tr>
+<td><a id="l237" class='ln'>237</a></td><td><span class="ct"> * back to the appropriate location in the model.  The basic format</span></td></tr>
 <tr name="238" id="238">
-<td><a id="l238" class='ln'>238</a></td><td><span class="ct"> * Block '&lt;Root&gt;/Data Type Conversion' : Eliminate redundant data type conversion</span></td></tr>
+<td><a id="l238" class='ln'>238</a></td><td><span class="ct"> * is &lt;system&gt;/block_name, where system is the system number (uniquely</span></td></tr>
 <tr name="239" id="239">
-<td><a id="l239" class='ln'>239</a></td><td><span class="ct"> */</span></td></tr>
+<td><a id="l239" class='ln'>239</a></td><td><span class="ct"> * assigned by Simulink) and block_name is the name of the block.</span></td></tr>
 <tr name="240" id="240">
-<td><a id="l240" class='ln'>240</a></td><td></td></tr>
+<td><a id="l240" class='ln'>240</a></td><td><span class="ct"> *</span></td></tr>
 <tr name="241" id="241">
-<td><a id="l241" class='ln'>241</a></td><td><span class="ct">/*-</span></td></tr>
+<td><a id="l241" class='ln'>241</a></td><td><span class="ct"> * Use the MATLAB hilite_system command to trace the generated code back</span></td></tr>
 <tr name="242" id="242">
-<td><a id="l242" class='ln'>242</a></td><td><span class="ct"> * The generated code includes comments that allow you to trace directly</span></td></tr>
+<td><a id="l242" class='ln'>242</a></td><td><span class="ct"> * to the model.  For example,</span></td></tr>
 <tr name="243" id="243">
-<td><a id="l243" class='ln'>243</a></td><td><span class="ct"> * back to the appropriate location in the model.  The basic format</span></td></tr>
+<td><a id="l243" class='ln'>243</a></td><td><span class="ct"> *</span></td></tr>
 <tr name="244" id="244">
-<td><a id="l244" class='ln'>244</a></td><td><span class="ct"> * is &lt;system&gt;/block_name, where system is the system number (uniquely</span></td></tr>
+<td><a id="l244" class='ln'>244</a></td><td><span class="ct"> * hilite_system('&lt;S3&gt;')    - opens system 3</span></td></tr>
 <tr name="245" id="245">
-<td><a id="l245" class='ln'>245</a></td><td><span class="ct"> * assigned by Simulink) and block_name is the name of the block.</span></td></tr>
+<td><a id="l245" class='ln'>245</a></td><td><span class="ct"> * hilite_system('&lt;S3&gt;/Kp') - opens and selects block Kp which resides in S3</span></td></tr>
 <tr name="246" id="246">
 <td><a id="l246" class='ln'>246</a></td><td><span class="ct"> *</span></td></tr>
 <tr name="247" id="247">
-<td><a id="l247" class='ln'>247</a></td><td><span class="ct"> * Use the MATLAB hilite_system command to trace the generated code back</span></td></tr>
+<td><a id="l247" class='ln'>247</a></td><td><span class="ct"> * Here is the system hierarchy for this model</span></td></tr>
 <tr name="248" id="248">
-<td><a id="l248" class='ln'>248</a></td><td><span class="ct"> * to the model.  For example,</span></td></tr>
+<td><a id="l248" class='ln'>248</a></td><td><span class="ct"> *</span></td></tr>
 <tr name="249" id="249">
-<td><a id="l249" class='ln'>249</a></td><td><span class="ct"> *</span></td></tr>
+<td><a id="l249" class='ln'>249</a></td><td><span class="ct"> * '&lt;Root&gt;' : 'Stanley_Querregler'</span></td></tr>
 <tr name="250" id="250">
-<td><a id="l250" class='ln'>250</a></td><td><span class="ct"> * hilite_system('&lt;S3&gt;')    - opens system 3</span></td></tr>
+<td><a id="l250" class='ln'>250</a></td><td><span class="ct"> * '&lt;S1&gt;'   : 'Stanley_Querregler/Blank Message'</span></td></tr>
 <tr name="251" id="251">
-<td><a id="l251" class='ln'>251</a></td><td><span class="ct"> * hilite_system('&lt;S3&gt;/Kp') - opens and selects block Kp which resides in S3</span></td></tr>
+<td><a id="l251" class='ln'>251</a></td><td><span class="ct"> * '&lt;S2&gt;'   : 'Stanley_Querregler/Publish1'</span></td></tr>
 <tr name="252" id="252">
-<td><a id="l252" class='ln'>252</a></td><td><span class="ct"> *</span></td></tr>
+<td><a id="l252" class='ln'>252</a></td><td><span class="ct"> * '&lt;S3&gt;'   : 'Stanley_Querregler/Subscribe1'</span></td></tr>
 <tr name="253" id="253">
-<td><a id="l253" class='ln'>253</a></td><td><span class="ct"> * Here is the system hierarchy for this model</span></td></tr>
+<td><a id="l253" class='ln'>253</a></td><td><span class="ct"> * '&lt;S4&gt;'   : 'Stanley_Querregler/Subscribe2'</span></td></tr>
 <tr name="254" id="254">
-<td><a id="l254" class='ln'>254</a></td><td><span class="ct"> *</span></td></tr>
+<td><a id="l254" class='ln'>254</a></td><td><span class="ct"> * '&lt;S5&gt;'   : 'Stanley_Querregler/Subscribe3'</span></td></tr>
 <tr name="255" id="255">
-<td><a id="l255" class='ln'>255</a></td><td><span class="ct"> * '&lt;Root&gt;' : 'Stanley_Querregler'</span></td></tr>
+<td><a id="l255" class='ln'>255</a></td><td><span class="ct"> * '&lt;S6&gt;'   : 'Stanley_Querregler/Subscribe4'</span></td></tr>
 <tr name="256" id="256">
-<td><a id="l256" class='ln'>256</a></td><td><span class="ct"> * '&lt;S1&gt;'   : 'Stanley_Querregler/Blank Message'</span></td></tr>
+<td><a id="l256" class='ln'>256</a></td><td><span class="ct"> * '&lt;S7&gt;'   : 'Stanley_Querregler/Subsystem'</span></td></tr>
 <tr name="257" id="257">
-<td><a id="l257" class='ln'>257</a></td><td><span class="ct"> * '&lt;S2&gt;'   : 'Stanley_Querregler/Publish1'</span></td></tr>
+<td><a id="l257" class='ln'>257</a></td><td><span class="ct"> * '&lt;S8&gt;'   : 'Stanley_Querregler/Subscribe1/Enabled Subsystem'</span></td></tr>
 <tr name="258" id="258">
-<td><a id="l258" class='ln'>258</a></td><td><span class="ct"> * '&lt;S3&gt;'   : 'Stanley_Querregler/Subscribe1'</span></td></tr>
+<td><a id="l258" class='ln'>258</a></td><td><span class="ct"> * '&lt;S9&gt;'   : 'Stanley_Querregler/Subscribe2/Enabled Subsystem'</span></td></tr>
 <tr name="259" id="259">
-<td><a id="l259" class='ln'>259</a></td><td><span class="ct"> * '&lt;S4&gt;'   : 'Stanley_Querregler/Subscribe2'</span></td></tr>
+<td><a id="l259" class='ln'>259</a></td><td><span class="ct"> * '&lt;S10&gt;'  : 'Stanley_Querregler/Subscribe3/Enabled Subsystem'</span></td></tr>
 <tr name="260" id="260">
-<td><a id="l260" class='ln'>260</a></td><td><span class="ct"> * '&lt;S5&gt;'   : 'Stanley_Querregler/Subscribe3'</span></td></tr>
+<td><a id="l260" class='ln'>260</a></td><td><span class="ct"> * '&lt;S11&gt;'  : 'Stanley_Querregler/Subscribe4/Enabled Subsystem'</span></td></tr>
 <tr name="261" id="261">
-<td><a id="l261" class='ln'>261</a></td><td><span class="ct"> * '&lt;S6&gt;'   : 'Stanley_Querregler/Subscribe4'</span></td></tr>
+<td><a id="l261" class='ln'>261</a></td><td><span class="ct"> * '&lt;S12&gt;'  : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley'</span></td></tr>
 <tr name="262" id="262">
-<td><a id="l262" class='ln'>262</a></td><td><span class="ct"> * '&lt;S7&gt;'   : 'Stanley_Querregler/Subsystem'</span></td></tr>
+<td><a id="l262" class='ln'>262</a></td><td><span class="ct"> * '&lt;S13&gt;'  : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley/Dynamic'</span></td></tr>
 <tr name="263" id="263">
-<td><a id="l263" class='ln'>263</a></td><td><span class="ct"> * '&lt;S8&gt;'   : 'Stanley_Querregler/Subscribe1/Enabled Subsystem'</span></td></tr>
+<td><a id="l263" class='ln'>263</a></td><td><span class="ct"> * '&lt;S14&gt;'  : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley/Kinematic'</span></td></tr>
 <tr name="264" id="264">
-<td><a id="l264" class='ln'>264</a></td><td><span class="ct"> * '&lt;S9&gt;'   : 'Stanley_Querregler/Subscribe2/Enabled Subsystem'</span></td></tr>
+<td><a id="l264" class='ln'>264</a></td><td><span class="ct"> * '&lt;S15&gt;'  : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley/Dynamic/Dynamic Disabled'</span></td></tr>
 <tr name="265" id="265">
-<td><a id="l265" class='ln'>265</a></td><td><span class="ct"> * '&lt;S10&gt;'  : 'Stanley_Querregler/Subscribe3/Enabled Subsystem'</span></td></tr>
+<td><a id="l265" class='ln'>265</a></td><td><span class="ct"> */</span></td></tr>
 <tr name="266" id="266">
-<td><a id="l266" class='ln'>266</a></td><td><span class="ct"> * '&lt;S11&gt;'  : 'Stanley_Querregler/Subscribe4/Enabled Subsystem'</span></td></tr>
+<td><a id="l266" class='ln'>266</a></td><td><span class="pp">#endif</span>                                 <span class="ct">/* RTW_HEADER_Stanley_Querregler_h_ */</span></td></tr>
 <tr name="267" id="267">
-<td><a id="l267" class='ln'>267</a></td><td><span class="ct"> * '&lt;S12&gt;'  : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley'</span></td></tr>
-<tr name="268" id="268">
-<td><a id="l268" class='ln'>268</a></td><td><span class="ct"> * '&lt;S13&gt;'  : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley/Dynamic'</span></td></tr>
-<tr name="269" id="269">
-<td><a id="l269" class='ln'>269</a></td><td><span class="ct"> * '&lt;S14&gt;'  : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley/Kinematic'</span></td></tr>
-<tr name="270" id="270">
-<td><a id="l270" class='ln'>270</a></td><td><span class="ct"> * '&lt;S15&gt;'  : 'Stanley_Querregler/Subsystem/Lateral Controller Stanley/Dynamic/Dynamic Disabled'</span></td></tr>
-<tr name="271" id="271">
-<td><a id="l271" class='ln'>271</a></td><td><span class="ct"> */</span></td></tr>
-<tr name="272" id="272">
-<td><a id="l272" class='ln'>272</a></td><td><span class="pp">#endif</span>                                 <span class="ct">/* RTW_HEADER_Stanley_Querregler_h_ */</span></td></tr>
-<tr name="273" id="273">
-<td><a id="l273" class='ln'>273</a></td><td></td></tr>
+<td><a id="l267" class='ln'>267</a></td><td></td></tr>
 </table>
 </pre>
 </body>

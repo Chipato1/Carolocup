@@ -7,9 +7,9 @@
  *
  * Code generation for model "Stanley_Querregler".
  *
- * Model version              : 1.23
+ * Model version              : 1.25
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Sat Feb  8 16:52:37 2020
+ * C++ source code generated on : Mon Feb 10 17:21:29 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -95,6 +95,11 @@ P_Stanley_Querregler_T Stanley_Querregler_P = {
    */
   0.25,
 
+  /* Computed Parameter: Lenkwinkel_Y0
+   * Referenced by: '<S7>/Lenkwinkel'
+   */
+  0.0,
+
   /* Expression: [0.4, 0, 0]
    * Referenced by: '<S7>/ '
    */
@@ -115,11 +120,6 @@ P_Stanley_Querregler_T Stanley_Querregler_P = {
    */
   -1.0F,
 
-  /* Computed Parameter: Lenkwinkel_Y0
-   * Referenced by: '<S7>/Lenkwinkel'
-   */
-  0.0F,
-
   /* Computed Parameter: Gain1_Gain
    * Referenced by: '<S7>/Gain1'
    */
@@ -138,12 +138,12 @@ P_Stanley_Querregler_T Stanley_Querregler_P = {
   /* Computed Parameter: Sttigung_UpperSat
    * Referenced by: '<S7>/S‰ttigung'
    */
-  20.0F,
+  15.0F,
 
   /* Computed Parameter: Sttigung_LowerSat
    * Referenced by: '<S7>/S‰ttigung'
    */
-  -20.0F,
+  -15.0F,
 
   /* Computed Parameter: Bogenma_Gain
    * Referenced by: '<S7>/Bogenmaﬂ'

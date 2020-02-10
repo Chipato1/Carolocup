@@ -76,6 +76,8 @@ bode( (Gr*Gs) / (1+Gr*Gs*Gf*Gi) )
 % bm = [1;0];
 % cTm = [1 0];
 % e1 = [1 0];
+%%
+% $ $ $x^2+e^{\pi i}$ $ $
 % e2 = [0 1];
 %  filterm = ss(Am,bm,cTm,0);
 %  pole(filterm)

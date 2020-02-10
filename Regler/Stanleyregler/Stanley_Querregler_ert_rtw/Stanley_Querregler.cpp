@@ -7,9 +7,9 @@
  *
  * Code generation for model "Stanley_Querregler".
  *
- * Model version              : 1.23
+ * Model version              : 1.25
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Sat Feb  8 16:52:37 2020
+ * C++ source code generated on : Mon Feb 10 17:21:29 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -128,7 +128,7 @@ void Stanley_Querregler_step(void)
   SL_Bus_Stanley_Querregler_std_msgs_Float32 b_varargout_2_0;
   SL_Bus_Stanley_Querregler_std_msgs_Float32 rtb_BusAssignment;
   real_T rtb_ms;
-  real32_T rtb_Switch;
+  real32_T rtb_DataTypeConversion;
   real_T d_idx_0;
   real_T d_idx_1;
   real32_T u0;
@@ -177,7 +177,7 @@ void Stanley_Querregler_step(void)
    */
   if (Stanley_Querregler_B.In1.Data) {
     /* Gain: '<S7>/Gain1' */
-    rtb_Switch = Stanley_Querregler_P.Gain1_Gain *
+    rtb_DataTypeConversion = Stanley_Querregler_P.Gain1_Gain *
       Stanley_Querregler_B.EnabledSubsystem_g.In1.Data;
 
     /* Switch: '<S7>/Switch' incorporates:
@@ -201,13 +201,14 @@ void Stanley_Querregler_step(void)
      *  Sum: '<S7>/Add'
      */
     Stanley_Querregler_B.refPose[0] = Stanley_Querregler_P._Value_m[0] *
-      rtb_Switch + Stanley_Querregler_P._Value[0];
+      rtb_DataTypeConversion + Stanley_Querregler_P._Value[0];
     Stanley_Querregler_B.currPose[0] = Stanley_Querregler_P.xytheta_Value[0];
     Stanley_Querregler_B.refPose[1] = Stanley_Querregler_P._Value_m[1] *
-      rtb_Switch + Stanley_Querregler_P._Value[1];
+      rtb_DataTypeConversion + Stanley_Querregler_P._Value[1];
     Stanley_Querregler_B.currPose[1] = Stanley_Querregler_P.xytheta_Value[1];
     Stanley_Querregler_B.refPose[2] = (Stanley_Querregler_P._Value_m[2] *
-      rtb_Switch + Stanley_Querregler_P._Value[2]) * 0.017453292519943295;
+      rtb_DataTypeConversion + Stanley_Querregler_P._Value[2]) *
+      0.017453292519943295;
     Stanle_angleUtilities_wrapTo2Pi(&Stanley_Querregler_B.refPose[2]);
     Stanley_Querregler_B.currPose[2] = 0.017453292519943295 *
       Stanley_Querregler_P.xytheta_Value[2];
@@ -237,18 +238,19 @@ void Stanley_Querregler_step(void)
        */
       if (Stanley_Querregler_B.EnabledSubsystem_p.In1.Data >
           Stanley_Querregler_P.Switch1_Threshold) {
-        rtb_Switch = Stanley_Querregler_B.EnabledSubsystem_p.In1.Data;
+        rtb_DataTypeConversion =
+          Stanley_Querregler_B.EnabledSubsystem_p.In1.Data;
       } else {
-        rtb_Switch = Stanley_Querregler_P.Gain_Gain *
+        rtb_DataTypeConversion = Stanley_Querregler_P.Gain_Gain *
           Stanley_Querregler_B.EnabledSubsystem_p.In1.Data;
       }
 
-      rtb_Switch = -(static_cast<real32_T>(atan(static_cast<real_T>((
-        static_cast<real32_T>((-(d_idx_0 * sin(Stanley_Querregler_B.refPose[2])
+      rtb_DataTypeConversion = -(static_cast<real32_T>(atan(static_cast<real_T>
+        ((static_cast<real32_T>((-(d_idx_0 * sin(Stanley_Querregler_B.refPose[2])
         - d_idx_1 * cos(Stanley_Querregler_B.refPose[2])) *
-        Stanley_Querregler_P.LateralControllerStanley_Positi)) / (rtb_Switch +
-        1.0F))))) + static_cast<real32_T>((Stanley_Querregler_B.b -
-        3.1415926535897931)));
+        Stanley_Querregler_P.LateralControllerStanley_Positi)) /
+          (rtb_DataTypeConversion + 1.0F))))) + static_cast<real32_T>
+        ((Stanley_Querregler_B.b - 3.1415926535897931)));
     } else {
       if (rtb_ms == 1.0) {
         rtb_ms = Stanley_Querregler_P.LateralControllerStanley_Positi;
@@ -261,29 +263,30 @@ void Stanley_Querregler_step(void)
        */
       if (Stanley_Querregler_B.EnabledSubsystem_p.In1.Data >
           Stanley_Querregler_P.Switch1_Threshold) {
-        rtb_Switch = Stanley_Querregler_B.EnabledSubsystem_p.In1.Data;
+        rtb_DataTypeConversion =
+          Stanley_Querregler_B.EnabledSubsystem_p.In1.Data;
       } else {
-        rtb_Switch = Stanley_Querregler_P.Gain_Gain *
+        rtb_DataTypeConversion = Stanley_Querregler_P.Gain_Gain *
           Stanley_Querregler_B.EnabledSubsystem_p.In1.Data;
       }
 
-      rtb_Switch = static_cast<real32_T>(atan(static_cast<real_T>
-        ((static_cast<real32_T>((-(d_idx_0 * sin(Stanley_Querregler_B.refPose[2])
+      rtb_DataTypeConversion = static_cast<real32_T>(atan(static_cast<real_T>((
+        static_cast<real32_T>((-(d_idx_0 * sin(Stanley_Querregler_B.refPose[2])
         - d_idx_1 * cos(Stanley_Querregler_B.refPose[2])) * rtb_ms)) /
-          (rtb_Switch + -1.0F))))) + static_cast<real32_T>
+        (rtb_DataTypeConversion + -1.0F))))) + static_cast<real32_T>
         ((Stanley_Querregler_B.b - 3.1415926535897931));
     }
 
-    rtb_Switch *= 57.2957802F;
-    u0 = static_cast<real32_T>(fabs(static_cast<real_T>(rtb_Switch)));
-    if (rtb_Switch < 0.0F) {
-      rtb_Switch = -1.0F;
-    } else if (rtb_Switch > 0.0F) {
-      rtb_Switch = 1.0F;
-    } else if (rtb_Switch == 0.0F) {
-      rtb_Switch = 0.0F;
+    rtb_DataTypeConversion *= 57.2957802F;
+    u0 = static_cast<real32_T>(fabs(static_cast<real_T>(rtb_DataTypeConversion)));
+    if (rtb_DataTypeConversion < 0.0F) {
+      rtb_DataTypeConversion = -1.0F;
+    } else if (rtb_DataTypeConversion > 0.0F) {
+      rtb_DataTypeConversion = 1.0F;
+    } else if (rtb_DataTypeConversion == 0.0F) {
+      rtb_DataTypeConversion = 0.0F;
     } else {
-      rtb_Switch = (rtNaNF);
+      rtb_DataTypeConversion = (rtNaNF);
     }
 
     if ((!(u0 < static_cast<real32_T>
@@ -293,24 +296,26 @@ void Stanley_Querregler_step(void)
       u0 = static_cast<real32_T>(Stanley_Querregler_P.Kinematic_MaxSteeringAngle);
     }
 
-    rtb_Switch *= u0;
+    rtb_DataTypeConversion *= u0;
 
     /* End of MATLAB Function: '<S12>/Kinematic' */
 
     /* Saturate: '<S7>/S‰ttigung' */
-    if (rtb_Switch > Stanley_Querregler_P.Sttigung_UpperSat) {
-      rtb_Switch = Stanley_Querregler_P.Sttigung_UpperSat;
+    if (rtb_DataTypeConversion > Stanley_Querregler_P.Sttigung_UpperSat) {
+      rtb_DataTypeConversion = Stanley_Querregler_P.Sttigung_UpperSat;
     } else {
-      if (rtb_Switch < Stanley_Querregler_P.Sttigung_LowerSat) {
-        rtb_Switch = Stanley_Querregler_P.Sttigung_LowerSat;
+      if (rtb_DataTypeConversion < Stanley_Querregler_P.Sttigung_LowerSat) {
+        rtb_DataTypeConversion = Stanley_Querregler_P.Sttigung_LowerSat;
       }
     }
 
     /* End of Saturate: '<S7>/S‰ttigung' */
 
-    /* Gain: '<S7>/Bogenmaﬂ' */
-    Stanley_Querregler_B.Bogenma = Stanley_Querregler_P.Bogenma_Gain *
-      rtb_Switch;
+    /* DataTypeConversion: '<S7>/Data Type Conversion' incorporates:
+     *  Gain: '<S7>/Bogenmaﬂ'
+     */
+    Stanley_Querregler_B.DataTypeConversion = Stanley_Querregler_P.Bogenma_Gain *
+      rtb_DataTypeConversion;
   }
 
   /* End of Outputs for SubSystem: '<Root>/Subsystem' */
@@ -328,8 +333,11 @@ void Stanley_Querregler_step(void)
 
   /* Switch: '<Root>/Switch' */
   if (Stanley_Querregler_B.In1.Data) {
-    /* BusAssignment: '<Root>/Bus Assignment' */
-    rtb_BusAssignment.Data = Stanley_Querregler_B.Bogenma;
+    /* BusAssignment: '<Root>/Bus Assignment' incorporates:
+     *  DataTypeConversion: '<Root>/Data Type Conversion'
+     */
+    rtb_BusAssignment.Data = static_cast<real32_T>
+      (Stanley_Querregler_B.DataTypeConversion);
   } else {
     /* BusAssignment: '<Root>/Bus Assignment' */
     rtb_BusAssignment.Data = Stanley_Querregler_B.EnabledSubsystem_i.In1.Data;
@@ -488,7 +496,7 @@ void Stanley_Querregler_initialize(void)
 
   /* SystemInitialize for Enabled SubSystem: '<Root>/Subsystem' */
   /* SystemInitialize for Outport: '<S7>/Lenkwinkel' */
-  Stanley_Querregler_B.Bogenma = Stanley_Querregler_P.Lenkwinkel_Y0;
+  Stanley_Querregler_B.DataTypeConversion = Stanley_Querregler_P.Lenkwinkel_Y0;
 
   /* End of SystemInitialize for SubSystem: '<Root>/Subsystem' */
 
