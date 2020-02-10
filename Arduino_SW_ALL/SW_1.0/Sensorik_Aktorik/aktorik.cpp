@@ -284,12 +284,12 @@ void motor_bewegung_RC_mode()
     
     if(eingelesenes_pwm_motor < 1200 && rc_timer + 1000 > currmills)
     {
-      motor_uebertragung_RC_mode = 87;//Rückwärts
+      motor_uebertragung_RC_mode = 85;//Rückwärts
       digitalWrite(rueckfahrlicht, HIGH);
     }
     else if(eingelesenes_pwm_motor > 1600 && rc_timer + 1000 > currmills)
     {
-      motor_uebertragung_RC_mode = 100;//Vorwärts
+      motor_uebertragung_RC_mode = 105;//Vorwärts
       digitalWrite(rueckfahrlicht, LOW);
     }
     else 
@@ -303,7 +303,19 @@ void motor_bewegung_RC_mode()
 void servo_bewegung_RC_mode ()
 {
   eingelesenes_pwm_servo = pulseIn(pwm_fernbedienung_servo, HIGH);
-  servo_uebertragung_RC_mode = 0.144444 * eingelesenes_pwm_servo - 114.788;
+  if(eingelesenes_pwm_servo>1550)
+  {
+    servo_uebertragung_RC_mode = (0.144444 * eingelesenes_pwm_servo - 114.788)+5;
+  }
+  else if(eingelesenes_pwm_servo<1350)
+  {
+    servo_uebertragung_RC_mode = (0.144444 * eingelesenes_pwm_servo - 114.788)-5;
+  }
+  else
+  {
+    servo_uebertragung_RC_mode = 100;
+  }
+  
   //servo_uebertragung_RC_mode = 2 * (0.071 * eingelesenes_pwm_servo) - 104.15;
   servo.write(servo_uebertragung_RC_mode);
 }

@@ -18,6 +18,7 @@ void setup()
   init_aktorik(&arduino_node);
   init_sensorik(&arduino_node); 
   arduino_node.loginfo("Program info xxx");
+  
   init_tof(); 
   init_rpm();
 }
@@ -29,10 +30,6 @@ void loop()
   
   rc_publish();
   drive_mode_publish();
-  
-  
-  
-  
   
   tof = read_TOF();
   tof_publish(tof[0], tof[1], tof[2], tof[3], tof[4]);
