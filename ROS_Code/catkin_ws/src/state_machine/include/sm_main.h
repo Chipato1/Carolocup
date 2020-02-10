@@ -16,6 +16,7 @@
 
 #include "std_msgs/UInt8.h"
 #include "std_msgs/Int16.h"
+#include "std_msgs/UInt16.h"
 #include "std_msgs/Float32.h"
 #include "std_msgs/Bool.h"
 
@@ -129,7 +130,7 @@ struct INIT_data {
 #define SE_TRUE 1
 
 const ros::Duration SE_TIMEOUT_GATE_MS(2);
-const ros::Duration SE_TIMEOUT_LEAVE_BOX_MS(3);
+const ros::Duration SE_TIMEOUT_LEAVE_BOX_MS(2);
 const ros::Duration SE_TIMEOUT_JUNCTION_WAIT_MS(3);
 const ros::Duration SE_TIMEOUT_JUNCTION_OBSTACLE_WAIT_MS(5);
 const ros::Duration SE_TIMEOUT_JUNCTION_DRIVE_OVER_MS(3);
@@ -177,11 +178,11 @@ void se_cb_sub_visionResult(const vision::VisionResultMsg::ConstPtr& msg);
 void se_cb_sub_currentSpeed(const std_msgs::Float32::ConstPtr& msg);
 void se_cb_sub_currentDistance(const std_msgs::Float32::ConstPtr& msg);
 
-void se_cb_sub_tof_f(const std_msgs::Float32::ConstPtr& msg);
-void se_cb_sub_tof_fr(const std_msgs::Float32::ConstPtr& msg);
-void se_cb_sub_tof_r(const std_msgs::Float32::ConstPtr& msg);
-void se_cb_sub_tof_l(const std_msgs::Float32::ConstPtr& msg);
-void se_cb_sub_tof_b(const std_msgs::Float32::ConstPtr& msg);
+void se_cb_sub_tof_f(const std_msgs::UInt16::ConstPtr& msg);
+void se_cb_sub_tof_fr(const std_msgs::UInt16::ConstPtr& msg);
+void se_cb_sub_tof_r(const std_msgs::UInt16::ConstPtr& msg);
+void se_cb_sub_tof_l(const std_msgs::UInt16::ConstPtr& msg);
+void se_cb_sub_tof_b(const std_msgs::UInt16::ConstPtr& msg);
 
 void se_cb_sub_rc_mode(const std_msgs::Bool::ConstPtr& msg);
 void se_cb_sub_autoDriveMode(const std_msgs::Int16::ConstPtr& msg);
@@ -230,6 +231,8 @@ ros::Time se_timer_junctionDriveOver;
 /* State */
 int se_overtakingStartDistance;
 int se_parkingStartDistance;
+
+int se_iterationsSinceLastVisionResult;
 
 /*typedef struct
 {

@@ -5,6 +5,7 @@ static uint16_t tof_array[5] = {threshold_front,
                                 threshold_right,
                                 threshold_cross,
                                 threshold_back};
+
 void init_tof()
 {
   Wire.begin();
@@ -47,14 +48,19 @@ void init_tof()
 
   // set I2C addresses
   digitalWrite(ToF_front_SHT,HIGH);
+  delay(1);//wichtig
   ToF_front.setAddress(ToF_front_ADDRESS);
   digitalWrite(ToF_left_SHT,HIGH);
+  delay(1);//wichtig
   ToF_left.setAddress(ToF_left_ADDRESS);
   digitalWrite(ToF_right_SHT,HIGH);
+  delay(1);//wichtig
   ToF_right.setAddress(ToF_right_ADDRESS);
   digitalWrite(ToF_cross_SHT,HIGH);
+  delay(1);//wichtig
   ToF_cross.setAddress(ToF_cross_ADDRESS);
   digitalWrite(ToF_back_SHT,HIGH);
+  delay(1);//wichtig
   ToF_back.setAddress(ToF_back_ADDRESS);
   
   ToF_front.init();
@@ -107,6 +113,12 @@ uint16_t* read_TOF()
     tof_array[4] = ToF_back.readReg16Bit(ToF_back.RESULT_RANGE_STATUS + 10);
     ToF_back.writeReg(ToF_back.SYSTEM_INTERRUPT_CLEAR, 0x01);
   }
+  
+  if (tof_array[0] > threshold_front) tof_array[0] = threshold_front;
+  if (tof_array[1] > threshold_left) tof_array[1] = threshold_left;
+  if (tof_array[2] > threshold_right) tof_array[2] = threshold_right;
+  if (tof_array[3] > threshold_cross) tof_array[3] = threshold_cross;
+  if (tof_array[4] > threshold_back) tof_array[4] = threshold_back;
   
   return tof_array;
 }

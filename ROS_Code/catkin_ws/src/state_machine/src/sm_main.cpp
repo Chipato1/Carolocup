@@ -196,6 +196,8 @@ void sm_state_end_cleanup()
 	{
 		stateInformation_i.stateChanged--;
 	}
+
+	se_iterationsSinceLastVisionResult++;
 }
 
 void sm_switch_state(int newState)
@@ -322,8 +324,10 @@ void sm_handle_KEEP_TRACK_RIGHT()
 {
 	if (sm_isStateChanged())
 	{
-		se_setEnableLateralControl(SE_FALSE);
-		se_setTargetSpeed(0.5);
+		//se_setEnableLateralControl(SE_FALSE);
+		
+		se_setTargetSpeed(0.15);
+		se_setDeltaY(0);
 	}
 
 	if (se_isTrackAvailable())
@@ -608,6 +612,8 @@ void se_init()
 	se_currentClothoideLeft[2] = 0;
 	se_currentClothoideLeft[3] = 0;
 
+	se_iterationsSinceLastVisionResult = 0;
+
 	// todo initialize buffers
 }
 
@@ -619,7 +625,7 @@ double getMidValue(double val1, double val2)
 /* Topic Callbacks */
 void se_cb_sub_visionResult(const vision::VisionResultMsg::ConstPtr& msg)
 {
-	std::cout << "vr - ";
+	//std::cout << "vr - ";
 	
 	std_msgs::Float64 new_r_delta;
 	std_msgs::Float64 new_r_phi;
@@ -657,10 +663,10 @@ void se_cb_sub_visionResult(const vision::VisionResultMsg::ConstPtr& msg)
 
 	if (msg->foundML && msg->solvedML1)
 	{
-		std::cout << "M - ";
+		//std::cout << "M - ";
 		if (msg->foundRL && msg->solvedRL1)
 		{
-			std::cout << "R - ";
+			//std::cout << "R - ";
 
 			new_r_c1.data = msg->rightLane1[0];
 			new_r_c0.data = msg->rightLane1[1];
@@ -677,9 +683,9 @@ void se_cb_sub_visionResult(const vision::VisionResultMsg::ConstPtr& msg)
 			se_currentClothoideRight[2] = getMidValue(new_m_phi.data, new_r_phi.data);
 			se_currentClothoideRight[3] = getMidValue(new_m_delta.data, new_r_delta.data);
 
-			std::cout << "r: " << new_r_delta.data << " - m: " << new_m_delta.data << "\n -deltaY: " << se_currentClothoideRight[3] << "\n";
+			//std::cout << "r: " << new_r_delta.data << " - m: " << new_m_delta.data << "\n -deltaY: " << se_currentClothoideRight[3] << "\n";
 
-			std::cout << se_currentClothoideRight[3] << "\n";
+			//std::cout << se_currentClothoideRight[3] << "\n";
 		}
 		else
 		{
@@ -687,31 +693,63 @@ void se_cb_sub_visionResult(const vision::VisionResultMsg::ConstPtr& msg)
 			new_m_c0.data = msg->middleLane1[1];
 			new_m_phi.data = msg->middleLane1[2];
 			new_m_delta.data = msg->middleLane1[3];
-			
-			se_currentClothoideRight[0] = new_m_c1.data;
-			se_currentClothoideRight[1] = new_m_c0.data;
-			se_currentClothoideRight[2] = new_m_phi.data;
-			se_currentClothoideRight[3] = -new_m_delta.data + 200;
 
-			std::cout << "m: " << new_m_delta.data << "\n -deltaY: " << se_currentClothoideRight[3] << "\n";
+			if (new_r_delta.data > 0)
+			{
+				new_r_c1.data = new_m_c1.data;
+				new_r_c0.data = new_m_c0.data;
+				new_r_phi.data = new_m_phi.data;
+				new_r_delta.data = new_m_delta.data;
+
+				se_currentClothoideRight[0] = new_r_c1.data;
+				se_currentClothoideRight[1] = new_r_c0.data;
+				se_currentClothoideRight[2] = new_r_phi.data;
+				se_currentClothoideRight[3] = -new_r_delta.data - 200;
+			}
+			else
+			{
+				se_currentClothoideRight[0] = new_m_c1.data;
+				se_currentClothoideRight[1] = new_m_c0.data;
+				se_currentClothoideRight[2] = new_m_phi.data;
+				se_currentClothoideRight[3] = -new_m_delta.data + 200;
+			}
+
+			//std::cout << "m: " << new_m_delta.data << "\n -deltaY: " << se_currentClothoideRight[3] << "\n";
 		}
 	}
 	else if (msg->foundRL && msg->solvedRL1)
 	{
-		std::cout << "R - ";
+		//std::cout << "R - ";
 
 		new_r_c1.data = msg->rightLane1[0];
 		new_r_c0.data = msg->rightLane1[1];
 		new_r_phi.data = msg->rightLane1[2];
 		new_r_delta.data = msg->rightLane1[3];
-		
-		se_currentClothoideRight[0] = new_r_c1.data;
-		se_currentClothoideRight[1] = new_r_c0.data;
-		se_currentClothoideRight[2] = new_r_phi.data;
-		se_currentClothoideRight[3] = -new_r_delta.data - 200;
 
-		std::cout << "r: " << new_r_delta.data << "\n -deltaY: " << se_currentClothoideRight[3] << "\n";
+		if (new_r_delta.data < 0)
+		{
+			new_m_c1.data = new_r_c1.data;
+			new_m_c0.data = new_r_c0.data;
+			new_m_phi.data = new_r_phi.data;
+			new_m_delta.data = new_r_delta.data;
+
+			se_currentClothoideRight[0] = new_m_c1.data;
+			se_currentClothoideRight[1] = new_m_c0.data;
+			se_currentClothoideRight[2] = new_m_phi.data;
+			se_currentClothoideRight[3] = -new_m_delta.data + 200;
+		}
+		else
+		{
+			se_currentClothoideRight[0] = new_r_c1.data;
+			se_currentClothoideRight[1] = new_r_c0.data;
+			se_currentClothoideRight[2] = new_r_phi.data;
+			se_currentClothoideRight[3] = -new_r_delta.data - 200;
+		}
+
+		//std::cout << "r: " << new_r_delta.data << "\n -deltaY: " << se_currentClothoideRight[3] << "\n";
 	}
+
+	se_iterationsSinceLastVisionResult = 0;
 
 
 	/*
@@ -735,27 +773,27 @@ void se_cb_sub_currentDistance(const std_msgs::Float32::ConstPtr& msg)
 	se_currentDistance = msg->data;
 }
 
-void se_cb_sub_tof_f(const std_msgs::Float32::ConstPtr& msg)
+void se_cb_sub_tof_f(const std_msgs::UInt16::ConstPtr& msg)
 {
 	se_sensorBuffer_append(&se_buffer_tof_f, msg->data);
 }
 
-void se_cb_sub_tof_fr(const std_msgs::Float32::ConstPtr& msg)
+void se_cb_sub_tof_fr(const std_msgs::UInt16::ConstPtr& msg)
 {
 	se_sensorBuffer_append(&se_buffer_tof_fr, msg->data);
 }
 
-void se_cb_sub_tof_r(const std_msgs::Float32::ConstPtr& msg)
+void se_cb_sub_tof_r(const std_msgs::UInt16::ConstPtr& msg)
 {
 	se_sensorBuffer_append(&se_buffer_tof_r, msg->data);
 }
 
-void se_cb_sub_tof_l(const std_msgs::Float32::ConstPtr& msg)
+void se_cb_sub_tof_l(const std_msgs::UInt16::ConstPtr& msg)
 {
 	se_sensorBuffer_append(&se_buffer_tof_l, msg->data);
 }
 
-void se_cb_sub_tof_b(const std_msgs::Float32::ConstPtr& msg)
+void se_cb_sub_tof_b(const std_msgs::UInt16::ConstPtr& msg)
 {
 	se_sensorBuffer_append(&se_buffer_tof_b, msg->data);
 }
@@ -851,17 +889,17 @@ int se_isInObstacleAvoidanceMode()
 /* Camera */
 int se_isQRCodePresent()
 {
-	return SE_TRUE;
+	return (se_getBufferAverage(&se_buffer_tof_f) < 500);
 }
 
 int se_isQRCodeGone()
 {
-	return SE_TRUE;
+	return (se_getBufferAverage(&se_buffer_tof_f) > 500);
 }
 
 int se_isTrackAvailable()
 {
-	return SE_TRUE;
+	return (se_iterationsSinceLastVisionResult < 5);
 }
 
 int se_isJunctionDetected()
