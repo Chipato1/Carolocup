@@ -620,7 +620,8 @@ void PointLaneDetector::prepareInterpolation(int i) {
 			double dx = ((double)laneMiddles.at(middleIndex).x - (double)this->middleLaneStartPoint.x);
 			double dy = ((double)laneMiddles.at(middleIndex).y - (double)this->middleLaneStartPoint.y);
 			double rel = oldMiddleRel - (dx / dy);
-			if ((*iteratorMiddle < 400 && numberOfMiddlePoints == 1) || (*iteratorMiddle < 300 && rel < 0.5 && rel > -0.5) || (*iteratorMiddle >= 300 && rel < 0.1 && rel > -0.1)) {
+
+			if ((*iteratorMiddle < 400 && numberOfMiddlePoints == 1) || (*iteratorMiddle < 300 && rel < 0.5 && rel > -0.5) || (*iteratorMiddle >= 300 && rel < 0.15 && rel > -0.15)) {
 				lastMiddleIterator = i;
 				vRes.lanePoints.at(1).push_back(laneMiddles.at(middleIndex));
 				calculateSolveMatrix(laneMiddles.at(middleIndex), mA, mB, numberOfMiddlePoints);
@@ -638,7 +639,7 @@ void PointLaneDetector::prepareInterpolation(int i) {
 			double dx = ((double)laneMiddles.at(rightIndex).x - (double)this->rightLaneStartPoint.x);
 			double dy = ((double)laneMiddles.at(rightIndex).y - (double)this->rightLaneStartPoint.y);
 			double rel = oldRIghtRel - (dx / dy);
-			if ((*iteratorRight < 300 && numberOfRightPoints == 1) || (*iteratorRight < 300 && rel < 0.2 && rel > -0.2) || (*iteratorRight >= 300 && rel < 0.1 && rel > -0.1)) {
+			if ((*iteratorRight < 300 && numberOfRightPoints == 1) || (*iteratorRight < 300 && rel < 0.2 && rel > -0.2) || (*iteratorRight >= 300 && rel < 0.15 && rel > -0.15)) {
 				lastRightIterator = i;
 				vRes.lanePoints.at(2).push_back(laneMiddles.at(rightIndex));
 				calculateSolveMatrix(laneMiddles.at(rightIndex), rA, rB, numberOfRightPoints);
