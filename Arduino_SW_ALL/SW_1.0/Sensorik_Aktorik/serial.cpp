@@ -18,7 +18,7 @@ void init_sensorik(ros::NodeHandle *arduino_node){
   arduino_node->advertise(tof_right_pub);
   arduino_node->advertise(tof_cross_pub);
   arduino_node->advertise(tof_back_pub);
-  arduino_node->advertise(error_pub);
+  //arduino_node->advertise(error_pub);
 }
 
 void rpm_publish(float rpm){  
