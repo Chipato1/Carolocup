@@ -24,15 +24,15 @@ void setup()
 
 void loop() 
 {
+  t_test_publish(millis());
   aktorik();
   
   rc_publish();
   drive_mode_publish();
   
-  //t_test_publish(0);
-  //t_test_publish(millis());
   
-  //t_test_publish(millis());
+  
+  
   
   tof = read_TOF();
   tof_publish(tof[0], tof[1], tof[2], tof[3], tof[4]);

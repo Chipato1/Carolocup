@@ -281,7 +281,7 @@ void sm_handle_LEAVE_BOX()
 	if (sm_isStateChanged())
 	{
 		se_setDeltaY(0);
-		se_setTargetSpeed(0.15);
+		se_setTargetSpeed(0.2);
 
 		se_startLeaveBoxTimer();
 	}
@@ -297,7 +297,7 @@ void sm_handle_DRIVE_RIGHT()
 	if (sm_isStateChanged())
 	{
 		se_setEnableLateralControl(SE_TRUE);
-		se_setTargetSpeed(0.3);
+		se_setTargetSpeed(0.15);
 	}
 
 	se_setDeltaY(-se_currentClothoideRight[3]);
