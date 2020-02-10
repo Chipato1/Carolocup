@@ -1,15 +1,26 @@
 #pragma once
+#include <string>
 #include <opencv2/objdetect.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+
+using namespace std;
+using namespace cv;
+
+typedef struct
+{
+  string type;
+  string data;
+  vector <Point> location;
+}decodedObject;
 
 
 
 class StartboxDetector
 {
 public:
-    bool checkQRCode(cv::Mat inputImage);
+    bool StartboxDetector::checkQRCode(Mat &im, vector<decodedObject>&decodedObjects);
     StartboxDetector();
     
 private:
