@@ -13,7 +13,7 @@
   <node name="pi_laengsregler_node" pkg="pi_laengsregler" type="pi_laengsregler_node" respawn="true" />
 
   <!-- rosserial -->
-  <node name="serial_node" pkg="rosserial_arduino" type="serial_node" args="_port:=/dev/ttyACM0" respawn="true" />
+  <node name="serial_node" pkg="rosserial_arduino" type="serial_node.py" args="_port:=/dev/ttyACM0" respawn="true" />
 
   <!--  -->
   <node name="state_machine_node" pkg="state_machine" type="state_machine_node" respawn="true" />
