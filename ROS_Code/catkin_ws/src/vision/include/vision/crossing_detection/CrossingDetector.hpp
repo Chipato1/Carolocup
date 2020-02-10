@@ -17,7 +17,7 @@ class CrossingDetector
 {
 public:
     CrossingDetector(std::map<std::string, std::string> config);
-    double detect(vector<Vec4i> lines, int pointerSize);
+    double detect(vector<Vec4i> lines);
 
     double getYDistanceBetweenPoints(Point p1, Point p2);
     vector<Vec4i> getPossibleEventLine(vector<Vec4i> & detectedLines);

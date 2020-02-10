@@ -1,4 +1,4 @@
-#include  <vision/stopline_detection/CrossingDetector.hpp>
+#include  <vision/crossing_detection/CrossingDetector.hpp>
 
 
 using namespace cv;
@@ -239,7 +239,7 @@ int decreaseValidation(int validation) {
 }
 
 //call by reference
-double CrossingDetector::detect(vector<Vec4i> lines, int pointerSize) {
+double CrossingDetector::detect(vector<Vec4i> lines) {
 	//cout << "-----------------------New Message---------------------------------" << endl;
 	img = cv::Mat(2000, 1600, CV_8UC3, Scalar(0, 0, 0));
 	

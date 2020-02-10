@@ -1,5 +1,7 @@
-#include <vision/stopline_detection/StoplineDetector.hpp>
+#include <vision/crossing_detection/CrossingDetector.hpp>
 #include <vision/StoplineMsg.h>
+#include <vision/HoughPoints.h>
+#include <vision/HoughPointsArray.h>
 
 #include <iostream>
 #include <map>
@@ -36,13 +38,24 @@ std::map<std::string, std::string> readConfigFile() {
 	return my_map;
 }
 
-StoplineDetector stoplineDetector;
+CrossingDetector* crossingDetector;
 ros::Publisher stoplinePublisher;
 vision::StoplineMsg stop_Msg;
 double result;
 std::map<std::string, std::string> config;
 void imageCallback(const vision::HoughPointsArray::ConstPtr& msg){
-    result = stoplineDetector.detect(msg, msg->points.size(), config);
+	
+	vector<Vec4i> lines;
+	Vec4i l;
+	for(int i = 0; i < msg->points.size(); i++){
+		const vision::HoughPoints &data = msg->points[i];
+		l[0] = data.x1;
+		l[1] = data.y1;
+		l[2] = data.x2;
+		l[3] = data.y2;
+		lines.push_back(l);
+	}
+    result = crossingDetector->detect(lines);
     
     if (result > 0 ) {
         stop_Msg.stoplineDetected = true;
@@ -65,7 +78,7 @@ int main(int argc, char** argv) {
 	//Config Datei lesen und DrivingVision-Klasse erstellen
 	config = readConfigFile();
 	std::cout << "Success!" << std::endl;
-
+	crossingDetector = new CrossingDetector(config);
 	ros::NodeHandle nh;
 	//image_transport::ImageTransport it(nh);
 
