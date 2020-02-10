@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>state_machine</name>
+  <name>watchdog</name>
   <version>0.0.0</version>
-  <description>The state_machine package</description>
+  <description>WatchWatchWatch</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
