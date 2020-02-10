@@ -61,6 +61,22 @@ void sm_step()
 	{
 		sm_switch_state(RC_MODE);
 	}
+
+	if (se_isInOffMode())
+	{
+		sm_switch_state(READY);
+	}
+
+	if (se_getBufferAverage(&se_buffer_tof_fr) < 200)
+	{
+		se_setFlashRight(2);
+		se_setFlashLeft(2);
+	}
+	else
+	{
+		se_setFlashRight(0);
+		se_setFlashLeft(0);
+	}
 	
 	std::cout << stateInformation_i.currentState << std::endl;
 
@@ -241,6 +257,8 @@ void sm_handle_READY()
 	{
 		sm_switch_state(BOX_WAIT_FOR_QR_APPEAR);
 	}
+
+	se_setTargetSpeed(0);
 }
 void sm_handle_BOX_WAIT_FOR_QR_APPEAR()
 {
@@ -253,6 +271,8 @@ void sm_handle_BOX_WAIT_FOR_QR_APPEAR()
 	{
 		sm_switch_state(BOX_WAIT_FOR_QR_DISAPPEAR);
 	}
+
+	se_setTargetSpeed(0);
 }
 
 void sm_handle_BOX_WAIT_FOR_QR_DISAPPEAR()
@@ -263,6 +283,8 @@ void sm_handle_BOX_WAIT_FOR_QR_DISAPPEAR()
 
 		// disable QR Code service
 	}
+
+	se_setTargetSpeed(0);
 }
 
 void sm_handle_BOX_WAIT_FOR_GATE_OPENING()
@@ -276,6 +298,8 @@ void sm_handle_BOX_WAIT_FOR_GATE_OPENING()
 	{
 		sm_switch_state(LEAVE_BOX);
 	}
+
+	se_setTargetSpeed(0);
 }
 
 void sm_handle_LEAVE_BOX()
@@ -283,7 +307,7 @@ void sm_handle_LEAVE_BOX()
 	if (sm_isStateChanged())
 	{
 		se_setDeltaY(0);
-		se_setTargetSpeed(0.2);
+		se_setTargetSpeed(SETPOINT_SPEED);
 
 		se_startLeaveBoxTimer();
 	}
@@ -299,10 +323,19 @@ void sm_handle_DRIVE_RIGHT()
 	if (sm_isStateChanged())
 	{
 		se_setEnableLateralControl(SE_TRUE);
-		se_setTargetSpeed(0.15);
+		se_setTargetSpeed(SETPOINT_SPEED);
 	}
+	
+	float avg = 0;
 
-	se_setDeltaY(-se_currentClothoideRight[3]);
+	for (int i = 0; i < SE_SENSOR_BUFFER_LENGTH; i++)
+	{
+		avg += se_currentClothoideRight[3][i];
+	}
+	
+	avg /= SE_SENSOR_BUFFER_LENGTH;
+
+	se_setDeltaY(-avg);//se_currentClothoideRight[3][se_clothoideBufferIterator]);
 
 	if (!se_isTrackAvailable())
 	{
@@ -326,7 +359,7 @@ void sm_handle_KEEP_TRACK_RIGHT()
 	{
 		//se_setEnableLateralControl(SE_FALSE);
 		
-		se_setTargetSpeed(0.15);
+		se_setTargetSpeed(SETPOINT_SPEED);
 		se_setDeltaY(0);
 	}
 
@@ -530,7 +563,9 @@ float se_getAverage(float* arr, unsigned int len)
 	
 	float ret = count / len;
 
-	return ret;
+	//return ret;
+
+	return arr[0];
 }
 
 float se_getBufferAverage(se_sensorBuffer_t* buffer)
@@ -602,7 +637,7 @@ void se_init()
 	se_currentSpeed = 0;
 	se_currentDistance = 0;
 	
-	se_currentClothoideRight[0] = 0;
+	/*se_currentClothoideRight[0] = 0;
 	se_currentClothoideRight[1] = 0;
 	se_currentClothoideRight[2] = 0;
 	se_currentClothoideRight[3] = 0;
@@ -610,7 +645,9 @@ void se_init()
 	se_currentClothoideLeft[0] = 0;
 	se_currentClothoideLeft[1] = 0;
 	se_currentClothoideLeft[2] = 0;
-	se_currentClothoideLeft[3] = 0;
+	se_currentClothoideLeft[3] = 0;*/
+
+	int se_clothoideBufferIterator = 0;
 
 	se_iterationsSinceLastVisionResult = 0;
 
@@ -678,10 +715,10 @@ void se_cb_sub_visionResult(const vision::VisionResultMsg::ConstPtr& msg)
 			new_m_phi.data = msg->middleLane1[2];
 			new_m_delta.data = msg->middleLane1[3];
 			
-			se_currentClothoideRight[0] = getMidValue(new_m_c1.data, new_r_c1.data);
-			se_currentClothoideRight[1] = getMidValue(new_m_c0.data, new_r_c0.data);
-			se_currentClothoideRight[2] = getMidValue(new_m_phi.data, new_r_phi.data);
-			se_currentClothoideRight[3] = getMidValue(new_m_delta.data, new_r_delta.data);
+			se_currentClothoideRight[0][se_clothoideBufferIterator] = getMidValue(new_m_c1.data, new_r_c1.data);
+			se_currentClothoideRight[1][se_clothoideBufferIterator] = getMidValue(new_m_c0.data, new_r_c0.data);
+			se_currentClothoideRight[2][se_clothoideBufferIterator] = getMidValue(new_m_phi.data, new_r_phi.data);
+			se_currentClothoideRight[3][se_clothoideBufferIterator] = getMidValue(new_m_delta.data, new_r_delta.data);
 
 			//std::cout << "r: " << new_r_delta.data << " - m: " << new_m_delta.data << "\n -deltaY: " << se_currentClothoideRight[3] << "\n";
 
@@ -701,17 +738,17 @@ void se_cb_sub_visionResult(const vision::VisionResultMsg::ConstPtr& msg)
 				new_r_phi.data = new_m_phi.data;
 				new_r_delta.data = new_m_delta.data;
 
-				se_currentClothoideRight[0] = new_r_c1.data;
-				se_currentClothoideRight[1] = new_r_c0.data;
-				se_currentClothoideRight[2] = new_r_phi.data;
-				se_currentClothoideRight[3] = -new_r_delta.data - 200;
+				se_currentClothoideRight[0][se_clothoideBufferIterator] = new_r_c1.data;
+				se_currentClothoideRight[1][se_clothoideBufferIterator] = new_r_c0.data;
+				se_currentClothoideRight[2][se_clothoideBufferIterator] = new_r_phi.data;
+				se_currentClothoideRight[3][se_clothoideBufferIterator] = -new_r_delta.data - 200;
 			}
 			else
 			{
-				se_currentClothoideRight[0] = new_m_c1.data;
-				se_currentClothoideRight[1] = new_m_c0.data;
-				se_currentClothoideRight[2] = new_m_phi.data;
-				se_currentClothoideRight[3] = -new_m_delta.data + 200;
+				se_currentClothoideRight[0][se_clothoideBufferIterator] = new_m_c1.data;
+				se_currentClothoideRight[1][se_clothoideBufferIterator] = new_m_c0.data;
+				se_currentClothoideRight[2][se_clothoideBufferIterator] = new_m_phi.data;
+				se_currentClothoideRight[3][se_clothoideBufferIterator] = -new_m_delta.data + 200;
 			}
 
 			//std::cout << "m: " << new_m_delta.data << "\n -deltaY: " << se_currentClothoideRight[3] << "\n";
@@ -733,24 +770,32 @@ void se_cb_sub_visionResult(const vision::VisionResultMsg::ConstPtr& msg)
 			new_m_phi.data = new_r_phi.data;
 			new_m_delta.data = new_r_delta.data;
 
-			se_currentClothoideRight[0] = new_m_c1.data;
-			se_currentClothoideRight[1] = new_m_c0.data;
-			se_currentClothoideRight[2] = new_m_phi.data;
-			se_currentClothoideRight[3] = -new_m_delta.data + 200;
+			se_currentClothoideRight[0][se_clothoideBufferIterator] = new_m_c1.data;
+			se_currentClothoideRight[1][se_clothoideBufferIterator] = new_m_c0.data;
+			se_currentClothoideRight[2][se_clothoideBufferIterator] = new_m_phi.data;
+			se_currentClothoideRight[3][se_clothoideBufferIterator] = -new_m_delta.data + 200;
 		}
 		else
 		{
-			se_currentClothoideRight[0] = new_r_c1.data;
-			se_currentClothoideRight[1] = new_r_c0.data;
-			se_currentClothoideRight[2] = new_r_phi.data;
-			se_currentClothoideRight[3] = -new_r_delta.data - 200;
+			se_currentClothoideRight[0][se_clothoideBufferIterator] = new_r_c1.data;
+			se_currentClothoideRight[1][se_clothoideBufferIterator] = new_r_c0.data;
+			se_currentClothoideRight[2][se_clothoideBufferIterator] = new_r_phi.data;
+			se_currentClothoideRight[3][se_clothoideBufferIterator] = -new_r_delta.data - 200;
 		}
 
 		//std::cout << "r: " << new_r_delta.data << "\n -deltaY: " << se_currentClothoideRight[3] << "\n";
 	}
+	
+	if (msg->foundRL || msg->foundML)// || msg->foundLL)
+	{
+		se_iterationsSinceLastVisionResult = 0;
+	}
 
-	se_iterationsSinceLastVisionResult = 0;
-
+	se_clothoideBufferIterator++;
+	if (se_clothoideBufferIterator > SE_SENSOR_BUFFER_LENGTH)
+	{
+		se_clothoideBufferIterator = 0;
+	}
 
 	/*
 	std::cout << new_r_c1;
@@ -889,17 +934,19 @@ int se_isInObstacleAvoidanceMode()
 /* Camera */
 int se_isQRCodePresent()
 {
+	std::cout << se_getBufferAverage(&se_buffer_tof_f) << std::endl; 	
 	return (se_getBufferAverage(&se_buffer_tof_f) < 500);
 }
 
 int se_isQRCodeGone()
 {
+	std::cout << se_getBufferAverage(&se_buffer_tof_f) << std::endl;
 	return (se_getBufferAverage(&se_buffer_tof_f) > 500);
 }
 
 int se_isTrackAvailable()
 {
-	return (se_iterationsSinceLastVisionResult < 5);
+	return (se_iterationsSinceLastVisionResult < 2);
 }
 
 int se_isJunctionDetected()

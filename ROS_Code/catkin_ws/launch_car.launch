@@ -1,11 +1,14 @@
 <launch>
   <!-- starts roscore -->
-
+<!--<arg name="node_start_delay" default="4.0" />  -->
+<!--<node name="listener" pkg="roscpp_tutorials" type="listener" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />-->
   <!-- camera -->
   <include file="src/ueye_cam/launch/mono8.launch" />
+
+<!--<node name="listener1" pkg="roscpp_tutorials" type="listener1" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />-->
   <node name="vision_lanedetectionnode" pkg="vision" type="vision_lanedetectionnode" respawn="true" />
-  <node name="vision_startboxdetectionnode" pkg="vision" type="vision_startboxdetectionnode" respawn="true" />
-  <node name="vision_stoplinedetectionnode" pkg="vision" type="vision_stoplinedetectionnode" respawn="true" />
+ <!-- <node name="vision_startboxdetectionnode" pkg="vision" type="vision_startboxdetectionnode" respawn="true" /> -->
+ <!-- <node name="vision_stoplinedetectionnode" pkg="vision" type="vision_stoplinedetectionnode" respawn="true" /> -->
 
   <!-- control-loop -->
   <node name="raddrehzahl_filter_node" pkg="raddrehzahl_filter" type="raddrehzahl_filter_node" respawn="true" />

@@ -23,6 +23,8 @@
 #include <vision/VisionResultMsg.h>
 #include <vision/SetBool.h>
 
+#define SETPOINT_SPEED 0.2
+
 //#include "sm_estimation.h"
 //#include "trajectory.h"
 
@@ -129,7 +131,7 @@ struct INIT_data {
 #define SE_FALSE 0
 #define SE_TRUE 1
 
-const ros::Duration SE_TIMEOUT_GATE_MS(2);
+const ros::Duration SE_TIMEOUT_GATE_MS(1);
 const ros::Duration SE_TIMEOUT_LEAVE_BOX_MS(2);
 const ros::Duration SE_TIMEOUT_JUNCTION_WAIT_MS(3);
 const ros::Duration SE_TIMEOUT_JUNCTION_OBSTACLE_WAIT_MS(5);
@@ -242,10 +244,12 @@ int se_iterationsSinceLastVisionResult;
 	double c1; // ^3 * 1/6
 } clothoide_t;*/
 
-typedef double clothoide_t[4]; // todo buffer // c1^3, ...
+typedef double clothoide_t[4][SE_SENSOR_BUFFER_LENGTH]; // todo buffer // c1^3, ...
 
 clothoide_t se_currentClothoideRight;
 clothoide_t se_currentClothoideLeft;
+
+int se_clothoideBufferIterator;
 
 /* Util */
 float se_getAverage(float* arr, unsigned int len);
