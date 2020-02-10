@@ -21,6 +21,7 @@ class StartboxDetector
 {
 public:
     bool checkQRCode(Mat &im, vector<decodedObject>&decodedObjects);
+    bool checkQRCodeOpenCV(cv::Mat inputImage);
     StartboxDetector();
     
 private:

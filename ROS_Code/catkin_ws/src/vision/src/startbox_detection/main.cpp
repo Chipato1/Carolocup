@@ -38,12 +38,27 @@ std::map<std::string, std::string> readConfigFile() {
 
 cv::Mat image;
 StartboxDetector detector = StartboxDetector();
+ros::Rate qrRate(3.);
 bool detectQRCode(vision::SetBool::Request  &req, vision::SetBool::Response &res) {
+	bool status = false;
 	vector<decodedObject> decodedObjects;
-	res.success = detector.checkQRCode(image, decodedObjects);
-	ROS_INFO("TEST");
-        std::cout << decodedObjects.size();
-	return true;
+	for(int i = 0; i < 100; i++) {
+		
+		if(detector.checkQRCodeOpenCV(image)) {
+			res.success = true;
+			return true;
+		}
+
+		detector.checkQRCode(image, decodedObjects)
+
+		if(decodedObjects.size() > 0) {
+			res.success = true;
+			return true;
+		}
+
+		qrRate.sleep();
+	}
+	return false;
 }
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
