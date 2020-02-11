@@ -18,7 +18,7 @@ CrossingDetector::CrossingDetector(std::map<std::string, std::string> config)
 }
 
 void CrossingDetector::failureReport(string i) {
-	//cout << "Failed due to: " << i << endl;
+	cout << "Failed due to: " << i << endl;
 }
 
 void CrossingDetector::drawLine(vector<Vec4i> lines) {
@@ -55,7 +55,7 @@ vector<Vec4i> CrossingDetector::getPossibleEventLine(vector<Vec4i>& detectedLine
 		//calculate angle in radian,  if you need it in degrees just do angle * 180 / PI
 		angle = abs(atan2(p1.y - p2.y, p1.x - p2.x) * (180 / CV_PI));
 		//cout << "angle: " <<angle<< endl;
-		if (angle > 165 || angle < 15) {
+		if (angle > 160 || angle < 20) {
 			possibleStoppLine.push_back(detectedLines.at(i));
 		}
 
@@ -96,7 +96,7 @@ vector<Vec4i> CrossingDetector::checkLineWidth(vector<Vec4i> lines) {
 			distance3 = getYDistanceBetweenPoints(p2, p3);
 			distance4 = getYDistanceBetweenPoints(p2, p4);
 			//cout << "d1: " << distance1 << "  d2: " << distance2 << endl;
-			if ((distance1 > 30 && distance1 < 70) || (distance2 > 30 && distance2 < 70) || (distance3 > 30 && distance3 < 70) || (distance4 > 30 && distance4 < 70)) {
+			if ((distance1 > 20 && distance1 < 100) || (distance2 > 20 && distance2 < 100) || (distance3 > 20 && distance3 < 100) || (distance4 > 20 && distance4 < 100)) {
 				resultingLines.push_back(lines[q]);
 				resultingLines.push_back(lines[i]);
 			}
@@ -241,7 +241,7 @@ int decreaseValidation(int validation) {
 //call by reference
 double CrossingDetector::detect(vector<Vec4i> lines) {
 	//cout << "-----------------------New Message---------------------------------" << endl;
-	img = cv::Mat(2000, 1600, CV_8UC3, Scalar(0, 0, 0));
+	/*img = cv::Mat(2000, 1600, CV_8UC3, Scalar(0, 0, 0));
 	
 	for (size_t i = 0; i < lines.size(); i++)
 	{
@@ -251,7 +251,7 @@ double CrossingDetector::detect(vector<Vec4i> lines) {
 
 	line(img, Point(roiCenterX - 400, ipmSizeY), Point(roiCenterX - 400, 0), Scalar(0, 0, 255), 3, LINE_AA);
 	line(img, Point(roiCenterX + 400, ipmSizeY), Point(roiCenterX + 400, 0), Scalar(0, 0, 255), 3, LINE_AA);
-	line(img, Point(0, 1500), Point(roiCenterX, 1500), Scalar(0, 0, 255), 3, LINE_AA);
+	line(img, Point(0, 1500), Point(roiCenterX, 1500), Scalar(0, 0, 255), 3, LINE_AA);*/
 
 
 
@@ -273,7 +273,7 @@ double CrossingDetector::detect(vector<Vec4i> lines) {
 	}
 	else {
 		failureReport("1");
-		validation = decreaseValidation(validation);
+		//validation = decreaseValidation(validation);
 		return -1.0;
 	}
 
@@ -316,10 +316,10 @@ double CrossingDetector::detect(vector<Vec4i> lines) {
 	}
 
 	cout << "validation: " << validation << endl;
-	if (validation > 1) {
+	if (validation > 2) {
 		Vec4i l;
 		l = stoppLine;
-		line(img, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(255, 255, 255), 3, LINE_AA);
+		//line(img, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(255, 255, 255), 3, LINE_AA);
 		validation = 0;
 		cout << "---------Found Intersection------------" << endl;
 		//imshow("te", img);
