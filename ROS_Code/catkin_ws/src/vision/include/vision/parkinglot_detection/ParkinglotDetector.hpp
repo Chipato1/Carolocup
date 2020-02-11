@@ -9,6 +9,8 @@
 class ParkinglotDetector
 {
 public:
+	int roiHeight = 0;
+	int roiWidth = 0;
 	/*cv::Mat blankimage();*/
 	void failure(string i);
 	void drawLines(vector<Vec4i> lines, String txt, int r, int b, int g);
@@ -17,5 +19,6 @@ public:
 	void detectParkinglots();
 	double getParkingLotStartingPosition_Y(vector<Vec4i>& stopLines)
 	ParkinglotDetector();
+	cv::Mat blankimage();
 	
 };
