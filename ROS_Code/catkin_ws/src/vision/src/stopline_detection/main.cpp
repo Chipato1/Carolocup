@@ -1,5 +1,7 @@
 #include <vision/stopline_detection/StoplineDetector.hpp>
 #include <vision/StoplineMsg.h>
+#include <vision/HoughPoints.h>
+#include <vision/HoughPointsArray.h>
 
 #include <iostream>
 #include <map>
@@ -36,14 +38,24 @@ std::map<std::string, std::string> readConfigFile() {
 	return my_map;
 }
 
-StoplineDetector stoplineDetector;
+StoplineDetector* stoplineDetect;
 ros::Publisher stoplinePublisher;
 vision::StoplineMsg stop_Msg;
 double result;
 std::map<std::string, std::string> config;
 void imageCallback(const vision::HoughPointsArray::ConstPtr& msg){
-    //cv::Mat image = cv::imread("/Users/beni/Desktop/Studium/Studienarbeit/OpenCV/OpenCVTest/OpenCVTest/images");
-    result = stoplineDetector.detect(msg, msg->points.size(), config);
+	
+	vector<Vec4i> lines;
+	Vec4i l;
+	for(int i = 0; i < msg->points.size(); i++){
+		const vision::HoughPoints &data = msg->points[i];
+		l[0] = data.x1;
+		l[1] = data.y1;
+		l[2] = data.x2;
+		l[3] = data.y2;
+		lines.push_back(l);
+	}
+    result = stoplineDetect->detect(lines);
     
     if (result > 0 ) {
         stop_Msg.stoplineDetected = true;
@@ -57,21 +69,21 @@ void imageCallback(const vision::HoughPointsArray::ConstPtr& msg){
 }
 
 int main(int argc, char** argv) {
-	std::cout << "Launching ROS Lane Detection node..." << std::endl;
+	std::cout << "Launching ROS Stopline detection node..." << std::endl;
 	std::cout << "Initializing ROS features with parameters: " << std::endl;
-	std::cout << "argc: " << argc << "; Node name: vision_stoplinedetectionnode" << std::endl;
+	std::cout << "argc: " << argc << "; Node name: visio_stoplinedetectionnode" << std::endl;
 	ros::init(argc, argv, "vision_stoplinedetectionnode");
 	std::cout << "Success!" << std::endl;
 	std::cout << "Trying to load config file config.cfg" << std::endl;
 	//Config Datei lesen und DrivingVision-Klasse erstellen
 	config = readConfigFile();
 	std::cout << "Success!" << std::endl;
-
+	stoplineDetect = new StoplineDetector(config);
 	ros::NodeHandle nh;
 	//image_transport::ImageTransport it(nh);
 
     //TODO:funktioniert das wenn ein NodeHandel 2 verschiedene Topics subscripet und pushlished
-    stoplinePublisher = nh.advertise<vision::StoplineMsg>("Stoplines", 1);
+    stoplinePublisher = nh.advertise<vision::StoplineMsg>("Stopline", 1);
 	ros::Subscriber sub = nh.subscribe("HoughResult" , 1, imageCallback);
 	ros::spin();
 	return 0;
