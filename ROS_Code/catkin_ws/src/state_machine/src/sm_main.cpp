@@ -946,7 +946,7 @@ int se_isQRCodeGone()
 
 int se_isTrackAvailable()
 {
-	return (se_iterationsSinceLastVisionResult < 2);
+	return (se_iterationsSinceLastVisionResult < 5);
 }
 
 int se_isJunctionDetected()
