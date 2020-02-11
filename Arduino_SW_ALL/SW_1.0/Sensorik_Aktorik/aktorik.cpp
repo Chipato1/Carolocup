@@ -105,6 +105,9 @@ bool aktorik()
   if (((buff_rc[0]+buff_rc[1]+buff_rc[2]+buff_rc[3]+buff_rc[4]+buff_rc[5])/6.0) > rcmode_schwellenwert)
   {                                    //RC-Mode
     state_light_rem = 2;
+    state_light_l = 0;
+    state_light_r = 0;
+    state_light_b = 0;
 	  if (!rc_mode)
     {
       rc_timer = millis();
