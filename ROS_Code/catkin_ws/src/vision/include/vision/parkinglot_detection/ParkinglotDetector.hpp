@@ -9,6 +9,8 @@ using namespace cv;
 class ParkinglotDetector
 {
 public:
+	int roiHeight = 0;
+	int roiWidth = 0;
 	/*cv::Mat blankimage();*/
 	ParkinglotDetector();
 	void failure(string i);
@@ -16,7 +18,8 @@ public:
 	void getPossibleLines(vector<Vec4i>& detectedLines, vector<Vec4i>& possible_lines, int Angle1, int Angle2);
 	void getPossibleParkingLines(vector<Vec4i>& stopLines, vector<Vec4i>& verticalLines, vector<Vec4i>& resultLines);
 	void detectParkinglots();
-	double getParkingLotStartingPosition_Y(vector<Vec4i>& stopLines);
-	
+	double getParkingLotStartingPosition_Y(vector<Vec4i>& stopLines)
+	ParkinglotDetector();
+	cv::Mat blankimage();
 	
 };

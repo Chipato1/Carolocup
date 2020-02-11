@@ -52,7 +52,11 @@ void ParkinglotDetector :: failure(string i)
 }
 
 
-
+ cv::Mat blankimage() {
+     //cv::Mat blankImage;
+     cv::Mat blankImage = Mat(roiHeight, roiWidth, CV_8UC3, Scalar(0, 0, 0));
+     return blankImage;
+ }
 
 
  void ParkinglotDetector:: getPossibleLines(vector<Vec4i>& detectedLines, vector<Vec4i>& possible_lines, int Angle1, int Angle2) {
@@ -174,7 +178,7 @@ double ParkinglotDetector::detectParkinglots(vector<Vec4i> hough_lines, std::map
     cv::Mat dst, original_img, gray_img, blur_gray_img, canny_img;
     vector<Vec4i> canny_lines, possible_stop_lines, possible_vertical_lines, result_lines, result_lines_300;
 
-    ipmScaling = config.count("ipm_scaling") ? stod(config["ipm_scaling"]);
+    ipmScaling = config.count("ipm_scaling") ? stod(config["ipm_scaling"]) : 1;
  	
     if (hough_lines.empty())
     {
