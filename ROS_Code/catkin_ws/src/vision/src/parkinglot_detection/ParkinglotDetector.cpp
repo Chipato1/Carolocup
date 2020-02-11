@@ -40,8 +40,8 @@ void ParkinglotDetector :: failure(string i)
 
  void ParkinglotDetector :: drawLines(vector<Vec4i> lines, String txt, int r, int b, int g) {
 
-    cv::Mat line_image = blankimage();
-
+ 
+     /*
     for (size_t i = 0; i < lines.size(); i++)
     {
         Vec4i l = lines[i];
