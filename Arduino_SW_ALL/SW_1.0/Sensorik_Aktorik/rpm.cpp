@@ -1,4 +1,4 @@
-#include "rpm.h"
+/*#include "rpm.h"
 #include <Arduino.h>
 
 #define RPM_inputPin_Left   2
@@ -61,4 +61,4 @@ void RPM_Ticks_Left(){
 void RPM_Ticks_Right(){
   rpm_count_Right++;
   rpm_T2_Right = millis();
-}
+}*/
