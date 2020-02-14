@@ -7,9 +7,9 @@
  *
  * Code generation for model "Stanley_Querregler".
  *
- * Model version              : 1.26
+ * Model version              : 1.27
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Mon Feb 10 22:48:00 2020
+ * C++ source code generated on : Tue Feb 11 15:24:06 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -26,7 +26,7 @@ P_Stanley_Querregler_T Stanley_Querregler_P = {
   /* Mask Parameter: LateralControllerStanley_Positi
    * Referenced by: '<S12>/Kinematic'
    */
-  2.5,
+  6.0,
 
   /* Mask Parameter: LateralControllerStanley_Posi_p
    * Referenced by: '<S12>/Kinematic'
@@ -95,10 +95,10 @@ P_Stanley_Querregler_T Stanley_Querregler_P = {
    */
   0.25,
 
-  /* Expression: [0.5, 0, 0]
+  /* Expression: [0.3, 0, 0]
    * Referenced by: '<S7>/ '
    */
-  { 0.5, 0.0, 0.0 },
+  { 0.3, 0.0, 0.0 },
 
   /* Expression: [0 1 0]
    * Referenced by: '<S7>/  '

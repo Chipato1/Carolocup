@@ -7,9 +7,9 @@
  *
  * Code generation for model "Stanley_Querregler".
  *
- * Model version              : 1.26
+ * Model version              : 1.27
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Mon Feb 10 22:48:00 2020
+ * C++ source code generated on : Tue Feb 11 15:24:06 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -363,14 +363,14 @@ void Stanley_Querregler_initialize(void)
   {
     char_T tmp[16];
     char_T tmp_0[12];
-    char_T tmp_1[14];
+    char_T tmp_1[17];
     int32_T i;
     static const char_T tmp_2[25] = { '/', 't', 'r', 'j', '_', 'e', 'n', 'a',
       'b', 'l', 'e', 'L', 'a', 't', 'e', 'r', 'a', 'l', 'C', 'o', 'n', 't', 'r',
       'o', 'l' };
 
-    static const char_T tmp_3[13] = { '/', 'c', 't', 'l', '_', 'v', 'e', 'l',
-      'o', 'c', 'i', 't', 'y' };
+    static const char_T tmp_3[16] = { '/', 't', 'r', 'j', '_', 't', 'a', 'r',
+      'g', 'e', 't', 'S', 'p', 'e', 'e', 'd' };
 
     static const char_T tmp_4[11] = { '/', 't', 'r', 'j', '_', 'd', 'e', 'l',
       't', 'a', 'Y' };
@@ -402,11 +402,11 @@ void Stanley_Querregler_initialize(void)
     Stanley_Querregler_DW.obj_o.matlabCodegenIsDeleted = false;
     Stanley_Querregler_DW.objisempty_h = true;
     Stanley_Querregler_DW.obj_o.isInitialized = 1;
-    for (i = 0; i < 13; i++) {
+    for (i = 0; i < 16; i++) {
       tmp_1[i] = tmp_3[i];
     }
 
-    tmp_1[13] = '\x00';
+    tmp_1[16] = '\x00';
     Sub_Stanley_Querregler_66.createSubscriber(tmp_1, 1);
     Stanley_Querregler_DW.obj_o.isSetupComplete = true;
 

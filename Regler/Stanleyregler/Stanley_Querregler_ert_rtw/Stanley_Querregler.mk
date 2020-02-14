@@ -2,7 +2,7 @@
 ## Makefile generated for Simulink model 'Stanley_Querregler'. 
 ## 
 ## Makefile     : Stanley_Querregler.mk
-## Generated on : Mon Feb 10 23:01:09 2020
+## Generated on : Tue Feb 11 11:53:55 2020
 ## MATLAB Coder version: 4.3 (R2019b)
 ## 
 ## Build Info:
@@ -217,7 +217,7 @@ SYSTEM_LIBS =
 # C Compiler
 #---------------
 
-CFLAGS_SKIPFORSIL =   -fpermissive -fpermissive
+CFLAGS_SKIPFORSIL =   -fpermissive
 CFLAGS_BASIC = $(DEFINES) $(INCLUDES)
 
 CFLAGS += $(CFLAGS_SKIPFORSIL) $(CFLAGS_BASIC)
@@ -226,7 +226,7 @@ CFLAGS += $(CFLAGS_SKIPFORSIL) $(CFLAGS_BASIC)
 # C++ Compiler
 #-----------------
 
-CPPFLAGS_SKIPFORSIL =   -fpermissive -fpermissive
+CPPFLAGS_SKIPFORSIL =   -fpermissive
 CPPFLAGS_BASIC = $(DEFINES) $(INCLUDES)
 
 CPPFLAGS += $(CPPFLAGS_SKIPFORSIL) $(CPPFLAGS_BASIC)
