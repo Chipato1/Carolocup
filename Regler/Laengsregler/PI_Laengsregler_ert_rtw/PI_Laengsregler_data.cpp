@@ -7,9 +7,9 @@
  *
  * Code generation for model "PI_Laengsregler".
  *
- * Model version              : 1.38
+ * Model version              : 1.40
  * Simulink Coder version : 9.2 (R2019b) 18-Jul-2019
- * C++ source code generated on : Sun Feb  9 00:15:30 2020
+ * C++ source code generated on : Fri Feb 14 01:34:07 2020
  *
  * Target selection: ert.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -143,10 +143,10 @@ P_PI_Laengsregler_T PI_Laengsregler_P = {
    */
   0.0,
 
-  /* Expression: 7
+  /* Expression: 1
    * Referenced by: '<S2>/AUSGLEICH WEIL IRGENDJEMAND DAS GETRIEBE VERPFUSCHT HAT!!!'
    */
-  7.0,
+  1.0,
 
   /* Expression: 0
    * Referenced by: '<S2>/Constant1'
