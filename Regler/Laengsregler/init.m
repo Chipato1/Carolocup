@@ -38,8 +38,8 @@ Gf = tf(ss(A,b,cT,0))
 
 Gs = 1/(tau*s+1);
 Gi = 1/s;
-figure(1)
-bode(Gf*Gi)
+% figure(1)
+% bode(Gf*Gi)
 pole_filter = pole(Gf)
 
 Gr = pr+ir/s;
@@ -58,8 +58,8 @@ pole_system = pole( (Gr*Gs) / (1+Gr*Gs*Gf*Gi) )
 %     end
 % end
 
-figure(2)
-bode( (Gr*Gs) / (1+Gr*Gs*Gf*Gi) )
+% figure(2)
+% bode( (Gr*Gs) / (1+Gr*Gs*Gf*Gi) )
 % bode(filter)
 % data = timeseries(DATA012.AccX);
 % data.time = DATA012.Time;
@@ -84,3 +84,4 @@ bode( (Gr*Gs) / (1+Gr*Gs*Gf*Gi) )
 
 %data = timeseries([1,2,3,4,5,6,7,8,9,4,7,1,3,2,5,5,5,6,7,5,3,8,8,9,2,3,4,5,6,7,8]');
 %sim = data.time(end)
+Gs_neu = tf(1/(0.308*s+1))
