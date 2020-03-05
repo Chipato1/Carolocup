@@ -10,8 +10,9 @@ l = 0.25; %Achsenabstand
 lh = l/2; %Abstand zuwischen Schwerpunkt und Hinterachse, noch auszumessen!!!
 
 %%%%%%%%%%%%%%%%%%%%%%%%Zustandsraum
+kp = 1;
 systemMatrix_A = [0 , v ; 0 , 0];
-ausgangsVektor_cT = [0 , 1];
+ausgangsVektor_cT = [kp , 1];
 eingangsMatrix_B = [0 , 0 ; v, -1];
 durchgriffsVektor_d = [l , -lh/v];
 
