@@ -1,22 +1,56 @@
+/*******************************************************************************
+*
+* FILENAME: main.cpp
+*
+* DESCRIPTION: Main entry point for ROS vision lane detection node.
+*
+* CREATED: 20.02.2020
+* AUTHOR: Maximilian Rosnauer
+*
+* CHANGES:
+*  21.02.2020 - Maximilian Rosnauer: Changes for coding guidelines
+*  01.01.2020 - Maximilian Rosnauer: File created
+*
+* Copyright DHBW Smart Rollerz Stuttgart 2019 - 2020. All rights reserved
+*
+*******************************************************************************/
+
+#include <cv_bridge/cv_bridge.h>
+#include <fstream>
+#include <image_transport/image_transport.h>
+#include <iostream>
+#include <map>
+#include <ros/ros.h>
+#include <string>
+#include <thread>
 #include <vision/lane_detection/PointLaneDetector.hpp>
 #include <vision/VisionResultMsg.h>
 #include <vision/HoughPoints.h>
 #include <vision/HoughPointsArray.h>
 #include <vision/lane_detection/pinhole_camera_model.h>
 
-#include <iostream>
-#include <map>
-#include <fstream>
-#include <string>
 
-#include <ros/ros.h>
-#include <cv_bridge/cv_bridge.h>
-#include <image_transport/image_transport.h>
-#include <opencv2/videoio.hpp>
-#include <chrono>
-#include <thread>
+PointLaneDetector *ROS_VIS_detector;
+ros::Publisher ROS_VIS_publisher;
+ros::Publisher ROS_VIS_houghPublisher;
+image_transport::Publisher undistortPublisher;
+image_transport::Publisher ipmPublisher;
+image_transport::Publisher thresholdPublisher;
+image_transport::Publisher edgePublisher;
+image_transport::Publisher debugImagePublisher;
 
-std::map<std::string, std::string> readConfigFile()
+sensor_msgs::ImagePtr undistortMsg;
+sensor_msgs::ImagePtr ipmMsg;
+sensor_msgs::ImagePtr thresholdMsg;
+sensor_msgs::ImagePtr edgeMsg;
+sensor_msgs::ImagePtr debugMsg;
+vision::HoughPointsArray houghMsg;
+
+/* 
+ * Reads a configuration
+ * from a config file
+ */
+std::map<std::string, std::string> ROS_VIS_readConfigFile()
 {
 	std::ifstream infile("/home/xavier/config/config.cfg");
 	std::map<std::string, std::string> my_map;
@@ -46,21 +80,7 @@ std::map<std::string, std::string> readConfigFile()
 	return my_map;
 }
 
-PointLaneDetector *detector;
-ros::Publisher visionResultPublisher;
-ros::Publisher houghPublisher;
-image_transport::Publisher undistortPublisher;
-image_transport::Publisher ipmPublisher;
-image_transport::Publisher thresholdPublisher;
-image_transport::Publisher edgePublisher;
-image_transport::Publisher debugImagePublisher;
 
-sensor_msgs::ImagePtr undistortMsg;
-sensor_msgs::ImagePtr ipmMsg;
-sensor_msgs::ImagePtr thresholdMsg;
-sensor_msgs::ImagePtr edgeMsg;
-sensor_msgs::ImagePtr debugMsg;
-vision::HoughPointsArray houghMsg;
 
 vision::VisionResultMsg copyToMsg(VisionResult source)
 {
@@ -97,18 +117,18 @@ bool firstImage = false;
 
 void publishHough() {
 	while (ros::ok()) {
-		std::unique_lock<std::mutex> lk(detector->houghMutex);
-		detector->condition.wait(lk);
-		detector->houghZumutung.lock();
+		std::unique_lock<std::mutex> lk(ROS_VIS_detector->houghMutex);
+		ROS_VIS_detector->condition.wait(lk);
+		ROS_VIS_detector->houghZumutung.lock();
 		std::vector<cv::Vec4i> houghPointsResult;
-		if (!detector->houghLinesGPU.empty()){
-			houghPointsResult.resize(detector->houghLinesGPU.cols);
+		if (!ROS_VIS_detector->houghLinesGPU.empty()){
+			houghPointsResult.resize(ROS_VIS_detector->houghLinesGPU.cols);
 			cv::Mat test;
-			detector->houghLinesGPU.download(test);
+			ROS_VIS_detector->houghLinesGPU.download(test);
 			
 			
-			detector->houghLinesCPU = cv::Mat(1, detector->houghLinesGPU.cols, CV_32SC4, &houghPointsResult[0]);
-			detector->houghLinesGPU.download(detector->houghLinesCPU);
+			ROS_VIS_detector->houghLinesCPU = cv::Mat(1, ROS_VIS_detector->houghLinesGPU.cols, CV_32SC4, &houghPointsResult[0]);
+			ROS_VIS_detector->houghLinesGPU.download(ROS_VIS_detector->houghLinesCPU);
 
 			cv::Vec4i l;
 			vision::HoughPointsArray msg;
@@ -125,14 +145,13 @@ void publishHough() {
 			}
 
 			 
-			houghPublisher.publish(msg);
+			ROS_VIS_houghPublisher.publish(msg);
 		}
 		
-		detector->houghZumutung.unlock();
+		ROS_VIS_detector->houghZumutung.unlock();
 	}
 }
 
-cv::VideoWriter writer("/home/xavier/testVideo1.mp4", -1,-1, cv::Size(1600,1200), false);
 
 void imageCallback(const sensor_msgs::ImageConstPtr &msg,
 				   const sensor_msgs::CameraInfoConstPtr &info_msg) {
@@ -159,8 +178,8 @@ void imageCallback(const sensor_msgs::ImageConstPtr &msg,
 		}
 		image_geometry::PinholeCameraModel model_;
 		model_.fromCameraInfo(info_msg);
-		detector->map1GPU = model_.full_map1GPU;
-		detector->map2GPU = model_.full_map2GPU;
+		ROS_VIS_detector->map1GPU = model_.full_map1GPU;
+		ROS_VIS_detector->map2GPU = model_.full_map2GPU;
 
 
 		firstImage = true;
@@ -173,17 +192,17 @@ void imageCallback(const sensor_msgs::ImageConstPtr &msg,
 	// Allocate new rectified image message
 	
 	
-	detector->calculateFrame(image);
+	ROS_VIS_detector->calculateFrame(image);
 	image.release();
 
-	undistortMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->undistort).toImageMsg();
-	ipmMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->ipm).toImageMsg();
-	thresholdMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->threshold).toImageMsg();
-	edgeMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", detector->edge).toImageMsg();
-	debugMsg = cv_bridge::CvImage(std_msgs::Header(), "rgb8", detector->debugImage).toImageMsg();
+	undistortMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", ROS_VIS_detector->undistort).toImageMsg();
+	ipmMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", ROS_VIS_detector->ipm).toImageMsg();
+	thresholdMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", ROS_VIS_detector->threshold).toImageMsg();
+	edgeMsg = cv_bridge::CvImage(std_msgs::Header(), "mono8", ROS_VIS_detector->edge).toImageMsg();
+	debugMsg = cv_bridge::CvImage(std_msgs::Header(), "rgb8", ROS_VIS_detector->debugImage).toImageMsg();
 
-	visionResultPublisher.publish(copyToMsg(detector->vRes));
-	houghPublisher.publish(houghMsg);
+	ROS_VIS_publisher.publish(copyToMsg(ROS_VIS_detector->vRes));
+	ROS_VIS_houghPublisher.publish(houghMsg);
 	undistortPublisher.publish(undistortMsg);
 	ipmPublisher.publish(ipmMsg);
 	thresholdPublisher.publish(thresholdMsg);
@@ -200,10 +219,10 @@ int main(int argc, char **argv)
 	std::cout << "Success!" << std::endl;
 	std::cout << "Trying to load config file config.cfg... " << std::endl;
 
-	std::map<std::string, std::string> config = readConfigFile();
+	std::map<std::string, std::string> config = ROS_VIS_readConfigFile();
 	std::cout << "Success!" << std::endl;
-	std::cout << "Creating detector... ";
-	detector = new PointLaneDetector(config);
+	std::cout << "Creating ROS_VIS_detector... ";
+	ROS_VIS_detector = new PointLaneDetector(config);
 	std::cout << "Success!" << std::endl;
 	std::cout << "Subscribing and publishing topics... " << std::endl;
 	ros::NodeHandle nh;
@@ -211,8 +230,8 @@ int main(int argc, char **argv)
 
 	image_transport::CameraSubscriber sub = it.subscribeCamera(config["cam_im_topic_name"], 1, imageCallback);
 
-	visionResultPublisher = nh.advertise<vision::VisionResultMsg>(config["vision_result_topic_name"], 1);
-	houghPublisher = nh.advertise<vision::HoughPointsArray>("HoughResult", 1);
+	ROS_VIS_publisher = nh.advertise<vision::VisionResultMsg>(config["vision_result_topic_name"], 1);
+	ROS_VIS_houghPublisher = nh.advertise<vision::HoughPointsArray>("HoughResult", 1);
 	undistortPublisher = it.advertise(config["undistort_result_topic_name"], 1);
 	ipmPublisher = it.advertise(config["ipm_result_topic_name"], 1);
 	thresholdPublisher = it.advertise(config["threshold_topic_name"], 1);
@@ -230,7 +249,5 @@ int main(int argc, char **argv)
 		ros::spinOnce();
 		rate.sleep();
 	}
-std::cout << "Writing video";
-	writer.release();
 	return 0;
 }
