@@ -69,9 +69,6 @@ PointLaneDetector::PointLaneDetector(ROS_VIS_LaneDetectionConfig* cfgObject) {
 void printLane(cv::Mat& frame, std::array <double, 4> lane, std::string prefix, cv::Point pos) {
 	std::string t1 = prefix + " Winkel: " + std::to_string(atan(lane[2]) * 180 / 3.1415) + " Grad";
 	std::string t2 = prefix + " Delta: " + std::to_string(lane[3]) + " mm";
-	//std::cout << t1 + t2 << std::endl;
-	//cv::putText(frame, (t1), pos, cv::FONT_HERSHEY_PLAIN, 3, Scalar(255, 255, 255, 255));
-	//cv::putText(frame, (t2), cv::Point(pos.x, pos.y + 100), cv::FONT_HERSHEY_PLAIN, 3, Scalar(255, 255, 255, 255));
 }
 
 void PointLaneDetector::debugDraw(cv::Mat& frame) {
@@ -142,14 +139,7 @@ void PointLaneDetector::drawResult(cv::Mat im, cv::Mat x1, cv::Mat x2, cv::Scala
 //Detectes the driving lanes for one frame
 void PointLaneDetector::calculateFrame(cv::Mat& frame) {
 	if (!frame.empty()) {
-		auto t1 = std::chrono::high_resolution_clock::now();
-		this->doGPUTransform(frame);
-		auto t2 = std::chrono::high_resolution_clock::now();
-
-		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
-
-		std::cout << duration << std::endl;
-		
+		this->doGPUTransform(frame);		
 		this->calculateAlgorithm();
 		this->debugDraw(this->edge);
 	}
