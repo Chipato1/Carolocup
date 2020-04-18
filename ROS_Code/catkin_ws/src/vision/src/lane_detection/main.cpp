@@ -18,26 +18,27 @@
 #include <cv_bridge/cv_bridge.h>
 #include <fstream>
 #include <image_transport/image_transport.h>
-#include <iostream>
 #include <map>
 #include <ros/ros.h>
 #include <string>
 #include <thread>
 #include <vision/lane_detection/PointLaneDetector.hpp>
+#include <vision/lane_detection/ROS_VIS_LaneDetectionConfig.hpp>
 #include <vision/VisionResultMsg.h>
 #include <vision/HoughPoints.h>
 #include <vision/HoughPointsArray.h>
 #include <vision/lane_detection/pinhole_camera_model.h>
 
 
+ROS_VIS_LaneDetectionConfig* config;
 PointLaneDetector *ROS_VIS_detector;
 ros::Publisher ROS_VIS_publisher;
 ros::Publisher ROS_VIS_houghPublisher;
-image_transport::Publisher undistortPublisher;
-image_transport::Publisher ipmPublisher;
-image_transport::Publisher thresholdPublisher;
-image_transport::Publisher edgePublisher;
-image_transport::Publisher debugImagePublisher;
+image_transport::Publisher ROS_VIS_undistortPublisher;
+image_transport::Publisher ROS_VIS_ipmPublisher;
+image_transport::Publisher ROS_VIS_thresholdImagePublisher;
+image_transport::Publisher ROS_VIS_edgePublisher;
+image_transport::Publisher ROS_VIS_debugImagePublisher;
 
 sensor_msgs::ImagePtr undistortMsg;
 sensor_msgs::ImagePtr ipmMsg;
@@ -45,6 +46,10 @@ sensor_msgs::ImagePtr thresholdMsg;
 sensor_msgs::ImagePtr edgeMsg;
 sensor_msgs::ImagePtr debugMsg;
 vision::HoughPointsArray houghMsg;
+
+const std::string ROS_VIS_LANEDETECTIONNODE_NAME = "vision_lanedetectionnode";
+
+bool firstImage = false;
 
 /* 
  * Reads a configuration
@@ -56,9 +61,7 @@ std::map<std::string, std::string> ROS_VIS_readConfigFile()
 	std::map<std::string, std::string> my_map;
 	if (infile.fail())
 	{
-		std::cerr << "Error: Could not load config file. Reason: " << strerror(errno) << std::endl;
-		std::cerr << "Program exit" << std::endl;
-		exit(0);
+		ROS_WARN("Could not load config file. Reason: %s", strerror(errno));
 		return my_map;
 	}
 
@@ -77,6 +80,7 @@ std::map<std::string, std::string> ROS_VIS_readConfigFile()
 			}
 		}
 	}
+	ROS_INFO("Successfully read and parsed the config file!");
 	return my_map;
 }
 
@@ -113,7 +117,7 @@ vision::VisionResultMsg copyToMsg(VisionResult source)
 	return result;
 }
 
-bool firstImage = false;
+
 
 void publishHough() {
 	while (ros::ok()) {
@@ -178,9 +182,10 @@ void imageCallback(const sensor_msgs::ImageConstPtr &msg,
 		}
 		image_geometry::PinholeCameraModel model_;
 		model_.fromCameraInfo(info_msg);
-		ROS_VIS_detector->map1GPU = model_.full_map1GPU;
-		ROS_VIS_detector->map2GPU = model_.full_map2GPU;
-
+		
+		config.->map1GPU = model_.full_map1GPU;
+		config.->map2GPU = model_.full_map2GPU;
+		ROS_VIS_detector.setConfig(config);
 
 		firstImage = true;
 	}
@@ -189,9 +194,6 @@ void imageCallback(const sensor_msgs::ImageConstPtr &msg,
 	cv::Mat image = cv_bridge::toCvShare(msg, "mono8")->image;
 	writer.write(image);
 
-	// Allocate new rectified image message
-	
-	
 	ROS_VIS_detector->calculateFrame(image);
 	image.release();
 
@@ -203,45 +205,43 @@ void imageCallback(const sensor_msgs::ImageConstPtr &msg,
 
 	ROS_VIS_publisher.publish(copyToMsg(ROS_VIS_detector->vRes));
 	ROS_VIS_houghPublisher.publish(houghMsg);
-	undistortPublisher.publish(undistortMsg);
-	ipmPublisher.publish(ipmMsg);
-	thresholdPublisher.publish(thresholdMsg);
-	edgePublisher.publish(edgeMsg);
-	debugImagePublisher.publish(debugMsg);
+	ROS_VIS_undistortPublisher.publish(undistortMsg);
+	ROS_VIS_ipmPublisher.publish(ipmMsg);
+	ROS_VIS_thresholdImagePublisher.publish(thresholdMsg);
+	ROS_VIS_edgePublisher.publish(edgeMsg);
+	ROS_VIS_debugImagePublisher.publish(debugMsg);
 }
 
 int main(int argc, char **argv)
 {
-	std::cout << "Launching ROS Lane Detection node..." << std::endl;
-	std::cout << "Initializing ROS features with parameters... " << std::endl;
-	std::cout << "argc: " << argc << "; Node name: vision_lanedetectionnode" << std::endl;
-	ros::init(argc, argv, "vision_lanedetectionnode");
-	std::cout << "Success!" << std::endl;
-	std::cout << "Trying to load config file config.cfg... " << std::endl;
+	ROS_INFO("Initializing ROS features with parameters: argc %d; Node name: %s", argc, ROS_VIS_LANEDETECTIONNODE_NAME);
+	ros::init(argc, argv, ROS_VIS_LANEDETECTIONNODE_NAME);
+	ROS_INFO("Successfully initialized this node!");
 
-	std::map<std::string, std::string> config = ROS_VIS_readConfigFile();
-	std::cout << "Success!" << std::endl;
-	std::cout << "Creating ROS_VIS_detector... ";
+	ROS_INFO("Trying to load config file config.cfg... ");
+	std::map<std::string, std::string> configObj = ROS_VIS_readConfigFile();
+	config = new ROS_VIS_LaneDetectionConfig(configObj);
+	
+	ROS_INFO("Creating the lane detector object... ";
 	ROS_VIS_detector = new PointLaneDetector(config);
-	std::cout << "Success!" << std::endl;
-	std::cout << "Subscribing and publishing topics... " << std::endl;
+	ROS_INFO("Successfully created the lane detector object!");
+
+	ROS_INFO("Subscribing and publishing topics... ");
 	ros::NodeHandle nh;
 	image_transport::ImageTransport it(nh);
-
 	image_transport::CameraSubscriber sub = it.subscribeCamera(config["cam_im_topic_name"], 1, imageCallback);
 
-	ROS_VIS_publisher = nh.advertise<vision::VisionResultMsg>(config["vision_result_topic_name"], 1);
-	ROS_VIS_houghPublisher = nh.advertise<vision::HoughPointsArray>("HoughResult", 1);
-	undistortPublisher = it.advertise(config["undistort_result_topic_name"], 1);
-	ipmPublisher = it.advertise(config["ipm_result_topic_name"], 1);
-	thresholdPublisher = it.advertise(config["threshold_topic_name"], 1);
-	edgePublisher = it.advertise(config["edge_topic_name"], 1);
-	debugImagePublisher = it.advertise(config["debug_image_topic_name"], 1);
-
-	std::cout << "Success! Entering ROS Loop" << std::endl;
+	ROS_VIS_publisher 				= nh.advertise<vision::VisionResultMsg>(config["vision_result_topic_name"], 1);
+	ROS_VIS_houghPublisher 			= nh.advertise<vision::HoughPointsArray>("HoughResult", 1);
+	ROS_VIS_undistortPublisher 		= it.advertise(config["undistort_result_topic_name"], 1);
+	ROS_VIS_ipmPublisher 			= it.advertise(config["ipm_result_topic_name"], 1);
+	ROS_VIS_thresholdImagePublisher = it.advertise(config["threshold_topic_name"], 1);
+	ROS_VIS_edgePublisher 			= it.advertise(config["edge_topic_name"], 1);
+	ROS_VIS_debugImagePublisher 	= it.advertise(config["debug_image_topic_name"], 1);
 
 	std::thread t1(publishHough);
-	std::cout << "Lane detection node launched!" << std::endl;
+	ROS_INFO("Successfully initialized the subscribers and publishers");
+	ROS_INFO("Lane detection node launched!");
 
 	ros::Rate rate(60.);
 	while (ros::ok())

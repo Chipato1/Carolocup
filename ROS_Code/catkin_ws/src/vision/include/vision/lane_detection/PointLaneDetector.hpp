@@ -5,14 +5,13 @@
 #include <map>
 #include <string>
 #include <condition_variable>
+
+#include <vision/lane_detection/ROS_VIS_LaneDetectionConfig.hpp>
+
 class PointLaneDetector {
 public:
-	PointLaneDetector(std::map<std::string, std::string>&);
+	PointLaneDetector(ROS_VIS_LaneDetectionConfig*);
 	void calculateFrame(cv::Mat&);
-
-	//Ergebnis (alle Spurpunkte)
-	VisionResult vRes;
-	//Alle erkannten Punkte auf den Linien
 	
 	cv::Mat undistort;
 	cv::Mat ipm;
@@ -21,33 +20,33 @@ public:
 	cv::Mat debugImage;
 	cv::Mat houghLinesCPU;
 
-	
-	cv::Mat map1;
-	cv::Mat map2;
-
-	double thres_cut;
-
 	std::function <void (std::vector<cv::Vec4i> data)> houghCallback;
 	std::mutex houghMutex;
 	std::mutex houghZumutung;
-	std::mutex otsuLock;
-
-	cv::cuda::GpuMat map1GPU;
-	cv::cuda::GpuMat map2GPU;
-
 
 	cv::cuda::GpuMat houghLinesGPU;
 
 	cv::cuda::Stream stream;
 	std::condition_variable condition;
 
-	cv::Size ipmSize;
-	
+	void setConfig(ROS_VIS_LaneDetectionConfig* );
+	ROS_VIS_LaneDetectionResult vRes;
+
+
 private:
+	PointLaneDetector();
+	ROS_VIS_LaneDetectionConfig config;
+	
+
 	void calculateAlgorithm();
 	void laneMiddlePoints(std::vector<cv::Point>&, cv::Mat, int);
 	void calculateSolveMatrix(cv::Point, cv::Mat& , cv::Mat& , int i);
 	void doGPUTransform(cv::Mat&);
+
+	void calculateIPM();
+	void thresholding();
+
+
 	void classifyPoints(int line);
 	void prepareInterpolation(int);
 	void debugDraw(cv::Mat&);
@@ -59,36 +58,7 @@ private:
 	double calculateVariance(cv::Mat& lane, std::vector<cv::Point> pts);
 	void drawResult(cv::Mat im, cv::Mat x1, cv::Mat x2, cv::Scalar color, double intersect);
 	void clear();
-	void calculateThreshold(cv::Mat&);
-	int thresholdRefreshCounter = 0;
-	int thresh_mode = 0;
-	int thresh_refresh = 100;
-	int thresh_otsu_correction = 50;
-	double thresh_target_percentage = 0.05;
-	double thresh_target_acc_percentage = 0.005;
-
 	
-
-	int LANE_THRES_MIN = 5;
-	int LANE_THRES_MAX = 60;
-	int LL_MIN_X = 580;
-	int LL_MAX_X = 630;
-	int ML_MIN_X = 680;
-	int ML_MAX_X = 730;
-	int RL_MIN_X = 800;
-	int RL_MAX_X = 850;
-
-	int LL_MIN_Y = 1500;
-	int LL_MAX_Y = 2000;
-	int ML_MIN_Y = 1800;
-	int ML_MAX_Y = 2400;
-	int RL_MIN_Y = 1800;
-	int RL_MAX_Y = 2400;
-
-	int ignoreXMin = 450;
-	int ignoreXMax = 750;
-	int ignoreYMax = 2400;
-	int ignoreYMin = 2300;
 
 	int leftIndex = -1;
 	int middleIndex = -1;
@@ -102,26 +72,11 @@ private:
 	int lastMiddleIterator = 0;
 	int lastRightIterator = 0;
 
-	double ipmScaling = 1; 
-	int ipm_size_x = 1200;
-	int ipm_size_y = 2400;
-
-	//MODELLPARAMETER
-	//Grad des Modells (Klothoide)
-	const static int grade = 4;
-	//Offset vom oberen und unteren Bildrand
-	const static int edgeOffset = 1;
-	//Anzahl der Detektionslinien
-	const static int numberOfLines = 60;
-
-	int stepSize = 0;
-
+	
+	
 	cv::Ptr<cv::cuda::CannyEdgeDetector> canny;
 	cv::Ptr<cv::cuda::HoughSegmentDetector> hough;
 
-	
-
-	cv::Mat transformationMat;
 
 	//Aufteilen der Spurklothoide
 	cv::Mat leftLane1;
@@ -138,7 +93,15 @@ private:
 	cv::cuda::GpuMat thresholdGPU;
 	cv::cuda::GpuMat edgeGPU;
 
-	
+	//MODELLPARAMETER
+//Grad des Modells (Klothoide)
+	const static int grade = 4;
+	//Offset vom oberen und unteren Bildrand
+	const static int edgeOffset = 1;
+	//Anzahl der Detektionslinien
+	const static int numberOfLines = 60;
+
+	int stepSize = 0;
 
 	//Temporaere Variablen
 	cv::Mat linePoints;

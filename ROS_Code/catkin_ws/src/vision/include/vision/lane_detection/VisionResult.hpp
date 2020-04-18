@@ -7,7 +7,7 @@ enum ERROR_TYPES {
 };
 
 
-class VisionResult {
+class ROS_VIS_LaneDetectionResult {
 public:
     std::array<std::vector<cv::Point>, 3> lanePoints;
     std::vector<std::vector<cv::Point>> detectedPoints;
