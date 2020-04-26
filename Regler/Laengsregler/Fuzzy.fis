@@ -4,7 +4,7 @@ Type='mamdani'
 Version=2.0
 NumInputs=2
 NumOutputs=2
-NumRules=0
+NumRules=5
 AndMethod='min'
 OrMethod='max'
 ImpMethod='min'
@@ -13,34 +13,45 @@ DefuzzMethod='centroid'
 
 [Input1]
 Name='settling_time'
-Range=[0 1]
-NumMFs=3
-MF1='mf1':'trimf',[-0.416666666666667 0 0.416666666666667]
-MF2='mf2':'trimf',[0.0833333333333333 0.5 0.916666666666667]
-MF3='mf3':'trimf',[0.583333333333333 1 1.41666666666667]
+Range=[2 10]
+NumMFs=4
+MF1='S':'trapmf',[0 0 3 5]
+MF2='N':'trimf',[4 5 6]
+MF3='L':'trimf',[5 6 7]
+MF4='VL':'trapmf',[6 8 10 20]
 
 [Input2]
 Name='overshoot'
 Range=[0 1]
-NumMFs=3
-MF1='mf1':'trimf',[-0.416666666666667 0 0.416666666666667]
-MF2='mf2':'trimf',[0.0833333333333333 0.5 0.916666666666667]
-MF3='mf3':'trimf',[0.583333333333333 1 1.41666666666667]
+NumMFs=4
+MF1='ZO':'trimf',[-0.05 0 0.05]
+MF2='S':'trimf',[0.01 0.05 0.1]
+MF3='M':'trimf',[0.05 0.1 0.2]
+MF4='B':'trapmf',[0.15 0.2 1 2]
 
 [Output1]
 Name='pfuzzy'
-Range=[0 1]
-NumMFs=3
-MF1='mf1':'trimf',[-0.416666666666667 0 0.416666666666667]
-MF2='mf2':'trimf',[0.0833333333333333 0.5 0.916666666666667]
-MF3='mf3':'trimf',[0.583333333333333 1 1.41666666666667]
+Range=[0 3]
+NumMFs=5
+MF1='S':'trimf',[0.5 0.75 1]
+MF2='N':'trimf',[0.9 1 1.1]
+MF3='B':'trimf',[1 1.5 2]
+MF4='VS':'trapmf',[0 0 0.5 0.7]
+MF5='VB':'trapmf',[1.67 2 3 3]
 
 [Output2]
 Name='ifuzzy'
-Range=[0 1]
-NumMFs=3
-MF1='mf1':'trimf',[-0.416666666666667 0 0.416666666666667]
-MF2='mf2':'trimf',[0.0833333333333333 0.5 0.916666666666667]
-MF3='mf3':'trimf',[0.583333333333333 1 1.41666666666667]
+Range=[0 3]
+NumMFs=5
+MF1='S':'trimf',[0.5 0.75 1]
+MF2='N':'trimf',[0.9 1 1.1]
+MF3='B':'trimf',[1 1.5 2]
+MF4='VS':'trapmf',[0 0 0.5 0.7]
+MF5='VB':'trapmf',[1.67 2 3 3]
 
 [Rules]
+0 4, 0 4 (1) : 1
+0 3, 0 1 (1) : 1
+0 2, 0 2 (1) : 1
+0 1, 0 2 (1) : 1
+4 0, 4 3 (1) : 1
