@@ -3,7 +3,7 @@ Name='Fuzzy'
 Type='mamdani'
 Version=2.0
 NumInputs=2
-NumOutputs=2
+NumOutputs=1
 NumRules=5
 AndMethod='min'
 OrMethod='max'
@@ -12,16 +12,16 @@ AggMethod='max'
 DefuzzMethod='centroid'
 
 [Input1]
-Name='settling_time'
-Range=[2 10]
+Name='error_rate'
+Range=[0 2]
 NumMFs=4
-MF1='S':'trapmf',[0 0 3 5]
-MF2='N':'trimf',[4 5 6]
-MF3='L':'trimf',[5 6 7]
-MF4='VL':'trapmf',[6 8 10 20]
+MF1='S':'trapmf',[-0.5 -0.5 0.25 0.75]
+MF2='N':'trimf',[0.5 0.75 1]
+MF3='F':'trimf',[0.75 1 1.25]
+MF4='VF':'trapmf',[1 1.5 2 4.5]
 
 [Input2]
-Name='overshoot'
+Name='error_relativ'
 Range=[0 1]
 NumMFs=4
 MF1='ZO':'trimf',[-0.05 0 0.05]
@@ -30,17 +30,7 @@ MF3='M':'trimf',[0.05 0.1 0.2]
 MF4='B':'trapmf',[0.15 0.2 1 2]
 
 [Output1]
-Name='pfuzzy'
-Range=[0 3]
-NumMFs=5
-MF1='S':'trimf',[0.5 0.75 1]
-MF2='N':'trimf',[0.9 1 1.1]
-MF3='B':'trimf',[1 1.5 2]
-MF4='VS':'trapmf',[0 0 0.5 0.7]
-MF5='VB':'trapmf',[1.67 2 3 3]
-
-[Output2]
-Name='ifuzzy'
+Name='a'
 Range=[0 3]
 NumMFs=5
 MF1='S':'trimf',[0.5 0.75 1]
@@ -50,8 +40,8 @@ MF4='VS':'trapmf',[0 0 0.5 0.7]
 MF5='VB':'trapmf',[1.67 2 3 3]
 
 [Rules]
-0 4, 0 4 (1) : 1
-0 3, 0 1 (1) : 1
-0 2, 0 2 (1) : 1
-0 1, 0 2 (1) : 1
-4 0, 4 3 (1) : 1
+0 4, 4 (1) : 1
+0 3, 1 (1) : 1
+0 2, 2 (1) : 1
+0 1, 2 (1) : 1
+4 0, 3 (1) : 1
