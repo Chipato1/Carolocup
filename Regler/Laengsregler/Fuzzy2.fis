@@ -13,39 +13,39 @@ DefuzzMethod='centroid'
 
 [Input1]
 Name='error_rate'
-Range=[-2 2]
+Range=[-1 1]
 NumMFs=7
-MF1='NL':'trapmf',[-3 -2 -1.5 -1]
-MF2='ZO':'trimf',[-0.05 0 0.05]
-MF3='PS':'trimf',[0 0.25 0.5]
-MF4='PL':'trapmf',[1 1.5 2 3]
-MF5='NS':'trimf',[-0.5 -0.25 0]
-MF6='PM':'trimf',[0.25 0.75 1.25]
-MF7='NM':'trimf',[-1.25 -0.75 -0.25]
+MF1='NL':'trapmf',[-1.5 -1 -0.75 -0.5]
+MF2='ZO':'trimf',[-0.025 0 0.025]
+MF3='PS':'trimf',[0.0625 0.125 0.25]
+MF4='PL':'trapmf',[0.5 0.75 1 1.5]
+MF5='NS':'trimf',[-0.25 -0.125 -0.0625]
+MF6='PM':'trimf',[0.125 0.375 0.625]
+MF7='NM':'trimf',[-0.625 -0.375 -0.125]
 
 [Input2]
 Name='error_relativ'
 Range=[-1 1]
 NumMFs=7
 MF1='ZO':'trimf',[-0.05 0 0.05]
-MF2='NS':'trimf',[-0.2 -0.1 0]
+MF2='NS':'trimf',[-0.2 -0.1 -0.05]
 MF3='NM':'trimf',[-0.5 -0.3 -0.1]
 MF4='PL':'trapmf',[0.3 0.7 1 2]
-MF5='PS':'trimf',[0 0.1 0.2]
+MF5='PS':'trimf',[0.05 0.1 0.2]
 MF6='PM':'trimf',[0.1 0.3 0.5]
 MF7='NL':'trapmf',[-2 -1 -0.7 -0.3]
 
 [Output1]
 Name='h'
-Range=[-3 3]
+Range=[-0.05 0.05]
 NumMFs=7
-MF1='NM':'trimf',[-2 -2 -2]
-MF2='NS':'trimf',[-1 -1 -1]
+MF1='NM':'trimf',[-0.05 -0.03333 -0.01666]
+MF2='NS':'trimf',[-0.03333 -0.01666 -0.005]
 MF3='ZO':'trimf',[0 0 0]
-MF4='NL':'trimf',[-3 -3 -3]
-MF5='PS':'trimf',[1 1 1]
-MF6='PM':'trimf',[2 2 2]
-MF7='PL':'trimf',[3 3 3]
+MF4='NL':'trimf',[-0.06665 -0.05 -0.03333]
+MF5='PS':'trimf',[0.005 0.01666 0.03334]
+MF6='PM':'trimf',[0.01666 0.03334 0.05]
+MF7='PL':'trimf',[0.03334 0.05 0.06665]
 
 [Rules]
 1 7, 4 (1) : 1
