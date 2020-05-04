@@ -1,3 +1,8 @@
+%Parameters for park maneuver:
+parking_speed = 0.1;        % speed for the parking maneuver
+delta_max = 20;             % maximum steering angle in degree
+TOF_distance_limit = 20;    % limit for TOF distance when a collision is nearly predicted 
+
 %Dieses Sktipt initialisiert einen Zustandsvariablenfilter zur Ableitung
 %der Ticks die durch die raddrehzahlsensoren geliefert werden.
 %Diese entsprechen der gefahrenen Stecke un m�ssen durch differentiation in
