@@ -85,3 +85,21 @@ pole_system = pole( (Gr*Gs) / (1+Gr*Gs*Gf*Gi) )
 %data = timeseries([1,2,3,4,5,6,7,8,9,4,7,1,3,2,5,5,5,6,7,5,3,8,8,9,2,3,4,5,6,7,8]');
 %sim = data.time(end)
 Gs_neu = tf(1/(0.308*s+1))
+
+
+%make the plot for zomotor of the fuzzy-kennfeld
+
+e=-1:0.1:1;
+e_p=-1:0.1:1;
+M = zeros(size(e,2),size(e_p,2));
+for n = 1:size(e,2)
+   for m = 1:size(e_p,2)
+        M(n,m) = evalfis(Fuzzy2, [e(n),e_p(m)])
+   end
+end
+figure(1)
+
+surf(e_p,e,M)
+ xlabel('Relative error rate')
+ ylabel('Relative error')
+ zlabel('h(t)')

@@ -43,3 +43,35 @@ system_dummy = ss(Ak, Bk, [1,0;0,1], 0);%no feedtrough allowed in mpcDesigner, o
 system_d = c2d(system_dummy, Ts);
 %%%%%%%%%%%%%%%%%%%%%%%%Simulation
 %sim('zustandsRegler.slx');
+
+
+%% create MPC controller object with sample time
+mpc1_1_C = mpc(mpc1_1_C_plant_C, 0.1);
+%% specify prediction horizon
+mpc1_1_C.PredictionHorizon = 10;
+%% specify control horizon
+mpc1_1_C.ControlHorizon = 2;
+%% specify nominal values for inputs and outputs
+mpc1_1_C.Model.Nominal.U = [0;0];
+mpc1_1_C.Model.Nominal.Y = [0;0];
+%% specify overall adjustment factor applied to weights
+beta = 7.3891;
+%% specify weights
+mpc1_1_C.Weights.MV = [0 0]*beta;
+mpc1_1_C.Weights.MVRate = [0.0135335283236613 0.0135335283236613]/beta;
+mpc1_1_C.Weights.OV = [7.38905609893065 7.38905609893065]*beta;
+mpc1_1_C.Weights.ECR = 100000;
+%% specify overall adjustment factor applied to estimation model gains
+alpha = 10;
+%% adjust custom output disturbance model gains
+setoutdist(mpc1_1_C, 'model', mpc1_1_C_ModelOD*alpha);
+%% adjust custom measurement noise model gains
+mpc1_1_C.Model.Noise = mpc1_1_C.Model.Noise/alpha;
+%% specify simulation options
+options = mpcsimopt();
+options.RefLookAhead = 'off';
+options.MDLookAhead = 'off';
+options.Constraints = 'on';
+options.OpenLoop = 'off';
+%% run simulation
+sim(mpc1_1_C, 101, mpc1_1_C_RefSignal, mpc1_1_C_MDSignal, options);
