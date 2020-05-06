@@ -8,7 +8,7 @@
 v = 2;    %Geschwindigkeit
 l = 0.25; %Achsenabstand
 lh = l/2; %Abstand zuwischen Schwerpunkt und Hinterachse, noch auszumessen!!!
-
+Ts = 1e-1; %scanning time for discrete systems
 %%%%%%%%%%%%%%%%%%%%%%%%Zustandsraum
 kp = 1;
 systemMatrix_A = [0 , v ; 0 , 0];
@@ -33,5 +33,13 @@ geregelteSystemMatrix_Ar = systemMatrix_A-eingangsMatrix_B*regelMatrix_K;
 system_r = ss(geregelteSystemMatrix_Ar, eingangsMatrix_B, ausgangsVektor_cT, durchgriffsVektor_d);
 pole_r = pole(system_r);
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%diskretes System
+Ak = [0,1;0,0]; %time independent system
+Bk = [0,0;1,-1];
+ck = [1,1];
+dk = [l, 0];
+system_dummy = ss(Ak, Bk, [1,0;0,1], 0);%no feedtrough allowed in mpcDesigner, output vector not used
+system_d = c2d(system_dummy, Ts);
 %%%%%%%%%%%%%%%%%%%%%%%%Simulation
 %sim('zustandsRegler.slx');
