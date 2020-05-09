@@ -37,27 +37,18 @@ roslaunch lidar object_detection.launch
 
 ----------------------------------------------------------------------------
 
-##**Published topics**
-| Topic | Message type | Comment |
-|-------|--------------|---------|
-| /scan				| sensor_msgs/LaserScan		| scan produces from LiDAR |
-
-| /pointcloud			| sensor_msgs/PointCloud2	| pointcloud transformed from laserscan |
-
-| /pointcloud_filtered_cropbox	| sensor_msgs/PointCloud2	| pointcloud after cropbox filter |
-
-| /pointcloud_filtered_voxelgrid| sensor_msgs/PointCloud2	| pointcloud after voxelgrid filter |
-
-| /pointcloud_clustered		| sensor_msgs/PointCloud2	| pointcloud of detected clusters |
-
-| /centroid_point		| geometry_msgs/Point		| point of center of cluster |
-
-| /distance_angle		| std_msgs/Float32MultiArray	| distance in m and angle in intervall [-180°,180°] of centroids  |
-
-| /cropbox_frame_marker		| visualization_msgs/Marker	| marker to visualize cropbox frame in RVIZ |
-
-| /centroid_marker		| visualization_msgs/Marker	| marker to visualize centroids of clusters in RVIZ |
-
+**Published topics**
+| Topic 			| Message type 			| Comment 								|
+|-------------------------------|-------------------------------|-----------------------------------------------------------------------|
+| /scan				| sensor_msgs/LaserScan		| scan produces from LiDAR 						|
+| /pointcloud			| sensor_msgs/PointCloud2	| pointcloud transformed from laserscan 				|
+| /pointcloud_filtered_cropbox	| sensor_msgs/PointCloud2	| pointcloud after cropbox filter 					|
+| /pointcloud_filtered_voxelgrid| sensor_msgs/PointCloud2	| pointcloud after voxelgrid filter 					|
+| /pointcloud_clustered		| sensor_msgs/PointCloud2	| pointcloud of detected clusters 					|
+| /centroid_point		| geometry_msgs/Point		| point of center of cluster 						|
+| /distance_angle		| std_msgs/Float32MultiArray	| distance in m and angle in intervall [-180°,180°] of centroids  	|
+| /cropbox_frame_marker		| visualization_msgs/Marker	| marker to visualize cropbox frame in RVIZ 				|
+| /centroid_marker		| visualization_msgs/Marker	| marker to visualize centroids of clusters in RVIZ 			|
 | /distance_angle_marker	| visualization_msgs/Marker	| marker to visualize text with distance and angle of centroids in RVIZ |
 
 - Note: to visualize markers in RVIZ change "Fixed Frame" in RVIZ to "laser"
