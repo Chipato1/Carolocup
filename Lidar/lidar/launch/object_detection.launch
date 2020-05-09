@@ -1,0 +1,25 @@
+<launch>
+
+  <node name="rplidar_ros"		pkg="lidar"	type="rplidar_ros"		output="screen">
+    <param name="serial_port"		type="string"	value="/dev/ttyUSB0"/>
+    <param name="serial_baudrate"	type="int"	value="115200"/>
+    <param name="frame_id"		type="string"	value="laser"/>
+    <param name="inverted"		type="bool"	value="false"/>
+    <param name="angle_compensate"	type="bool"	value="true"/>
+  </node>
+
+  <node name="laser_scan_assembler"	pkg="lidar"	type="laser_scan_assembler"	output="screen">
+    <param name="fixed_frame"           type="string"	value="laser"/>
+  </node>
+
+  <node name="periodic_snapshotter"	pkg="lidar"	type="periodic_snapshotter"	output="screen">
+    <param name="frame_id"		type="string"	value="laser"/>
+    <param name="period"		type="double"	value="0.3"/>
+  </node>
+
+  <node name="object_detection"		pkg="lidar"	type="object_detection"		output="screen">
+    <param name="frame_id"		type="string"	value="laser"/>
+    <param name="visualize"		type="bool"	value="true"/>
+  </node>
+  
+</launch>
