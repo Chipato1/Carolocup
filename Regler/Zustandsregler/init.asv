@@ -45,7 +45,7 @@ system_d = c2d(system_dummy, Ts);
 %sim('zustandsRegler.slx');
 
 Ak2 = [0, 1, 0, 0; 0, 0, 0, 0; 0, 0, 0, kp; 0, 0, 0, 0];
-Bk2 = [0, 0, 0, 0, 0; 1, -1, 0, 0, 0; 1, -1, 0, 0, l; 0, 0, 1, -1, 0];
+Bk2 = [0, 0, 0, 0; 1, -1, 0, 0; 1, -1, 0, 0,; 0, 0, 1, -1,];
 Ck2 = [1, 0, 0, 0; 0, 1, 0, 0; 0, 0, 1, 0; 0, 0, 0, 1];
 system_dummy = ss(Ak2, Bk2, Ck2, 0);%no feedtrough allowed in mpcDesigner, output vector not used
 system_d2 = c2d(system_dummy, Ts);
