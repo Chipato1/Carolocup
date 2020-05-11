@@ -44,8 +44,16 @@ system_d = c2d(system_dummy, Ts);
 %%%%%%%%%%%%%%%%%%%%%%%%Simulation
 %sim('zustandsRegler.slx');
 
+%state space with pseudo states, tested: good result but loss of yawrate!
 Ak2 = [0, 1, 0, 0; 0, 0, 0, 0; 0, 0, 0, kp; 0, 0, 0, 0];
 Bk2 = [0, 0, 0, 0, 0; 1, -1, 0, 0, 0; 1, -1, 0, 0, l; 0, 0, 1, -1, 0];
 Ck2 = [1, 0, 0, 0; 0, 1, 0, 0; 0, 0, 1, 0; 0, 0, 0, 1];
 system_dummy = ss(Ak2, Bk2, Ck2, 0);%no feedtrough allowed in mpcDesigner, output vector not used
 system_d2 = c2d(system_dummy, Ts);
+
+%state space with pseudo staes, including yawrate in state vector!
+Ak3 = [0, 1, 0, 0, 0, 0; 0, 0, 0, 0, -1, 0; 0, 0, 0, kp, -1, 0; 0, 0, 0, 0, 0, -1; 0, 0, 0, 0, 0, 0; 0, 0, 0, 0, 0, 0];
+Bk3 = [0, 0, 0, 0, 0; 1, 0, 0, 0, 0; 1, 0, l, 0, 0; 0, 1, 0, 0, 0; 0, 0, 0, 1, 0; 0, 0, 0, 0, 1];
+Ck3 = [1, 0, 0, 0, 0, 0; 0, 1, 0, 0, 0, 0; 0, 0, 1, 0, 0, 0; 0, 0, 0, 1, 0, 0; 0, 0, 0, 0, 1, 0; 0, 0, 0, 0, 0, 1];
+system_dummy = ss(Ak3, Bk3, Ck3, 0);%no feedtrough allowed in mpcDesigner, output vector not used
+system_d3 = c2d(system_dummy, Ts);
