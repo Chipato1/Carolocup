@@ -50,6 +50,11 @@ public:
 	cv::cuda::GpuMat map1GPU;
 	cv::cuda::GpuMat map2GPU;
 
+	double imToReX(int x);
+	int reToImX(double x);
+	double imToReY(int y);
+	int reToImY(double y);
+
 private:
 	
 	

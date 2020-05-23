@@ -136,3 +136,24 @@ ROS_VIS_LaneDetectionConfig::ROS_VIS_LaneDetectionConfig(std::map<std::string, s
 
 	this->ipmTransformationMatrix = K * (T * (R * A1));
 }
+
+double ROS_VIS_LaneDetectionConfig::imToReX(int x)
+{
+	return ((double)x - this->ipmImageSize.width / 2);
+}
+
+int ROS_VIS_LaneDetectionConfig::reToImX(double x)
+{
+	return (int)(x + this->ipmImageSize.width / 2);
+}
+
+double ROS_VIS_LaneDetectionConfig::imToReY(int y)
+{
+	return (-(double)y + this->ipmImageSize.height);
+}
+
+int ROS_VIS_LaneDetectionConfig::reToImY(double y)
+{
+	return (int)(-y + this->ipmImageSize.height);
+}
+
