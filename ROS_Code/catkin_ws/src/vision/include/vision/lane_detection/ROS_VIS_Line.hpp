@@ -34,11 +34,16 @@ public:
 	int lastValidPointIndex;
 	double lastValidAngle;
 
-	const static int grade = 3;
+	const static int grade = 4;
 
 	cv::Mat solveMatrixA;
 	cv::Mat solveMatrixB;
 	cv::Mat solveMatrixX;
+
+	double xOff;
+	double deltaPsi;
+	double c0;
+	double c1;
 
 	bool solved;
 
@@ -55,6 +60,8 @@ public:
 	void debugDraw(cv::Mat, cv::Scalar);
 
 	void applyClosestPoint(ROS_VIS_LinePoint, int lineIterator);
+
+	void recalculateIfNeccessary();
 
 	void reset();
 

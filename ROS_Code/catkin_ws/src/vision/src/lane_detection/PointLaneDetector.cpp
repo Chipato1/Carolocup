@@ -25,7 +25,7 @@ using namespace cv;
 using namespace cv::cuda;
 
 PointLaneDetector::PointLaneDetector(ROS_VIS_LaneDetectionConfig* cfgObject) {
-	this->vRes = ROS_VIS_LaneDetectionResult();
+	this->vRes = ROS_VIS_Result();
 	this->config = *cfgObject;
 
 	this->linePoints = cv::Mat::zeros(1, 25, CV_64F);
@@ -34,9 +34,9 @@ PointLaneDetector::PointLaneDetector(ROS_VIS_LaneDetectionConfig* cfgObject) {
 	this->canny = cuda::createCannyEdgeDetector(config.cannyLowThreshold, config.cannyHighThreshold, config.cannyApertureSize, false);
 	this->hough = cuda::createHoughSegmentDetector(1.0f, (float) (CV_PI / 180.0f),50, 5);
 
+	this->threshold = cv::Mat::zeros(this->config.cameraImageSize, CV_64F);
 	this->undistort = cv::Mat::zeros(this->config.cameraImageSize, CV_64F);
 	this->ipm = cv::Mat::zeros(this->config.ipmImageSize, CV_64F);
-	this->threshold = cv::Mat::zeros(this->config.ipmImageSize, CV_64F);
 	this->edge = cv::Mat::zeros(this->config.ipmImageSize, CV_64F);
 	this->debugImage = cv::Mat::zeros(this->config.ipmImageSize, CV_64F);
 
@@ -51,8 +51,6 @@ PointLaneDetector::PointLaneDetector(ROS_VIS_LaneDetectionConfig* cfgObject) {
 	this->rightLine.startPointSearchWindowXMax = config.RL_MAX_X;
 	this->rightLine.startPointSearchWindowYMin = config.RL_MIN_Y;
 	this->rightLine.startPointSearchWindowYMax = config.RL_MAX_Y;
-
-	myfile.open("F:\\test2.csv");
 }
 
 void PointLaneDetector::setConfig(ROS_VIS_LaneDetectionConfig* cfg)
@@ -64,35 +62,41 @@ void PointLaneDetector::setConfig(ROS_VIS_LaneDetectionConfig* cfg)
 void PointLaneDetector::calculateFrame(cv::Mat& frame) {
 	if (!frame.empty()) {
 		this->doGPUTransform(frame);		
-		//this->managePoints();
-		//this->solveClothoide();
-		//cv::cvtColor(edge, debugImage, cv::COLOR_GRAY2BGR);
-		//leftLine.debugDraw(debugImage, cv::Scalar(0, 0, 255));
-		//rightLine.debugDraw(debugImage, cv::Scalar(0, 255, 0));
+		this->managePoints();
+		this->solveClothoide();
+		cv::cvtColor(edge, debugImage, cv::COLOR_GRAY2BGR);
+		leftLine.debugDraw(debugImage, cv::Scalar(0, 255, 0));
+		rightLine.debugDraw(debugImage, cv::Scalar(255, 0, 0));
+
+		std::string t1 = "Delta: " + std::to_string(vRes.xoff) + " mm";
+		std::string t2 = "Winkel: " + std::to_string(-vRes.deltaPhi * 180 / 3.1415) + " Grad";
+		std::string t3 = "c0: " + std::to_string(vRes.c0);
+		std::string t4 = "c1: " + std::to_string(vRes.c1);
+
+		ROS_VIS_Line middleLine;
+		middleLine.setConfig(this->config);
+		middleLine.solveMatrixX.at<double>(0) = vRes.c1;
+		middleLine.solveMatrixX.at<double>(1) = vRes.c0;
+		middleLine.solveMatrixX.at<double>(2) = tan(vRes.deltaPhi);
+		middleLine.solveMatrixX.at<double>(3) = vRes.xoff;
+		middleLine.solved = true;
+		middleLine.debugDraw(debugImage, cv::Scalar(0, 0, 255));
+
+		cv::putText(debugImage, t1, cv::Point(10, 1400), cv::FONT_HERSHEY_COMPLEX, 1, cv::Scalar(0,0,255));
+		cv::putText(debugImage, t2, cv::Point(10, 1450), cv::FONT_HERSHEY_COMPLEX, 1, cv::Scalar(0, 0, 255));
+		cv::putText(debugImage, t3, cv::Point(10, 1500), cv::FONT_HERSHEY_COMPLEX, 1, cv::Scalar(0, 0, 255));
+		cv::putText(debugImage, t4, cv::Point(10, 1550), cv::FONT_HERSHEY_COMPLEX, 1, cv::Scalar(0, 0, 255));
+
 	}
 }
 
 void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
-	auto t1 = std::chrono::high_resolution_clock::now();
-	
-	
-
 	this->imageGPU.upload(frame);
-
+	this->thresholding(frame);
 	this->calculateIPM();
-	
-	this->thresholding();
-
-	this->canny->detect(this->thresholdGPU, this->edgeGPU);
+	this->canny->detect(this->ipmGPU, this->edgeGPU);
 	this->edgeGPU.download(edge);
-
-	auto t2 = std::chrono::high_resolution_clock::now();
-
-	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
-
-	std::cout << duration << std::endl;
-	myfile << duration;
-	myfile << std::endl;
+	
 
 	//Hough Transformation 
 	/*houghZumutung.lock();
@@ -103,36 +107,36 @@ void PointLaneDetector::doGPUTransform(cv::Mat& frame) {
 
 void PointLaneDetector::calculateIPM()
 {
-	cv::cuda::remap(this->imageGPU, this->undistortGPU, this->config.map1GPU, this->config.map2GPU, cv::INTER_NEAREST, cv::BORDER_CONSTANT, std::numeric_limits<float>::quiet_NaN());
+	cv::cuda::remap(this->thresholdGPU, this->undistortGPU, this->config.map1GPU, this->config.map2GPU, cv::INTER_NEAREST, cv::BORDER_CONSTANT, std::numeric_limits<float>::quiet_NaN()); //std::numeric_limits<float>::quiet_NaN()
 	this->undistortGPU.download(this->undistort);
 
 	cv::cuda::warpPerspective(this->undistortGPU, this->ipmGPU, this->config.ipmTransformationMatrix, this->config.ipmImageSize, INTER_CUBIC | WARP_INVERSE_MAP);
 	this->ipmGPU.download(this->ipm);
 }
 
-void PointLaneDetector::thresholding()
+void PointLaneDetector::thresholding(cv::Mat & frame)
 {
 	switch (this->config.thresholdingMode)
 	{
 	case 0:
-		cv::cuda::threshold(this->ipmGPU, this->thresholdGPU, this->config.thresholding, 255, cv::THRESH_BINARY);
+		cv::cuda::threshold(this->imageGPU, this->thresholdGPU, this->config.thresholding, 255, cv::THRESH_BINARY);
 		this->thresholdGPU.download(this->threshold);
 		break;
 
 	case 1:
 		if (this->config.otsuThresholdingRefreshCounter >= this->config.otsuThresholdingRefreshMaximum) {
-			this->config.thresholding = cv::threshold(ipm, this->threshold, 0, 255, THRESH_OTSU) + 50;
+			this->config.thresholding = cv::threshold(frame, this->threshold, 0, 255, THRESH_OTSU);
 			this->thresholdGPU.upload(this->threshold);
 			this->config.otsuThresholdingRefreshCounter = 0;
 		}
 		else {
-			cv::cuda::threshold(this->ipmGPU, this->thresholdGPU, this->config.thresholding, 255, cv::THRESH_BINARY);
+			cv::cuda::threshold(this->imageGPU, this->thresholdGPU, this->config.thresholding, 255, cv::THRESH_BINARY);
 			this->thresholdGPU.download(this->threshold);
 		}
 		this->config.otsuThresholdingRefreshCounter++;
 		break;
 	default:
-		cv::cuda::threshold(this->ipmGPU, this->thresholdGPU, this->config.thresholding, 255, cv::THRESH_BINARY);
+		cv::cuda::threshold(this->imageGPU, this->thresholdGPU, this->config.thresholding, 255, cv::THRESH_BINARY);
 		this->thresholdGPU.download(this->threshold);
 		break;
 	}
@@ -151,18 +155,27 @@ void PointLaneDetector::managePoints() {
 	stepSize = (this->edge.rows - edgeOffset) / (numberOfLines - 1);
 	int lineY = this->edge.rows - 2;											//Offset wegen Canny (Bildrand schwarz)
 	
+	this->leftLine.recalculateIfNeccessary();
+	this->rightLine.recalculateIfNeccessary();
 	for (int i = 0; i < this->numberOfLines; i++) {
 		cv::findNonZero(this->edge.row(lineY), this->linePoints);
 		this->laneMiddlePoints(this->laneMiddles, this->linePoints, lineY);
-		this->vRes.detectedPoints.push_back(this->laneMiddles);
 
 		std::cout << "[LEFT]";
 		this->leftLine.calculateLineStep(i, lineY, this->laneMiddles);
 		std::cout << "[RIGH]";
 		this->rightLine.calculateLineStep(i, lineY, this->laneMiddles);
 		if (leftLine.needsClosestPoint || rightLine.needsClosestPoint) {
-			cv::Point lastLeftPoint = leftLine.points.at(leftLine.lastValidPointIndex);
-			cv::Point lastRightPoint = rightLine.points.at(rightLine.lastValidPointIndex);
+			cv::Point lastLeftPoint;
+			cv::Point lastRightPoint;
+
+			if (leftLine.lastValidPointIndex != -1) {
+				lastLeftPoint = leftLine.points.at(leftLine.lastValidPointIndex);
+			}
+
+			if (rightLine.lastValidPointIndex != -1) {
+				lastRightPoint = rightLine.points.at(rightLine.lastValidPointIndex);
+			}
 
 			std::vector<double> distancesLeft;
 			distancesLeft.reserve(laneMiddles.size());
@@ -226,7 +239,7 @@ void PointLaneDetector::laneMiddlePoints(std::vector<cv::Point>& laneMiddles, Ma
 			middle.x = pt1.x + diff / 2;
 			middle.y = pt1.y + (pt2.y - pt1.y) / 2 + yPos;
 			if (!(middle.x > config.ignoreXMin && middle.x <= config.ignoreXMax && middle.y > config.ignoreYMin && middle.y <= config.ignoreYMax)) {
-				if ((int)threshold.at<uchar>(middle) == 255) {
+				if ((int)ipm.at<uchar>(middle) == 255) {
 					laneMiddles.push_back(middle);
 				}
 			}
@@ -234,25 +247,36 @@ void PointLaneDetector::laneMiddlePoints(std::vector<cv::Point>& laneMiddles, Ma
 	}
 }
 
+#define LANE_WIDTH 440
 
 void PointLaneDetector::solveClothoide() {
 	leftLine.solve();
 	rightLine.solve();
-	copyResult();
+	
+	if (leftLine.solved && rightLine.solved) {
+		vRes.valid = true;
+		vRes.xoff = (leftLine.xOff + rightLine.xOff) / 2;
+		vRes.deltaPhi = (leftLine.deltaPsi + rightLine.deltaPsi) / 2;
+		vRes.c0 = (leftLine.c0 + rightLine.c0) / 2;
+		vRes.c1 = (leftLine.c1 + rightLine.c1) / 2;
+		
+	} else if (leftLine.solved && !rightLine.solved) {
+		vRes.valid = true;
+		vRes.xoff = (leftLine.xOff + LANE_WIDTH / 2);
+		vRes.deltaPhi = leftLine.deltaPsi;
+		vRes.c0 = leftLine.c0;
+		vRes.c1 = leftLine.c1;
+	} else if (!leftLine.solved && rightLine.solved) {
+		vRes.valid = true;
+		vRes.xoff = (rightLine.xOff - LANE_WIDTH / 2);
+		vRes.deltaPhi = rightLine.deltaPsi;
+		vRes.c0 = rightLine.c0;
+		vRes.c1 = rightLine.c1;
+	} else {
+		vRes.valid = false;
+	}
 }
 
-void PointLaneDetector::mat2Arr(cv::Mat& mat, std::array<double, 4>& arr) {
-	arr.at(0) = mat.at<double>(0) * config.ipmScaling * config.ipmScaling;
-	arr.at(1) = mat.at<double>(1) * config.ipmScaling;
-	arr.at(2) = mat.at<double>(2);
-	arr.at(3) = mat.at<double>(3) / config.ipmScaling;
-}
-
-void PointLaneDetector::copyResult() {
-	//mat2Arr(this->leftLine.solveMatrixX, this->vRes.leftLane1);
-	//mat2Arr(this->rightLine.solveMatrixX, this->vRes.middleLane1);
-	//mat2Arr(this->rightLine.solveMatrixX, this->vRes.rightLane1);	
-}
 
 void PointLaneDetector::clear() {
 	this->linePoints.release();

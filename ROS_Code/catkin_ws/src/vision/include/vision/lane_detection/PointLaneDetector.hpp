@@ -1,5 +1,5 @@
 #pragma once
-#include <vision/lane_detection/VisionResult.hpp>
+#include <vision/lane_detection/ROS_VIS_Result.hpp>
 #include <opencv2/core/cuda.hpp>
 #include <opencv2/cudaimgproc.hpp>
 #include <map>
@@ -24,6 +24,9 @@ public:
 	cv::Mat debugImage;
 	cv::Mat houghLinesCPU;
 
+	ROS_VIS_Line leftLine;
+	ROS_VIS_Line rightLine;
+
 	std::function <void (std::vector<cv::Vec4i> data)> houghCallback;
 	std::mutex houghMutex;
 	std::mutex houghZumutung;
@@ -34,9 +37,7 @@ public:
 	std::condition_variable condition;
 
 	void setConfig(ROS_VIS_LaneDetectionConfig* );
-	ROS_VIS_LaneDetectionResult vRes;
-
-	std::ofstream myfile;
+	ROS_VIS_Result vRes;
 
 private:
 	PointLaneDetector();
@@ -48,11 +49,9 @@ private:
 	void doGPUTransform(cv::Mat&);
 
 	void calculateIPM();
-	void thresholding();
+	void thresholding(cv::Mat &);
 
 	void solveClothoide();
-	void copyResult();
-	void mat2Arr(cv::Mat&, std::array<double, 4>&);
 	static void houghStreamCb(int status, void *userData);
 	void clear();
 	
@@ -79,8 +78,4 @@ private:
 	std::vector<cv::Point> laneMiddles;
 
 
-
-
-	ROS_VIS_Line leftLine;
-	ROS_VIS_Line rightLine;
 };
